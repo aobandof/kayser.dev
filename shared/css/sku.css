@@ -1,0 +1,286 @@
+body, html {
+    height: 100%;
+    -webkit-overflow-scrolling: touch; /* para mejorar el desplazamiento en iphone */
+    margin: 0px;
+    padding: 0px;
+}
+/* 1. **** VISTA : sku_crear ***/
+#div_sku_crear {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    /*background-color: yellow;*/
+}
+/* 1.1 **** CONTENEDOR DE IMAGENES DE CATEGORIAS *****/
+.cont_imgs_categorias {
+    display: flex;
+    justify-content: center;
+    margin: 0px;
+    padding: 0.2em 0.4em 0em 0.4em;
+    flex: 0 0 auto; /* para que no tome altura innecesaria, sino solo la que ocupa dado que el otro contenedor de abajo ocupará el resto*/
+}
+.cont_img_categoria {
+    background-color: rgba(5, 88, 68, 0.51);
+    text-align: center;
+    margin: 0.15rem 0.15rem 0rem 0.15rem;
+    padding: 0.5rem 0.2rem 0.5rem 0.2rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 1 auto;
+}
+.cont_img_categoria:hover {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    -webkit-filter: none !important;
+    filter: none !important;
+    cursor: pointer;
+}
+.cont_img_categoria img {
+    min-height: 3rem;
+    max-height: 4rem;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 5px;
+    margin-bottom: 0.2em;
+}
+.cont_img_categoria span {
+    width: 100%;
+    font-weight: bold;
+    font-size: 65%;
+    color: white;
+    padding: 0em 0.1em 0em 0.1em;
+    text-shadow: 2px 2px 2px #050134;
+}
+#div_cat_dama { background-color: rgba(218, 11, 17, 0.35); }
+#div_cat_hombres { background-color: rgba(9, 39, 117, 0.35); }
+#div_cat_lola { background-color: rgba(203, 73, 190, 0.35); }
+#div_cat_lolo { background-color: rgba(20, 134, 164, 0.35); }
+#div_cat_niña { background-color: rgba(241, 211, 57, 0.35); }
+#div_cat_niño { background-color: rgba(74, 224, 66, 0.35); }
+
+/*1.2 **** CONTENEDOR PARA FORMULARIO CREAR SKU ****/
+.comp_crear_sku {
+    flex: 1 1 auto;
+    width: 100%;
+    margin: 0px !important;
+    padding: 0em !important;
+    height: 100%;
+    flex-wrap: wrap; /*para que pase a la sigiente linea se se llena*/
+}
+/*1.2.1/2 */
+.comp_crear_sku .container_column {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1em 1em 1em 0em !important;
+}
+.comp_crear_sku .container_column:nth-child(2) {
+  background-color: rgba(10, 10, 9, 0.40);
+  padding-left: 1.5em !important;
+}
+.cont_fila_crear_sku {
+  display: flex;
+  flex-wrap: wrap;/* si el equipo es movil, esta propiedad hara que cuando los elementos sobrepazen el ancho total, se puedan desplazar a la siguiente linea */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em !important;
+}
+.cont_fila_crear_sku>div {
+  display: flex;
+  align-items: center;
+  flex: 1 1 50%; /** **/
+}
+.cont_fila_crear_sku>div>span {
+    flex: 1 1 15%;
+    text-align: right;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+.cont_fila_crear_sku>span {
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.8em;
+  color: white;
+  flex: 1 1 25% !important;
+  text-align: left;
+}
+.cont_fila_crear_sku input[type='text'], .cont_fila_crear_sku input[type='number']  {
+  flex: 1 1 65%;
+  height: 2.3em !important;
+  font-size: 0.9em;
+  padding: 0.3em !important;
+  font-family: "Verdana";
+}
+.cont_fila_crear_sku>div>input[type='text'], .cont_fila_crear_sku>div>select, .cont_fila_crear_sku>div>input[type='number'], .cont_fila_crear_sku>div>textarea {
+   flex: 1 1 40%;
+   height: 2.4em !important;
+   font-size: 0.8em;
+   padding: 0.3em !important;
+   font-family: "Verdana";
+}
+/*input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type='number'] {
+ -moz-appearance:textfield;
+}*/
+
+.cont_botonera_inf {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(10, 10, 9, 0.90);
+  width: 100%;
+  padding: 2em !important;
+  flex:  1 1 10vh !important;
+}
+.cont_botonera_inf  button {
+  margin: 1em;
+  height: 2.3em;
+  font-size: 1em;
+  font-weight: bold;
+  flex: 0 1 20%;
+}
+.cont_botonera_inf  button:hover { cursor: pointer;}
+
+/*************** MEDIAS QUERYS SKU_CREAR ******/
+@media (max-width: 750px) {
+  .comp_crear_sku .container_column {
+    padding-top: 0.5em !important;
+    padding-bottom: 0em !important;
+  }
+  .cont_fila_crear_sku>div>span { font-size: 0.55em; }
+  .cont_fila_crear_sku>span { font-size: 0.6em; }
+  .cont_fila_crear_sku { margin-top: 0.3em !important; }
+  .cont_fila_crear_sku input[type='text'], .cont_fila_crear_sku select,
+  .cont_fila_crear_sku>div>input[type='text'], .cont_fila_crear_sku>div>select {
+    height: 2.5em !important;
+    font-size: 0.6em !important;
+  }
+  .cont_botonera_inf { padding: 0.8em !important; }
+  .cont_botonera_inf  button {
+    font-size: 0.55em !important;
+    height: 2.9em;
+    flex: 1 0 25vw !important;
+  }
+}
+@media (min-width: 750px) {
+    .cont_img_categoria {
+      margin: 0.2rem 0.7rem 0rem 0.7rem;
+      width: 5.5rem;
+    }
+    .cont_img_categoria span { font-size: 100%; }
+    .cont_img_categoria img {
+        max-width: 60%;
+        border-radius: 5px;
+        margin-bottom: 0.2em;
+    }
+}
+
+
+
+/******* estilos para SKU_FILTROS *****/
+.cont_botonera, #table_sku {     visibility: hidden; }
+
+/******** estilos para el .cont_tabs y las tabs **********/
+#ul_items {
+    border-radius: 0.7em;
+    background-color: rgba(25, 80, 219, 0.77);
+    padding: 0.5em;
+    box-shadow: 0 8px 17px 0 rgba(0,0,0,.2), 0 6px 20px 0 rgba(0,0,0,.19);
+    border: 0px !important;
+    margin-bottom: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 0 auto;
+}
+.cont_tabla_full {
+    overflow-y: scroll !important;
+    flex: 1 1 auto;
+    overflow-y: scroll;
+}
+.cont_items_botonera {
+    flex: 0 0 auto;
+    margin-bottom: 1.5em;
+    margin-top: 0.5em;
+}
+#ul_items li {
+    flex: 1 1 auto;
+    font-size: 1rem;
+    margin-left: 0.2em !important;
+    margin-right: 0.2em !important;
+}
+#ul_items li a {
+    color: white;
+    font-weight: bold;
+    border-radius: 0.5em !important;
+    text-align: center;
+    padding: 1em;
+    margin: 0px;
+}
+#ul_items>li>a {
+    width: 100% !important;
+}
+#ul_items li a:hover {
+    color: rgb(9, 10, 134);
+    font-weight: bold;
+}
+#ul_items>li.active>a, #ul_items>li.active>a:focus, #ul_items>li.active>a:hover {
+    background-color: rgba(9, 6, 149, 0.87);
+    color: white;
+    border: 0px
+}
+#table_items tr td  {
+    font-size: 1.1rem;
+    line-height: 2.5em;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.fila td:nth-child(2)  { text-align: center; }
+.fila td input[type=checkbox], .campos th input[type=checkbox] {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+}
+.campos th {
+    font-size: 1.1rem;
+    line-height: 2em !important;
+    padding-bottom: 1em;
+}
+.campos>th>button {
+    padding: 0.2em !important;
+}
+
+/****** estilos para el index sku ****/
+#div_sku_index {
+  height: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0em 1em 2em 1em !important;
+}
+#div_sku_index img {
+  min-width: 250px;
+  flex: 1 1 40%;
+}
+#div_sku_index>div {
+  flex: 1 1 40%;
+  align-items: center;
+  justify-content: center;
+}
+#div_sku_index>div>button {
+  margin: 0.4em;
+  font-size: 1em;
+  font-weight: bold;
+  width: 60% !important;
+}
+#div_sku_index div button a {
+  color: white;
+  text-decoration: none;
+}
+#div_sku_index div button:hover {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+  cursor: pointer;
+}

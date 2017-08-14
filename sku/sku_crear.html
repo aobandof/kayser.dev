@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../shared/css/normalize.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="../shared/css/alert_confirm_pront_modal.css">
+  <link rel="stylesheet" href="../shared/css/styles.css">
+  <link rel="stylesheet" href="../shared/css/sku.css">
+  <title>SKU / Articulos</title>
+</head>
+<body>
+    <div class="container_column" id="div_sku_crear">
+        <div class="cont_imgs_categorias">
+            <div class="cont_img_categoria" id="div_cat_dama"><img src="../shared/img/img_mujer.jpg" alt=""><span>Mujer</span></div>
+            <div class="cont_img_categoria" id="div_cat_hombres"><img src="../shared/img/img_hombre.jpg" alt=""><span>Hombre</span></div>
+            <div class="cont_img_categoria" id="div_cat_lola"><img src="../shared/img/img_lola.jpg" alt=""><span>Lola</span></div>
+            <div class="cont_img_categoria" id="div_cat_lolo"><img src="../shared/img/img_lolo.jpg" alt=""><span>Lolo</span></div>
+            <div class="cont_img_categoria" id="div_cat_niña"><img src="../shared/img/img_niña.jpg" alt=""><span>Niña</span></div>
+            <div class="cont_img_categoria" id="div_cat_niño"><img src="../shared/img/img_niño.jpg" alt=""><span>Niño</span></div>
+            <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/img_niño.jpg" alt=""><span>Otro</span></div>
+        </div>
+        <div class="comp_crear_sku container_row">
+          <div class="container_column col-md-8 col-lg-8 col-xl-8">
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">MARCA&nbsp</span>
+                <select name="Marca" id="select_marca" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">SUBDPTO&nbsp</span>
+                <select name="SubDpto" id="select_sku_grupo" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">PRENDA&nbsp</span>
+                <!-- <input type="text" id="txt_sku_prenda" name="" value="" class="form-control"> -->
+                <select name="Kayser_SEASON" id="select_sku_prenda" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">CAT.PRENDA&nbsp</span>
+                <!-- <input type="text" id="txt_sku_cprenda" name="" value="" class="form-control"> -->
+                <select name="Kayser_DIV" id="select_sku_cprenda" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">PRESENT.&nbsp</span>
+                <!-- <input type="text" id="txt_sku_presentacion" name="" value="" class="form-control"> -->
+                <select name="Presentacion" id="select_sku_presentacion" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">COLOR&nbsp</span>
+                <select name="Color" id="select_sku_color" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row">
+              <div>
+                <span class="">TALLA&nbsp</span>
+                <select name="Talla" id="select_sku_talla" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">COPA&nbsp</span>
+                <select name="Copa" id="select_sku_copa" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">FORMA COPA.&nbsp</span>
+                <select name="FormaCopa" id="select_sku_fcopa" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">MATERIAL&nbsp</span>
+                <select name="Material" id="select_sku_material" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">T.PRENDA&nbsp</span>
+                <!-- <input type="text" id="txt_sku_tprenda" name="" value="" class="form-control"> -->
+                <select name="TempPrenda" id="select_sku_tprenda" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div>
+                <span class="">T.CATALOGO&nbsp</span>
+                <!-- <input type="text" id="txt_sku_tcatalogo" name="" value="" class="form-control"> -->
+                <select name="TempCatalogo" id="select_sku_tcatalogo" class="form-control"><option value=""></option></select>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row  ">
+              <div>
+                <span class="">GRUPO USO&nbsp</span>
+                <!-- <input type="text" id="txt_sku_grupo_uso" name="" value="" class="form-control"> -->
+                <select name="GrupoUso" id="select_sku_grupo_uso" class="form-control"><!--<option value=""></option>--></select>
+              </div>
+              <div class="cont_fila_textarea">
+                <span class="">CARACT.&nbsp</span>
+                <textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control"></textarea>
+              </div>
+            </div>
+            <div class="cont_fila_crear_sku container_row">
+              <div>
+                <span class="">COMPOSICION&nbsp</span>
+                <input type="text" id="txt_sku_composicion" name="" value="" class="form-control">
+              </div>
+              <div>
+                <span class="">PESO(gr)&nbsp</span>
+                <input type="number" id="txt_sku_peso" name="" value="" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="container_column col-md-4 col-lg-4 col-xl-4">
+            <div class="cont_fila_crear_sku container_row" >
+              <span>C. ARTICULO&nbsp</span>
+              <input type="text" id="txt_sku_articulo" name="" value="" class="form-control">
+            </div>
+            <div class="cont_fila_crear_sku container_row" >
+              <span>C. SKU&nbsp</span>
+              <input type="text" id="txt_sku_sku" name="" value="" class="form-control">
+            </div>
+            <div class="cont_fila_crear_sku container_row" >
+              <span>DESCRIPCION&nbsp</span>
+              <input type="text" id="txt_sku_descripcion" name="" value="" class="form-control">
+            </div>
+            <div class="cont_fila_crear_sku container_row" >
+              <span>BARCODE&nbsp</span>
+              <input type="text" id="txt_sku_barcode" name="" value="" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="cont_botonera_inf container_row">
+          <button type="button" name="button" id="btn_guardar_enviar" class="btn btn-primary">GUARDAR Y ENVIAR</button>
+          <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">GUARDAR EN LISTA</button>
+          <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../shared/js/sku_crear.js" ></script>
+</body>
+</html>

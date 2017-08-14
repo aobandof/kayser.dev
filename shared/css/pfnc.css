@@ -1,0 +1,51 @@
+body, html {
+    height: 100%;
+}
+.cont_general {
+    flex-direction: column;
+    height: auto;
+}
+#div_cargando, .cont_contenido {
+  /*visibility: hidden !important;*/
+}
+#table_ordenes_compra {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    /*width: 95% !important;*/
+}
+#table_ordenes_compra th {
+    padding: 0.5em;
+    border: 1px solid #EEEEEE !important;
+    font-size: 0.7rem !important;
+}
+#table_ordenes_compra td {
+    text-align: center;
+    color: #091161;
+    border: solid 1px #b1acaf !important;
+    font-size: 0.7rem !important;
+    /*border-collapse: inherit !important;*/
+}
+.boton_detalle {
+    width: 100%;
+    max-width: 50px;
+    min-width: 30px;
+}
+.boton_detalle:hover {
+    cursor: pointer;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+    -webkit-filter: sepia(0.3);
+    filter: sepia(0.3);
+}
+#table_ordenes_compra .fila_no_apareada {
+    background-color: rgba(233, 247, 113, 0.48) !important;
+}
+.fila_no_apareada td {
+    color: #8e222c !important;
+}
+#tbody_ordenes_compra tr td:nth-child(8),#tbody_ordenes_compra tr td:nth-child(11),#tbody_ordenes_compra tr td:nth-child(14) {
+    text-align: right;
+}

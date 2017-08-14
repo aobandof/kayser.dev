@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css?family=Vollkorn');
+@import url('https://fonts.googleapis.com/css?family=Merriweather');
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Libre+Baskerville');
+@import url('https://fonts.googleapis.com/css?family=Passion+One');
+
+#chb_ciudad {
+    -webkit-appearance: checkbox !important;
+    width: 5rem;
+}
+.header {
+    display: flex;
+    background-color: rgba(132, 143, 238, 0.58);
+    height: 6rem;
+    justify-content: space-around;
+    align-items: center;
+    padding-left: 2rem;
+}
+.titulo  span {
+    color: #000080;
+    font-size: 3.7em;
+    font-family: 'Passion One', cursive;
+    /*font-family: 'Vollkorn', serif;*/
+    text-shadow: 2px 2px 2px #ffffff;
+
+}
+#div_titulo {
+    width: 40%;
+    /*border: 1px solid black;*/
+}
+#div_ciudad {
+    display: flex;
+    /*border: 1px solid black;*/
+    width: 30%;
+    justify-content: center;
+}
+#div_tienda {
+    width: 30%;
+    /*border: 1px solid black;*/
+    display: flex;
+    font-size: 1.5rem;
+    font-family: 'Open Sans', sans-serif;
+    justify-content: center;
+}
+#div_tienda span {
+    padding: 0px 1rem;
+}
+#input_ciudad {
+    width: 60% !important;
+}
+#button_ciudad {
+    width: 10% !important;
+}
+
+#select_tienda  {
+    white-space: normal;
+    font-weight: bold;
+    width: 65% !important;
+}
+/*#input_ciudad { width: 25% !important; }
+
+#select_tienda, #select_tienda option {
+    color: #000080;
+    font-size: 1.5rem;
+    font-family: 'Vollkorn', serif;
+}*/
+.filtrar {
+    background-color: #bcbbf7;
+    display: flex;
+    align-items: center;
+}
+tbody tr td {
+    font-size: 1.1rem !important;
+}
+#img_exportar:hover {
+    cursor: pointer;
+}
+.nombre_campos th {
+    font-size: 1.1rem !important;
+    background-color: #004080;
+    color: white;
+    border: 3px solid white !important;
+    text-align: center;
+    padding: 0.7rem !important;
+}
+.nombre_campos th:nth-child(11),.nombre_campos th:nth-child(12) {
+    font-size: 0.9rem !important;
+}
+#fila_filtros input {
+    font-size: 1.1rem !important;
+    padding: 6px !important;
+}
+.filtrar {
+    display: flex;
+}
+/*tbody tr:hover { background: #d7d7ff; }*/
+/*categorizacion de boostrap */
+.table > thead > tr:nth-child(2) > th  {
+    padding: 0.4rem;
+}
+.form-control {
+    padding: 0.3rem 0.5rem;
+    height: 2.5rem;
+}
+.form-control input:nth-child(1) {
+    width: 300rem !important;
+}
+.table > tbody > tr > td {
+    padding: 0.2rem 0.3rem;
+}
+.fila td:nth-child(1), .fila td:nth-child(3), .fila td:nth-child(11), .fila td:nth-child(12) {
+    text-align: center;
+}
+.fila td:nth-child(13) {
+    text-align: right;
+}

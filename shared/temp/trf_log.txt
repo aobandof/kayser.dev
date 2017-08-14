@@ -1,0 +1,5 @@
+﻿El: 2017-06-08 (12:34:55) Se actualizó idCodSalida=105TRF457 de estadoInterfaz= 'T' a 'C'
+El: 2017-06-08 (12:36:19) Se actualizó idCodSalida=105TRF457 de estadoInterfaz= 'T' a 'C'
+El: 2017-06-08 (12:38:29) Se actualizó idCodSalida=105TRF457 de estadoInterfaz= 'T' a 'C'
+El: 2017-06-08 (12:40:08) Se actualizó idCodSalida=105TRF457 de estadoInterfaz= 'T' a 'C'
+El: 2017-06-08 (12:41:57) Se actualizó idCodSalida=105TRF457 de estadoInterfaz= 'T' a 'C'

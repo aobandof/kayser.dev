@@ -1,0 +1,51 @@
+{
+  "SERVERS" : {
+    "192.168.0.13" : {
+      "user" : "sa",
+      "password" : "kayser@dm1n"
+    },
+    "192.168.0.17" : {
+      "user" : "sa",
+      "password" : "pjc3l1"
+    },
+    "192.168.0.33" : {
+      "user" : "sa",
+      "password" : "sa"
+    }
+  },
+  "DATABASES" : {
+    "SBO_KAYSER" : {
+      "server" : "192.168.0.33"
+    },
+    "WMSTEK_KAYSER_INTERFAZ" : {
+      "server" : "192.168.0.17"
+    },
+    "Stock" : {
+      "server" : "192.168.0.13"
+    }
+  },
+  "TABLES" : {
+    "@DUN_14" : {
+      "database" : "SBO_KAYSER",
+      "descripcion" : "registros de cajas de skus"
+    },
+    "Kayser_OWHS" : {
+      "database" : "Stock",
+      "descripcion" : "registros de Tiendas de Kayser"
+    },
+    "Kayser_OCRD" : {
+      "database" : "Stock",
+      "descripcion" : "registros de Compradores: CLIENTES, MAYORISTAS, TIENDAS, PROMOTORAS, GRANDES TIENDAS, ETC"
+    },
+    "Kayser_OITM" : {
+      "database" : "Stock",
+      "descripcion" : "Registros con todos los SKUs e información"
+    }
+  },
+  "VISTAS" : {
+    "MM_StockVrWeb" : {
+      "database" : "WMSTEK_KAYSER_INTERFAZ",
+      "descripcion" : "Registros con codigo de SKU y Stock para Compras ONLINE"
+    }
+  }
+}

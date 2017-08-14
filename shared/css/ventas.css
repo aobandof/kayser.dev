@@ -1,0 +1,140 @@
+html, body {
+  height: 100%;
+  -webkit-overflow-scrolling: touch; /* para mejorar el desplazamiento en iphone */
+  margin: 0px;
+  padding: 0px;
+  /*overflow: hidden;*/
+}
+.cont_general {
+    height: 100%;
+    width: 100%;
+    padding-top: 0px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+.cont_logo {
+    flex: 0 0 auto;
+}
+.cont_tabla {
+    overflow: hidden !important;
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0px !important;
+    padding: 0px;
+}
+#link_update img {
+    max-height: 6rem;
+}
+.table-fixed {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /*margin: 0px !important;*/
+    /*flex: 1 1 auto;*/
+}
+.table-fixed thead {
+  width: 100%;
+  flex: 0 0 auto;
+}
+.table-fixed tbody {
+  overflow-y: auto;
+  width: 100%;
+  flex: 1 1 auto;
+}
+.table-fixed tfoot {
+    flex: 0 0 auto;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tfoot, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+tbody tr td {
+    background-color: white !important; /*solucion al desbordamiento, si tiene un color */
+}
+
+.table-fixed tbody td, .table-fixed thead > tr> th, .table-fixed tfoot > tr> td {
+  float: left;
+  border-bottom-width: 0;
+}
+.nombre_campos th {
+    font-size: 1.2rem !important;
+    background-color: #004080;
+    color: white;
+    border: 1px solid white !important;
+    text-align: center;
+    padding: 0.7rem !important;
+}
+#tr_head_ventas_promotoras th { background-color: rgba(98, 6, 6, 0.79) !important; }
+.nombre_campos th:nth-child(3), .nombre_campos th:nth-child(4) { font-size: 0.95rem !important; }
+.nombre_campos th:nth-child(-n+2), #tr_head_ventas_promotoras.nombre_campos th:nth-child(5){
+    padding-top: 1.2rem !important;
+    padding-bottom: 1.1rem !important;
+}
+.fila td { font-size: 1.2rem !important; }
+.fila_promotoras td { font-size: 1rem !important; }
+.fila_promotoras td:nth-child(n+3) { font-size: 1rem !important; }
+
+.fila td:nth-child(2n + 1) { text-align: center; }
+.fila_promotoras td:nth-child(1), .fila_promotoras td:nth-child(n+3) { text-align: center; }
+.pie td:nth-child(n+2) { text-align: center; }
+.pie td:nth-child(1) { text-align: right; }
+.pie td {
+    background-color: #004080;
+    border: 1px solid white !important;
+    padding: 0.7rem !important;
+    color: white;
+}
+#tr_pie_ventas.pie td { font-size: 1.2rem !important; }
+#tr_pie_ventas_promotoras.pie td { font-size: 1rem !important; }
+
+@media (min-width: 940px) {
+    .table-fixed tbody {
+      width: 102%;
+    }
+
+}
+/******************************/
+/*@media (max-width: 767px) {
+    table {
+        overflow-x: auto;
+        display: block;
+    }
+    .cont_header {
+        padding: 0rem 0.2rem 0.1rem 0.2rem !important;
+    }
+    .cont_cuerpo {
+        margin: 0px;
+    }
+    .cont_footer {
+        padding: 0.0rem 0.2rem 0rem 0.2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .pie td:nth-child(2) { width: 38% !important; }
+    .pie td:nth-child(1) {
+        font-size: 1.1rem !important;
+    }
+    #tr_head_ventas_promotoras.nombre_campos th, .fila_promotoras td, #tr_pie_ventas_promotoras td {
+        padding: 0.7rem !important;
+        font-size: 0.9rem !important;
+    }
+    #tr_head_ventas_promotoras th:nth-child(1) { width: 8%; }
+    #tr_head_ventas_promotoras th:nth-child(2) { width: 44% !important; }
+    #tr_head_ventas_promotoras th:nth-child(3), #tr_head_ventas_promotoras th:nth-child(4),
+    #tr_pie_ventas_promotoras td:nth-child(2), #tr_pie_ventas_promotoras td:nth-child(3) { width: 20% !important; }
+    #tr_head_ventas_promotoras th:nth-child(5), #tr_pie_ventas_promotoras td:nth-child(4) { width: 15% !important; }
+    #tr_head_ventas_promotoras th:nth-child(3n+2) { font-size: 1rem !important; }
+    #tr_pie_ventas_promotoras td:nth-child(1) { width: 103% !important; }
+    .fila_promotoras td:nth-child(1) { width: 5%; }
+    .fila_promotoras td:nth-child(2) { font-size: 1rem !important; }
+    .fila_promotoras td:nth-child(n+3) { font-size: 1.1rem !important; }
+    .fila_promotoras td:nth-child(2) {
+        width: 44% !important;
+        padding-right: 0.3rem;
+        white-space: normal !important;
+    }
+    .fila_promotoras td:nth-child(3), .fila_promotoras td:nth-child(4) { width: 21% !important; }
+    .fila_promotoras td:nth-child(5) { width: 10%; }
+}*/
