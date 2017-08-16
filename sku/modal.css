@@ -3,6 +3,9 @@ body, html {
   width: 100%;
   margin: 0px;
 }
+.btn:hover {
+  cursor: pointer;
+}
 .modal_alert_confirm {
   position: absolute;
   display: flex;
@@ -39,4 +42,8 @@ body, html {
   background-color: rgb(223, 240, 229);
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
+}
+.close_modal {
+  display: flex;
+  justify-content: flex-end;
 }
