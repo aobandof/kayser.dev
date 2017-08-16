@@ -88,7 +88,7 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
     }
 }
 
-### FUNCION QUE CARGA EN UN ARRAY ASOCIATIVO UNIDIMENSIONAL DONDE EL INDEX ES EL ID Y EL VALUE ES NAME DE LA TABLA
+### FUNCION QUE CARGA LAS FILAS CON ID y NAME o NAME solmente DE UNA TABLA EN UN ARRAY ASOCIATIVO
 function getArrayIdName($nom_tabla){
   global $tablas_sku,$mysqli,$conector_mssql;
   $array_tabla=[];
@@ -115,6 +115,21 @@ function getArrayIdName($nom_tabla){
     }
   }
   return $array_tabla;
+}
+
+### FUNCION QUE RETORNA UN ARRAY CON TODOS LAS FILAS ENCONTRADAS SEGUN LA LLAVE FORANEA
+function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
+  global $mysqli;
+  $arr_return=[];
+  $query_coincidencias="SELECT nombre FROM DetalleTalla where Talla_codigo='".$value."'";
+  // echo $query_coincidencias;
+  if(!$registros=$mysqli->query($query_coincidencias))
+    return -1;
+  else {
+    while ($reg=$registros->fetch_assoc())
+      $arr_return[]=$reg['nombre'];
+  }
+  return $arr_return;
 }
 ### FUNCION QUE BUSCA TODAS LAS TABLAS DEPENDIENTES DE LAS DEPENDIENTES
 ### de tal forma qe los dependientes se llenaran con datos relacionados con el padre

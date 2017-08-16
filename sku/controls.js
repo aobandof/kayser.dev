@@ -1,8 +1,8 @@
-var arr_obj_tallas=[
-  { 'T01' : ['XS','S','M','L','XL'] },
-  { 'T02' : ['28','30','32','34','36'] },
-  { 'T03' : ['8','10','12','14','16'] }
-]; // array de objetos
+// var arr_obj_tallas=[
+//   { 'T01' : ['XS','S','M','L','XL'] },
+//   { 'T02' : ['28','30','32','34','36'] },
+//   { 'T03' : ['8','10','12','14','16'] }
+// ];
 
 var obj_arr_tallas = {
   'T01' : ['XS','S','M','L','XL'],
@@ -21,7 +21,6 @@ function fillSelectMultipleFromArray(arr_tallas,div_opciones_tallas){
     console.log("pendiente de implementar");
   });
 }
-
 function fillSelectMultipleFromObjeto(obj_tallas,id_div_opciones){
   for (var index in obj_tallas) {
     let div1=document.createElement('div');
