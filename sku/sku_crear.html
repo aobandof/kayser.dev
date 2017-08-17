@@ -7,23 +7,30 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="../shared/css/normalize.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="../shared/css/alert_confirm_pront_modal.css">
   <link rel="stylesheet" href="../shared/css/styles.css">
   <link rel="stylesheet" href="../shared/css/modal.css">
   <link rel="stylesheet" href="../shared/css/sku.css">
+  <link rel="stylesheet" href="../shared/css/controls.css">
   <title>SKU / Articulos</title>
 </head>
 <body>
     <div class="container_column" id="div_sku_crear">
+      <div class="container_row">
         <div class="cont_imgs_categorias">
             <div class="cont_img_categoria" id="div_cat_dama"><img src="../shared/img/img_mujer.jpg" alt=""><span>Mujer</span></div>
-            <div class="cont_img_categoria" id="div_cat_hombres"><img src="../shared/img/img_hombre.jpg" alt=""><span>Hombre</span></div>
+            <div class="cont_img_categoria" id="div_cat_hombres"><img src="../shared/img/img_hombre.jpg" alt=""><span>Varón</span></div>
             <div class="cont_img_categoria" id="div_cat_lola"><img src="../shared/img/img_lola.jpg" alt=""><span>Lola</span></div>
             <div class="cont_img_categoria" id="div_cat_lolo"><img src="../shared/img/img_lolo.jpg" alt=""><span>Lolo</span></div>
             <div class="cont_img_categoria" id="div_cat_niña"><img src="../shared/img/img_niña.jpg" alt=""><span>Niña</span></div>
             <div class="cont_img_categoria" id="div_cat_niño"><img src="../shared/img/img_niño.jpg" alt=""><span>Niño</span></div>
-            <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/img_niño.jpg" alt=""><span>Otro</span></div>
+            <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/K.jpg" alt=""><span>Otro</span></div>
         </div>
+        <div class="cont_config">
+          <img src="../shared/img/settings.png" alt="">
+        </div>
+      </div>
         <div class="comp_crear_sku container_row">
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
             <div class="cont_fila_crear_sku container_row  ">
@@ -62,7 +69,14 @@
             <div class="cont_fila_crear_sku container_row">
               <div>
                 <span class="">TALLA&nbsp</span>
-                <select name="Talla" id="select_sku_talla" class="form-control"><!--<option value=""></option>--></select>
+                <!-- <select name="Talla" id="select_sku_talla" class="form-control"></select> -->
+                <div class="cont_multiples_opciones" id="div_multiples_opciones">
+                  <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_opciones">
+                    <span>&nbsp</span><i class="fa fa-caret-down" aria-hidden="true"></i>
+                  </div>
+                  <div class="collapse" id="div_sel_opciones">
+                  </div>
+                </div>
               </div>
               <div>
                 <span class="">COPA&nbsp</span>
@@ -142,6 +156,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script type="text/javascript" src="../shared/js/modal.js"></script>
+    <script type="text/javascript" src="../shared/js/controls.js"></script>
     <script type="text/javascript" src="../shared/js/sku_crear.js" ></script>
 </body>
 </html>

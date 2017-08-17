@@ -90,7 +90,6 @@ if(isset($_POST['nom_tabla_padre'])) {
               $array_rel[]=$reg[1];
             }
           }
-          $query_mmsql="SELECT * " /* estams*/
         }
       }
       $options[]=array('tabla'=>$tabla, 'options'=>$ops);

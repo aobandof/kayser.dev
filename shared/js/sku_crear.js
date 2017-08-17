@@ -17,6 +17,7 @@ $(document).ready(function() {
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
           campos_llenos=0;
+          document.getElementById("div_sel_opciones").innerHTML="";
           cargarCategoriaCrear(id_cat_after_click);
         }
       }else { cargarCategoriaCrear(id_cat_after_click); }
@@ -24,7 +25,7 @@ $(document).ready(function() {
   });
   $("#select_sku_prenda").change(function() {
     cargarSelectsSku('Kayser_SEASON', $(this).val())
-    console.log($(this).val());
+    // console.log($(this).val());
   });
 });
 function cargarCategoriaCrear(id_cat) {
@@ -71,7 +72,8 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
       }
       for (i=recorrido; i<long_data; i++) {
         if(data[i].tabla=='Talla'){
-          
+          document.getElementById("div_sel_opciones").innerHTML="";
+          fillSelectMultipleFromArray(data[i].options, "div_sel_opciones",false);
         }else {
           optito="";
           data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });

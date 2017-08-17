@@ -36,9 +36,9 @@ $sku = array(
 $tablas_sku = Array(
   'Kayser_OITB'      => Array('bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
   'Marca'            => Array('bd'=>'mysql',                        'campo_sku'=>'U_Marca',                                                   'campo'=>'nombre'),
-  'SubDpto'          => Array('bd'=>'mysql',                        'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'SubDpto'          => Array('bd'=>'mysql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Dpto_Subdpto', 'nom_cod_rel'=>'Subdpto_id', 'nom_cod_padre_rel'=>'Dpto_codigo'),
   'Kayser_SEASON'    => Array('bd'=>'mssql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_APOLLO_SEASON', 'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Dpto_Prenda', 'nom_cod_rel'=>'Prenda_codigo', 'nom_cod_padre_rel'=>'Dpto_codigo'),
-  'Kayser_DIV'       => Array('bd'=>'mssql',                        'campo_sku'=>'U_APOLLO_DIV',    'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name'),
+  'Kayser_DIV'       => Array('bd'=>'mssql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_DIV',    'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Prenda_Categoria', 'nom_cod_rel'=>'Categoria_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
   'Presentacion'     => Array('bd'=>'mysql',                        'campo_sku'=>'U_FILA',          'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'Color'            => Array('bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',                                             'campo'=>'nombre'),
   'Talla'            => Array('bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',                                            'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
