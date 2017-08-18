@@ -34,20 +34,20 @@ $sku = array(
 );
 # ARRAY QUE CONTIENE DETALLES DE BDX, TABLAS, CAMPOS Y RELACIONES  SOBRE SKU
 $tablas_sku = Array(
-  'Kayser_OITB'      => Array('bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
-  'Marca'            => Array('bd'=>'mysql',                        'campo_sku'=>'U_Marca',                                                   'campo'=>'nombre'),
-  'SubDpto'          => Array('bd'=>'mysql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Dpto_Subdpto', 'nom_cod_rel'=>'Subdpto_id', 'nom_cod_padre_rel'=>'Dpto_codigo'),
-  'Kayser_SEASON'    => Array('bd'=>'mssql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_APOLLO_SEASON', 'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Dpto_Prenda', 'nom_cod_rel'=>'Prenda_codigo', 'nom_cod_padre_rel'=>'Dpto_codigo'),
-  'Kayser_DIV'       => Array('bd'=>'mssql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_DIV',    'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Prenda_Categoria', 'nom_cod_rel'=>'Categoria_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Presentacion'     => Array('bd'=>'mysql',                        'campo_sku'=>'U_FILA',          'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'Color'            => Array('bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',                                             'campo'=>'nombre'),
-  'Talla'            => Array('bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',                                            'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Copa'             => Array('bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',                                                  'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'FormaCopa'        => Array('bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',                                             'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Material'         => Array('bd'=>'mysql',                        'campo_sku'=>'U_MATERIAL',                                                'campo'=>'nombre'),
-  'TempPrenda'       => Array('bd'=>'mysql',                        'campo_sku'=>'U_EVD',                                                     'campo'=>'nombre'),
-  'TempCatalogo'     => Array('bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP',                                          'campo'=>'nombre'),
-  'GrupoUso'         => Array('bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',                                                  'campo'=>'nombre')
+  'Kayser_OITB'      => Array( 'alias'=> 'Dpto',        'bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
+  'Marca'            => Array( 'alias'=> 'Marca',       'bd'=>'mysql',                        'campo_sku'=>'U_Marca',                                                   'campo'=>'nombre'),
+  'Subdpto'          => Array( 'alias'=> 'Subdpto',     'bd'=>'mysql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Dpto_Subdpto', 'nom_cod_rel'=>'Subdpto_id', 'nom_cod_padre_rel'=>'Dpto_codigo'),
+  'Kayser_SEASON'    => Array( 'alias'=> 'Prenda',      'bd'=>'mssql', 'dep'=>'Subdpto',      'campo_sku'=>'U_APOLLO_SEASON', 'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Subdpto_Prenda', 'nom_cod_rel'=>'Prenda_codigo', 'nom_cod_padre_rel'=>'Subdpto_id'),
+  'Kayser_DIV'       => Array( 'alias'=> 'Categoria',   'bd'=>'mssql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_DIV',    'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Prenda_Categoria', 'nom_cod_rel'=>'Categoria_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Presentacion'     => Array( 'alias'=> 'Presentacion','bd'=>'mysql',                        'campo_sku'=>'U_FILA',          'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'Color'            => Array( 'alias'=> 'Color',       'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',                                             'campo'=>'nombre'),
+  'Talla'            => Array( 'alias'=> 'Talla',       'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',                                            'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Copa'             => Array( 'alias'=> 'Copa',        'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',                                                  'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'FormaCopa'        => Array( 'alias'=> 'Forma Copa',  'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',                                             'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Material'         => Array( 'alias'=> 'Material',    'bd'=>'mysql',                        'campo_sku'=>'U_MATERIAL',                                                'campo'=>'nombre'),
+  'TempPrenda'       => Array( 'alias'=> 'Temp.Prenda', 'bd'=>'mysql',                        'campo_sku'=>'U_EVD',                                                     'campo'=>'nombre'),
+  'TempCatalogo'     => Array( 'alias'=> 'Temp.Catalogo','bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP',                                          'campo'=>'nombre'),
+  'GrupoUso'         => Array( 'alias'=> 'GrupoUso',    'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',                                                  'campo'=>'nombre')
 );
 
 $array_grand_child=[];

@@ -23,10 +23,8 @@ $(document).ready(function() {
       }else { cargarCategoriaCrear(id_cat_after_click); }
     }
   });
-  $("#select_sku_prenda").change(function() {
-    cargarSelectsSku('Kayser_SEASON', $(this).val())
-    // console.log($(this).val());
-  });
+  $("#select_sku_subdpto").change(function() { cargarSelectsSku('Subdpto', $(this).val()) });
+  $("#select_sku_prenda").change(function() { cargarSelectsSku('Kayser_SEASON', $(this).val()) });
 });
 function cargarCategoriaCrear(id_cat) {
   $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
