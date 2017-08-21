@@ -2,7 +2,11 @@ var color;
 var id_cat_before_click,id_cat_after_click, id_cat_actual;
 var campos_llenos;
 $(document).ready(function() {
-  showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');
+  // showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');//esta funcion esta en otro archivo: modal.js
+  $(".dropdown-menu opcion_config").change(function() {
+    alert("vamos bien");
+    $("#div_crud_item").css('visibility','visible' );
+  });
   cargarCategoriaCrear("div_cat_dama");
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
@@ -60,30 +64,27 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     beforeSend : function () {
     },
     success : function(data) {
-      // console.log(parametros);
-      console.log(data);
-      var long_data=data.length;
-      if(parametros['opcion']=='cargar_selects_dependientes'){
-       recorrido=1;//para que no considere el primer elemento de la data obtenida de la api
-       for (var valor of data[0])
-         $("select[name='"+valor+"']").html("<option value=''></option>");//reseteamos las opciones a vacio
-      }
-      for (i=recorrido; i<long_data; i++) {
-        if(data[i].tabla=='Talla'){
-          document.getElementById("div_sel_opciones").innerHTML="";
-          fillSelectMultipleFromArray(data[i].options, "div_sel_opciones",false);
-        }else {
-          optito="";
-          data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
-          $("select[name='"+data[i].tabla+"']").html("<option value=''></option>"+ optito);
+      if(isset(data[error])){
+        console.log(data[error]);
+      }else {
+        console.log(data);
+        var long_data=data.length;
+        if(parametros['opcion']=='cargar_selects_dependientes'){
+         recorrido=1;//para que no considere el primer elemento de la data obtenida de la api
+         for (var valor of data[0])
+           $("select[name='"+valor+"']").html("<option value=''></option>");//reseteamos las opciones a vacio
+        }
+        for (i=recorrido; i<long_data; i++) {
+          if(data[i].tabla=='Talla'){
+            document.getElementById("div_sel_opciones").innerHTML="";
+            fillSelectMultipleFromArray(data[i].options, "div_sel_opciones",false);
+          }else {
+            optito="";
+            data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
+            $("select[name='"+data[i].tabla+"']").html("<option value=''></option>"+ optito);
+          }
         }
       }
-      // if(isset(data[error])){
-      //   console.log(data[error]);
-      // }else {
-      //   console.log(data);
-      // }
-      // console.log(data);
     },
     error: function() {
       console.log("error");

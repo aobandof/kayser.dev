@@ -1,11 +1,14 @@
 // $(document).ready(function() {
-//   $('#button_show_alert_saludo').click(function() { showModalAlert('Mensaje de Bienvenida','Hola, Binvenido a esta pagina','div_modal_saludo');} );
+//   alert("entro");
+//   $("#select_item_crud").change(function() {
+//     alert("vamos fine");
+//   });
 // });
 ///////  FUNCION QUE CREAR EL MODAL ALERT DINAMICAENTE //////////
 function showModalAlert(title,message,id_cont){
   var cont_modal = document.createElement('div');
   cont_modal.id=id_cont;
-  cont_modal.className="modal_alert_confirm";
+  cont_modal.className="modal modal_alert";
   var modal=document.createElement('div');
   modal.className="content_modal";
   // if(title==''){
@@ -19,7 +22,7 @@ function showModalAlert(title,message,id_cont){
   body_modal.innerHTML="<p>"+message+"</p>"
   modal.appendChild(body_modal);
   var cont_close=document.createElement('div');
-  cont_close.className="close_modal";
+  cont_close.className="botonera_modal";
   crear_boton('OK',cont_close,cont_modal);
   body_modal.appendChild(cont_close);
   cont_modal.appendChild(modal);
@@ -35,3 +38,5 @@ function crear_boton(texto,cont_añadir,contenedor_cerrar,retorno){ //tipo = si,
   });
   cont_añadir.appendChild(btn);
 }
+
+/***** FUNCIONES PARA EL MODAL CRUD ITEMS *******/

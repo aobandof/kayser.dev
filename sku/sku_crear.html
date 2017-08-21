@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="../shared/css/alert_confirm_pront_modal.css">
   <link rel="stylesheet" href="../shared/css/styles.css">
-  <link rel="stylesheet" href="../shared/css/modal.css">
   <link rel="stylesheet" href="../shared/css/sku.css">
   <link rel="stylesheet" href="../shared/css/controls.css">
+  <link rel="stylesheet" href="../shared/css/modal.css">
   <title>SKU / Articulos</title>
 </head>
 <body>
@@ -28,7 +28,14 @@
             <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/K.jpg" alt=""><span>Otro</span></div>
         </div>
         <div class="cont_config">
-          <img src="../shared/img/settings.png" alt="">
+          <div class="dropdown">
+            <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <div class="dropdown-menu opcion_config" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item opcion_config" href="#">Items</a>
+            <a class="dropdown-item opcion_config" href="#">Relaciones</a>
+            <a class="dropdown-item opcion_config" href="#">Prefijos</a>
+          </div>
+        </div>
         </div>
       </div>
         <div class="comp_crear_sku container_row">
@@ -152,6 +159,54 @@
           <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
         </div>
     </div>
+    <!-- COMPONENTE ITEM -->
+    <div class="modal modal_panel" id="div_crud_item">
+      <div class="content_modal">
+        <div class="header_modal">
+          <span>VENTANA DE EDICION DE SECCIONES</span>
+          <img src="../shared/img/close.png" class="close_modal" alt="">
+        </div>
+        <div class="body_modal">
+          <div class="comp_filters container_row">
+            <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
+            <select name="" id="select_item_crud" class="form-control">
+              <option></option>
+              <option value="Kayser_OITB">Departamentos</option><option value="Marca">Marcas</option><option value="Subdpto">Sub Departamentos</option>
+              <option value="Kayser_SEASON">Prendas</option><option value="">Categ. Prenda</option><option value="Kayser_DIV">Presentación</option>
+              <option value="Color">Colores</option><option value="Talla">Tallas</option><option value="Copa">Copas</option>
+              <option value="FormaCopa">Formas Copa</option><option value="Material">Materiales</option><option value="TempPrenda">Temp. Prenda</option>
+              <option value="TempCatalogo">Temp. Catalogo</option><option value="GrupoUso">Grupos Uso</option>
+            </select>
+          </div>
+          <div class="tabla_div" id="div_tabla_item">
+            <div class="thead_div">
+              <div class="row tr">
+                <div class="th col-2 col-lg-2">Codigo</div>
+                <div class="th col">Nombre</div>
+                <div class="th col-1 col-lg-1"></div>
+                <div class="th col-1 col-lg-1"></div>
+                <div class="th col-1 col-lg-1"></div>
+              </div>
+            </div>
+            <div class="tbody_div">
+              <div class="row tr">
+                <div class="td col-2 col-lg-2">ch1</div>
+                <div class="td col">Denominacion1</div>
+                <div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" class="icon_fila" id="img_fila_save"></div>
+                <div class="td col-1 col-lg-1"><img src="../shared/img/edit.png" alt="" class="icon_fila" id="ig_fila_edit"></div>
+                <div class="td col-1 col-lg-1"><img src="../shared/img/delete.png" alt="" class="icon_fila" id="ig_fila_delete"></div>
+              </div>
+            </div>
+            <div class="tfooter_div">
+              <button class="btn btn-primary btn_footer">Nuevo</button>
+              <button class="btn btn-primary btn_footer">Limpiar</button>
+              <button class="btn btn-primary btn_footer">Salir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN COMPONENTE ITEM -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
