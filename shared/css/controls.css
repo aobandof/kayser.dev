@@ -11,11 +11,8 @@ html,body {
   height: 100%;
   margin: 0px;
 }
-.cont_multiples_opciones {
-  /*display: inlin-block !important;*/
-  flex: 1 1 40%;
-  margin: 0em;
-  /*width: 20rem;*/
+.multiples_grupos_opciones {
+  flex: 1 1 76%;
   font-size: 0.8em;
 }
 .cont_sel_boton {
@@ -27,22 +24,21 @@ html,body {
   border-top-left-radius: 0.3em;
   align-items: center;
   margin-bottom: 0.1em;
-  background-color: rgba(77, 11, 150, 0.66);
-  color: white;
+  background-color: rgba(252, 249, 255, 1);
+  color: black;
 }
-
-#div_sel_opciones.collapse, #div_sel_opciones.collapsing {
-    width: 20rem;
-    background-color: white;
+.multiples_grupos_opciones>.collapse, .multiples_grupos_opciones>.collapsing {
+  width: 86% !important;
 }
-
 .cont_sel_opcion {
   display: flex;
-  justify-content: space-between;
+  width: 100%;
+  background-color: white;
 }
 .cont_familia {
+  flex: 0  0  7%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: baseline;
   padding: 0.3em 0.3em 0em 0.3em;
   margin-right: 0.2em;
@@ -50,10 +46,12 @@ html,body {
   border-bottom: 1px solid white;
 }
 .cont_tallas {
+  flex: 1 1 90%;
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: flex-start;
-  flex: 1 1 auto;
+  /*flex: 1 1 auto;*/
   padding: 0.3em 0.3em 0em 0.3em;
   border-bottom: 1px solid #c8c4be;
   border-right: 1px solid #c8c4be;

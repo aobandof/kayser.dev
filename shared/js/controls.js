@@ -18,7 +18,10 @@
 //     fillSelectMultipleFromArray(arr_obj_tallas, "div_sel_opciones",false);
 //   });
 // });
-function fillSelectMultipleFromArray(arr_item,id_div_options,show_item_name){
+function fillSelectOpciones(arr_item,id_div_otions){
+  
+}
+function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_name){
   arr_item.forEach(function(item,index){
     let div1=document.createElement('div');
     let div2=document.createElement('div');
@@ -53,7 +56,7 @@ function fillSelectMultipleFromArray(arr_item,id_div_options,show_item_name){
     }
   });
 }
-function fillSelectMultipleFromObjeto(obj_tallas,id_div_options,show_item_name){
+function fillSelectMultiplesGruposFromObjeto(obj_tallas,id_div_options,show_item_name){
   for (var index in obj_tallas) {
     let div1=document.createElement('div');
     let div2=document.createElement('div');

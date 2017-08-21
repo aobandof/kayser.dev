@@ -117,10 +117,10 @@ body, html {
 .cont_fila_crear_sku>div {
   display: flex;
   align-items: center;
-  flex: 1 1 50%; /** **/
+  flex: 1 1 50%;
 }
 .cont_fila_crear_sku>div>span {
-    flex: 1 1 15%;
+    flex: 0 1 25% !important;
     text-align: right;
     font-weight: bold;
     font-size: 0.8em;
@@ -141,11 +141,36 @@ body, html {
   font-family: "Verdana";
 }
 .cont_fila_crear_sku>div>input[type='text'], .cont_fila_crear_sku>div>select, .cont_fila_crear_sku>div>input[type='number'], .cont_fila_crear_sku>div>textarea {
-   flex: 1 1 40%;
+   flex: 1 1 45%;
    height: 2.4em !important;
    font-size: 0.8em;
    padding: 0.3em !important;
    font-family: "Verdana";
+}
+.full_fila {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 1em !important;
+}
+.full_fila>span {
+  flex: 0 1 13%;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.8em;
+}
+.full_fila>div {
+  flex: 1 1 90%;
+}
+
+#div_rel_skus {
+  border-radius: 5px;
+  border: 1px solid white;
+  width: 100%;
+  padding: 1rem;
+  -webkit-column-rule: white;
+  -moz-column-rule: white;
+  color: white;
 }
 
 .cont_botonera_inf {
@@ -176,6 +201,7 @@ body, html {
     padding-bottom: 0em !important;
   }
   .cont_fila_crear_sku>div>span { font-size: 0.55em; }
+  .full_fila>span { font-size: 0.55em; }
   .cont_fila_crear_sku>span { font-size: 0.6em; }
   .cont_fila_crear_sku { margin-top: 0.3em !important; }
   .cont_fila_crear_sku input[type='text'], .cont_fila_crear_sku select,

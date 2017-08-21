@@ -3,9 +3,20 @@ var id_cat_before_click,id_cat_after_click, id_cat_actual;
 var campos_llenos;
 $(document).ready(function() {
   // showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');//esta funcion esta en otro archivo: modal.js
-  $(".dropdown-menu opcion_config").change(function() {
-    alert("vamos bien");
+  $('#select_sku_color').selectpicker();
+  $(".opcion_config").click(function() {
     $("#div_crud_item").css('visibility','visible' );
+  });
+  $("#select_item_crud").change(function() {
+    $("#div_tabla_item>tbody_div").html('');
+    $("#div_tabla_item").css('visibility', 'visible');
+  });
+  $("#img_close_crud_item").click(function() {
+    /* Act on the event */
+    $("#select_item_crud").val("");
+    $("#div_crud_item").css('visibility','hidden');
+    $("#div_tabla_item>tbody_div").html('');
+    $("#div_tabla_item").css('visibility','hidden');
   });
   cargarCategoriaCrear("div_cat_dama");
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
@@ -64,8 +75,8 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     beforeSend : function () {
     },
     success : function(data) {
-      if(isset(data[error])){
-        console.log(data[error]);
+      if(data[0].error){
+        console.log(data[0].error);
       }else {
         console.log(data);
         var long_data=data.length;
@@ -76,8 +87,8 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
         }
         for (i=recorrido; i<long_data; i++) {
           if(data[i].tabla=='Talla'){
-            document.getElementById("div_sel_opciones").innerHTML="";
-            fillSelectMultipleFromArray(data[i].options, "div_sel_opciones",false);
+            document.getElementById("div_sel_grupo_opciones").innerHTML="";
+            fillSelectMultiplesGruposFromArray(data[i].options, "div_sel_grupo_opciones",false);
           }else {
             optito="";
             data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
