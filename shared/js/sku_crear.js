@@ -3,13 +3,14 @@ var id_cat_before_click,id_cat_after_click, id_cat_actual;
 var campos_llenos;
 $(document).ready(function() {
   // showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');//esta funcion esta en otro archivo: modal.js
-  $('#select_sku_color').selectpicker();
   $(".opcion_config").click(function() {
     $("#div_crud_item").css('visibility','visible' );
   });
   $("#select_item_crud").change(function() {
     $("#div_tabla_item>tbody_div").html('');
     $("#div_tabla_item").css('visibility', 'visible');
+    // console.log($(this).val());
+    cargarTablaSeccion($(this).val());
   });
   $("#img_close_crud_item").click(function() {
     /* Act on the event */
@@ -34,13 +35,18 @@ $(document).ready(function() {
           campos_llenos=0;
           document.getElementById("div_sel_opciones").innerHTML="";
           cargarCategoriaCrear(id_cat_after_click);
+          $("#select_sku_color").selectpicker("deselectAll");
         }
-      }else { cargarCategoriaCrear(id_cat_after_click); }
+      }else {
+        cargarCategoriaCrear(id_cat_after_click);
+        $("#select_sku_color").selectpicker("deselectAll");
+      }
     }
   });
   $("#select_sku_subdpto").change(function() { cargarSelectsSku('Subdpto', $(this).val()) });
   $("#select_sku_prenda").change(function() { cargarSelectsSku('Kayser_SEASON', $(this).val()) });
 });
+// FUNCION QUE MUESTRA EL PANEL CRUD SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
   $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
   id_cat_actual=id_cat;
@@ -68,7 +74,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   else
     var parametros = { 'opcion' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({
-    url: 'modelo_sku_crear.php',
+    url: 'sku_crear.php',
     type: 'post',
     dataType: 'json',
     data: parametros,
@@ -91,10 +97,46 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
             fillSelectMultiplesGruposFromArray(data[i].options, "div_sel_grupo_opciones",false);
           }else {
             optito="";
-            data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
-            $("select[name='"+data[i].tabla+"']").html("<option value=''></option>"+ optito);
+            if(data[i].tabla=='Color'){
+              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
+              $("select[name='"+data[i].tabla+"']").html(optito);
+              $('#select_sku_color').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            }else {
+              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
+              $("select[name='"+data[i].tabla+"']").html('<option value=""></option>'+optito);
+            }
           }
         }
+      }
+    },
+    error: function() {
+      console.log("error");
+    }
+  });
+}
+
+// FUNCION QUE CARGA LA TABLA SECCION CRUD EN EL POPAP (Dpto, Subdpto, Marca, Prenda, ...)
+function cargarTablaSeccion(tabla) {
+  var parametros = { 'opcion' : 'cargar_seccion', 'nom_tabla' :  tabla };
+  $.ajax({
+    url: 'sku_seccion_crud.php',
+    type: 'post',
+    dataType: 'json',
+    data: parametros,
+    beforeSend : function () {
+    },
+    success : function(data) {
+      if(!!data['error']){
+        console.log(data[0].error);
+      }else {
+        console.log(data);
+        // data.forEach(function(fila,index){
+        //   div_fila=documentCreateElement('div');
+        //   div_fila.className="row tr";
+        //   fila.forEach(function(valor,key){
+        //
+        //   });
+        // });
       }
     },
     error: function() {

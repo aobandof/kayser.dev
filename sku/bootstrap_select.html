@@ -15,21 +15,14 @@
   <title>Ejemplo de Select Bootsrap</title>
   <style type="text/css">
     #myselect {
-      width: 800px !important;
+      width: 10rem !important;
     }
   </style>
 </head>
 <body>
+    <button onclick="llenarOpciones()" class="btn btn-primary">LLENAR</button>
     <span class="">COLOR&nbsp</span>
     <select  id="myselect" name="myselect[]" data-live-search="true" title="Elija los Colores de la Prenda..." data-max-options="10" multiple>
-       <option value="1">red</option>
-       <option value="2">orange</option>
-       <option value="3">green</option>
-       <option value="4">pink</option>
-       <option value="1">white</option>
-       <option value="2">yellow</option>
-       <option value="3">green</option>
-       <option value="4">blue</option>
     </select>&nbsp&nbsp
     <button onclick="refrescarOpciones()" class="btn btn-warning">REFRESCAR</button>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -39,14 +32,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <!-- <script src="https://cdn.rawgit.com/infostreams/bootstrap-select/fd227d46de2afed300d97fd0962de80fa71afb3b/dist/js/bootstrap-select.min.js"></script> -->
     <script type="text/javascript">
-      $('#myselect').selectpicker({
-
-        // size: 6, /*aca no funca, pero se puede especificar en el control con: data-max-options="2"*/
-        // actionsBox: true, /*agregar opcion de seleccionar y deseleccionar todo*/
-        // liveSearch: true, /*Esto se declaró en el control*/
-        //style: 'btn-info',
-        style: 'btn-default fla'
-      });
+      function llenarOpciones(){
+        var op="";
+        op+='<option value="1">red</option>';
+        op+='<option value="2">orange</option>';
+        op+='<option value="3">green</option>';
+        op+='<option value="4">pink</option>';
+        op+='<option value="1">white</option>';
+        op+='<option value="2">yellow</option>';
+        op+='<option value="3">green</option>';
+        op+='<option value="4">blue</option>';
+        $("#myselect").html(op);
+        console.log(op);
+        $('#myselect').selectpicker({
+          // size: 6, /*aca no funca, pero se puede especificar en el control con: data-max-options="2"*/
+          // actionsBox: true, /*agregar opcion de seleccionar y deseleccionar todo*/
+          // liveSearch: true, /*Esto se declaró en el control*/
+          //style: 'btn-info',
+          style: 'btn-default fla'
+        });
+      }
       function refrescarOpciones(){
         $("#myselect").selectpicker("deselectAll"); //para deseleccionar las opciones
       }

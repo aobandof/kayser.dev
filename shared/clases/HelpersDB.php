@@ -65,7 +65,8 @@ function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // 
   $cadena=trim($cadena,",");
   return $cadena;
 }
-### FUNCION QUE RETORNA EL ID dadto el nombre de la tabla y el valor del campo nombre
+### FUNCION QUE RETORNA EL ID dado el nombre de la tabla y el valor del campo nombre
+### el campo se obtendrá de la $tablas_sku y será aquel que detalle el nombre del registro de la tabla
 function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que tienen nombre UNIQUE
   global $tablas_sku,$mysqli,$conector_mssql;
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
@@ -146,4 +147,6 @@ function addGrandChild($son){//funcion recursiva.
     }
   }
 }
+
+
 ?>

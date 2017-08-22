@@ -140,7 +140,8 @@ body, html {
   padding: 0.3em !important;
   font-family: "Verdana";
 }
-.cont_fila_crear_sku>div>input[type='text'], .cont_fila_crear_sku>div>select, .cont_fila_crear_sku>div>input[type='number'], .cont_fila_crear_sku>div>textarea {
+.cont_fila_crear_sku>div>input[type='text'], .cont_fila_crear_sku>div>select,
+.cont_fila_crear_sku>div>input[type='number'], .cont_fila_crear_sku>div>textarea {
    flex: 1 1 45%;
    height: 2.4em !important;
    font-size: 0.8em;
@@ -161,6 +162,17 @@ body, html {
 }
 .full_fila>div {
   flex: 1 1 90%;
+}
+.full_fila>div>.btn> {
+  line-height: .8rem !important;
+  padding: .3rem 1rem !important;
+}
+.full_fila>div>button>span {
+  font-size: 0.8em;
+  line-height:
+}
+.full_fila>div>div>ul>li>a {
+  font-size: 0.9em;
 }
 
 #div_rel_skus {
@@ -349,17 +361,8 @@ body, html {
 }
 
 /**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
-.show>.dropdown-menu {
-    /*display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-right: 20rem !important;
-    float: left;*/
-}
-.dropdown-menu {
+.cont_config .dropdown-menu {
   left: -5rem;
-  background-color: rgba(7, 41, 69, 0.94);
+  background-color: rgba(7, 41, 69, 0.94) !important;
 }
-.dropdown-menu>a {
-  color: yellow;
-}
+.cont_config .dropdown-menu>a { color: yellow; }

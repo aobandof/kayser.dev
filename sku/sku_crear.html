@@ -6,11 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="../shared/css/normalize.css">
-  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous"> -->
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.css"> -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
+  <link rel="stylesheet" href="../shared/css/bootstrap-select.css">
   <link rel="stylesheet" href="../shared/css/alert_confirm_pront_modal.css">
   <link rel="stylesheet" href="../shared/css/styles.css">
   <link rel="stylesheet" href="../shared/css/sku.css">
@@ -32,7 +32,7 @@
         </div>
         <div class="cont_config">
           <div class="dropdown">
-            <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="opcion_config dropdown-item" href="#">Items</a>
             <a class="opcion_config dropdown-item" href="#">Relaciones</a>
@@ -44,36 +44,20 @@
         <div class="comp_crear_sku container_row">
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">MARCA&nbsp</span><select name="Marca" id="select_marca" class="form-control"><!--<option value=""></option>--></select></div>
-              <div><span class="">SUBDPTO&nbsp</span><select name="Subdpto" id="select_sku_subdpto" class="form-control"><!--<option value=""></option>--></select></div>
+              <div><span class="">MARCA&nbsp</span><select name="Marca" id="select_marca" class="form-control"><option value=""></option></select></div>
+              <div><span class="">SUBDPTO&nbsp</span><select name="Subdpto" id="select_sku_subdpto" class="form-control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRENDA&nbsp</span><select name="Kayser_SEASON" id="select_sku_prenda" class="form-control"></select></div>
-              <div><span class="">CAT.PRENDA&nbsp</span><select name="Kayser_DIV" id="select_sku_categoria" class="form-control"></select></div>
+              <div><span class="">PRENDA&nbsp</span><select name="Kayser_SEASON" id="select_sku_prenda" class="form-control"><option value=""></option></select></div>
+              <div><span class="">CAT.PRENDA&nbsp</span><select name="Kayser_DIV" id="select_sku_categoria" class="form-control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRESENT.&nbsp</span><select name="Presentacion" id="select_sku_presentacion" class="form-control"></select></div>
-              <div><span class="">MATERIAL&nbsp</span><select name="Material" id="select_sku_material" class="form-control"></select></div>
+              <div><span class="">PRESENT.&nbsp</span><select name="Presentacion" id="select_sku_presentacion" class="form-control"><option value=""></option></select></div>
+              <div><span class="">MATERIAL&nbsp</span><select name="Material" id="select_sku_material" class="form-control"><option value=""></option></select></div>
             </div>
             <div class="full_fila">
                 <span class="">COLOR&nbsp</span>
-                <!-- <select class="selectpicker" data-live-search="true" multiple>
-                  <option data-tokens="ketchup mustard">Hot Dog, Fries and a Soda</option>
-                  <option data-tokens="mustard">Burger, Shake and a Smile</option>
-                  <option data-tokens="frosting">Sugar, Spice and all things nice</option>
-                </select> -->
-                <!-- <div class="multiples_opciones" id="div_multiples_opciones">
-                  <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_opciones"><span>&nbsp</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
-                  <div class="collapse" id="div_sel_opciones"></div>
-                </div> -->
-                <select name="Color" id="select_sku_color" class="form-control" multiple></select>
-                <!-- <select  id="select_sku_color" name="select_sku_color[]" multiple>
-                 <option value=""></option>
-                 <option value="1">red</option>
-                 <option value="2">orange</option>
-                 <option value="3">green</option>
-                 <option value="4">blue</option>
-                </select> -->
+                <select name="Color" id="select_sku_color" class="form-control" data-live-search="true" title="Elija los Colores de la Prenda..." multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
@@ -83,15 +67,15 @@
               </div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">COPA&nbsp</span><select name="Copa" id="select_sku_copa" class="form-control"></select></div>
-              <div><span class="">FORMA COPA.&nbsp</span><select name="FormaCopa" id="select_sku_fcopa" class="form-control"></select></div>
+              <div><span class="">COPA&nbsp</span><select name="Copa" id="select_sku_copa" class="form-control"><option value=""></option></select></div>
+              <div><span class="">FORMA COPA.&nbsp</span><select name="FormaCopa" id="select_sku_fcopa" class="form-control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">T.PRENDA&nbsp</span><select name="TempPrenda" id="select_sku_tprenda" class="form-control"></select></div>
+              <div><span class="">T.PRENDA&nbsp</span><select name="TempPrenda" id="select_sku_tprenda" class="form-control"><option value=""></option></select></div>
               <div><span class="">T.CATALOGO&nbsp</span><select name="TempCatalogo" id="select_sku_tcatalogo" class="form-control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">GRUPO USO&nbsp</span><select name="GrupoUso" id="select_sku_grupo_uso" class="form-control"><!--<option value=""></option>--></select></div>
+              <div><span class="">GRUPO USO&nbsp</span><select name="GrupoUso" id="select_sku_grupo_uso" class="form-control"><option value=""></option></select></div>
               <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control"></textarea></div>
             </div>
             <div class="cont_fila_crear_sku container_row">
@@ -125,7 +109,7 @@
             <select name="" id="select_item_crud" class="form-control">
               <option></option>
               <option value="Kayser_OITB">Departamentos</option><option value="Marca">Marcas</option><option value="Subdpto">Sub Departamentos</option>
-              <option value="Kayser_SEASON">Prendas</option><option value="">Categ. Prenda</option><option value="Kayser_DIV">Presentación</option>
+              <option value="Kayser_SEASON">Prendas</option><option value="Kayser_DIV">Categ. Prenda</option><option value="Presentacion">Presentación</option>
               <option value="Color">Colores</option><option value="Talla">Tallas</option><option value="Copa">Copas</option>
               <option value="FormaCopa">Formas Copa</option><option value="Material">Materiales</option><option value="TempPrenda">Temp. Prenda</option>
               <option value="TempCatalogo">Temp. Catalogo</option><option value="GrupoUso">Grupos Uso</option>
@@ -162,8 +146,8 @@
     <!-- FIN COMPONENTE ITEM -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script> -->
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <!-- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script type="text/javascript" src="../shared/js/modal.js"></script>
     <script type="text/javascript" src="../shared/js/controls.js"></script>
