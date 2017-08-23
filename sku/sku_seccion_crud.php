@@ -34,10 +34,13 @@ if($_POST['opcion']=="cargar_seccion"){
     if(!$registros=$mysqli->query($query)){
       $options[]=array('error'=> "error en consulta $query");
     }else {
-      // $arr_cabecera=$registros->fetch_fields();//cuando $mysqli es orientado a objetos, con este metodo se carga todo el array y no es necesario recorrerlo
-      // foreach ($arr_cabecera as $value)
-      //   $cabecera[]=$value;//['name'];
-      $cabecera[]=$registros->fetch_fields();
+      $arr_cabecera=$registros->fetch_fields();//cuando $mysqli es orientado a objetos, con este metodo se carga todo el array y no es necesario recorrerlo
+      foreach ($arr_cabecera as $value){
+        foreach ($value as $key => $value) {
+          if($key=='name')
+            $cabecera[]=$value;
+        }
+      }
       while($reg=$registros->fetch_assoc())
         $filas[]=$reg;
     }
@@ -45,7 +48,7 @@ if($_POST['opcion']=="cargar_seccion"){
     if(!$registros=sqlsrv_query($conector_mssql, $query, array(), array("Scrollable"=>'static'))) {
       $options[]=array('error'=> "error en consulta $query");
     }else {
-      foreach( sqlsrv_field_metadata( $registros) as $fieldMetadata ) {
+      foreach( sqlsrv_field_metadata( $registros) as $fieldMetadata )
         $cabecera[]=$fieldMetadata['Name'];
       while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC))
         $filas[]=$reg;

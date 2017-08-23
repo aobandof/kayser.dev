@@ -117,6 +117,11 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
 
 // FUNCION QUE CARGA LA TABLA SECCION CRUD EN EL POPAP (Dpto, Subdpto, Marca, Prenda, ...)
 function cargarTablaSeccion(tabla) {
+  //INICIALMENTE REMOVEMOS LAS CELDAS DE LA CABCERA Y LAS FILAS DE LA TABLA EXISTENTES
+  fila_head=document.getElementById('div_head_tr')
+  while (fila_head.firstChild) { fila_head.removeChild(fila_head.firstChild); }
+  body=document.getElementById('div_tbody');
+  while (body.firstChild) { body.removeChild(body.firstChild); }
   var parametros = { 'opcion' : 'cargar_seccion', 'nom_tabla' :  tabla };
   $.ajax({
     url: 'sku_seccion_crud.php',
@@ -130,13 +135,48 @@ function cargarTablaSeccion(tabla) {
         console.log(data[0].error);
       }else {
         console.log(data);
-        // data.forEach(function(fila,index){
-        //   div_fila=documentCreateElement('div');
-        //   div_fila.className="row tr";
-        //   fila.forEach(function(valor,key){
-        //
-        //   });
-        // });
+        console.log(data.cabeceras[0]);
+        //creamos las celdas para las columnas
+        data.cabeceras.forEach(function(item,index){
+          div_celda=document.createElement('div');
+          if(item=="Nombre")
+            div_celda.className="th col";
+          else
+            div_celda.className="th col-1 col-lg-1";
+          div_celda.innerHTML=item;
+          fila_head.appendChild(div_celda);
+        });
+        fila_head.insertAdjacentHTML('beforeend','<div class="th col-1 col-lg-1"></div><div class="th col-1 col-lg-1"></div><div class="th col-1 col-lg-1"></div><div class="">&nbsp&nbsp&nbsp</div>')
+        //ahora crearemos las filas con celdas para el tbody_div
+        data.filas.forEach(function(item,index){
+          div_fila=document.createElement('div');
+          div_fila.className="row tr";
+          for (var index in item ) {
+            div_celda=document.createElement('div');
+            if(index=="Nombre")
+              div_celda.className="td col";
+            else
+              div_celda.className="td col-1 col-lg-1";
+            div_celda.innerHTML=item[index];
+            div_fila.appendChild(div_celda);
+          }
+          !!item['Codigo']? codigo=item['Codigo'] : codigo=item['Nombre'];
+          celdas_img='<div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" disabled class="icon_fila icon_save" id="img_save_'+codigo+'"></div>';
+          celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/edit.png" alt="" class="icon_fila icon_edit" id="img_edit_'+codigo+'"></div>';
+          celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/delete.png" alt="" class="icon_fila icon_delete" id="img_delete_'+codigo+'"></div>';
+          div_fila.insertAdjacentHTML('beforeend',celdas_img);
+          body.appendChild(div_fila);
+        })
+        // *** Deshabilitamos los iconos save ***/
+        document.querySelectorAll('.icon_save').forEach(elemento => elemento.classList.toggle("disabled"));
+        // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
+        document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
+          this.
+          caja_text=document.createElement('input')
+        });
+        document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
+          alert(this.id);
+        });
       }
     },
     error: function() {

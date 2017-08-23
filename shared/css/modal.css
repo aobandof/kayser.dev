@@ -76,7 +76,7 @@ body, html {
   padding: 1rem;
 }
 
-/****** ESTILOS PARA EL MIODAL PANEL *****/
+/****** ESTILOS PARA EL MODAL PANEL *****/
 .modal_panel {
   background-color: rgba(1, 26, 52, 0.61);
   top: 0;
@@ -92,6 +92,8 @@ body, html {
 .modal_panel .header_modal {
   background-color: rgba(12, 33, 65, 0.67);
   color: rgb(254, 249, 249);
+  padding: 1rem !important;
+  flex: 0 1 5%;
 }
 .modal_panel .body_modal {
   align-items: center;
@@ -105,16 +107,24 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 1rem !important;
+  /*padding: 1rem !important;*/
+  margin: 1.5rem !important;
 }
 
 /**** ESTILOS PARA TABLA DIV ****/
 .tabla_div {
   width: 90%;
   visibility: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .tabla_div>.thead_div>.row {
   color: white;
+}
+.tabla_div>.tbody_div {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  flex: 1 1 auto;
 }
 .tabla_div .th {
   background-color: rgba(4, 59, 105, 0.92);
@@ -137,6 +147,8 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 100%;
+  flex: 1 1 auto;
+  padding: 1.5rem;
 }
 .tabla_div>.tfooter_div>button {
   margin: 1rem .7rem;
@@ -150,9 +162,18 @@ body, html {
 }
 .icon_fila:hover {
   cursor: pointer;
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  -webkit-transform: scale(1.2);
+  transform: scale(1.2);
 }
+.icon_fila.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.icon_fila.disabled:hover {
+  -webkit-transform: none;
+  transform: none;
+}
+
  /*** MEDIAS QUERYS ***/
  @media (max-width: 750px) /*and (max-heigth: 160px) */ {
   .tabla_div .th { font-size: .8rem; }
