@@ -141,6 +141,9 @@ body, html {
   font-size: .8rem;
   font-weight: bold;
 }
+.tabla_div .tr.editing {
+  background-color: white;
+}
 .tabla_div>.tfooter_div {
   /*background-color: rgba(4, 59, 105, 0.92);*/
   display: flex;

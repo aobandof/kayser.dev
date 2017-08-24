@@ -134,8 +134,8 @@ function cargarTablaSeccion(tabla) {
       if(!!data['error']){
         console.log(data[0].error);
       }else {
-        console.log(data);
-        console.log(data.cabeceras[0]);
+        // console.log(data);
+        // console.log(data.cabeceras[0]);
         //creamos las celdas para las columnas
         data.cabeceras.forEach(function(item,index){
           div_celda=document.createElement('div');
@@ -153,10 +153,12 @@ function cargarTablaSeccion(tabla) {
           div_fila.className="row tr";
           for (var index in item ) {
             div_celda=document.createElement('div');
-            if(index=="Nombre")
-              div_celda.className="td col";
+            if(index=="Codigo")
+              div_celda.className="td col-1 col-lg-1 col not_editable";
+            else if(index=="Nombre")
+              div_celda.className="td col editable";
             else
-              div_celda.className="td col-1 col-lg-1";
+              div_celda.className="td col-1 col-lg-1 editable";
             div_celda.innerHTML=item[index];
             div_fila.appendChild(div_celda);
           }
@@ -171,8 +173,15 @@ function cargarTablaSeccion(tabla) {
         document.querySelectorAll('.icon_save').forEach(elemento => elemento.classList.toggle("disabled"));
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
-          this.
-          caja_text=document.createElement('input')
+          this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
+          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+            contenido_original=el.innerHTML;
+            el.innerHTML="<input type='text' value='"+contenido_original+"'/>";// ver que otros atributos agregar
+          });
+          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled a la imagen
+          this.parentNode.previousSibling.firstChild.onclick = function(){
+            console.log("vamos bien");
+          }
         });
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
           alert(this.id);

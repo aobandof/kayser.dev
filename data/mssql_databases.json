@@ -40,6 +40,14 @@
     "Kayser_OITM" : {
       "database" : "Stock",
       "descripcion" : "Registros con todos los SKUs e información"
+    },
+    "OPLN" : {
+      "database" : "SBO_KAYSER",
+      "descripcion" : " Lista con los precios a nuestros distintos clientes"
+    },
+    "ITM1" : {
+      "database" : "SBO_KAYSER",
+      "descripcion" : "Registro de Precios de SKUs por tipo de cliente (obtenido de OPLN). Tabla con mucha informacion (nSKUs X nCLIENTES)"
     }
   },
   "VISTAS" : {
