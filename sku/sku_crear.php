@@ -9,7 +9,7 @@ error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si q
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 $conexion_mssql=new MssqlConexion($MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
 $conector_mssql=$conexion_mssql->obtener_conector();
-$mysqli=new mysqli($MYSQL['dev']['host'], $MYSQL['dev']['user'], $MYSQL['dev']['pass'], 'kayser_sku');
+$mysqli=new mysqli($MYSQL['dev']['host'], $MYSQL['dev']['user'], $MYSQL['dev']['pass'], 'kayser_articulos');
 $mysqli->set_charset("utf8");
 $mysqli->query("SET collation_connection = utf8_bin");
 if(!$conector_mssql){

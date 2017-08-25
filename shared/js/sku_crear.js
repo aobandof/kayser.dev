@@ -134,7 +134,7 @@ function cargarTablaSeccion(tabla) {
       if(!!data['error']){
         console.log(data[0].error);
       }else {
-        // console.log(data);
+        console.log(data);
         // console.log(data.cabeceras[0]);
         //creamos las celdas para las columnas
         data.cabeceras.forEach(function(item,index){
@@ -151,6 +151,7 @@ function cargarTablaSeccion(tabla) {
         data.filas.forEach(function(item,index){
           div_fila=document.createElement('div');
           div_fila.className="row tr";
+          !!item['Codigo']? codigo=item['Codigo'] : codigo=item['Nombre'];
           for (var index in item ) {
             div_celda=document.createElement('div');
             if(index=="Codigo")
@@ -162,19 +163,22 @@ function cargarTablaSeccion(tabla) {
             div_celda.innerHTML=item[index];
             div_fila.appendChild(div_celda);
           }
-          !!item['Codigo']? codigo=item['Codigo'] : codigo=item['Nombre'];
-          celdas_img='<div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" disabled class="icon_fila icon_save" id="img_save_'+codigo+'"></div>';
-          celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/edit.png" alt="" class="icon_fila icon_edit" id="img_edit_'+codigo+'"></div>';
+
+          celdas_img='<div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" disabled class="icon_fila icon_save disabled" id="img_save_'+codigo+'"></div>';
+          celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/edit.png" alt="" class="icon_fila icon_edit" id="img_edit_'+codigo+'"><img src="../shared/img/edit_cancel.png" alt="" class="icon_fila icon_edit_cancel invisible" id=""></div>';
           celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/delete.png" alt="" class="icon_fila icon_delete" id="img_delete_'+codigo+'"></div>';
           div_fila.insertAdjacentHTML('beforeend',celdas_img);
           body.appendChild(div_fila);
         })
-        // *** Deshabilitamos los iconos save ***/
-        document.querySelectorAll('.icon_save').forEach(elemento => elemento.classList.toggle("disabled"));
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
+        // EVENTO PARA CLICK icon_edit
+        contenido_original=[];
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
+          this.classList.toggle("invisible");//ocultamos el icon_edit
+          this.nextSibling.classList.toggle("invisible");//mostramos el icon_edit_cancel
           this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+
             contenido_original=el.innerHTML;
             el.innerHTML="<input type='text' value='"+contenido_original+"'/>";// ver que otros atributos agregar
           });
