@@ -1,0 +1,3 @@
+<?php
+$saludo="hola mundo";
+?>

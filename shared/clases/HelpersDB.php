@@ -7,7 +7,7 @@ $MSSQL = array(
 );
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MYSQL Y SUS CREDENCIALES
 $MYSQL = array(
-  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '' ),
+  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '0013821' ),
   'prod' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '12qwaszx' )
 );
 
@@ -35,19 +35,19 @@ $sku = array(
 # ARRAY QUE CONTIENE DETALLES DE BDX, TABLAS, CAMPOS Y RELACIONES  SOBRE SKU
 $tablas_sku = Array(
   'Kayser_OITB'      => Array( 'bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
-  'Marca'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_Marca',                                                   'campo'=>'nombre'),
+  'Marca'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_Marca',         'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'Subdpto'          => Array( 'bd'=>'mysql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Dpto_Subdpto', 'nom_cod_rel'=>'Subdpto_id', 'nom_cod_padre_rel'=>'Dpto_codigo'),
   'Kayser_SEASON'    => Array( 'bd'=>'mssql', 'dep'=>'Subdpto',      'campo_sku'=>'U_APOLLO_SEASON', 'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Subdpto_Prenda', 'nom_cod_rel'=>'Prenda_codigo', 'nom_cod_padre_rel'=>'Subdpto_id'),
   'Kayser_DIV'       => Array( 'bd'=>'mssql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_DIV',    'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Prenda_Categoria', 'nom_cod_rel'=>'Categoria_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
   'Presentacion'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_FILA',          'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'Color'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',                                             'campo'=>'nombre'),
-  'Talla'            => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',                                            'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Copa'             => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',                                                  'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'FormaCopa'        => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',                                             'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Material'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_MATERIAL',                                                'campo'=>'nombre'),
-  'TempPrenda'       => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_EVD',                                                     'campo'=>'nombre'),
-  'TempCatalogo'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP',                                          'campo'=>'nombre'),
-  'GrupoUso'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',                                                  'campo'=>'nombre')
+  'Color'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'Talla'            => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',  /*'id'=>'id',         'type_id'=>'INT',*/ 'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Copa'             => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'FormaCopa'        => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Material'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_MATERIAL',      'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'TempPrenda'       => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_EVD',           'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'TempCatalogo'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'GrupoUso'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre')
 );
 
 $array_grand_child=[];

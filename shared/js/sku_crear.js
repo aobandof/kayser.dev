@@ -135,7 +135,6 @@ function cargarTablaSeccion(tabla) {
         console.log(data[0].error);
       }else {
         console.log(data);
-        // console.log(data.cabeceras[0]);
         //creamos las celdas para las columnas
         data.cabeceras.forEach(function(item,index){
           div_celda=document.createElement('div');
@@ -147,6 +146,7 @@ function cargarTablaSeccion(tabla) {
           fila_head.appendChild(div_celda);
         });
         fila_head.insertAdjacentHTML('beforeend','<div class="th col-1 col-lg-1"></div><div class="th col-1 col-lg-1"></div><div class="th col-1 col-lg-1"></div><div class="">&nbsp&nbsp&nbsp</div>')
+
         //ahora crearemos las filas con celdas para el tbody_div
         data.filas.forEach(function(item,index){
           div_fila=document.createElement('div');
@@ -160,10 +160,10 @@ function cargarTablaSeccion(tabla) {
               div_celda.className="td col editable";
             else
               div_celda.className="td col-1 col-lg-1 editable";
+            div_celda.id=codigo+'_'+index;
             div_celda.innerHTML=item[index];
             div_fila.appendChild(div_celda);
           }
-
           celdas_img='<div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" disabled class="icon_fila icon_save disabled" id="img_save_'+codigo+'"></div>';
           celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/edit.png" alt="" class="icon_fila icon_edit" id="img_edit_'+codigo+'"><img src="../shared/img/edit_cancel.png" alt="" class="icon_fila icon_edit_cancel invisible" id=""></div>';
           celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/delete.png" alt="" class="icon_fila icon_delete" id="img_delete_'+codigo+'"></div>';
@@ -171,21 +171,31 @@ function cargarTablaSeccion(tabla) {
           body.appendChild(div_fila);
         })
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
-        // EVENTO PARA CLICK icon_edit
         contenido_original=[];
+        document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");
+        document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
+          console.log("Aca llamaremos a la funcion GUARDAR O ACTUALIZAR pasandole el id de la fila que se esta editando o creando");
+        });
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
           this.classList.toggle("invisible");//ocultamos el icon_edit
           this.nextSibling.classList.toggle("invisible");//mostramos el icon_edit_cancel
           this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-
-            contenido_original=el.innerHTML;
-            el.innerHTML="<input type='text' value='"+contenido_original+"'/>";// ver que otros atributos agregar
+            contenido_original[el.id]=el.innerHTML;
+            el.innerHTML="<input type='text' value='"+contenido_original[el.id]+"'/>";// ver que otros atributos agregar
           });
-          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled a la imagen
-          this.parentNode.previousSibling.firstChild.onclick = function(){
-            console.log("vamos bien");
-          }
+          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled a la imagen save
+          this.parentNode.previousSibling.firstChild.style.pointerEvents = "auto"; // activamos el evento click
+        });
+        document.querySelectorAll(".icon_edit_cancel").forEach(elemento => elemento.onclick = function() {
+          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){
+            el.innerHTML=contenido_original[el.id]
+          });
+          this.parentNode.parentNode.classList.toggle('editing');
+          this.classList.toggle("invisible");
+          this.previousSibling.classList.remove('invisible');
+          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // agregamos clas disabled a la imagen save
+          this.parentNode.previousSibling.firstChild.style.pointerEvents = "none"; // bloqueamos el evento click
         });
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
           alert(this.id);

@@ -85,7 +85,7 @@ body, html {
   visibility: hidden;
 }
 .modal_panel>.content_modal {
-  width: 70%;
+  width: 85%;
   height: 95%;
   /*box-shadow: 0.1rem 0.1rem 0.05rem rgba(1, 26, 52, 0.61), 0.2rem 0.2rem 0.3rem rgb(187, 238, 228);*/
 }
@@ -143,6 +143,12 @@ body, html {
 }
 .tabla_div .tr.editing {
   background-color: white;
+}
+.tabla_div .td>input {
+  width: 90%;
+  text-align: center;
+  background-color: rgba(172, 242, 230, 0.91);
+
 }
 .tabla_div>.tfooter_div {
   /*background-color: rgba(4, 59, 105, 0.92);*/
