@@ -175,6 +175,19 @@ function cargarTablaSeccion(tabla) {
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
           console.log("Aca llamaremos a la funcion GUARDAR O ACTUALIZAR pasandole el id de la fila que se esta editando o creando");
+          this.style.pointerEvents = "none";
+          this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
+          this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
+          /*************************************************/
+          /**** ACA FALTA VALIDAR Y SI SE HACE QUERY, ACTUALIZAR EN LAS CELDAS DIV, LOS NUEVOS VALORES ***/
+          /*************************************************/
+
+          this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
+          getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
+            ele.style.pointerEvents = "auto";
+            ele.classList.toggle("disabled");
+          })
+
         });
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
           this.classList.toggle("invisible");//ocultamos el icon_edit
@@ -182,20 +195,28 @@ function cargarTablaSeccion(tabla) {
           this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
             contenido_original[el.id]=el.innerHTML;
-            el.innerHTML="<input type='text' value='"+contenido_original[el.id]+"'/>";// ver que otros atributos agregar
+            el.innerHTML="<input type='text' value='"+contenido_original[el.id]+"'/>";
           });
-          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled a la imagen save
-          this.parentNode.previousSibling.firstChild.style.pointerEvents = "auto"; // activamos el evento click
+          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled al icon_save
+          this.parentNode.previousSibling.firstChild.style.pointerEvents = "auto"; // activamos el evento click en el icon_save
+          getAllNodesEqualType(this,2,'.icon_edit, .icon_delete').forEach(function(ele) {
+            ele.style.pointerEvents = "none";
+            ele.classList.toggle("disabled");
+          })
         });
         document.querySelectorAll(".icon_edit_cancel").forEach(elemento => elemento.onclick = function() {
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){
-            el.innerHTML=contenido_original[el.id]
+            el.innerHTML=contenido_original[el.id];
           });
-          this.parentNode.parentNode.classList.toggle('editing');
-          this.classList.toggle("invisible");
-          this.previousSibling.classList.remove('invisible');
-          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // agregamos clas disabled a la imagen save
-          this.parentNode.previousSibling.firstChild.style.pointerEvents = "none"; // bloqueamos el evento click
+          this.parentNode.parentNode.classList.toggle('editing'); // le quitamos a la fila la clase qe le cambia el background-color
+          this.classList.toggle("invisible"); // ocultamos este icon_edit_cancel
+          this.previousSibling.classList.toggle('invisible'); // mostramos icon_edit
+          this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // agregamos clas disabled del icon_save
+          this.parentNode.previousSibling.firstChild.style.pointerEvents = "none"; // bloqueamos el evento click del icon_save
+          getAllNodesEqualType(this.previousSibling,2,'.icon_edit, .icon_delete').forEach(function(ele) {
+            ele.style.pointerEvents = "auto";
+            ele.classList.toggle("disabled");
+          })
         });
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
           alert(this.id);
@@ -206,4 +227,31 @@ function cargarTablaSeccion(tabla) {
       console.log("error");
     }
   });
+}
+
+// **** FUNCIION GENERAL ****
+//FUNCION QUE OBTIENE TODOS LOS HERMANOS, pasandode los siguientes parametros:
+//  nodo actual: El nodo capturado, de quien hay que encontrar sus hijos
+//  alcance:     Hasta que padres buscamos,
+//  selector: es para limitar la busqueda, seleccionando solo las que los selectores indiquen
+//  si alcance=0, buscaremos hasta los hermanos, si alcance=1 buscaremos hermanos y primos hermanos, alcance=2 buscaremos, hermanos, primos hermanos y primos lejanos; y asi sucesivamentes
+function getAllNodesEqualType(nodo,alcance,selector){
+  let cousinsList=[];
+  if(!selector || selector==''){
+    selector=nodo.tagName;
+  }
+  if (alcance==0)
+    cousins=nodo.parentNode.querySelectorAll(selector);
+  else if(alcance==1)
+    cousins=nodo.parentNode.parentNode.querySelectorAll(selector);
+  else if (alcance==2)
+    cousins=nodo.parentNode.parentNode.parentNode.querySelectorAll(selector);
+  else
+    cousins=nodo.parentNode.parentNode.parentNode.parentNode.querySelectorAll(selector);
+  cousins.forEach( function(cous) {
+    if(cous!==nodo)
+      cousinsList.push(cous)
+  })
+  console.log(cousinsList);
+  return cousinsList;
 }

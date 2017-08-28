@@ -20,6 +20,9 @@
     "WMSTEK_KAYSER_INTERFAZ" : {
       "server" : "192.168.0.17"
     },
+    "WMSTEK_KAYSER" : {
+      "server" : "192.168.0.17"
+    },
     "Stock" : {
       "server" : "192.168.0.13"
     }
@@ -40,6 +43,10 @@
     "Kayser_OITM" : {
       "database" : "Stock",
       "descripcion" : "Registros con todos los SKUs e información"
+    },
+    "Kayser_ITM1" : {
+      "database" : "Stock",
+      "descripcion" : "Registro de Precios de SKUs por tipo de cliente. Tabla con mucha informacion (nSKUs X nCLIENTES)"
     },
     "OPLN" : {
       "database" : "SBO_KAYSER",

@@ -3,11 +3,11 @@
 $MSSQL = array(
   '13' => array( 'host' => '192.168.0.13', 'user' => 'sa', 'pass' => 'kayser@dm1n' ) ,
   '17' => array( 'host' => '192.168.0.17', 'user' => 'wms', 'pass' => 'pjc3l1' ),
-  '33' => array( 'host' => '192.168.0.13', 'user' => 'sa', 'pass' => 'sa' )
+  '33' => array( 'host' => '192.168.0.33', 'user' => 'sa', 'pass' => 'sa' )
 );
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MYSQL Y SUS CREDENCIALES
 $MYSQL = array(
-  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '0013821' ),
+  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '' ),
   'prod' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '12qwaszx' )
 );
 

@@ -2,10 +2,12 @@
 require_once "../shared/clases/config.php";
 require_once "../shared/clases/MssqlConexion.php";
 // $conexion=new MssqlConexion('192.168.0.33','sa','sa','SBO_KAYSER');
-$conexion=new MssqlConexion('192.168.0.17','wms','pjc3l1','WMSTEK_KAYSER_INTERFAZ');
-$conexion_precios=new MssqlConexion('192.168.0.33','sa','sa','SBO_KAYSER');
-$conector=$conexion->obtener_conector();
-$conector_precios=$conexion_precios->obtener_conector();
+$conexion_stock=new MssqlConexion('192.168.0.17','wms','pjc3l1','WMSTEK_KAYSER');
+$conexion_linea=new MssqlConexion('192.168.0.13','sa','kayser@dm1n','Stock');
+// CUANDO SE APRUEBE LO DEL PRECIO, CAMBIAR LA CONSULTA HACIENDO UN INER ENTRE TABLAS
+
+$conector_stock=$conexion_stock->obtener_conector();
+$conector_linea=$conexion_linea->obtener_conector();
 // if(!$conector){
 //   echo "NO SE ESTABLECIO LA CONEXION CON LA VISTA WMSTEK_KAYSER_INTERFAZ <br>";
 //   if( (sqlsrv_errors() ) != null) {
@@ -19,46 +21,58 @@ $conector_precios=$conexion_precios->obtener_conector();
 //   }
 // }
 $contenido="";
-$query="select * from MM_StockVrWeb";
-$query_precios="select ItemCode,ROUND((Price*1.19),0) as precio from ITM1 where PriceList=15 and ROUND((Price*1.19),0)>300";//"select * from ITM1 where PriceList=15";
-// $arr_skus=[];
-$arr_precios=[];
+$query_stock="select IdArticulo, CAST(SUM(Cantidad)-30 AS int) as Cant from Existencia where idAlmacen = '001' AND IdUbicacion LIKE '01%' GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo";
+$query_linea="select ItemCode from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode";
+$query_precio_detalle="SELECT  ItemCode, CAST(ROUND((Price*1.19),0) AS int) as DETALLE FROM Kayser_ITM1  where PriceList=15 AND ROUND((Price*1.19),0) IS NOT NULL and ROUND((Price*1.19),0)>1 ORDER BY ROUND((Price*1.19),0) ASC";
+$query_precio_promotoras="SELECT	ItemCode, CAST(ROUND((Price*1.19),0) AS int) AS PROMOTORAS FROM Kayser_ITM1  where PriceList=17 AND ROUND((Price*1.19),0) IS NOT NULL and ROUND((Price*1.19),0)>1 ORDER BY ROUND((Price*1.19),0) ASC";
 
 /*** PRIMERO CARGAMOS LA LISTA DE PRECIOS A UN ARRAY CON CODIGO Y PRECIO NETO * 1.19 ****/
-$registros_precios=sqlsrv_query($conector_precios, $query_precios);
-while ($reg = sqlsrv_fetch_array($registros_precios, SQLSRV_FETCH_ASSOC)) {
-  // $arr_skus[]=$reg['ItemCode'];
-  $arr_precios[]=$reg;
+$arr_stock=[];
+$arr_precio_detalle=[];
+$arr_precio_promotoras=[];
+
+$registros_stock=sqlsrv_query($conector_stock, $query_stock);
+while ($reg = sqlsrv_fetch_array($registros_stock, SQLSRV_FETCH_ASSOC)) {
+  $key=$reg['IdArticulo'];
+  if($reg['Cant']>1000)
+    $reg['Cant']=1000;
+  $arr_stock[$key]=$reg['Cant'];
 }
-// var_dump($arr_precios);
+$registros_linea=sqlsrv_query($conector_linea, $query_precio_detalle);
+while ($reg = sqlsrv_fetch_array($registros_linea, SQLSRV_FETCH_ASSOC)) {
+  $key=$reg['ItemCode'];
+  $arr_precio_detalle[$key]=$reg['DETALLE'];
+}
+$registros_linea=sqlsrv_query($conector_linea, $query_precio_promotoras);
+while ($reg = sqlsrv_fetch_array($registros_linea, SQLSRV_FETCH_ASSOC)) {
+  $key=$reg['ItemCode'];
+  $arr_precio_promotoras[$key]=$reg['PROMOTORAS'];
+}
 /***** consultamos a la base de datos y cargamos el string con el contenido delimitato por ";" *****/
-$registros=sqlsrv_query($conector, $query);
-if( $registros === false ) {
-    if( (sqlsrv_errors() ) != null) {
-        exit("Error en la consulta a la base de datos)");
-    }
+$registros_linea=sqlsrv_query($conector_linea, $query_linea);
+if( $registros_linea === false ) {
+    if( (sqlsrv_errors() ) != null) { exit("Error en la consulta a la base de datos)"); }
 }
 else {
   $file = fopen("plantilla_stock_kayser.csv", 'w'); //abrimos el archivo vacio o lleno, pero con "w" sobreescribimos
   //OBTENEMOS LOS NOMBRES DE CAMPOS Y LO CARGAMOS EN LA PRIMERA LINEA DEL ARCHIVO
-  //fputcsv($file, sqlsrv_field_metadata($registros));
-  $columna="";
+  $columna="IdArticulo;Cantidad;Precio Detalle;Precio Promotoras;\r\n";
   $cantidad=0;
-  foreach( sqlsrv_field_metadata( $registros) as $fieldMetadata ) {
-      if($fieldMetadata['Name']!='NomArticulo')
-         $columna.=$fieldMetadata['Name'].";";
-  }
-  $columna.="PRECIO DETALLE".";\r\n";
-  // $columna=$columna."\r\n";
   fwrite($file, $columna);
   $indice=-1;
-  while ($reg = sqlsrv_fetch_array($registros, SQLSRV_FETCH_ASSOC)) {
-      $cant_reporte=((int)$reg['Cantidad'])-50;
-      if($cant_reporte > 0) {
-        if($cant_reporte>1000)
-          $cant_reporte=1000;
-        $indice=array_search($reg['IdArticulo'], array_column($arr_precios,'ItemCode'));
-        $fila=$reg['IdArticulo'].";".$cant_reporte.";".(int)$arr_precios[$indice]['precio'].";";
+  while ($reg = sqlsrv_fetch_array($registros_linea, SQLSRV_FETCH_ASSOC)) {
+      $fila="";
+      $sku=$reg['ItemCode'];
+      if(isset($arr_stock[$sku])){
+        $fila=$fila.$sku.";".$arr_stock[$sku].";";
+        if(isset($arr_precio_detalle[$sku]))
+          $fila=$fila.$arr_precio_detalle[$sku].";";
+        else
+          $fila=$fila.";";# code...
+        if(isset($arr_precio_promotoras[$sku]))
+          $fila=$fila.$arr_precio_promotoras[$sku].";";
+        else
+          $fila=$fila.";";# code...
         $fila=$fila."\r\n";
         fwrite($file, $fila);
       }
