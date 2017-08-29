@@ -172,12 +172,37 @@ function cargarTablaSeccion(tabla) {
         })
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
         contenido_original=[];
+        contenido_actualizar=[];
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
           console.log("Aca llamaremos a la funcion GUARDAR O ACTUALIZAR pasandole el id de la fila que se esta editando o creando");
           this.style.pointerEvents = "none";
+          this.classList.toggle("disabled");
           this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
           this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
+          if(confirm("¿Desea realmente continuar modificando?")) {
+            this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+              contenido_actualizar[el.id]=el.firstChild.value;
+            });
+            if(contenido_actualizar['Nombre']!=""){
+              if(updateRegistry(contenido_actualizar)){
+                alert("Datos actualizados correctamente");
+                contenido_original=contenido_actualizar
+              }else {
+                alert("No se pudo Actualizar");
+              }
+              this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+                el.innerHTML=contenido_original[el.id];
+              });
+              getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
+                ele.style.pointerEvents = "auto";
+                ele.classList.toggle("disabled");
+              }) ;
+            }else {
+              alert('Campo Nombre o Codigo son necesarios para actualizar');
+            }
+          }
+
           /*************************************************/
           /**** ACA FALTA VALIDAR Y SI SE HACE QUERY, ACTUALIZAR EN LAS CELDAS DIV, LOS NUEVOS VALORES ***/
           /*************************************************/
@@ -254,4 +279,8 @@ function getAllNodesEqualType(nodo,alcance,selector){
   })
   console.log(cousinsList);
   return cousinsList;
+}
+
+function updateRegistry(arr_contenido){
+  return true;
 }

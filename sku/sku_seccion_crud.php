@@ -6,18 +6,18 @@ require_once("../shared/clases/inflector.php");
 require_once("../shared/clases/campos.php");
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
-$conexion_mssql=new MssqlConexion($MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$conector_mssql=$conexion_mssql->obtener_conector();
+///$conexion_mssql=new MssqlConexion($MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+///$conector_mssql=$conexion_mssql->obtener_conector();
 $mysqli=new mysqli($MYSQL['dev']['host'], $MYSQL['dev']['user'], $MYSQL['dev']['pass'], 'kayser_articulos');
 $mysqli->set_charset("utf8");
 $mysqli->query("SET collation_connection = utf8_bin");
 $data=[];
-if(!$conector_mssql){
-   if(sqlsrv_errors()!=null) {
-       cargarErrores();
-       exit;
-   }
-}
+///if(!$conector_mssql){
+///   if(sqlsrv_errors()!=null) {
+///       cargarErrores();
+///       exit;
+///   }
+///}
 if($_POST['opcion']=="cargar_seccion"){
   $filas=[];
   $cabecera=[];
