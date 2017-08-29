@@ -174,54 +174,60 @@ function cargarTablaSeccion(tabla) {
         contenido_original=[];
         contenido_actualizar=[];
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");
+        // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
-          console.log("Aca llamaremos a la funcion GUARDAR O ACTUALIZAR pasandole el id de la fila que se esta editando o creando");
+          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+            keycita=(el.id).slice((el.id).indexOf("_")+1);
+            contenido_actualizar[keycita]=el.firstChild.value;
+          });
+          console.log("contenido_actualizar obtenido de las cajas: ");
+          console.log(contenido_actualizar);
+          if(contenido_actualizar['Nombre']!=""){
+            if(confirm("¿Desea realmente continuar modificando?")) {
+              if(updateRegistry(contenido_actualizar)){
+                for (var index in contenido_actualizar)
+                  contenido_original[index]=contenido_actualizar[index];
+                alert("Datos actualizados correctamente");
+              }else {
+                alert("No se pudo Actualizar");
+              }
+            }
+          }
+          else {
+            alert('Campo Nombre o Codigo son necesarios para actualizar');
+          }
+          console.log("contenido_original:");
+          console.log(contenido_original);
           this.style.pointerEvents = "none";
           this.classList.toggle("disabled");
           this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
           this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
-          if(confirm("¿Desea realmente continuar modificando?")) {
-            this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-              contenido_actualizar[el.id]=el.firstChild.value;
-            });
-            if(contenido_actualizar['Nombre']!=""){
-              if(updateRegistry(contenido_actualizar)){
-                alert("Datos actualizados correctamente");
-                contenido_original=contenido_actualizar
-              }else {
-                alert("No se pudo Actualizar");
-              }
-              this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-                el.innerHTML=contenido_original[el.id];
-              });
-              getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
-                ele.style.pointerEvents = "auto";
-                ele.classList.toggle("disabled");
-              }) ;
-            }else {
-              alert('Campo Nombre o Codigo son necesarios para actualizar');
-            }
-          }
-
-          /*************************************************/
-          /**** ACA FALTA VALIDAR Y SI SE HACE QUERY, ACTUALIZAR EN LAS CELDAS DIV, LOS NUEVOS VALORES ***/
-          /*************************************************/
-
-          this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
+          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+            keycita=(el.id).slice((el.id).indexOf("_")+1);
+            el.innerHTML=contenido_original[keycita];
+          });
+          contenido_original.length=0;
+          contenido_actualizar.length=0;
           getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
             ele.style.pointerEvents = "auto";
             ele.classList.toggle("disabled");
-          })
-
+          }) ;
+          this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
         });
+        // ###################   EVENTO CLICK PARA LOS ICON_EDIT ##############################
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
+          contenido_original.length=0;
+          contenido_actualizar.length=0;
           this.classList.toggle("invisible");//ocultamos el icon_edit
           this.nextSibling.classList.toggle("invisible");//mostramos el icon_edit_cancel
           this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-            contenido_original[el.id]=el.innerHTML;
-            el.innerHTML="<input type='text' value='"+contenido_original[el.id]+"'/>";
+            keycita=(el.id).slice((el.id).indexOf("_")+1);
+            contenido_original[keycita]=el.innerHTML;
+            el.innerHTML="<input type='text' value='"+contenido_original[keycita]+"'/>";
           });
+          console.log("contenido original, despues de activar la edicion:");
+          console.log(contenido_original);
           this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled al icon_save
           this.parentNode.previousSibling.firstChild.style.pointerEvents = "auto"; // activamos el evento click en el icon_save
           getAllNodesEqualType(this,2,'.icon_edit, .icon_delete').forEach(function(ele) {
@@ -229,9 +235,11 @@ function cargarTablaSeccion(tabla) {
             ele.classList.toggle("disabled");
           })
         });
+        // ###################   EVENTO CLICK PARA LOS ICON_EDIT_CANCEL ########################
         document.querySelectorAll(".icon_edit_cancel").forEach(elemento => elemento.onclick = function() {
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){
-            el.innerHTML=contenido_original[el.id];
+            keycita=(el.id).slice((el.id).indexOf("_")+1)
+            el.innerHTML=contenido_original[keycita];
           });
           this.parentNode.parentNode.classList.toggle('editing'); // le quitamos a la fila la clase qe le cambia el background-color
           this.classList.toggle("invisible"); // ocultamos este icon_edit_cancel
@@ -243,9 +251,48 @@ function cargarTablaSeccion(tabla) {
             ele.classList.toggle("disabled");
           })
         });
+        // ###################   EVENTO CLICK PARA LOS ICON_DELETE ##############################
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
-          alert(this.id);
+          codigo=(this.id).slice(11);
+          if(confirm("DESEA REALMENTE ELIMINAR ESTE REGISTRO")){
+            if(deleteRegistry(codigo)){
+              alert("REGISTRO ELIMINADO EXITOSAMENTE!")
+              fila=this.parentNode.parentNode;
+              // console.log(fila);
+              document.getElementById("div_tbody").removeChild(fila);
+            }
+            else {
+                alert("No se pudo Eliminar");
+            }
+          }
         });
+        // ###################   EVENTO CLICK PARA LOS BUTTON_NUEVO ##############################
+        document.getElementById("button_nuevo_seccion").onclick = function(){
+          // console.log("aca agregaremos un nuevo elemento");
+          body=document.getElementById("div_tbody");
+          fila_modelo=document.createElement("div")
+          fila_modelo.className="row tr";
+          !!data.cabeceras['Codigo']? codigo=data.cabeceras['Codigo'] : codigo=data.cabeceras['Nombre'];
+          (data.cabeceras).forEach(function(item,index){
+            div_celda=document.createElement("div");
+            if(item=="Codigo")
+              div_celda.className="td col-1 col-lg-1 col not_editable";
+            else {
+              if(item=="Nombre")
+                div_celda.className="td col editable";
+              else
+                div_celda.className="td col-1 col-lg-1 editable";
+              div_celda.innerHTML="<input type='text' value=''/>";
+            }
+            div_celda.id='N_'+item;
+            fila_modelo.appendChild(div_celda);
+          })
+          celdas_img='<div class="td col-1 col-lg-1"><img src="../shared/img/save.png" alt="" class="icon_fila icon_save" id="img_save_N"></div>';
+          celdas_img+='<div class="td col-1 col-lg-1"></div>';
+          celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/cancel.ico" alt="" class="icon_fila" id="img_cancel_N"></div>';
+          fila_modelo.insertAdjacentHTML('beforeend',celdas_img);
+          body.insertBefore(fila_modelo,body.firstChild);
+        }
       }
     },
     error: function() {
@@ -277,10 +324,13 @@ function getAllNodesEqualType(nodo,alcance,selector){
     if(cous!==nodo)
       cousinsList.push(cous)
   })
-  console.log(cousinsList);
+  // console.log(cousinsList);
   return cousinsList;
 }
 
 function updateRegistry(arr_contenido){
+  return true;
+}
+function deleteRegistry(cod_registro){
   return true;
 }

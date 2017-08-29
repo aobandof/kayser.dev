@@ -7,7 +7,7 @@ $MSSQL = array(
 );
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MYSQL Y SUS CREDENCIALES
 $MYSQL = array(
-  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '0013821' ),
+  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '' ),
   'prod' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '12qwaszx' )
 );
 
