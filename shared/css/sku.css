@@ -209,8 +209,8 @@ body, html {
     /*background-color: yellow;*/
   }
   .comp_crear_sku .container_column {
-    padding-top: 0.5em !important;
     padding-bottom: 0em !important;
+    padding-top: 0.5em !important;
   }
   .cont_fila_crear_sku>div>span { font-size: 0.55em; }
   .full_fila>span { font-size: 0.55em; }
@@ -363,6 +363,117 @@ body, html {
 /**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
 .cont_config .dropdown-menu {
   left: -5rem;
-  background-color: rgba(7, 41, 69, 0.94) !important;
+  background-color: rgba(144, 245, 176, 0.36);
 }
 .cont_config .dropdown-menu>a { color: yellow; }
+
+/****** ESTILOS PARA SKU_CONSULTAR ********/
+div {
+  /*border: 1px solid black !important;*/
+}
+#div_cont_sku_consultar {
+  height: 100%;
+  width: 100%;
+}
+#div_cont_sku_consultar>div:nth-child(1) {
+  flex: 0 1 10%;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: rgba(6, 133, 41, 0.79);
+}
+#div_cont_sku_consultar>div:nth-child(1)>div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: .2rem;
+  background-color: rgba(4, 74, 63, 0.85);
+  padding: .5rem;
+}
+#div_cont_sku_consultar>div:nth-child(1) span {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+#div_cont_sku_consultar>div:nth-child(1) * {
+  margin: .5rem;
+}
+#div_cont_sku_consultar>div:nth-child(2) {
+  flex: 0 1 90%;
+  width: 100%;
+  padding: .2rem 0rem !important;
+}
+.item_consulta_sku {
+  display: flex;
+  margin: .2rem .2rem;
+  flex: 0 1 8%;
+}
+.item_consulta_sku>.titulo_fila {
+  background-color: rgba(7, 150, 47, 0.84);
+  color: white;
+  font-size: 1.3rem;
+  font-weight: bold;
+  flex: 0 0 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: .3rem;
+  border-bottom-left-radius: .3rem;
+}
+.item_consulta_sku>div:nth-child(2){
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
+  background-color: rgba(220, 240, 236, 1);
+}
+#div_cont_ventas {
+  flex: 0 1 12%;
+}
+#div_cont_ventas>div:nth-child(2)>div {
+  flex: 0 1 23%;
+  margin: .5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item_consulta_sku .label, .item_consulta_sku .reporte_valor, .label_fila {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.item_consulta_sku .label {
+  flex: 0 1 10%;
+}
+#div_cont_ventas>div:nth-child(2)>div>* {
+  flex: 0 1 40%;
+}
+#div_cont_ventas .reporte_valor {
+  margin-left: 0rem;
+}
+.item_consulta_sku .reporte_valor {
+  background-color: rgb(226, 244, 188);
+  flex: 0 1 35%;
+  margin-left: 1rem;
+  border-radius: .2rem;
+  border: 1px solid rgb(20, 143, 36);
+  font-size: 1rem;
+  font-weight: bold;
+  height: 60%;
+}
+.item_consulta_sku select {
+  flex: 0 1 30%;
+}
+
+
+@media (max-width: 750px) {
+  .item_consulta_sku .label, .item_consulta_sku .reporte_valor {
+    font-size: .8rem;
+  }
+  .item_consulta_sku>.titulo_fila {
+    font-size: 1rem;
+  }
+}

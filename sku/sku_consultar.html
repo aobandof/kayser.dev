@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,88 +6,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="../shared/css/normalize.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="../shared/css/bootstrap-select.css">
   <link rel="stylesheet" href="../shared/css/styles.css">
   <link rel="stylesheet" href="../shared/css/sku.css">
+  <link rel="stylesheet" href="../shared/css/controls.css">
+  <link rel="stylesheet" href="../shared/css/modal.css">
   <title>SKU / Articulos</title>
 </head>
 <body>
-    <div class="cont_general">
-      <!-- <div class="cont_titulo"><span>Ventas, Facturas y Notas de Credito</span></div> -->
-        <div class="cont_botonera">
-            <!-- <div class="cont_filtro">
-                <span>Articulo / SKU:</span>
-                <select name="item" id="select_item" class="input_filtro form-control">
-                    <option value=""></option>
-                    <option value="articulo">ARTICULO</option>
-                    <option value="sku">SKU</option>
-                </select>
-            </div> -->
-            <div class="cont_filtro">
-                <span>Descripción:</span>
-                <input type="text" name="nombre" class="input_filtro form-control" id="txt_item_name" value="">
-            </div>
-            <div class="cont_filtro">
-                <span><!--<input type="checkbox" name="" value="" class="">-->Dpto:</span>
-                <select name="grupo" id="select_grupo" class="input_filtro form-control">
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="cont_filtro">
-                <span>SubDpto:</span>
-                <select name="sub_grupo" id="select_sub_grupo" class="input_filtro form-control">
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="cont_filtro">
-                <span>Prenda:</span>
-                <select name="sub_sub_grupo" id="select_sub_sub_grupo" class="input_filtro form-control">
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="cont_filtro">
-                <span>Prenda:</span>
-                <select name="prenda" id="select_prenda" class="input_filtro form-control">
-                    <option value=""></option>
-                </select>
-            </div>
-
-            <div class="cont_filtro" id="div_filtro_sku">
-                <img src="../shared/img/play_azul.png" alt="Filtrar" class="img-responsive" id="img_filtrar">
-            </div>
-        </div><!--Fin Div Cont_botonera -->
-        <div id="div_cargando">
-            <img src="../shared/img/progress.gif" alt="Cargando...">
+    <div class="container_column" id="div_cont_sku_consultar">
+        <div class="container_row">
+          <div>
+            <span>SKU: </span>
+            <input type="text"  class="form-control" placeholder="Código SKU">
+            <button class="btn btn-success">Buscar</button>
+          </div>
         </div>
-        <div class="cont_contenido">
-            <div class="cont_tabla table-responsive">
-                <table id="table_sku" class="table table-bordered table-condensed" >
-                    <thead>
-                        <tr class="campos">
-                            <th>CODIGO</th><th>DESCRIPCION</th><th>DPTO</th><th>SUBDPTO</th><th>PRENDA</th>
-                            <th>PRENDA</th><th>CATEG.</th><th>MARCA</th><th>MATERIAL</th><th>BARCODE</th>
-                        </tr>
-                    </thead>
-                    <tbody class="" id="tbody_sku">
-                    </tbody>
-                </table>
+        <div class="container_column">
+          <div id="div_cont_precios" class="item_consulta_sku">
+            <div class="titulo_fila">Precio</div>
+            <div>
+              <span class="label">Cliente</span>
+              <select name="" class="form-control"></select>
+              <span class="reporte_valor">&nbsp</span>
             </div>
+          </div>
+          <div id="div_cont_stock" class="item_consulta_sku">
+            <div class="titulo_fila">Stock</div>
+            <div>
+              <span class="label">Estado</span>
+              <select name="" class="form-control"></select>
+              <span class="reporte_valor">&nbsp</span>
+            </div>
+          </div>
+          <div id="div_cont_orden_compra" class="item_consulta_sku">
+            <div class="titulo_fila">O. Compra</div>
+            <div>
+              <!-- <span class="label">Estado</span>
+              <select name="" class="form-control"></select>
+              <span class="reporte_valor">&nbsp</span> -->
+            </div>
+          </div>
+          <div id="div_cont_pedidos" class="item_consulta_sku">
+            <div class="titulo_fila">Pedidos</div>
+            <div>
+              <!-- <span class="label">Estado</span>
+              <select name="" class="form-control"></select>
+              <span class="reporte_valor">&nbsp</span> -->
+            </div>
+          </div>
+          <div id="div_cont_ventas" class="item_consulta_sku">
+            <div class="titulo_fila">Ventas</div>
+            <div>
+                <div>
+                  <span class="label_fila">Periodo</span>
+                  <select name="" class="form-control">
+                    <option value="cualquier">Cualquier fecha</option>
+                    <option value="hoy">Hoy Día</option>
+                    <option value="semana">Última Semana</option>
+                    <option value="mes">Último Mes</option>
+                    <option value="anio">Último Año</option>
+                    <option value="intervalo">Intervalo Personalizado</option>
+                  </select>
+                </div>
+                <div>
+                  <span class="label_fila">Cliente</span>
+                  <select name="" class="form-control"></select>
+                </div>
+                <div>
+                  <span class="label_fila">Tiendas</span>
+                  <select name="" class="form-control"></select>
+                </div>
+                <div>
+                  <span class="label_fila">&nbsp</span>
+                  <span class="reporte_valor">&nbsp</span>
+                </div>
+            </div>
+          </div>
         </div>
     </div>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js" ></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.1.1/js/responsive.bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <!-- <script src="https://cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script> -->
-    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
-    <!-- <script type="text/javascript" src="../shared/js/bootbox.min.js" ></script> -->
-    <script type="text/javascript" src="../shared/js/sku_filtros.js" ></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="../shared/js/modal.js"></script>
+    <script type="text/javascript" src="../shared/js/controls.js"></script>
+    <script type="text/javascript" src="../shared/js/sku_consultar.js"></script>
 </body>
 </html>
