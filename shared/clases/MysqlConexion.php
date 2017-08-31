@@ -11,5 +11,5 @@ class MysqlConexion{
     public function desconectar() {
         mysqli_close($this->con);
     }
- }  
+ }
 ?>
