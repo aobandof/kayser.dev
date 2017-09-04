@@ -27,12 +27,21 @@ class DBConnection {
   }
   public function select($query){
     $arr_export=[];
-    $registros=$this->_connection->query($query);
-    if(!$registros)
-      return false;
-    else
-      while($reg=$registros->fetch_assoc())
-        $arr_export[]=$reg;
+    if($this->_driver=="sqlsrv"){
+      if(!$registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>'static'))) {
+        return false;
+      }else {
+        while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC))
+          $arr_export[]=$reg;
+      }
+    }else if ($this->_driver=="mysql"){
+      //$registros=$this->_connection->query($query);
+      if(!$registros=$this->_connection->query($query))
+        return false;
+      else
+        while($reg=$registros->fetch_assoc())
+          $arr_export[]=$reg;
+    }
     return $arr_export;
   }
   public function insert($query){

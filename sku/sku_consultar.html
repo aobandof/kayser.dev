@@ -20,31 +20,31 @@
         <div class="container_row">
           <div>
             <span>SKU: </span>
-            <input type="text"  class="form-control" placeholder="Código SKU">
-            <button class="btn btn-success">Buscar</button>
+            <input type="text"  class="form-control" placeholder="" id="text_buscar_sku_consultar" value="10.142">
+            <button class="btn btn-success" id="button_buscar_sku_consultar">Buscar</button>
           </div>
         </div>
         <div class="container_column">
           <div id="div_cont_precios" class="item_consulta_sku">
             <div class="titulo_fila">Precio</div>
             <div>
-              <span class="label">Cliente</span>
-              <select name="" class="form-control">
+              <span class="label">Cliente:</span>
+              <select name="" class="form-control" id="select_cliente_sku_consultar">
                 <option value="15">Detalle</option>
                 <option value="17">Promotoras</option>
               </select>
-              <span class="reporte_valor">&nbsp</span>
+              <span class="reporte_valor" id="span_precio_sku"></span>
             </div>
           </div>
           <div id="div_cont_stock" class="item_consulta_sku">
             <div class="titulo_fila">Stock</div>
             <div>
-              <span class="label">Estado</span>
+              <span class="label">Estado:</span>
               <select name="" class="form-control">
                 <option value="">Disponible</option>
-                <option value="Total"></option>
+                <option value="">Total</option>
               </select>
-              <span class="reporte_valor">&nbsp</span>
+              <span class="reporte_valor" id="span_stock_sku">&nbsp</span>
             </div>
           </div>
           <div id="div_cont_orden_compra" class="item_consulta_sku">
@@ -67,9 +67,9 @@
             <div class="titulo_fila">Ventas</div>
             <div>
                 <div>
-                  <span class="label_fila">Periodo</span>
+                  <span class="label_fila">Periodo:</span>
                   <select name="" class="form-control">
-                    <option value="cualquier">Cualquier fecha</option>
+                    <option value="all">Cualquier fecha</option>
                     <option value="hoy">Hoy Día</option>
                     <option value="semana">Última Semana</option>
                     <option value="mes">Último Mes</option>
@@ -78,19 +78,19 @@
                   </select>
                 </div>
                 <div>
-                  <span class="label_fila">Cliente</span>
+                  <span class="label_fila">Cliente:</span>
                   <select name="" class="form-control">
                     <option value="15">Detalle</option>
                     <option value="17">Promotoras</option>
                   </select>
                 </div>
                 <div>
-                  <span class="label_fila">Tiendas</span>
-                  <select name="" class="form-control"></select>
+                  <span class="label_fila">Tienda:</span>
+                  <select name="" class="form-control" id="select_tiendas_sku_consultar"></select>
                 </div>
                 <div>
-                  <span class="label_fila">&nbsp</span>
-                  <span class="reporte_valor">&nbsp</span>
+                  <span><button type="" name="" id="button_show_ventas_sku_consultar" class="btn btn-primary">Ver Venta</button></span>
+                  <span class="reporte_valor" id="span_venta_sku">&nbsp</span>
                 </div>
             </div>
           </div>

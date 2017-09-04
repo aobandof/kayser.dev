@@ -376,7 +376,7 @@ div {
   width: 100%;
 }
 #div_cont_sku_consultar>div:nth-child(1) {
-  flex: 0 1 10%;
+  flex: 0 1 12%;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -388,7 +388,8 @@ div {
   align-items: center;
   border-radius: .2rem;
   background-color: rgba(4, 74, 63, 0.85);
-  padding: .5rem;
+  padding: .3rem;
+  flex: 0 1 auto;
 }
 #div_cont_sku_consultar>div:nth-child(1) span {
   color: white;
@@ -407,6 +408,11 @@ div {
   display: flex;
   margin: .2rem .2rem;
   flex: 0 1 8%;
+}
+.item_consulta_sku span { /** para que los span alinien al centro su texto **/
+  display: flex !important;
+  justify-content: center;
+  align-items: center !important;
 }
 .item_consulta_sku>.titulo_fila {
   background-color: rgba(7, 150, 47, 0.84);
@@ -430,33 +436,32 @@ div {
   background-color: rgba(220, 240, 236, 1);
 }
 #div_cont_ventas {
-  flex: 0 1 12%;
+  flex: 0 1 15%;
 }
 #div_cont_ventas>div:nth-child(2)>div {
-  flex: 0 1 23%;
+  flex: 0 1 20%;
   margin: .5rem;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-
 .item_consulta_sku .label, .item_consulta_sku .reporte_valor, .label_fila {
   font-size: 1.2rem;
   font-weight: bold;
 }
-.item_consulta_sku .label {
-  flex: 0 1 10%;
-}
+
 #div_cont_ventas>div:nth-child(2)>div>* {
-  flex: 0 1 40%;
-}
-#div_cont_ventas .reporte_valor {
-  margin-left: 0rem;
+  flex: 0 0 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: .2rem;
+
 }
 .item_consulta_sku .reporte_valor {
   background-color: rgb(226, 244, 188);
-  flex: 0 1 35%;
+  flex: 0 1 25%;
   margin-left: 1rem;
   border-radius: .2rem;
   border: 1px solid rgb(20, 143, 36);
@@ -470,10 +475,11 @@ div {
 
 
 @media (max-width: 750px) {
-  .item_consulta_sku .label, .item_consulta_sku .reporte_valor {
-    font-size: .8rem;
+  .item_consulta_sku .label, .item_consulta_sku .reporte_valor, .item_consulta_sku .label_fila,
+  .item_consulta_sku button, .item_consulta_sku select {
+    font-size: .75rem;
   }
   .item_consulta_sku>.titulo_fila {
-    font-size: 1rem;
+    font-size: .8rem;
   }
 }
