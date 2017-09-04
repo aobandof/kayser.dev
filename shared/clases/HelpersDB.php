@@ -32,6 +32,7 @@ $sku = array(
   "Categoria_codigo"   =>  "ItmsGrpCod",
   "Producto_codigo"    =>  "U_APOLLO_SEASON"
 );
+
 # ARRAY QUE CONTIENE DETALLES DE BDX, TABLAS, CAMPOS Y RELACIONES  SOBRE SKU
 $tablas_sku = Array(
   'Kayser_OITB'      => Array( 'bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),

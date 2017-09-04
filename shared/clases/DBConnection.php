@@ -27,13 +27,12 @@ class DBConnection {
   }
   public function select($query){
     $arr_export=[];
-    echo $query;
     $registros=$this->_connection->query($query);
     if(!$registros)
       return false;
-      else
-        while($reg=$registros->fetch_assoc())
-          $arr_export[]=$reg;
+    else
+      while($reg=$registros->fetch_assoc())
+        $arr_export[]=$reg;
     return $arr_export;
   }
   public function insert($query){
