@@ -28,21 +28,28 @@ class DBConnection {
   public function select($query){
     $arr_export=[];
     if($this->_driver=="sqlsrv"){
-      if(!$registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>'static'))) {
+      $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
+      if($registros===false){
         return false;
       }else {
-        while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC))
-          $arr_export[]=$reg;
+        if(sqlsrv_num_rows($registros)>0)
+          while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC))
+            $arr_export[]=$reg;
+        else
+          return 0;
       }
-    }else if ($this->_driver=="mysql"){
-      //$registros=$this->_connection->query($query);
-      if(!$registros=$this->_connection->query($query))
+    }else if ($this->_driver=="mysql") {
+      $registros=$this->_connection->query($query);
+      if($registros===false)
         return false;
       else
         while($reg=$registros->fetch_assoc())
           $arr_export[]=$reg;
     }
-    return $arr_export;
+    if(count($arr_export)==0) // consulta vacia
+      return 0;
+    else
+      return $arr_export;
   }
   public function insert($query){
 

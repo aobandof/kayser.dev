@@ -40,9 +40,9 @@
             <div class="titulo_fila">Stock</div>
             <div>
               <span class="label">Estado:</span>
-              <select name="" class="form-control">
-                <option value="">Disponible</option>
-                <option value="">Total</option>
+              <select name="" class="form-control" id="select_estado_sku_consultar">
+                <option value="disponible">Disponible</option>
+                <option value="total">Total</option>
               </select>
               <span class="reporte_valor" id="span_stock_sku">&nbsp</span>
             </div>
@@ -50,17 +50,11 @@
           <div id="div_cont_orden_compra" class="item_consulta_sku">
             <div class="titulo_fila">O. Compra</div>
             <div>
-              <!-- <span class="label">Estado</span>
-              <select name="" class="form-control"></select>
-              <span class="reporte_valor">&nbsp</span> -->
             </div>
           </div>
           <div id="div_cont_pedidos" class="item_consulta_sku">
             <div class="titulo_fila">Pedidos</div>
             <div>
-              <!-- <span class="label">Estado</span>
-              <select name="" class="form-control"></select>
-              <span class="reporte_valor">&nbsp</span> -->
             </div>
           </div>
           <div id="div_cont_ventas" class="item_consulta_sku">
@@ -68,7 +62,7 @@
             <div>
                 <div>
                   <span class="label_fila">Periodo:</span>
-                  <select name="" class="form-control">
+                  <select name="" class="form-control sel_for_venta" id="select_periodo_sku_consultar">
                     <option value="all">Cualquier fecha</option>
                     <option value="hoy">Hoy Día</option>
                     <option value="semana">Última Semana</option>
@@ -79,21 +73,27 @@
                 </div>
                 <div>
                   <span class="label_fila">Cliente:</span>
-                  <select name="" class="form-control">
+                  <select name="" class="form-control sel_for_venta" id="select_cliente_venta">
                     <option value="15">Detalle</option>
                     <option value="17">Promotoras</option>
                   </select>
                 </div>
                 <div>
                   <span class="label_fila">Tienda:</span>
-                  <select name="" class="form-control" id="select_tiendas_sku_consultar"></select>
+                  <select name="" class="form-control sel_for_venta" id="select_tiendas_sku_consultar"></select>
                 </div>
                 <div>
-                  <span><button type="" name="" id="button_show_ventas_sku_consultar" class="btn btn-primary">Ver Venta</button></span>
+                  <span class="label_fila">&nbsp</span>
                   <span class="reporte_valor" id="span_venta_sku">&nbsp</span>
                 </div>
             </div>
           </div>
+          <div id="div_cont_detalle" class="item_con{
+
+}sulta_sku">
+
+          </div>
+
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>

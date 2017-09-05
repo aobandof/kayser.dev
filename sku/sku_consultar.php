@@ -15,29 +15,39 @@ if($existe_error_conexion){
   exit;
 }
 $sku=$_POST['sku'];
-//##################   CARGA EN DATA EL ARRAY CON el STOCK del Articulo o SKU buscado ########################
-if(isset($_POST['stock'])){ // SI LA VISTA SOLICITO consulta_stock
-  if($_POST['stock']=='disponible') // STOCK DISPONIBLE
-    $query_stock="SELECT IdArticulo, CAST(SUM(Cantidad) AS int) as Cant from Existencia where idAlmacen = '001' AND IdUbicacion LIKE '01%' AND IdArticulo LIKE '$sku%' GROUP BY IdArticulo ORDER BY IdArticulo";
-  else// STOCK TOTAL MENOS FALLADOS
-    $query_stock="SELECT IdArticulo, CAST(SUM(Cantidad) AS int) as Cant from Existencia where idAlmacen = '001' AND IdUbicacion NOT LIKE 'FALLA%' AND IdUbicacion LIKE '01%' AND IdArticulo LIKE '$sku%' GROUP BY IdArticulo ORDER BY IdArticulo";
-  if(!$arr_stock=$sqlsrv_17_wmstek->select($query_stock))
-    $data['errors'][]=$sqlsrv_17_wmstek->getErrors();
-  else
-    $data['stock']=$arr_stock;
-}
-//##################   CARGA EN DATA EL Precio del Articulo o SKU buscado ########################
+
+// **************************   CARGA EN DATA EL Precio del Articulo o SKU buscado ***************************
 if(isset($_POST['precio'])){ // SI LA VISTA SOLICITO consulta_precios
   if($_POST['precio']==15)// PRECIOS POR DETALLE
     $query_precios="SELECT  TOP 1 /*ItemCode,*/ CAST(ROUND((Price*1.19),0) AS int) as Precio FROM Kayser_ITM1  where PriceList=15 AND ROUND((Price*1.19),0) IS NOT NULL and ItemCode LIKE '$sku%' ORDER BY ItemCode ASC";
   else  // PRECIOS PROMOTORAS
     $query_precios="SELECT	TOP 1 /*ItemCode,*/ CAST(ROUND((Price*1.19),0) AS int) AS Precio FROM Kayser_ITM1  where PriceList=17 AND ROUND((Price*1.19),0) IS NOT NULL and ItemCode LIKE '$sku%' ORDER BY ItemCode ASC";
-  if(!$arr_precios=$sqlsrv_13_stock->select($query_precios))
+  if(($arr_precios=$sqlsrv_13_stock->select($query_precios))===false)
     $data['errors'][]=$sqlsrv_13_stock->getErrors();
-  else
-    $data['precio']=$arr_precios[0]['Precio'];
+  else{
+    if($arr_precios==0)
+      $data['precio']="SIN RESULTADOS";
+    else
+      $data['precio']=$arr_precios[0]['Precio'];
+  }
 }
-if(isset($_POST['tiendas'])){
+// **************************  CARGA EN DATA EL ARRAY CON el STOCK del Articulo o SKU buscado **************
+if(isset($_POST['stock'])){
+  if($_POST['stock']=='disponible') // STOCK DISPONIBLE
+    $query_stock="SELECT IdArticulo, CAST(SUM(Cantidad) AS int) as Cant from Existencia where idAlmacen = '001' AND IdUbicacion LIKE '01%' AND IdArticulo LIKE '$sku%' GROUP BY IdArticulo ORDER BY IdArticulo";
+  else// STOCK TOTAL MENOS FALLADOS
+    $query_stock="SELECT IdArticulo, CAST(SUM(Cantidad) AS int) as Cant from Existencia where idAlmacen = '001' AND IdUbicacion NOT LIKE 'FALLA%' AND IdArticulo LIKE '$sku%' GROUP BY IdArticulo ORDER BY IdArticulo";
+  if(($arr_stock=$sqlsrv_17_wmstek->select($query_stock))===false)
+    $data['errors'][]=$sqlsrv_17_wmstek->getErrors();
+  else{
+    if($arr_stock==0)
+      $data['stock']="SIN RESULTADOS";
+    else
+      $data['stock']=$arr_stock;
+  }
+}
+
+if($_POST['opcion']='cargar_select_tiendas'){
   $query_tiendas = "SELECT WhsCode as Codigo,WhsName as Nombre from Kayser_OWHS where (U_GSP_SENDTPV='Y') order by WhsName" ;
   if(!$arr_tiendas=$sqlsrv_13_stock->select($query_tiendas))
     $data['errors'][]=$sqlsrv_13_stock->getErrors();
