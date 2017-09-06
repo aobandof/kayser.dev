@@ -57,20 +57,32 @@ if(isset($_POST['opcion'])) {
                         $select2=sqlsrv_query($conector, $query2,array(), array( "Scrollable" => 'static' ));
                         $cantidad_oc=(int)sqlsrv_num_rows($select2);
                         if($select2){
+
+  /*ACA NOS QUEDAMOS: cuando se filtre año y mes, considerar solo registros de ese mes, asociando facturas y notas de credito para cada pedido de ese mismo Mes
+  pero si no se flitra por añoo y mes, mostrar todo pedido, nota de credito y factura */          
                             while($reg2=sqlsrv_fetch_array($select2,SQLSRV_FETCH_ASSOC)){
+                                $fecha_mes_temp=[]; $fecha_anio_temp=[];
+                                /*if(isset($_POST['Mes']) AND isset($_POST['Anio'])){*/
                                     //echo "pa ver donde está";
-                                    if($reg2['ObjType']==13){
-                                        $montito=number_format ( floatval(abs($reg2['Bruto'])), 0 , ',', '.');
-                                        $array_facturas[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"no");
-                                    }
-                                    if($reg2['ObjType']==14){
-                                        $montito=number_format ( floatval(abs($reg2['Bruto'])), 0 , ',', '.');
-                                        $array_nc[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"no");
-                                    }
-                                    if($reg2['ObjType']==17){
-                                        $montito=number_format ( floatval(abs($reg2['Bruto'])), 0 , ',', '.');
-                                        $array_ventas[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"","","","","","","no","no");
-                                    }
+                                if($reg2['ObjType']==13/* and $reg2['Anio']==$reg['Anio'] and $reg2['Mes']==$reg['Mes']*/){
+                                    $montito=/*number_format ( */floatval(abs($reg2['Bruto']))/*, 0 , ',', '.')*/;
+                                    $array_facturas[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"no");
+                                    // $fecha_mes_temp['factura']=$reg2['Mes'];
+                                    // $fecha_anio_temp['factura']=$reg2['Anio'];
+                                }
+                                if($reg2['ObjType']==14/* and $reg2['Anio']==$reg['Anio'] and $reg2['Mes']==$reg['Mes']*/){
+                                    $montito=/*number_format ( */floatval(abs($reg2['Bruto']))/*, 0 , ',', '.')*/;
+                                    $array_nc[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"no");
+                                    // $fecha_mes_temp['nota']=$reg2['Mes'];
+                                    // $fecha_anio_temp['nota']=$reg2['Anio'];
+                                }
+                                if($reg2['ObjType']==17/* and $reg2['Anio']==$reg['Anio'] and $reg2['Mes']==$reg['Mes']*/){
+                                    $montito=/*number_format ( */floatval(abs($reg2['Bruto']))/*, 0 , ',', '.')*/;
+                                    $array_ventas[]=array($reg2['P_Num'],$reg2['Cant'],$montito,"","","","","","","no","no");
+                                    // $fecha_mes_temp['pedido']=$reg2['Mes'];
+                                    // $fecha_anio_temp['pedido']=$reg2['Anio'];
+                                }
+
                             }//fin while consulta 2
                             //cargamos el array notas de venta
                             foreach($array_ventas as $indice => $valor){

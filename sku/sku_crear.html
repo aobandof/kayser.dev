@@ -31,9 +31,9 @@
           <div class="dropdown">
           <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="opcion_config dropdown-item" href="#">Items</a>
-            <a class="opcion_config dropdown-item" href="#">Relaciones</a>
-            <a class="opcion_config dropdown-item" href="#">Prefijos</a>
+            <a class="opcion_config dropdown-item" id="a_opcion_config_items" href="#">Items</a>
+            <a class="opcion_config dropdown-item" id="" href="#">Relaciones</a>
+            <a class="opcion_config dropdown-item" id="" href="#">Prefijos</a>
           </div>
         </div>
         </div>
@@ -54,7 +54,7 @@
             </div>
             <div class="full_fila">
                 <span class="">COLOR&nbsp</span>
-                <select name="Color" id="select_sku_color" class="form-control" data-live-search="true" title="Elija los Colores de la Prenda..." multiple></select>
+                <select name="Color" id="select_sku_color" class="form-control" data-live-search="true" title="" multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
@@ -76,7 +76,10 @@
               <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control"></textarea></div>
             </div>
             <div class="cont_fila_crear_sku container_row">
-              <div><span class="">COMPOSIC.&nbsp</span><input type="text" id="txt_sku_composicion" name="" value="" class="form-control"></div>
+              <div><span class="">COMPOSIC.&nbsp</span>
+                <!-- <input type="text" id="txt_sku_composicion" name="" value="" class="form-control"> -->
+                <select name="Composicion" id="select_sku_composicion" class="form-control" data-live-search="true" title="" multiple></select>
+              </div>
               <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="" value="" class="form-control"></div>
             </div>
           </div>

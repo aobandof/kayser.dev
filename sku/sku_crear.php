@@ -1,10 +1,8 @@
 <?php
 require_once "../shared/clases/config.php";
 require_once "../shared/clases/MssqlConexion.php";
-// require_once "../shared/clases/MysqlConexion.php";
 require_once "../shared/clases/HelpersDB.PHP";
 require_once "../shared/clases/inflector.php";
-require_once "../shared/clases/campos.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 $conexion_mssql=new MssqlConexion($MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');

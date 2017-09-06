@@ -49,16 +49,13 @@ function cargarTabla(){
      $(".cont_filtro :input[type!=checkbox]:enabled").each(function() {
          obj_filtros[$(this).attr("name")]=$(this).val();
     });
-    $.ajax({
-        data : obj_filtros,
-        url  : 'modelo.php',
-        type : 'post',
-        dataType : 'json',
+    $.ajax({ data : obj_filtros, url  : 'modelo.php', type : 'post', dataType : 'json',
         beforeSend : function () {
           $(".cont_contenido").hide();
           $("#div_cargando").show();
         },
         success: function(data){
+          console.log(data);
           $("#div_cargando").hide('500');
             if(data[0].respuesta==="ERRORES"){
                 console.log(data);

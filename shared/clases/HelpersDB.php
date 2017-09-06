@@ -43,12 +43,13 @@ $tablas_sku = Array(
   'Presentacion'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_FILA',          'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'Color'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_SEG2',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'Talla'            => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_APOLLO_SSEG3',  /*'id'=>'id',         'type_id'=>'INT',*/ 'campo'=>'codigo', 'tabla_rel'=>'Prenda_Talla', 'nom_cod_rel'=>'Talla_codigo', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'Copa'             => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
-  'FormaCopa'        => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_nombre', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'Copa'             => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_IDCopa',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_Copa', 'nom_cod_rel'=>'Copa_id', 'nom_cod_padre_rel'=>'Prenda_codigo'),
+  'FormaCopa'        => Array( 'bd'=>'mysql', 'dep'=>'Kayser_SEASON','campo_sku'=>'U_GSP_SECTION',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Prenda_FormaCopa', 'nom_cod_rel'=>'FormaCopa_id', 'nom_cod_padre_rel'=>'Prenda_codigo'),
   'Material'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_MATERIAL',      'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'TempPrenda'       => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_EVD',           'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'TempCatalogo'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'GrupoUso'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre')
+  'GrupoUso'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'Composicion'      => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre')
 );
 
 $array_grand_child=[];

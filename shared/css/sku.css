@@ -363,14 +363,18 @@ body, html {
 /**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
 .cont_config .dropdown-menu {
   left: -5rem;
-  background-color: rgba(144, 245, 176, 0.36);
+  background-color: rgba(6, 16, 105, 0.76) !important;
 }
 .cont_config .dropdown-menu>a { color: yellow; }
+.cont_config .dropdown-menu>a:hover { color: blue; }
 
 /****** ESTILOS PARA SKU_CONSULTAR ********/
 #div_cont_sku_consultar {
-  /*height: 100%;*/
+  height: 100%;
   width: 100%;
+}
+#div_cont_sku_consultar * {
+  font-size: .8rem;
 }
 #div_cont_sku_consultar>div:nth-child(1) {
   flex: 0 0 auto;
@@ -379,7 +383,7 @@ body, html {
   width: 100%;
   background-color: rgba(6, 133, 41, 0.79);
   padding: .1rem !important;
-  flex-wrap:  wrap; /*por si hay mas filtros div, en pispositivos pequeños, se puedan desplazar*/
+  flex-wrap:  wrap; /*por si hay mas filtros div, en dispositivos pequeños, se puedan desplazar*/
 }
 #div_cont_sku_consultar>div:nth-child(1)>div {
   display: flex;
@@ -392,35 +396,29 @@ body, html {
 }
 #div_cont_sku_consultar>div:nth-child(1)>div> * {
   margin: .3rem;
-  font-size: .8rem;
   font-weight: bold;
 }
 #div_cont_sku_consultar>div:nth-child(1) span {
   color: white;
 }
-
 #div_cont_sku_consultar>div:nth-child(2) {
   flex: 1 0 auto;
   width: 100%;
+  height: 100%;
   padding: .2rem 0rem !important;
 }
 .item_consulta_sku {
-  font-size: .8rem !important;
   font-weight: bold;
   display: flex;
   margin: .2rem .2rem;
-  flex: 1 1 10%;
-}
-.item_consulta_sku>div:nth-child(2)>select {
-  flex: 0 0 35%;
-  font-size: .8rem;
-  padding: .2rem;
+  flex: 1 0 8%;
 }
 #div_cont_ventas {
-  flex: 1 0 15%;
+  flex: 1 0 12%;
 }
 #div_cont_detalle {
-  /*flex: 0 1 50%;*/
+  flex: 1 1 40%;
+  background-color: rgba(6, 133, 41, 0.79);
 }
 .item_consulta_sku span { /** para que los span alinien al centro su texto **/
   display: flex !important;
@@ -430,13 +428,20 @@ body, html {
 .item_consulta_sku>.titulo_fila {
   background-color: rgba(7, 150, 47, 0.84);
   color: white;
-
   flex: 0 0 15%;
   display: flex;
   justify-content: center;
   align-items: center;
   border-top-left-radius: .3rem;
   border-bottom-left-radius: .3rem;
+}
+.item_consulta_sku .reporte_valor {
+  background-color: rgb(226, 244, 188);
+  flex: 0 1 25%;
+  margin-left: 1rem;
+  border-radius: .2rem;
+  border: 1px solid rgb(20, 143, 36);
+  height: 60%;
 }
 .item_consulta_sku>div:nth-child(2){
   flex: 1 1 auto;
@@ -447,67 +452,39 @@ body, html {
   border-bottom-right-radius: .3rem;
   background-color: rgba(220, 240, 236, 1);
 }
-
+.item_consulta_sku>div:nth-child(2)>select {
+  flex: 0 0 35%;
+  height: 70% !important;
+}
+#div_cont_ventas>div:nth-child(2)>div>select {
+  height: 50% !important;
+}
 #div_cont_ventas>div:nth-child(2)>div {
   flex: 0 1 22%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-#div_cont_ventas>div:nth-child(2)>div>* {
-  flex: 0 0 40%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
   margin: .2rem;
 }
-.item_consulta_sku .reporte_valor {
-  background-color: rgb(226, 244, 188);
-  flex: 0 1 25%;
-  margin-left: 1rem;
-  border-radius: .2rem;
-  border: 1px solid rgb(20, 143, 36);
-  height: 60%;
+#div_cont_ventas>div:nth-child(2)>div>.reporte_valor {
+  flex: 0 1 50%;
 }
-
-
-/*Tamaño extra pequeño.Teléfonos (<544px)*/
-/*@media (max-width: 544px) {
-  #div_cont_sku_consultar>div:nth-child(1)   { flex: 1 0 8% }
-  #div_cont_sku_consultar>div:nth-child(1)>div>* { margin: .3rem; font-size: .8rem !important; }
-  .item_consulta_sku   { flex: 1 0 8%; }
-  #div_cont_ventas     { flex: 1 0 12%; }
-  #div_cont_ventas>div:nth-child(2)>div>*    { margin: 0rem !impo; }
-  #div_cont_detalle    { flex: 0 1 50%; }
-  .item_consulta_sku .label, .item_consulta_sku .reporte_valor, .item_consulta_sku .label_fila,
-  .item_consulta_sku button, .item_consulta_sku select {
-    font-size: .75rem;
-  }
-  .item_consulta_sku>.titulo_fila {
-    font-size: .8rem;
-  }
-  .item_consulta_sku>div:nth-child(2)>div>*, .item_consulta_sku>div:nth-child(2)>*  {
-    padding: .1rem !important;
-  }
-}*/
-
 /* Small devices (landscape phones, 544px and up) */
 @media (min-width: 544px) {
-
+  #div_cont_sku_consultar * { font-size: .9rem; }
 }
 
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
 @media (min-width: 768px) {
-
+  #div_cont_sku_consultar * { font-size: 1rem; }
 }
 
 /* Large devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-
+  #div_cont_sku_consultar * { font-size: 1.1rem; }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-
-}
+  #div_cont_sku_consultar * { font-size: 1.2rem;

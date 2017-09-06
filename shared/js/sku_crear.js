@@ -3,7 +3,7 @@ var id_cat_before_click,id_cat_after_click, id_cat_actual;
 var campos_llenos;
 $(document).ready(function() {
   // showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');//esta funcion esta en otro archivo: modal.js
-  $(".opcion_config").click(function() {
+  $("#a_opcion_config_items").click(function() {
     $("#div_crud_item").css('visibility','visible' );
   });
   $("#select_item_crud").change(function() {
@@ -33,13 +33,15 @@ $(document).ready(function() {
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
           campos_llenos=0;
-          document.getElementById("div_sel_opciones").innerHTML="";
+          // document.getElementById("div_sel_opciones").innerHTML="";
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
+          $("#select_sku_composicion").selectpicker("deselectAll");
         }
       }else {
         cargarCategoriaCrear(id_cat_after_click);
         $("#select_sku_color").selectpicker("deselectAll");
+        $("#select_sku_composicion").selectpicker("deselectAll");
       }
     }
   });
@@ -73,13 +75,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'opcion' : 'cargar_selects_independientes'};
   else
     var parametros = { 'opcion' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-  $.ajax({
-    url: 'sku_crear.php',
-    type: 'post',
-    dataType: 'json',
-    data: parametros,
-    beforeSend : function () {
-    },
+  $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
       if(data[0].error){
         console.log(data[0].error);
@@ -101,6 +97,11 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
               data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
               $("select[name='"+data[i].tabla+"']").html(optito);
               $('#select_sku_color').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            }else if(data[i].tabla=='Composicion') {
+              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
+              $("select[name='"+data[i].tabla+"']").html(optito);
+              $('#select_sku_composicion').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+
             }else {
               data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
               $("select[name='"+data[i].tabla+"']").html('<option value=""></option>'+optito);
@@ -123,13 +124,7 @@ function cargarTablaSeccion(tabla) {
   body=document.getElementById('div_tbody');
   while (body.firstChild) { body.removeChild(body.firstChild); }
   var parametros = { 'opcion' : 'cargar_seccion', 'nom_tabla' :  tabla };
-  $.ajax({
-    url: 'sku_seccion_crud.php',
-    type: 'post',
-    dataType: 'json',
-    data: parametros,
-    beforeSend : function () {
-    },
+  $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
       if(!!data['error']){
         console.log(data[0].error);

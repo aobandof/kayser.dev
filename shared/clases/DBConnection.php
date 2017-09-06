@@ -38,7 +38,7 @@ class DBConnection {
         else
           return 0;
       }
-    }else if ($this->_driver=="mysql") {
+    }else if ($this->_driver=="mysqli") {
       $registros=$this->_connection->query($query);
       if($registros===false)
         return false;
