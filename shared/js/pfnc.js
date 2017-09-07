@@ -49,6 +49,7 @@ function cargarTabla(){
      $(".cont_filtro :input[type!=checkbox]:enabled").each(function() {
          obj_filtros[$(this).attr("name")]=$(this).val();
     });
+    console.log(obj_filtros);
     $.ajax({ data : obj_filtros, url  : 'modelo.php', type : 'post', dataType : 'json',
         beforeSend : function () {
           $(".cont_contenido").hide();

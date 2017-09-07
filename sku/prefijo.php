@@ -13,8 +13,8 @@ if($existe_error_conexion){
 
 // **************************   CARGA EN DATA EL Precio del Articulo o SKU buscado ***************************
   $marca=$_POST['Marca'];
-  $dpto=getIdFromName('Kayser_OITB',$_POST['padre']);
-  // $dpto="106";
+  // $dpto=getIdFromName('Kayser_OITB',$_POST['padre']);
+  $dpto="106";
   $subdpto=$_POST['Subdpto'];
   $prenda=$_POST['Kayser_SEASON'];
   $categoria=$_POST['Kayser_DIV'];
