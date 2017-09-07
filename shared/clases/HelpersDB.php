@@ -7,7 +7,7 @@ $MSSQL = array(
 );
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MYSQL Y SUS CREDENCIALES
 $MYSQL = array(
-  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '' ),
+  'dev' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '0013821' ),
   'prod' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => '12qwaszx' )
 );
 
@@ -49,11 +49,11 @@ $tablas_sku = Array(
   'TempPrenda'       => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_EVD',           'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'TempCatalogo'     => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'GrupoUso'         => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'Composicion'      => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre')
+  'Composicion'      => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'RelacionPrefijo'  => Array( 'bd'=>'mysql',                        'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'')
 );
 
 $array_grand_child=[];
-
 
 function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // solo para 2 motores de base de datos
   $cadena="";

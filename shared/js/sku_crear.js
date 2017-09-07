@@ -47,8 +47,46 @@ $(document).ready(function() {
   });
   $("#select_sku_subdpto").change(function() { cargarSelectsSku('Subdpto', $(this).val()) });
   $("#select_sku_prenda").change(function() { cargarSelectsSku('Kayser_SEASON', $(this).val()) });
+
+  /********************* COMENTAR SI NO FUNCAN: EVENTO PARA AGREGAR EL PREFIJO, SEGUN LA RELACION *******/
+  document.querySelectorAll(".prefijo").forEach(function(el){
+    el.onchange=function(){
+      // alert("funciona el evento para los select con la clase prefijo");
+      //verificaremos que todos esten llenos, si es asi, poner el prefijo
+      let is_empty=0;
+      var valores=new Object();
+      valores['padre']=id_cat_actual.substr(8,id_cat_actual.length)
+      document.querySelectorAll(".prefijo").forEach(function(eli){
+        valores[eli.name]=eli.value;
+        if(eli.value=="")
+          is_empty=1;
+      });
+      if(is_empty==0)
+        getPrefix(valores);
+    }
+  });
+/*******************************************************************************************************/
 });
-// FUNCION QUE MUESTRA EL PANEL CRUD SEGUN EL DPTO (mujer, varon, lola, ...)
+
+//FUNCION PARA OBTENER EL PREFIJO
+function getPrefix(values){
+  console.log(values);
+  $.ajax({ url : 'prefijo.php', type : 'post', dataType : 'json', data : values,
+    success : function(data) {
+      if(!!data['errors']){
+        console.log("Error al consultar PRECIOS, en consulta o Conexion a BDx: ");
+        console.log(data['errors']);
+      }else {
+        console.log(data);
+        if(data['prefijo']!="SIN RESULTADOS")
+          document.getElementById('txt_sku_articulo').value=data['prefijo'];
+      }
+    },
+    error : function() { console.log("error"); }
+  });
+}
+
+//FUNCION QUE MUESTRA EL PANEL CRUD SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
   $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
   id_cat_actual=id_cat;

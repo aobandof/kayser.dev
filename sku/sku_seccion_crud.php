@@ -36,17 +36,17 @@ if($_POST['opcion']=="cargar_seccion"){
           $arr_cabeceras[]=$key;
     }
   }
-else { // si el motor es MSSQL
-  if(($arr_tabla=$sqlsrv->select($query))===false){
-      $data['errors'][]=$sqlsrv->getErrors();
-  }else {
-    if($arr_tabla==0)
-      $arr_tabla="SIN RESULTADOS";
-    else
-      foreach ($arr_tabla[0] as $key => $value)
-        $arr_cabeceras[]=$key;
+  else { //si el motor es MSSQL
+    if(($arr_tabla=$sqlsrv->select($query))===false){
+        $data['errors'][]=$sqlsrv->getErrors();
+    }else {
+      if($arr_tabla==0)
+        $arr_tabla="SIN RESULTADOS";
+      else
+        foreach ($arr_tabla[0] as $key => $value)
+          $arr_cabeceras[]=$key;
+    }
   }
-}
   $data['cabeceras']=$arr_cabeceras;
   $data['filas']=$arr_tabla;
   echo json_encode($data);
