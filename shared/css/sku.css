@@ -343,11 +343,11 @@ body, html {
   padding: 3rem !important;
 }
 #div_sku_index img {
-  min-width: 250px;
-  max-width: 50%;
-  min-height: 60%;
-  max-height: 50%;
-  flex: 1 1 50%;
+  /*min-width: 300px;*/
+  /*max-width: 50%;*/
+  /*min-height: 60%;*/
+  height: 40vw;
+  flex: 1 1 40vw;
   border-radius: 8rem;
 }
 #div_sku_index>div {
@@ -369,6 +369,11 @@ body, html {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
   cursor: pointer;
+}
+@media (max-width: 768px) {
+  #div_sku_index img {
+    height: 35vh;
+  }
 }
 
 /**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
