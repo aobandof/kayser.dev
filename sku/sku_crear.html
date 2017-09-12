@@ -10,7 +10,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="../shared/css/bootstrap-select.css">
   <link rel="stylesheet" href="../shared/css/styles.css">
-  <link rel="stylesheet" href="../shared/css/sku.css">
+  <!-- <link rel="stylesheet" href="../shared/css/sku.css"> -->
+  <link rel="stylesheet" href="../shared/css/sku_crear.css">
   <link rel="stylesheet" href="../shared/css/controls.css">
   <link rel="stylesheet" href="../shared/css/modal.css">
   <title>SKU / Articulos</title>
@@ -32,8 +33,8 @@
           <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="opcion_config dropdown-item" id="a_opcion_config_items" href="#">Items</a>
-            <a class="opcion_config dropdown-item" id="" href="#">Relaciones</a>
-            <a class="opcion_config dropdown-item" id="" href="#">Prefijos</a>
+            <a class="opcion_config dropdown-item" id="a_opcion_config_relations" href="#">Relaciones</a>
+            <a class="opcion_config dropdown-item" id="a_opcion_config_prefix" href="#">Prefijos</a>
           </div>
         </div>
         </div>
@@ -102,7 +103,7 @@
     <div class="modal modal_panel" id="div_crud_item">
       <div class="content_modal">
         <div class="header_modal">
-          <span>VENTANA DE EDICION DE SECCIONES</span>
+          <span>EDICION DE ITEMS DE ARTICULOS</span>
           <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_item" alt="">
         </div>
         <div class="body_modal">
@@ -118,12 +119,12 @@
             </select>
           </div>
           <div class="tabla_div" id="div_tabla_item">
-            <div class="thead_div"><div class="row tr" id="div_head_tr"></div></div>
+            <div class="thead_div"><div class="row tr" id="div_head_tr_items"></div></div>
             <div class="tbody_div" id="div_tbody"><div class="row tr"></div></div>
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
             </div>
           </div>
         </div>
@@ -135,34 +136,55 @@
     <div class="modal modal_panel" id="div_crud_relations">
       <div class="content_modal">
         <div class="header_modal">
-          <span>VENTANA DE EDICION DE RELACIONES</span>
+          <span>EDICION DE RELACIONES ENTRE ITEMS DE ARTICULOS</span>
           <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_relations" alt="">
         </div>
         <div class="body_modal">
           <div class="comp_filters container_row">
             <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
-            <!-- <select name="" id="select_relation_crud" class="form-control">
-              <option></option>
-              <option value="Kayser_OITB">Departamentos</option><option value="Marca">Marcas</option><option value="Subdpto">Sub Departamentos</option>
-              <option value="Kayser_SEASON">Prendas</option><option value="Kayser_DIV">Categ. Prenda</option><option value="Presentacion">Presentación</option>
-              <option value="Color">Colores</option><option value="Talla">Tallas</option><option value="Copa">Copas</option>
-              <option value="FormaCopa">Formas Copa</option><option value="Material">Materiales</option><option value="TempPrenda">Temp. Prenda</option>
-              <option value="TempCatalogo">Temp. Catalogo</option><option value="GrupoUso">Grupos Uso</option>
-            </select> -->
           </div>
           <div class="tabla_div" id="div_tabla_relations">
-            <div class="thead_div"><div class="row tr" id="div_head_tr"></div></div>
+            <div class="thead_div"><div class="row tr" id="div_head_tr_relations"></div></div>
             <div class="tbody_div" id="div_tbody"><div class="row tr"></div></div>
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE ITEM -->
+    <!-- FIN COMPONENTE RELACION -->
+
+    <!-- COMPONENTE PREFIJOS -->
+    <div class="modal modal_panel" id="div_crud_prefix">
+      <div class="content_modal">
+        <div class="header_modal">
+          <span>EDICION DE PREFIJOS PARA CODIGO DE ARTICULO</span>
+          <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_prefix" alt="">
+        </div>
+        <div class="body_modal">
+          <div class="comp_filters container_row">
+            <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
+          </div>
+          <div class="tabla_div" id="div_tabla_prefix">
+            <div class="thead_div">
+              <div class="row tr" id="div_head_tr_prefix"></div>
+            </div>
+            <div class="tbody_div" id="div_tbody">
+              <div class="row tr"></div>
+            </div>
+            <div class="tfooter_div">
+              <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
+              <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
+              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN COMPONENTE PREFIJOS -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>

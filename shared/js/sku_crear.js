@@ -2,24 +2,32 @@ var color;
 var id_cat_before_click,id_cat_after_click, id_cat_actual;
 var campos_llenos;
 $(document).ready(function() {
-  // showModalAlert('Mensaje de Bienvenida','Hola!, Empieza a crear tu SKU', 'div_modal_alert1');//esta funcion esta en otro archivo: modal.js
-  $("#a_opcion_config_items").click(function() {
-    $("#div_crud_item").css('visibility','visible' );
-  });
+  $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
+  $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible');  }); //MOSTRAMOS MODAL RELACIONES
+  $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
+  /**************** EVENTOS DENTRO DE LOS MODALES *****************/
   $("#select_item_crud").change(function() {
     $("#div_tabla_item>tbody_div").html('');
     $("#div_tabla_item").css('visibility', 'visible');
-    // console.log($(this).val());
     cargarTablaSeccion($(this).val());
   });
-  $("#img_close_crud_item").click(function() {
-    /* Act on the event */
-    $("#select_item_crud").val("");
-    $("#div_crud_item").css('visibility','hidden');
-    $("#div_tabla_item>tbody_div").html('');
-    $("#div_tabla_item").css('visibility','hidden');
-  });
-  cargarCategoriaCrear("div_cat_dama");
+  /****************** EVENTOS PARA CERRAR LAS VENTANAS MODALES ****************/
+  $(".close_modal, .close_modal2").click(function () {
+    if ( this.className == "close_modal")
+      modal = this.parentNode.parentNode.parentNode; //obtenemos la referenca al modal para ocultarlo
+    else 
+      modal = this.parentNode.parentNode.parentNode.parentNode.parentNode; //obtenemos la referenca al modal para ocultarlo
+    modal.style.visibility='hidden';
+    if (modal.id == "div_crud_item"){
+      document.getElementById("select_item_crud").value="";
+      $("#div_tabla_item>tbody_div").html('');
+      $("#div_tabla_item").css('visibility', 'hidden');
+      document.getElementById("button_nuevo_seccion").classList.remove("disabled"); // removemos esta clase si estuvier (aveces, cuando se esta editando y se sale del modal, por ejemplo, este boton nuevo mantiene la clase disabled, por eso la borramos)
+      document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+    }
+  });/********************* FIN CERRAR EVENTOS MODALES  ***********************/
+
+  cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
     id_cat_after_click=$(this).attr('id');
@@ -33,7 +41,6 @@ $(document).ready(function() {
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
           campos_llenos=0;
-          // document.getElementById("div_sel_opciones").innerHTML="";
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
           $("#select_sku_composicion").selectpicker("deselectAll");
@@ -51,7 +58,6 @@ $(document).ready(function() {
   /********************* COMENTAR SI NO FUNCAN: EVENTO PARA AGREGAR EL PREFIJO, SEGUN LA RELACION *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
-      // alert("funciona el evento para los select con la clase prefijo");
       //verificaremos que todos esten llenos, si es asi, poner el prefijo
       let is_empty=0;
       var valores=new Object();
@@ -86,7 +92,7 @@ function getPrefix(values){
   });
 }
 
-//FUNCION QUE MUESTRA EL PANEL CRUD SEGUN EL DPTO (mujer, varon, lola, ...)
+//FUNCION QUE MUESTRA EL PANEL CREAR SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
   $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
   id_cat_actual=id_cat;
@@ -154,10 +160,10 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   });
 }
 
-// FUNCION QUE CARGA LA TABLA SECCION CRUD EN EL POPAP (Dpto, Subdpto, Marca, Prenda, ...)
+// FUNCION QUE CARGA LA TABLA SECCION CRUD EN EL MODAL (Dpto, Subdpto, Marca, Prenda, ...)
 function cargarTablaSeccion(tabla) {
   //INICIALMENTE REMOVEMOS LAS CELDAS DE LA CABCERA Y LAS FILAS DE LA TABLA EXISTENTES
-  fila_head=document.getElementById('div_head_tr')
+  fila_head=document.getElementById('div_head_tr_items')
   while (fila_head.firstChild) { fila_head.removeChild(fila_head.firstChild); }
   body=document.getElementById('div_tbody');
   while (body.firstChild) { body.removeChild(body.firstChild); }
@@ -206,7 +212,8 @@ function cargarTablaSeccion(tabla) {
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
         contenido_original=[];
         contenido_actualizar=[];
-        document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");
+        contenido_guardar=[];
+        document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");//desactivamos el evento click
         // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
@@ -219,7 +226,7 @@ function cargarTablaSeccion(tabla) {
             if(confirm("¿Desea realmente continuar modificando?")) {
               if(updateRegistry(contenido_actualizar)){
                 for (var index in contenido_actualizar)
-                  contenido_original[index]=contenido_actualizar[index];
+                  contenido_original[index]=contenido_actualizar[index];//cargamos el contenido actualizado al contenido original
                 alert("Datos actualizados correctamente");
               }else {
                 alert("No se pudo Actualizar");
@@ -236,16 +243,16 @@ function cargarTablaSeccion(tabla) {
           this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
           this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-            keycita=(el.id).slice((el.id).indexOf("_")+1);
-            el.innerHTML=contenido_original[keycita];
+            keycita=(el.id).slice((el.id).indexOf("_")+1); //obtenemos el id de las celdas editables para agregar a esta celda, el valor actualizado correspondiente
+            el.innerHTML = contenido_original[keycita]; //cargamos el contenido origignal, actualizado a las celdas
           });
-          contenido_original.length=0;
-          contenido_actualizar.length=0;
+          contenido_original.length=0; //vaciamos este arreglo
+          contenido_actualizar.length=0; //vaciamos este arreglo
           getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
             ele.style.pointerEvents = "auto";
             ele.classList.toggle("disabled");
           }) ;
-          this.parentNode.parentNode.classList.toggle("editing"); // agregamos esta clase a la fila para cambiarle el fondo
+          this.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
         });
         // ###################   EVENTO CLICK PARA LOS ICON_EDIT ##############################
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
@@ -301,11 +308,12 @@ function cargarTablaSeccion(tabla) {
         });
         // ###################   EVENTO CLICK PARA LOS BUTTON_NUEVO ##############################
         document.getElementById("button_nuevo_seccion").onclick = function(){
-          // console.log("aca agregaremos un nuevo elemento");
+          document.getElementById("button_nuevo_seccion").style.pointerEvents = "none"; // desactivamos el evento click en el boton nuevo
+          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
           body=document.getElementById("div_tbody");
-          fila_modelo=document.createElement("div")
+          fila_modelo=document.createElement("div");
           fila_modelo.className="row tr";
-          !!data.cabeceras['Codigo']? codigo=data.cabeceras['Codigo'] : codigo=data.cabeceras['Nombre'];
+          !!data.cabeceras['Codigo']? codigo=data.cabeceras['Codigo'] : codigo=data.cabeceras['Nombre']; //aunque ahora todas las tablas tienen codigo
           (data.cabeceras).forEach(function(item,index){
             div_celda=document.createElement("div");
             if(item=="Codigo")
@@ -325,6 +333,37 @@ function cargarTablaSeccion(tabla) {
           celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/cancel.ico" alt="" class="icon_fila" id="img_cancel_N"></div>';
           fila_modelo.insertAdjacentHTML('beforeend',celdas_img);
           body.insertBefore(fila_modelo,body.firstChild);
+          /***** agregamos el evento click al icono guardar y cancel de esta fila nueva  ****/
+          document.getElementById("img_save_N").onclick = function(){
+            // console.log("1 validamos / 2 preguntamos / 3 guardamos y devolvemos confirmacion / si si, cargamos nuevamente la tabla, si no, dejamos la fila para cualquier modificacion o cancelacion");
+            this.parentNode.parentNode.querySelectorAll('.editable').forEach(function (el) { //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+              keycita = (el.id).slice((el.id).indexOf("_") + 1);
+              contenido_guardar[keycita] = el.firstChild.value;
+              console.log(keycita);
+            });
+            if (contenido_guardar['Nombre'] != "") {
+              if (confirm("¿Desea realmente ingresar este NUEVO VALOR?")) {
+                if (createRegistry(contenido_guardar)) {
+                  cargarTablaSeccion(tabla);//funcion recursiva que vuelve a cargar la tabla
+                  document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+                  document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+                  alert("Registro creado Correctamente");
+                } else {
+                  alert("No se pudo crear el nuevo valor");
+                }
+              }
+            } else {
+              alert('Campo Nombre es necesario para crear un nuevo valor');
+            }
+            
+          }
+          document.getElementById('img_cancel_N').onclick=function(){
+            // console.log("1 removemos esta fila con las celdas, inputs e imagenes");
+            let fila_cancel=document.getElementById('img_cancel_N').parentNode.parentNode
+            document.getElementById("div_tbody").removeChild(fila_cancel);
+            document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+            document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+          }
         }
       }
     },
@@ -365,5 +404,8 @@ function updateRegistry(arr_contenido){
   return true;
 }
 function deleteRegistry(cod_registro){
+  return true;
+}
+function createRegistry(cod_registro) {
   return true;
 }
