@@ -76,16 +76,15 @@ $(document).ready(function() {
 
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
-  console.log(values);
   $.ajax({ url : 'prefijo.php', type : 'post', dataType : 'json', data : values,
     success : function(data) {
       if(!!data['errors']){
         console.log("Error al consultar PRECIOS, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
       }else {
-        console.log(data);
         if(data['prefijo']!="SIN RESULTADOS")
-          document.getElementById('txt_sku_articulo').value=data['prefijo'];
+          document.getElementById('txt_sku_prefijo').value=data['prefijo'];
+          document.getElementById('txt_sku_correlativo').value=['correlativo'];
       }
     },
     error : function() { console.log("error"); }
@@ -94,7 +93,7 @@ function getPrefix(values){
 
 //FUNCION QUE MUESTRA EL PANEL CREAR SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
-  $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
+  // $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
   id_cat_actual=id_cat;
   color=$("#"+id_cat).css('background-color');
   $(".cont_img_categoria").css('-webkit-transform', 'none');//quitamos a todos el efecto scale
@@ -116,17 +115,16 @@ function cargarCategoriaCrear(id_cat) {
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   var recorrido=0;
   if(nombre_tabla_padre=="")
-    var parametros = { 'opcion' : 'cargar_selects_independientes'};
+    var parametros = { 'option' : 'cargar_selects_independientes'};
   else
-    var parametros = { 'opcion' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
+    var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
       if(data[0].error){
         console.log(data[0].error);
       }else {
-        console.log(data);
         var long_data=data.length;
-        if(parametros['opcion']=='cargar_selects_dependientes'){
+        if(parametros['option']=='cargar_selects_dependientes'){
          recorrido=1;//para que no considere el primer elemento de la data obtenida de la api
          for (var valor of data[0])
            $("select[name='"+valor+"']").html("<option value=''></option>");//reseteamos las opciones a vacio
@@ -147,6 +145,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
               $('#select_sku_composicion').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
 
             }else {
+              console.log(data[i]);
               data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
               $("select[name='"+data[i].tabla+"']").html('<option value=""></option>'+optito);
             }
@@ -167,13 +166,12 @@ function cargarTablaSeccion(tabla) {
   while (fila_head.firstChild) { fila_head.removeChild(fila_head.firstChild); }
   body=document.getElementById('div_tbody');
   while (body.firstChild) { body.removeChild(body.firstChild); }
-  var parametros = { 'opcion' : 'cargar_seccion', 'nom_tabla' :  tabla };
+  var parametros = { 'option' : 'cargar_seccion', 'nom_tabla' :  tabla };
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
       if(!!data['error']){
         console.log(data[0].error);
       }else {
-        console.log(data);
         //creamos las celdas para las columnas
         data.cabeceras.forEach(function(item,index){
           div_celda=document.createElement('div');
@@ -220,11 +218,9 @@ function cargarTablaSeccion(tabla) {
             keycita=(el.id).slice((el.id).indexOf("_")+1);
             contenido_actualizar[keycita]=el.firstChild.value;
           });
-          console.log("contenido_actualizar obtenido de las cajas: ");
-          console.log(contenido_actualizar);
           if(contenido_actualizar['Nombre']!=""){
             if(confirm("¿Desea realmente continuar modificando?")) {
-              if(updateRegistry(contenido_actualizar)){
+              if(updateRegistry(contenido_actualizar)===true){
                 for (var index in contenido_actualizar)
                   contenido_original[index]=contenido_actualizar[index];//cargamos el contenido actualizado al contenido original
                 alert("Datos actualizados correctamente");
@@ -236,8 +232,6 @@ function cargarTablaSeccion(tabla) {
           else {
             alert('Campo Nombre o Codigo son necesarios para actualizar');
           }
-          console.log("contenido_original:");
-          console.log(contenido_original);
           this.style.pointerEvents = "none";
           this.classList.toggle("disabled");
           this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
@@ -253,6 +247,8 @@ function cargarTablaSeccion(tabla) {
             ele.classList.toggle("disabled");
           }) ;
           this.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
+          document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
         });
         // ###################   EVENTO CLICK PARA LOS ICON_EDIT ##############################
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
@@ -266,14 +262,15 @@ function cargarTablaSeccion(tabla) {
             contenido_original[keycita]=el.innerHTML;
             el.innerHTML="<input type='text' value='"+contenido_original[keycita]+"'/>";
           });
-          console.log("contenido original, despues de activar la edicion:");
-          console.log(contenido_original);
           this.parentNode.previousSibling.firstChild.classList.toggle("disabled"); // QUITAMOS LA CLASE disabled al icon_save
           this.parentNode.previousSibling.firstChild.style.pointerEvents = "auto"; // activamos el evento click en el icon_save
           getAllNodesEqualType(this,2,'.icon_edit, .icon_delete').forEach(function(ele) {
             ele.style.pointerEvents = "none";
             ele.classList.toggle("disabled");
           })
+          document.getElementById("button_nuevo_seccion").style.pointerEvents = "none"; // desactivamos el evento click en el boton nuevo
+          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+
         });
         // ###################   EVENTO CLICK PARA LOS ICON_EDIT_CANCEL ########################
         document.querySelectorAll(".icon_edit_cancel").forEach(elemento => elemento.onclick = function() {
@@ -290,6 +287,9 @@ function cargarTablaSeccion(tabla) {
             ele.style.pointerEvents = "auto";
             ele.classList.toggle("disabled");
           })
+          document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+
         });
         // ###################   EVENTO CLICK PARA LOS ICON_DELETE ##############################
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
@@ -298,7 +298,6 @@ function cargarTablaSeccion(tabla) {
             if(deleteRegistry(codigo)){
               alert("REGISTRO ELIMINADO EXITOSAMENTE!")
               fila=this.parentNode.parentNode;
-              // console.log(fila);
               document.getElementById("div_tbody").removeChild(fila);
             }
             else {
@@ -335,11 +334,9 @@ function cargarTablaSeccion(tabla) {
           body.insertBefore(fila_modelo,body.firstChild);
           /***** agregamos el evento click al icono guardar y cancel de esta fila nueva  ****/
           document.getElementById("img_save_N").onclick = function(){
-            // console.log("1 validamos / 2 preguntamos / 3 guardamos y devolvemos confirmacion / si si, cargamos nuevamente la tabla, si no, dejamos la fila para cualquier modificacion o cancelacion");
             this.parentNode.parentNode.querySelectorAll('.editable').forEach(function (el) { //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
               keycita = (el.id).slice((el.id).indexOf("_") + 1);
               contenido_guardar[keycita] = el.firstChild.value;
-              console.log(keycita);
             });
             if (contenido_guardar['Nombre'] != "") {
               if (confirm("¿Desea realmente ingresar este NUEVO VALOR?")) {
@@ -358,7 +355,6 @@ function cargarTablaSeccion(tabla) {
             
           }
           document.getElementById('img_cancel_N').onclick=function(){
-            // console.log("1 removemos esta fila con las celdas, inputs e imagenes");
             let fila_cancel=document.getElementById('img_cancel_N').parentNode.parentNode
             document.getElementById("div_tbody").removeChild(fila_cancel);
             document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
@@ -400,12 +396,20 @@ function getAllNodesEqualType(nodo,alcance,selector){
   return cousinsList;
 }
 
-function updateRegistry(arr_contenido){
+function updateRegistry(arr_contenido) {
   return true;
+  // var parameters={ 'option': 'update', 'values' : arr_contenido };
+  // $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+  //   beforeSend: function (){ },
+  //   success: function(data){
+  //     console.log(data);
+  //   },
+  //   error: function(){ console.log('error'); }
+  // });
 }
 function deleteRegistry(cod_registro){
   return true;
 }
-function createRegistry(cod_registro) {
+function createRegistry(arr_contenido) {
   return true;
 }

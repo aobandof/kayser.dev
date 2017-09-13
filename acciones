@@ -1,8 +1,0 @@
-en sku crear, y sku_seccion_crud, descomentar las que tengan /// o las que tengan que ver con la base de datos sql server.
-
-abrir el worbench y sincronizar el modelo por si algo se cambio
-
-abrir heydisql y cargar los prefijos
-
-prorbar que este bien el funcionamiento.
-

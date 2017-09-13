@@ -71,7 +71,10 @@ function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // 
 ### el campo se obtendrá de la $tablas_sku y será aquel que detalle el nombre del registro de la tabla
 function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que tienen nombre UNIQUE
   global $tablas_sku,$mysqli,$conector_mssql;
+  echo $nom_tabla;
+  echo $val_campo;
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
+  echo "<br>".$query_id;
   if($tablas_sku["$nom_tabla"]["bd"]=="mysql") {
     if(!$registros=$mysqli->query($query_id)) {
       return -1;

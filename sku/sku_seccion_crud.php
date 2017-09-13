@@ -12,7 +12,7 @@ if($existe_error_conexion){
   echo json_encode($data);
   exit;
 }
-if($_POST['opcion']=="cargar_seccion"){
+if($_POST['option']=="cargar_seccion"){
   $filas=[];
   $cabecera=[];
   $ntabla=$_POST['nom_tabla'];
@@ -50,5 +50,14 @@ if($_POST['opcion']=="cargar_seccion"){
   $data['cabeceras']=$arr_cabeceras;
   $data['filas']=$arr_tabla;
   echo json_encode($data);
+}
+if($_POST['option']=="create") {
+  echo "nada por ahora";
+}
+if($_POST['option']=="update") {
+  echo "nada por ahora";
+}
+if ($_POST['option'] == "delete" ){
+  echo "nada por ahora";
 }
 ?>

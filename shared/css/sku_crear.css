@@ -114,10 +114,17 @@ body, html {
   width: 100%;
   margin-top: 1em !important;
 }
+.cont_fila_crear_sku>#div_codigo_articulo {
+  flex: 1 1 65% !important;
+  display: flex;
+  background-color: white !important;
+
+}
 .cont_fila_crear_sku>div {
   display: flex;
   align-items: center;
   flex: 1 1 50%;
+  border-radius: .3rem;
 }
 .cont_fila_crear_sku>div>span {
     flex: 0 1 25% !important;
@@ -147,6 +154,20 @@ body, html {
    font-size: 0.8em;
    padding: 0.3em !important;
    font-family: "Verdana";
+}
+#txt_sku_prefijo {
+  flex: 0 1 40%;
+  text-align: right;
+  border: 0px;
+  font-weight: bold;
+  font-size: .9rem;
+}
+#txt_sku_correlativo {
+  flex: 0 1 60%;
+  text-align: left;
+  border: 0px;
+  font-weight: bold;
+  font-size: .9rem;
 }
 .full_fila {
   display: flex;

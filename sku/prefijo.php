@@ -11,14 +11,24 @@ if($existe_error_conexion){
   exit;
 }
 
-// **************************   CARGA EN DATA EL Precio del Articulo o SKU buscado ***************************
-  $marca=$_POST['Marca'];
-  // $dpto=getIdFromName('Kayser_OITB',$_POST['padre']);
-  $dpto="106";
-  $subdpto=$_POST['Subdpto'];
-  $prenda=$_POST['Kayser_SEASON'];
-  $categoria=$_POST['Kayser_DIV'];
-  $presentacion=$_POST['Presentacion'];
+// **************************   CARGA EN DATA EL Código del Articulo o SKU buscado ***************************
+  $marca=$_GET['Marca'];
+  // $dpto=getIdFromName('Kayser_OITB',$_GET['padre']);
+  $query_cod_dpto="SELECT ".$tablas_sku["Kayser_OITB"]["id"]." FROM Kayser_OITB WHERE ".$tablas_sku["Kayser_OITB"]["campo"]."='".$_GET['padre']."';";
+  $arr_cod_dpto=$mysqli_dev_articulos->select($query_cod_dpto);
+  $dpto=$arr_cod_dpto[0];
+  echo $query_cod_dpto;
+  var_dump($arr_cod_dpto);
+  $subdpto=$_GET['Subdpto'];
+  $prenda=$_GET['Kayser_SEASON'];
+  $categoria=$_GET['Kayser_DIV'];
+  $presentacion=$_GET['Presentacion'];
+  echo $marca;
+  echo $dpto;
+  echo $subdpto;
+  echo $prenda;
+  echo $categoria;
+  echo $presentacion;
   $solo2="";
   $prefijo="";
   $data=[];

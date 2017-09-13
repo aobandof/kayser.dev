@@ -20,14 +20,14 @@ if(!$conector_mssql){
 // var_dump(getArrayIdName("Kayser_OITB"));
 // addGrandChild('Kayser_OITB');//OJO CON LAS MAYUSCULAS
 // var_dump($array_grand_child);
-if($_POST['opcion']=="cargar_selects_independientes"){
+if($_POST['option']=="cargar_selects_independientes"){
   // echo json_encode("enviando json");
   $options=[];
   $nombre_name="";
   $nombre_id="";
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $arr_ops=[];
-    if(!isset($array_tabla['dep'])){
+    if(!isset($array_tabla['dep']) && $tabla!="RelacionPrefijo"){
       $nombre_name=$array_tabla['campo'];
       if(!isset($array_tabla['id']))//TABLA SIN DEPENDENCIA SIN ID
         $query="select * from $tabla";
@@ -66,7 +66,7 @@ if($_POST['opcion']=="cargar_selects_independientes"){
   $mysqli->close();
   echo json_encode($options);
 }
-if($_POST['opcion']=="cargar_selects_dependientes") {
+if($_POST['option']=="cargar_selects_dependientes") {
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
   //es decir segun el nombre y valor del padre, se buscarán tablas dependientes y se cargarán valores relacionados al padre
