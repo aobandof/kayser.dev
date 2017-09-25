@@ -110,7 +110,6 @@ function cargarCategoriaCrear(id_cat) {
   $('.borrar_contacto').attr('name');
   cargarSelectsSku('Kayser_OITB', id_cat.substr(8,id_cat.length));
 }
-
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   var recorrido=0;
@@ -120,38 +119,27 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      if(data[0].error){
-        console.log(data[0].error);
-      }else {
-        var long_data=data.length;
-        if(parametros['option']=='cargar_selects_dependientes'){
-         recorrido=1;//para que no considere el primer elemento de la data obtenida de la api
-         for (var valor of data[0])
-           $("select[name='"+valor+"']").html("<option value=''></option>");//reseteamos las opciones a vacio
-        }
-        for (i=recorrido; i<long_data; i++) {
-          if(data[i].tabla=='Talla'){
-            document.getElementById("div_sel_grupo_opciones").innerHTML="";
-            fillSelectMultiplesGruposFromArray(data[i].options, "div_sel_grupo_opciones",false);
+      if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
+      data.values.forEach(function(item,index){
+        if(item['tabla']=="Talla"){
+          document.getElementById("div_sel_grupo_opciones").innerHTML = "";
+          fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
+        } else {
+          optito="";
+          if(item['tabla'] == 'Color') {
+            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+            $("select[name='" + item['tabla'] + "']").html(optito);
+            $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+          } else if (item['tabla'] == 'Composicion') {
+            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+            $("select[name='" + item['tabla'] + "']").html(optito);
+            $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
           }else {
-            optito="";
-            if(data[i].tabla=='Color'){
-              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
-              $("select[name='"+data[i].tabla+"']").html(optito);
-              $('#select_sku_color').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-            }else if(data[i].tabla=='Composicion') {
-              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
-              $("select[name='"+data[i].tabla+"']").html(optito);
-              $('#select_sku_composicion').selectpicker({style: 'btn-default fla'}); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-
-            }else {
-              console.log(data[i]);
-              data[i].options.forEach(function(item,index){ optito+="<option value='" + item['id'] +"'>" + item['name'] + "</option>"; });
-              $("select[name='"+data[i].tabla+"']").html('<option value=""></option>'+optito);
-            }
+            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+            $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
           }
         }
-      }
+      });
     },
     error: function() {
       console.log("error");
@@ -169,8 +157,8 @@ function cargarTablaSeccion(tabla) {
   var parametros = { 'option' : 'cargar_seccion', 'nom_tabla' :  tabla };
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      if(!!data['error']){
-        console.log(data[0].error);
+      if(!!data.errors){
+        console.log(data.errors);
       }else {
         //creamos las celdas para las columnas
         data.cabeceras.forEach(function(item,index){

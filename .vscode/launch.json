@@ -24,7 +24,8 @@
             "name" : "Launch Chrome against localhost",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:8080/kayser.dev/sku",
+            //"url": "http://localhost:8080/kayser.dev/sku/sku_crear.php",
+            "url":  "http://localhost:8080/kayser.dev/sku/sku_crear.php?option=cargar_selects_dependientes&nom_tabla_padre=Kayser_OITB&val_tabla_padre=dama",
             "webRoot": "${workspaceRoot}"
         }
 

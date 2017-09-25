@@ -70,57 +70,34 @@ function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // 
 ### FUNCION QUE RETORNA EL ID dado el nombre de la tabla y el valor del campo nombre
 ### el campo se obtendrá de la $tablas_sku y será aquel que detalle el nombre del registro de la tabla
 function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que tienen nombre UNIQUE
-  global $tablas_sku,$mysqli,$conector_mssql;
-  echo $nom_tabla;
-  echo $val_campo;
+  global $tablas_sku,$mysqli,$sqlsrv;
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
-  echo "<br>".$query_id;
-  if($tablas_sku["$nom_tabla"]["bd"]=="mysql") {
-    if(!$registros=$mysqli->query($query_id)) {
+  if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
+    $arr_id=$mysqli->select($query_id);
+  else
+    $arr_id=$sqlsrv->select($query_id);
+  if($arr_id===false)
       return -1;
-    } else {
-      $reg = $registros->fetch_assoc();
-      return $reg[$tablas_sku["$nom_tabla"]["id"]];
-    }
-  }else
-    if($registros=sqlsrv_query($conector_mssql, $query_id,array(), array( "Scrollable" => 'static' ))){
-      $reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC);
-      return $reg[$tablas_sku["$nom_tabla"]["id"]];
-    }
-    else {
-      if(sqlsrv_errors()!=null) {
-        return -1;
-      }
-    }
+  else{ 
+      return $arr_id[0][$tablas_sku["$nom_tabla"]["id"]];
+  }
 }
 
 ### FUNCION QUE CARGA LAS FILAS CON ID y NAME o NAME solmente DE UNA TABLA EN UN ARRAY ASOCIATIVO
 function getArrayIdName($nom_tabla){
-  global $tablas_sku,$mysqli,$conector_mssql;
+  global $tablas_sku,$mysqli,$sqlsrv;
   $array_tabla=[];
   if(isset($tablas_sku[$nom_tabla]['id']))
     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
   else
     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-  if($tablas_sku[$nom_tabla]['bd']=="mysql"){
-    if(!$registros=$mysqli->query($query_id_name))
+  if($tablas_sku[$nom_tabla]['bd']=="mysql")
+    $arr_tabla=$mysqli->select($query_id);
+  else 
+    $arr_tabla=$sqlsrv->select($query_id);
+  if($arr_tabla===false)
       return -1;
-    else {
-      while($reg=$registros->fetch_array()){
-        $array_tabla[]=array("cod"=>$reg[0], "name"=>$reg[1]);
-      }
-    }
-  }else {
-    if(!$registros=sqlsrv_query($conector_mssql, $query_id_name,array(), array( "Scrollable" => 'static' ))){
-      return -1;
-    }else {
-      while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC)){
-        // $array_tabla[]=array("cod"=>$reg[0], "name"=>$reg[1]);
-        $array_tabla["$reg[0]"]=$reg[1];
-      }
-    }
-  }
-  return $array_tabla;
+  return $arr_tabla;
 }
 
 ### FUNCION QUE RETORNA UN ARRAY CON TODOS LAS FILAS ENCONTRADAS SEGUN LA LLAVE FORANEA
@@ -128,14 +105,9 @@ function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
   global $mysqli;
   $arr_return=[];
   $query_coincidencias="SELECT nombre FROM DetalleTalla where Talla_codigo='".$value."'";
-  // echo $query_coincidencias;
-  if(!$registros=$mysqli->query($query_coincidencias))
+  if(($arr_coincidencias=$mysqli->select($query_coincidencias))===false)
     return -1;
-  else {
-    while ($reg=$registros->fetch_assoc())
-      $arr_return[]=$reg['nombre'];
-  }
-  return $arr_return;
+  return $arr_coincidencias;
 }
 ### FUNCION QUE BUSCA TODAS LAS TABLAS DEPENDIENTES DE LAS DEPENDIENTES
 ### de tal forma qe los dependientes se llenaran con datos relacionados con el padre
