@@ -25,17 +25,25 @@ class DBConnection {
   public function query($query){
 
   }
-  public function select($query){
+
+  public function select($query,$tipo_array){
     $arr_export=[];
-    if($this->_driver=="sqlsrv"){
+    if($this->_driver=="sqlsrv"){       
       $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
       if($registros===false){
         return false;
       }else {
-        if(sqlsrv_num_rows($registros)>0)
-          while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC))
-            $arr_export[]=$reg;
-        else
+        if(sqlsrv_num_rows($registros)>0){
+          if($tipo_array=='sqlsrv_a_p')
+            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC)) 
+              $arr_export[]=$reg;
+          elseif($tipo_array=='sqlsrv_n_p') 
+            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC))
+              $arr_export[]=$reg;
+          else 
+            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_BOOT))
+              $arr_export[]=$reg;            
+        }else
           return 0;
       }
     }else if ($this->_driver=="mysqli") {
@@ -43,15 +51,19 @@ class DBConnection {
       if($registros===false)
         return false;
       else
-        while($reg=$registros->fetch_assoc())
-          $arr_export[]=$reg;
+          if($tipo_array=='mysqli_a_o')
+            while($reg=$registros->fetch_assoc()) 
+              $arr_export[]=$reg;
+          elseif($tipo_array=='mysqli_b_o') // recordar que cuando es Orientado a Objetos solo existe ->fecth_assoc() y ->fetch_array(), el ultimo es asociativo y numerico
+            while($reg=$registros->fetch_array())
+              $arr_export[]=$reg;        
     }
+    // var_dump($arr_export);
     if(count($arr_export)==0) // consulta vacia
       return 0;
     else
       return $arr_export;
   }
-
 
   public function insert($query){
 
@@ -72,7 +84,7 @@ class DBConnection {
       if( ($errors = sqlsrv_errors() ) != null)
         foreach( $errors as $error )
             $arr_errors[]=array('sqlstate'=>$error[ 'SQLSTATE'], 'code'=>$error[ 'code'], 'message'=>$error[ 'message']);
-    }else if ($this->_driver=="mysqli"){
+    }elseif ($this->_driver=="mysqli"){
       if ($this->_connection->connect_error){
         $arr_errors[]=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
       }else
@@ -80,6 +92,42 @@ class DBConnection {
     }
     return $arr_errors;
   }
+  ######################################################################################################################
+  ###############################################  FUNCIONES PERSONALIZADAS ############################################
+  ######################################################################################################################
+  public function selectArrayUniAssocIdName($query){ //funcion que  retorna un array unidimencional asociativo, donde el id es el ID de la tabla
+    //$query debe tener la forma de: select id,name from nombre_tabla
+    $arr_export=[];
+    if($this->_driver=="sqlsrv"){       
+      $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
+      if($registros===false){
+        return false;
+      }else {
+        if(sqlsrv_num_rows($registros)>0){
+          while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC)) 
+            $arr_export[$reg[0]]=$reg[1];
+        }else
+          return 0;
+      }
+    }elseif($this->_driver=="mysqli"){
+      $registros=$this->_connection->query($query);
+      if($registros===false)
+        return false;
+      else {
+        while($reg=$registros->fetch_arrow()) 
+          $arr_export[$reg[0]]=$reg[1];
+      }
+    }
+    if(count($arr_export)==0) // consulta vacia
+      return 0;
+    else
+      return $arr_export;       
+  }
+
+  // public function selectParameterized($name_table,$arr_select,$name_key, $name_field,$val_field){
+  //   echo "hola";
+  // }
+
 }
 
 ?>

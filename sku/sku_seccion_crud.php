@@ -25,7 +25,7 @@ if($_POST['option']=="cargar_seccion"){
     $query="select ".$tablas_sku[$ntabla]['campo']." as Nombre from  $ntabla";
   }
   if($tablas_sku[$ntabla]['bd']=='mysql'){ // si el motor es MYSQL
-    if(($arr_tabla=$mysqli->select($query))===false){
+    if(($arr_tabla=$mysqli->select($query,'mysqli_a_o'))===false){
       $data['errors'][]=$mysqli->getErrors();
     }else {
       //obtenemos los nombres de campos de la consulta de la primera fila del resultado del query
@@ -37,7 +37,7 @@ if($_POST['option']=="cargar_seccion"){
     }
   }
   else { //si el motor es MSSQL
-    if(($arr_tabla=$sqlsrv->select($query))===false){
+    if(($arr_tabla=$sqlsrv->select($query,'sqlsrv_a_p'))===false){
         $data['errors'][]=$sqlsrv->getErrors();
     }else {
       if($arr_tabla==0)

@@ -73,9 +73,9 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
   global $tablas_sku,$mysqli,$sqlsrv;
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
   if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
-    $arr_id=$mysqli->select($query_id);
+    $arr_id=$mysqli->select($query_id,"mysqli_a_o");
   else
-    $arr_id=$sqlsrv->select($query_id);
+    $arr_id=$sqlsrv->select($query_id,"sqlsrv_a_p");
   if($arr_id===false)
       return -1;
   else{ 
@@ -84,28 +84,32 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
 }
 
 ### FUNCION QUE CARGA LAS FILAS CON ID y NAME o NAME solmente DE UNA TABLA EN UN ARRAY ASOCIATIVO
-function getArrayIdName($nom_tabla){
-  global $tablas_sku,$mysqli,$sqlsrv;
-  $array_tabla=[];
-  if(isset($tablas_sku[$nom_tabla]['id']))
-    $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-  else
-    $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-  if($tablas_sku[$nom_tabla]['bd']=="mysql")
-    $arr_tabla=$mysqli->select($query_id);
-  else 
-    $arr_tabla=$sqlsrv->select($query_id);
-  if($arr_tabla===false)
-      return -1;
-  return $arr_tabla;
-}
+// function getArrayIdName($nom_tabla){
+//   global $tablas_sku,$mysqli,$sqlsrv;
+//   $array_tabla=[];
+//   if(isset($tablas_sku[$nom_tabla]['id']))
+//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
+//   else
+//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
+//   echo $query_id_name."<br>";
+//   if($tablas_sku[$nom_tabla]['bd']=="mysql")
+//     $arr_tabla=$mysqli->select($query_id_name,"mysqli_a_o");
+//   else 
+//     $arr_tabla=$sqlsrv->select($query_id_name,"sqlsrv_a_p");
+//   if($arr_tabla===false)
+//     return -1;
+//   else  
+//     $arr_id_name[$arr_t]
+
+//   return $arr_tabla;
+// }
 
 ### FUNCION QUE RETORNA UN ARRAY CON TODOS LAS FILAS ENCONTRADAS SEGUN LA LLAVE FORANEA
 function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
   global $mysqli;
   $arr_return=[];
   $query_coincidencias="SELECT nombre FROM DetalleTalla where Talla_codigo='".$value."'";
-  if(($arr_coincidencias=$mysqli->select($query_coincidencias))===false)
+  if(($arr_coincidencias=$mysqli->select($query_coincidencias,"mysqli_a_o"))===false)
     return -1;
   return $arr_coincidencias;
 }
