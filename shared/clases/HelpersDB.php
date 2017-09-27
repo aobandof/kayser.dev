@@ -74,9 +74,9 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
   if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
     $arr_id=$mysqli->select($query_id,"mysqli_a_o");
-  else
+  else{
     $arr_id=$sqlsrv->select($query_id,"sqlsrv_a_p");
-  if($arr_id===false)
+  }if($arr_id===false)
       return -1;
   else{ 
       return $arr_id[0][$tablas_sku["$nom_tabla"]["id"]];

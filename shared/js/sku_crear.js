@@ -55,7 +55,7 @@ $(document).ready(function() {
   $("#select_sku_subdpto").change(function() { cargarSelectsSku('Subdpto', $(this).val()) });
   $("#select_sku_prenda").change(function() { cargarSelectsSku('Kayser_SEASON', $(this).val()) });
 
-  /********************* COMENTAR SI NO FUNCAN: EVENTO PARA AGREGAR EL PREFIJO, SEGUN LA RELACION *******/
+  /********************* COMENTAR SI NO FUNCAN: EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
       //verificaremos que todos esten llenos, si es asi, poner el prefijo
@@ -67,8 +67,11 @@ $(document).ready(function() {
         if(eli.value=="")
           is_empty=1;
       });
-      if(is_empty==0)
+      if(is_empty==0){
+        console.log(valores);
         getPrefix(valores);
+      }else
+        document.getElementById('txt_sku_prefijo').value ="";
     }
   });
 /*******************************************************************************************************/
@@ -84,7 +87,7 @@ function getPrefix(values){
       }else {
         if(data['prefijo']!="SIN RESULTADOS")
           document.getElementById('txt_sku_prefijo').value=data['prefijo'];
-          document.getElementById('txt_sku_correlativo').value=['correlativo'];
+          // document.getElementById('txt_sku_correlativo').value=['correlativo'];
       }
     },
     error : function() { console.log("error"); }
@@ -119,25 +122,28 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
+      console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       data.values.forEach(function(item,index){
         if(item['tabla']=="Talla"){
           document.getElementById("div_sel_grupo_opciones").innerHTML = "";
           fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
         } else {
-          optito="";
-          if(item['tabla'] == 'Color') {
-            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-            $("select[name='" + item['tabla'] + "']").html(optito);
-            $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-          } else if (item['tabla'] == 'Composicion') {
-            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-            $("select[name='" + item['tabla'] + "']").html(optito);
-            $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-          }else {
-            item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-            $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
-          }
+          if(item['options']!="SIN RESULTADOS"){
+            optito="";
+            if(item['tabla'] == 'Color') {
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html(optito);
+              $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            } else if (item['tabla'] == 'Composicion') {
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html(optito);
+              $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            }else {
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
+            }
+          } //FIN if(item['options']!="SIN RESULTADOS")
         }
       });
     },

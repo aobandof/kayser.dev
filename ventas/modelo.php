@@ -18,7 +18,7 @@ if(isset($_POST['opcion'])){
     $pie="";
     $cont=0;
     if($_POST['opcion']=="ventas") {
-        $query="SELECT A1.WhsName, A2.VtaMinAct FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC";
+        $query="SELECT A1.WhsName, A2.VtaMinAct FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC";
         $registros = sqlsrv_query($conector, $query);
         if( $registros === false ){
             if(sqlsrv_errors()!=null) {

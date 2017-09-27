@@ -95,8 +95,7 @@ class DBConnection {
   ######################################################################################################################
   ###############################################  FUNCIONES PERSONALIZADAS ############################################
   ######################################################################################################################
-  public function selectArrayUniAssocIdName($query){ //funcion que  retorna un array unidimencional asociativo, donde el id es el ID de la tabla
-    //$query debe tener la forma de: select id,name from nombre_tabla
+  public function selectArrayUniAssocIdName($query){ //funcion que  retorna un array unidimencional asociativo, donde el id es key de cada fila de la tabla y name es el valor
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
       $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
@@ -115,7 +114,7 @@ class DBConnection {
         return false;
       else {
         while($reg=$registros->fetch_arrow()) 
-          $arr_export[$reg[0]]=$reg[1];
+          $arr_export[intval($reg[0])]=$reg[1];
       }
     }
     if(count($arr_export)==0) // consulta vacia

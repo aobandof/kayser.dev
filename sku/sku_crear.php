@@ -51,18 +51,18 @@ if($_POST['option']=="cargar_selects_independientes"){
   $data['values']=$options;
   echo json_encode($data);
 }
-if($_GET['option']=="cargar_selects_dependientes") {
+if($_POST['option']=="cargar_selects_dependientes") {
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
   //es decir segun el nombre y valor del padre, se buscarán tablas dependientes y se cargarán valores relacionados al padre
   //y en  $array_grand_child se guardaran los nombres de descendientes de estas tablas y se enviaran a la vista para resetearse //este array con nombres se enviara en el index 0 del array data enviado a la vista
   $array_tabla_extraida=[];
   $options=[];
-  $padre=$_GET['nom_tabla_padre'];
+  $padre=$_POST['nom_tabla_padre'];
   if($tablas_sku[$padre]['dep']=='padre')//se buscará dependientes de DEPARTAMENTO (el padre supremo)
-    $codigo_padre=getIdFromName($_GET['nom_tabla_padre'],$_GET['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
+    $codigo_padre=getIdFromName($_POST['nom_tabla_padre'],$_POST['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
   else
-    $codigo_padre=$_GET['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
+    $codigo_padre=$_POST['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $ops="";//"<option value=''></option>";
     $arr_ops=[];
@@ -92,12 +92,12 @@ if($_GET['option']=="cargar_selects_dependientes") {
           }
         }//fin if if($array_tabla['bd']=="mysql")
         else {//cargamos en un array el id y name de la tabla en mencion
-          $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
+          $query_id_name="SELECT ".$array_tabla['id'].",".$array_tabla['campo']." from $tabla";
           if($tablas_sku[$tabla]['bd']=="mysql")
             $array_tabla_extraida=$mysqli->selectArrayUniAssocIdName($query_id_name);
           else 
             $array_tabla_extraida=$sqlsrv->selectArrayUniAssocIdName($query_id_name);         
-          var_dump($array_tabla_extraida);
+          // var_dump($array_tabla_extraida);
           if($tablas_sku[$padre]['type_id']=="INT")
             $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
           else
@@ -106,27 +106,25 @@ if($_GET['option']=="cargar_selects_dependientes") {
             $data['errors'][]=$mysqli->getErrors();
             continue;//pasamos al siguiente recorrido de foreach
           }else{
-            // var_dump($arr_rel);
-             foreach ($arr_rel as $value) {# code...
-              $nom_id_dep_rel=$value[0];
-              $arr_ops[]=Array('id'=>$value[0], 'name'=>(string)$array_tabla_extraida["$nom_id_dep_rel"]);
+            foreach ($arr_rel as $value) {# code...
+              $nom_id_dep_rel=$value[1];
+              $arr_ops[]=Array('id'=>$value[1], 'name'=> $array_tabla_extraida[$nom_id_dep_rel]);
             }
           }
         }
         if($tabla=='Talla'){
-          // var_dump($arr_ops);
           $arr_tallas=[];
           foreach ($arr_ops as $value)
             $arr_tallas[]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
           $data['values'][]=array('tabla'=>$tabla, 'options'=>$arr_tallas);
         } else
           $data['values'][]=array('tabla'=>$tabla, 'options'=>$arr_ops);
-      }//fin if($_GET['nom_tabla_padre']==$array_tabla['dep'])
+      }//fin if($_POST['nom_tabla_padre']==$array_tabla['dep'])
     }
   }//fin foreach
   array_unshift($options, $array_grand_child);//agregmos los descendientes al inicio de la data a enviar por json
-  // $conexion_mssql->desconectar();
-  // $mysqli->close();
+  $mysqli->closeConnection();
+  $sqlsrv->closeConnection();
   echo json_encode($data);
 }
 ?>
