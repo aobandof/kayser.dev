@@ -1,9 +1,7 @@
-var color;
-var id_cat_before_click,id_cat_after_click, id_cat_actual;
-var campos_llenos;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual;
 $(document).ready(function() {
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
-  $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible');  }); //MOSTRAMOS MODAL RELACIONES
+  $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
   $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
   /**************** EVENTOS DENTRO DE LOS MODALES *****************/
   $("#select_item_crud").change(function() {
@@ -33,9 +31,11 @@ $(document).ready(function() {
     id_cat_after_click=$(this).attr('id');
     if(id_cat_actual!==id_cat_after_click){
       $(".cont_fila_crear_sku :input").each(function() {
-        if($(this).val()!=="" && $(this).val()!==null) {
-            campos_llenos=1;
-            return; // igual recorre todo el bucle
+        if($(this).val()!="" /* $(this).val()!=null*/) {
+          console.log($(this).attr('id'));  
+          console.log($(this).val());
+          campos_llenos=1;
+          return; // igual recorre todo el bucle
         }
       });
       if(campos_llenos==1){
@@ -52,42 +52,66 @@ $(document).ready(function() {
       }
     }
   });
-  $("#select_sku_subdpto").change(function() { cargarSelectsSku('Subdpto', $(this).val()) });
-  $("#select_sku_prenda").change(function() { cargarSelectsSku('Kayser_SEASON', $(this).val()) });
+
 
   /********************* COMENTAR SI NO FUNCAN: EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
-      //verificaremos que todos esten llenos, si es asi, poner el prefijo
-      let is_empty=0;
-      var valores=new Object();
-      valores['padre']=id_cat_actual.substr(8,id_cat_actual.length)
-      document.querySelectorAll(".prefijo").forEach(function(eli){
-        valores[eli.name]=eli.value;
-        if(eli.value=="")
-          is_empty=1;
-      });
-      if(is_empty==0){
-        console.log(valores);
-        getPrefix(valores);
-      }else
-        document.getElementById('txt_sku_prefijo').value ="";
-    }
+      if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
+        cargarSelectsSku('Subdpto', el.value);
+        resetInputTextCodeArticle()       
+      } else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
+        cargarSelectsSku('Kayser_SEASON', el.value);
+        resetInputTextCodeArticle()
+      } else {
+        //verificaremos que todos esten llenos, si es asi, poner el prefijo
+        let is_empty = 0;
+        var valores = new Object();
+        valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
+        document.querySelectorAll(".prefijo").forEach(function (eli) {
+          valores[eli.name] = eli.value;
+          if (eli.value == "")
+            is_empty = 1;
+        });
+        if (is_empty == 0) {
+          // console.log(valores);
+          getPrefix(valores);
+        } else
+          resetInputTextCodeArticle()
+        }
+      }
   });
+
+  // $("#select_sku_subdpto").change(function() { 
+  //   document.getElementById('txt_sku_prefijo').value = "";
+  //   document.getElementById('txt_sku_correlativo').value = "";
+  //   cargarSelectsSku('Subdpto', $(this).val());
+  // });
+  // $("#select_sku_prenda").change(function() {
+  //   document.getElementById('txt_sku_prefijo').value = "";
+  //   document.getElementById('txt_sku_correlativo').value = "";
+  //   cargarSelectsSku('Kayser_SEASON', $(this).val());
+  // });
+
+
 /*******************************************************************************************************/
 });
-
+function resetInputTextCodeArticle(){
+  document.getElementById('txt_sku_prefijo').value = "";
+  document.getElementById('txt_sku_correlativo').value = "";
+}
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
   $.ajax({ url : 'prefijo.php', type : 'post', dataType : 'json', data : values,
     success : function(data) {
+      // console.log(data);
       if(!!data['errors']){
         console.log("Error al consultar PRECIOS, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
       }else {
         if(data['prefijo']!="SIN RESULTADOS")
           document.getElementById('txt_sku_prefijo').value=data['prefijo'];
-          // document.getElementById('txt_sku_correlativo').value=['correlativo'];
+          document.getElementById('txt_sku_correlativo').value=data['ultimo'];
       }
     },
     error : function() { console.log("error"); }
@@ -96,7 +120,7 @@ function getPrefix(values){
 
 //FUNCION QUE MUESTRA EL PANEL CREAR SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
-  // $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
+  $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
   id_cat_actual=id_cat;
   color=$("#"+id_cat).css('background-color');
   $(".cont_img_categoria").css('-webkit-transform', 'none');//quitamos a todos el efecto scale
@@ -122,6 +146,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
+      console.log(parametros['option']);
       console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       data.values.forEach(function(item,index){
@@ -144,8 +169,14 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
               $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
             }
           } //FIN if(item['options']!="SIN RESULTADOS")
+          else { console.log("SIN RESULTADOS, Si cantidad de este log=2, posiblemente sean las copas y formacopa") ;}
         }
       });
+      if (!!data.grand_childs) {
+        data.grand_childs.forEach(function (item, index) {
+          $("select[name='" + item + "']").html("<option value=''></option>"); //reseteamos las opciones a vacio
+        }); 
+      }     
     },
     error: function() {
       console.log("error");

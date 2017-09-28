@@ -50,7 +50,15 @@ if($existe_error_conexion){
   }
   $data['prefijo']=$prefijo;
   //AHORA OBTENEMOS EL CORRELATIVO:
-  $query_ultimo="SELECT U_APOLLO_SEG1 FROM Kayser_OITM WHERE ItemCode like '$prefijo.%' AND U_APOLLO_SEG1 IS NOT NULL GROUP BY U_APOLLO_SEG1";
+  $query_ultimo="SELECT TOP 1 CONVERT(INT,SUBSTRING( U_APOLLO_SEG1 ,CHARINDEX('.',U_APOLLO_SEG1)+1 , LEN(U_APOLLO_SEG1 ))) AS CORRELATIVO FROM Kayser_OITM WHERE ItemCode like '$prefijo.%' AND U_APOLLO_SEG1 IS NOT NULL GROUP BY U_APOLLO_SEG1 ORDER BY CONVERT(INT,SUBSTRING( U_APOLLO_SEG1 ,CHARINDEX('.',U_APOLLO_SEG1)+1 , LEN(U_APOLLO_SEG1 ))) DESC";
+  // echo $query_ultimo."<br>";
+  $arr_ultimo=$sqlsrv->select($query_ultimo,'sqlsrv_n_p');
+  // var_dump($arr_ultimo);
+  if($arr_ultimo[0][0]>=1000)
+    $ultimo=intval($arr_ultimo[0][0])+1;
+  else 
+    $ultimo=1000;
+  $data['ultimo']=$ultimo;
   echo json_encode($data);
 
 ?>

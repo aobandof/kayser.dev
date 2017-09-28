@@ -122,7 +122,8 @@ if($_POST['option']=="cargar_selects_dependientes") {
       }//fin if($_POST['nom_tabla_padre']==$array_tabla['dep'])
     }
   }//fin foreach
-  array_unshift($options, $array_grand_child);//agregmos los descendientes al inicio de la data a enviar por json
+  // array_unshift($options, $array_grand_child);//agregmos los descendientes al inicio de la data a enviar por json
+  $data['grand_childs']=$array_grand_child;
   $mysqli->closeConnection();
   $sqlsrv->closeConnection();
   echo json_encode($data);
