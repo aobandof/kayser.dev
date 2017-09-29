@@ -1,3 +1,37 @@
+let arr_tallas_letras=['XS','S','M','L','XL','XXL'];
+
+function sortTallas(arr_to_order){
+  arr_conjunto=[];
+  arr_numeros=[];
+  arr_letras=[];
+  arr_otros=[];
+  arr_to_order.forEach(function(item, index){
+    talla = item['nombre'];
+    if(talla % 1 == 0)
+      arr_numeros.push(parseInt(talla));
+    else if(arr_tallas_letras.indexOf(talla)!=-1)
+      arr_letras.push(talla);
+    else
+      arr_otros.push(talla);
+  })
+  if(arr_otros.length>0){
+    // console.log("arr_otros",arr_otros);
+    arr_otros.forEach(item => arr_conjunto.push(item));
+  }
+  if(arr_numeros.length>0){
+    // console.log("arr_numeros", arr_numeros);
+    arr_numeros = arr_numeros.sort((a, b) => a - b);
+    arr_numeros.forEach(item => arr_conjunto.push(item));
+  }
+  if(arr_letras.length>0){
+    // console.log("arr_letras", arr_letras);
+    //aca debemos ordenasr el array
+    arr_letras.forEach( item => arr_conjunto.push(item));
+  }    
+  console.log(arr_conjunto);
+  // if()
+
+}
 // var arr_obj_tallas=[
 //   { familia:'T01',  tallas : ['XS','S','M','L','XL'] },
 //   { familia:'T02',  tallas : ['28','30','32','34','36'] },
@@ -18,9 +52,6 @@
 //     fillSelectMultipleFromArray(arr_obj_tallas, "div_sel_opciones",false);
 //   });
 // });
-function fillSelectOpciones(arr_item,id_div_otions){
-  
-}
 function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_name){
   arr_item.forEach(function(item,index){
     let div1=document.createElement('div');
@@ -32,8 +63,12 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
     div3.className='cont_tallas';
     var cont_div2='<input type="checkbox" name="" value="" class="check_familia">'+(show_item_name? '&nbsp<label>'+item['familia']+'</label>' : "" );
     var cont_div3="";
+    // console.log(item['tallas']);
+    // console.log(item['familia']);
+    sortTallas(item['tallas']);
     item['tallas'].forEach(function(item, index){
-      cont_div3+='<input type="checkbox" name="'+item+'" disabled="true" class="check_talla">&nbsp<label>'+item+'</label>&nbsp&nbsp&nbsp'
+      // console.log(item);
+      cont_div3+='<input type="checkbox" name="'+item.nombre+'" disabled="true" class="check_talla">&nbsp<label>'+item.nombre+'</label>&nbsp&nbsp&nbsp'
     });
     div2.innerHTML=cont_div2;
     div3.innerHTML=cont_div3;

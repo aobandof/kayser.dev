@@ -30,10 +30,8 @@ $(document).ready(function() {
   $(".cont_img_categoria").click(function() {
     id_cat_after_click=$(this).attr('id');
     if(id_cat_actual!==id_cat_after_click){
-      $(".cont_fila_crear_sku :input").each(function() {
+      $(".cont_fila_crear_sku :input, .full_fila :input").each(function() {
         if($(this).val()!="" /* $(this).val()!=null*/) {
-          console.log($(this).attr('id'));  
-          console.log($(this).val());
           campos_llenos=1;
           return; // igual recorre todo el bucle
         }
@@ -52,7 +50,6 @@ $(document).ready(function() {
       }
     }
   });
-
 
   /********************* COMENTAR SI NO FUNCAN: EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
@@ -146,11 +143,12 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      console.log(parametros['option']);
-      console.log(data);
+      // console.log(parametros['option']);
+      // console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       data.values.forEach(function(item,index){
         if(item['tabla']=="Talla"){
+          // console.log(item['options']);
           document.getElementById("div_sel_grupo_opciones").innerHTML = "";
           fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
         } else {

@@ -25,10 +25,10 @@ if($_POST['option']=="cargar_selects_independientes"){
     if(!isset($array_tabla['dep']) && $tabla!="RelacionPrefijo"){
       $nombre_name=$array_tabla['campo'];
       if(!isset($array_tabla['id']))//TABLA SIN DEPENDENCIA SIN ID
-        $query="select ".$array_tabla['campo']." as id,".$array_tabla['campo']." as name from $tabla";
+        $query="select ".$array_tabla['campo']." as id,".$array_tabla['campo']." as name from $tabla ORDER BY ".$array_tabla['campo'];
       else {
         $nombre_id=$array_tabla['id'];
-        $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla";
+        $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla ORDER BY ".$array_tabla['campo'];
       }
       if($array_tabla['bd']=="mysql"){// SI LA TABLA ES MYSQL
         if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
@@ -74,14 +74,14 @@ if($_POST['option']=="cargar_selects_dependientes") {
         if($array_tabla['bd']=="mysql") { // la tabla y la relacion estan en MOTOR MYSQL
           if(!isset($array_tabla['id'])) { //TABLA CON ID o CODIGO distinto al NOMBRE
             if($tablas_sku[$padre]['type_id']=="INT") //TABLA DEPENDIENTE SIN ID PERO CON ID PADRE ENTERO
-              $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
+              $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre ORDER BY ".$array_tabla['campo'];
             else
-              $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."'";
+              $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."' ORDER BY ".$array_tabla['campo'];
           }else {// TABLA DEPENDIENTE CON ID
             if($tablas_sku[$padre]['type_id']=="INT") //TABLA DEPENDIENTE CON ID PROPIO E ID PADRE ENTERO
-              $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
+              $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre ORDER BY ".$array_tabla['campo'];
             else
-              $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."'";
+              $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."' ORDER BY ".$array_tabla['campo'];
           }
           if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
             $data['errors'][]=$mysqi->getErrors();
@@ -92,7 +92,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
           }
         }//fin if if($array_tabla['bd']=="mysql")
         else {//cargamos en un array el id y name de la tabla en mencion
-          $query_id_name="SELECT ".$array_tabla['id'].",".$array_tabla['campo']." from $tabla";
+          $query_id_name="SELECT ".$array_tabla['id'].",".$array_tabla['campo']." from $tabla ORDER BY ".$array_tabla['campo'];
           if($tablas_sku[$tabla]['bd']=="mysql")
             $array_tabla_extraida=$mysqli->selectArrayUniAssocIdName($query_id_name);
           else 
