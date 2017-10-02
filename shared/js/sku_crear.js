@@ -1,5 +1,9 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual;
 $(document).ready(function() {
+
+  document.getElementById('div_copa').style.display = 'none'; //inicialmente ocultamos la caja que contiene las copas
+
+
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
   $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
@@ -24,7 +28,12 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });/********************* FIN CERRAR EVENTOS MODALES  ***********************/
-
+  // $("#select_sku_composicion").change(function(){
+  //   console.log($("#select_sku_composicion").val());
+  // });
+  // $("#select_sku_color").change(function(){
+  //   console.log($("#select_sku_color").val());
+  // })
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
@@ -41,12 +50,16 @@ $(document).ready(function() {
           campos_llenos=0;
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
-          $("#select_sku_composicion").selectpicker("deselectAll");
+          // $("#select_sku_composicion").selectpicker("deselect");
+          $("#select_sku_composicion").attr("selected", false);
+          $("#select_sku_composicion").selectpicker("refresh");
+          $("#span_tallas_chosen").text(' ');
+          document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
         }
       }else {
         cargarCategoriaCrear(id_cat_after_click);
-        $("#select_sku_color").selectpicker("deselectAll");
-        $("#select_sku_composicion").selectpicker("deselectAll");
+        document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
+        // $("#select_sku_color").selectpicker("deselectAll");
       }
     }
   });
@@ -56,11 +69,15 @@ $(document).ready(function() {
     el.onchange=function(){
       if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
         cargarSelectsSku('Subdpto', el.value);
-        resetInputTextCodeArticle()       
-      } else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
-        cargarSelectsSku('Kayser_SEASON', el.value);
-        resetInputTextCodeArticle()
+        resetInputTextCodeArticle()  
+        document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  
+      } else if (el.id === "select_sku_prenda") { 
+        el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
+        cargarSelectsSku('Kayser_SEASON', el.value); //para inicializar y llenar los selects depedientes de Prenda
+        resetInputTextCodeArticle();
       } else {
+        if (el.id === "select_sku_categoria")
+          (el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
         //verificaremos que todos esten llenos, si es asi, poner el prefijo
         let is_empty = 0;
         var valores = new Object();
@@ -154,11 +171,12 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
         } else {
           if(item['options']!="SIN RESULTADOS"){
             optito="";
-            if(item['tabla'] == 'Color') {
+            if(item['tabla'] == 'Color') {              
               item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
               $("select[name='" + item['tabla'] + "']").html(optito);
               $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
             } else if (item['tabla'] == 'Composicion') {
+              optito += '<option value=""></option>';
               item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
               $("select[name='" + item['tabla'] + "']").html(optito);
               $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker

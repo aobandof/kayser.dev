@@ -1,4 +1,17 @@
-let arr_tallas_letras=['XS','S','M','L','XL','XXL'];
+let arr_tallas_letras=['XS','S','M','L','XL','XXL','XXXL'];
+
+function sortTallasLeters(arr_to_order) {
+  // idx_menor=-1;
+  arr_tallas=[];
+  arr_to_order.forEach((function(item){
+    indice=arr_tallas_letras.indexOf(item);
+    // arr_bidi.push({'indice':indice, 'talla':item});
+    arr_tallas[indice]=item;
+  }));
+  // console.log("array disque ordenado: ",arr_tallas);
+  return(arr_tallas);
+
+}
 
 function sortTallas(arr_to_order){
   arr_conjunto=[];
@@ -25,11 +38,11 @@ function sortTallas(arr_to_order){
   }
   if(arr_letras.length>0){
     // console.log("arr_letras", arr_letras);
-    //aca debemos ordenasr el array
+    arr_letras = sortTallasLeters(arr_letras);
     arr_letras.forEach( item => arr_conjunto.push(item));
   }    
-  console.log(arr_conjunto);
-  // if()
+  // console.log("array conjunto: ",arr_conjunto);
+  return arr_conjunto;
 
 }
 // var arr_obj_tallas=[
@@ -53,6 +66,8 @@ function sortTallas(arr_to_order){
 //   });
 // });
 function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_name){
+  console.log(arr_item);
+  arr_tallas_ordenadas=[];
   arr_item.forEach(function(item,index){
     let div1=document.createElement('div');
     let div2=document.createElement('div');
@@ -63,12 +78,9 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
     div3.className='cont_tallas';
     var cont_div2='<input type="checkbox" name="" value="" class="check_familia">'+(show_item_name? '&nbsp<label>'+item['familia']+'</label>' : "" );
     var cont_div3="";
-    // console.log(item['tallas']);
-    // console.log(item['familia']);
-    sortTallas(item['tallas']);
-    item['tallas'].forEach(function(item, index){
-      // console.log(item);
-      cont_div3+='<input type="checkbox" name="'+item.nombre+'" disabled="true" class="check_talla">&nbsp<label>'+item.nombre+'</label>&nbsp&nbsp&nbsp'
+    arr_tallas_ordenadas=sortTallas(item['tallas']);
+    arr_tallas_ordenadas.forEach(function(item, index){
+      cont_div3+='<input type="checkbox" name="'+item+'" disabled="true" class="check_talla">&nbsp<label>'+item+'</label>&nbsp&nbsp&nbsp'
     });
     div2.innerHTML=cont_div2;
     div3.innerHTML=cont_div3;
@@ -78,6 +90,7 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
     contenedor_opciones.appendChild(div1);
   });
   $(".check_familia").change(function() {
+    $("#span_tallas_chosen").text(' ');
     var valor=$(this).prop('checked');
     $(this).parent().siblings(0).children('.check_talla').attr('disabled', !valor);//habilitar/deshabilitar los chek de las tallas segun si se chekea o no la familia
     if(valor===false)
@@ -88,6 +101,17 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
         $(this).children('.cont_tallas').children('.check_talla').prop('checked',false);
         $(this).children('.cont_tallas').children('.check_talla').attr('disabled',true);
       });
+    }
+  });
+  $(".check_talla").click(function(){
+    let tallas_chosen="";
+    if ($(".check_talla:checked").length===0)
+      $("#span_tallas_chosen").text(' ');
+    else {
+      $(".check_talla:checked").each(function () {
+        tallas_chosen += $(this).attr('name') + ",  "
+      })
+      $("#span_tallas_chosen").text((tallas_chosen.trim()).slice(0, -1));
     }
   });
 }

@@ -60,11 +60,11 @@
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
               <div class="multiples_grupos_opciones" id="div_multiples_grupos_opciones">
-                <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_grupo_opciones"><span>&nbsp</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_grupo_opciones"><span id="span_tallas_chosen">&nbsp</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
                 <div class="collapse" id="div_sel_grupo_opciones"></div>
               </div>
             </div>
-            <div class="cont_fila_crear_sku container_row  ">
+            <div class="cont_fila_crear_sku container_row " id="div_copa">
               <div><span class="">COPA&nbsp</span><select name="Copa" id="select_sku_copa" class="form-control"><option value=""></option></select></div>
               <div><span class="">FORMA COPA.&nbsp</span><select name="FormaCopa" id="select_sku_fcopa" class="form-control"><option value=""></option></select></div>
             </div>
@@ -79,7 +79,7 @@
             <div class="cont_fila_crear_sku container_row d75-25">
               <div><span class="">COMPOSIC.&nbsp</span>
                 <!-- <input type="text" id="txt_sku_composicion" name="" value="" class="form-control"> -->
-                <select name="Composicion" id="select_sku_composicion" class="form-control" data-live-search="true" title="" multiple></select>
+                <select name="Composicion" id="select_sku_composicion" class="form-control" data-live-search="true" title=""></select>
               </div>
               <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="" value="" class="form-control"></div>
             </div>
@@ -93,9 +93,9 @@
               </div>
             </div>
             <div class="cont_fila_crear_sku container_row" ><span>DESCRIPCION&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control"></div>
-            <div class="cont_fila_crear_sku container_row" ><span>BARCODE&nbsp</span><input type="text" id="txt_sku_barcode" name="" value="" class="form-control"></div>
-            <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp
-            <div class="cont_fila_crear_sku container_row" ><span>CÓDIGOS SKU A GENERAR:</span></div><br>
+            <!-- <div class="cont_fila_crear_sku container_row" ><span>BARCODE&nbsp</span><input type="text" id="txt_sku_barcode" name="" value="" class="form-control"></div> -->
+            <!-- <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp -->
+            <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br>
             <div id="div_rel_skus">Relación de códigos SKUs aquí..</div></div>
         </div>
         <div class="cont_botonera_inf container_row">
