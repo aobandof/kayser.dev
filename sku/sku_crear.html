@@ -21,7 +21,7 @@
       <div class="container_row">
         <div class="cont_imgs_categorias">
             <div class="cont_img_categoria" id="div_cat_dama"><img src="../shared/img/img_mujer.jpg" alt=""><span>Mujer</span></div>
-            <div class="cont_img_categoria" id="div_cat_hombres"><img src="../shared/img/img_hombre.jpg" alt=""><span>Varón</span></div>
+            <div class="cont_img_categoria" id="div_cat_hombres"><img src="../shared/img/img_hombre.jpg" alt=""><span>Hombre</span></div>
             <div class="cont_img_categoria" id="div_cat_lola"><img src="../shared/img/img_lola.jpg" alt=""><span>Lola</span></div>
             <div class="cont_img_categoria" id="div_cat_lolo"><img src="../shared/img/img_lolo.jpg" alt=""><span>Lolo</span></div>
             <div class="cont_img_categoria" id="div_cat_niña"><img src="../shared/img/img_niña.jpg" alt=""><span>Niña</span></div>
@@ -42,61 +42,62 @@
         <div class="comp_crear_sku container_row">
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">MARCA&nbsp</span><select name="Marca" id="select_marca" class="form-control prefijo"><option value=""></option></select></div>
-              <div><span class="">SUBDPTO&nbsp</span><select name="Subdpto" id="select_sku_subdpto" class="form-control prefijo"><option value=""></option></select></div>
+              <div><span class="">MARCA&nbsp</span><select name="Marca" id="select_marca" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">SUBDPTO&nbsp</span><select name="Subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRENDA&nbsp</span><select name="Kayser_SEASON" id="select_sku_prenda" class="form-control prefijo"><option value=""></option></select></div>
-              <div><span class="">CAT.PRENDA&nbsp</span><select name="Kayser_DIV" id="select_sku_categoria" class="form-control prefijo"><option value=""></option></select></div>
+              <div><span class="">PRENDA&nbsp</span><select name="Kayser_SEASON" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">CAT.PRENDA&nbsp</span><select name="Kayser_DIV" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRESENT.&nbsp</span><select name="Presentacion" id="select_sku_presentacion" class="form-control prefijo"><option value=""></option></select></div>
-              <div><span class="">MATERIAL&nbsp</span><select name="Material" id="select_sku_material" class="form-control"><option value=""></option></select></div>
+              <div><span class="">PRESENT.&nbsp</span><select name="Presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">MATERIAL&nbsp</span><select name="Material" id="select_sku_material" class="form-control sku_control"><option value=""></option></select></div>
             </div>
             <div class="full_fila">
                 <span class="">COLOR&nbsp</span>
-                <select name="Color" id="select_sku_color" class="form-control" data-live-search="true" title="" multiple></select>
+                <select name="Color" id="select_sku_color" class="form-control sku_control" data-live-search="true" title="" multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
               <div class="multiples_grupos_opciones" id="div_multiples_grupos_opciones">
-                <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_grupo_opciones"><span id="span_tallas_chosen">&nbsp</span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                <div class="cont_sel_boton" data-toggle="collapse" data-target="#div_sel_grupo_opciones"><span id="span_tallas_chosen"></span><i class="fa fa-caret-down" aria-hidden="true"></i></div>
                 <div class="collapse" id="div_sel_grupo_opciones"></div>
               </div>
             </div>
             <div class="cont_fila_crear_sku container_row " id="div_copa">
-              <div><span class="">COPA&nbsp</span><select name="Copa" id="select_sku_copa" class="form-control"><option value=""></option></select></div>
-              <div><span class="">FORMA COPA.&nbsp</span><select name="FormaCopa" id="select_sku_fcopa" class="form-control"><option value=""></option></select></div>
+              <div><span class="">COPA&nbsp</span><select name="Copa" id="select_sku_copa" class="form-control sku_control"><option value=""></option></select></div>
+              <div><span class="">FORMA COPA.&nbsp</span><select name="FormaCopa" id="select_sku_fcopa" class="form-control sku_control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">T.PRENDA&nbsp</span><select name="TempPrenda" id="select_sku_tprenda" class="form-control"><option value=""></option></select></div>
-              <div><span class="">T.CATALOGO&nbsp</span><select name="TempCatalogo" id="select_sku_tcatalogo" class="form-control"><option value=""></option></select></div>
+              <div><span class="">T.PRENDA&nbsp</span><select name="TempPrenda" id="select_sku_tprenda" class="form-control sku_control"><option value=""></option></select></div>
+              <div><span class="">T.CATALOGO&nbsp</span><select name="TempCatalogo" id="select_sku_tcatalogo" class="form-control sku_control"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">GRUPO USO&nbsp</span><select name="GrupoUso" id="select_sku_grupo_uso" class="form-control"><option value=""></option></select></div>
-              <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control"></textarea></div>
+              <div><span class="">GRUPO USO&nbsp</span><select name="GrupoUso" id="select_sku_grupo_uso" class="form-control sku_control"><option value=""></option></select></div>
+              <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control sku_control"></textarea></div>
             </div>
             <div class="cont_fila_crear_sku container_row d75-25">
               <div><span class="">COMPOSIC.&nbsp</span>
                 <!-- <input type="text" id="txt_sku_composicion" name="" value="" class="form-control"> -->
-                <select name="Composicion" id="select_sku_composicion" class="form-control" data-live-search="true" title=""></select>
+                <select name="Composicion" id="select_sku_composicion" class="form-control sku_control" data-live-search="true" title=""></select>
               </div>
-              <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="" value="" class="form-control"></div>
+              <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="" value="" class="form-control sku_control"></div>
             </div>
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
             <div class="cont_fila_crear_sku container_row" >
               <span>C. ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
-                <input type="text" id="txt_sku_prefijo" name=""  class="form-control" value="" readonly>  
-                <input type="number" id="txt_sku_correlativo" name=""  class="form-control" value="" >
+                <input type="text" id="txt_sku_prefijo" name=""  class="form-control sku_control" value="" readonly>  
+                <input type="number" id="txt_sku_correlativo" name=""  class="form-control sku_control" value="" >
               </div>
             </div>
-            <div class="cont_fila_crear_sku container_row" ><span>DESCRIPCION&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control"></div>
+            <div class="cont_fila_crear_sku container_row" ><span>DESCRIPCION&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control sku_control"></div>
             <!-- <div class="cont_fila_crear_sku container_row" ><span>BARCODE&nbsp</span><input type="text" id="txt_sku_barcode" name="" value="" class="form-control"></div> -->
             <!-- <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp -->
-            <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br>
-            <div id="div_rel_skus">Relación de códigos SKUs aquí..</div></div>
+            <!-- <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br> -->
+            <!-- <div id="div_rel_skus">Relación de códigos SKUs aquí..</div> -->
+          </div>
         </div>
         <div class="cont_botonera_inf container_row">
           <button type="button" name="button" id="btn_guardar_enviar" class="btn btn-primary">GUARDAR Y ENVIAR</button>
@@ -105,7 +106,7 @@
         </div>
     </div>
 
-    <!-- COMPONENTE ITEM -->
+    <!-- COMPONENTE MODAL ITEM -->
     <div class="modal modal_panel" id="div_crud_item">
       <div class="content_modal">
         <div class="header_modal">
@@ -136,9 +137,9 @@
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE ITEM -->
+    <!-- FIN COMPONENTE MODAL ITEM -->
 
-    <!-- COMPONENTE RELACION -->
+    <!-- COMPONENTE MODAL RELACION -->
     <div class="modal modal_panel" id="div_crud_relations">
       <div class="content_modal">
         <div class="header_modal">
@@ -161,9 +162,9 @@
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE RELACION -->
+    <!-- FIN COMPONENTE MODAL RELACION -->
 
-    <!-- COMPONENTE PREFIJOS -->
+    <!-- COMPONENTE MODAL PREFIJOS -->
     <div class="modal modal_panel" id="div_crud_prefix">
       <div class="content_modal">
         <div class="header_modal">
@@ -190,7 +191,37 @@
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE PREFIJOS -->
+    <!-- FIN COMPONENTE MODAL PREFIJOS -->
+
+    <!-- COMPONENTE MODAL PREVIEW GUARDAR SKU -->
+    <div class="modal modal_panel" id="div_preview_save">
+      <div class="content_modal">
+        <div class="header_modal">
+          <span>Previsualización de SKUs a guardar</span>
+          <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_prefix" alt="">
+        </div>
+        <div class="body_modal">
+          <div class="comp_filters container_row">
+            <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
+          </div>
+          <div class="tabla_div" id="div_tabla_prefix">
+            <div class="thead_div">
+              <div class="row tr" id="div_head_tr_prefix"></div>
+            </div>
+            <div class="tbody_div" id="div_tbody">
+              <div class="row tr"></div>
+            </div>
+            <div class="tfooter_div">
+              <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
+              <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
+              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN COMPONENTE MODAL GUARDAR SKU -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>

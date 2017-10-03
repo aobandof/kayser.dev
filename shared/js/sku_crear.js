@@ -63,53 +63,88 @@ $(document).ready(function() {
       }
     }
   });
-
-  /********************* COMENTAR SI NO FUNCAN: EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
+  /********* EVENTO PARA AUTORELLENAR LA DESCRIPCION *****/
+  document.getElementById('select_sku_material').onchange=function(){
+    if(this.value!=""){
+      let vacio = 0; //inivar
+      document.querySelectorAll('.prefijo').forEach(function (sel) { 
+        if (sel.value == "") { vacio = 1; return false; }
+      });
+      if(vacio === 0 ) 
+        autoFillDescription();
+    } else document.getElementById('txt_sku_descripcion').value = "";
+  };
+  /********************* EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
-      if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
-        cargarSelectsSku('Subdpto', el.value);
-        resetInputTextCodeArticle()  
-        document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  
-      } else if (el.id === "select_sku_prenda") { 
-        el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
-        cargarSelectsSku('Kayser_SEASON', el.value); //para inicializar y llenar los selects depedientes de Prenda
-        resetInputTextCodeArticle();
-      } else {
-        if (el.id === "select_sku_categoria")
-          (el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
-        //verificaremos que todos esten llenos, si es asi, poner el prefijo
-        let is_empty = 0;
-        var valores = new Object();
-        valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
-        document.querySelectorAll(".prefijo").forEach(function (eli) {
-          valores[eli.name] = eli.value;
-          if (eli.value == "")
-            is_empty = 1;
-        });
-        if (is_empty == 0) {
-          // console.log(valores);
-          getPrefix(valores);
-        } else
-          resetInputTextCodeArticle()
+      if(el.value!=""){ // el valor cambiado del control select debe ser diferente de vacio
+        if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
+          resetInputTextCodeArticle()  
+          cargarSelectsSku('Subdpto', el.value);
+          document.getElementById('txt_sku_descripcion').value = "";
+          document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  -- OCULTAMOS EL DIV Con los controles para copa
+        }else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
+          el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
+          resetInputTextCodeArticle();
+          document.getElementById('txt_sku_descripcion').value = "";
+          cargarSelectsSku('Kayser_SEASON', el.value); 
+        } else {
+          if (el.id === "select_sku_categoria")
+            (el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
+          //verificaremos que todos esten llenos, si es asi, poner el prefijo
+          let is_empty = 0;
+          var valores = new Object();//valores necesarios para consultar la BDx y obtener el prefijo
+          valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
+          document.querySelectorAll(".prefijo").forEach(function (ele) {
+            valores[ele.name] = ele.value;
+            if (ele.value == "")
+              is_empty = 1;
+          });
+          if (is_empty == 0) {
+            getPrefix(valores);
+            //ademas verificamos si select_sku_material tiene valors, si es asi, autorellenar la descripcion
+            if(document.getElementById('select_sku_material').value!="")
+              autoFillDescription();
+          } else
+            resetInputTextCodeArticle()
         }
-      }
+      } else document.getElementById('txt_sku_descripcion').value = "";
+    }
   });
+/************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
+  document.getElementById('btn_guardar_enviar').onclick=function(){
+    let empty=0;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+    document.querySelectorAll('.sku_control').forEach(function(control){
+      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+        if(control.value=='')  empty=1;
+    });
+    if (tallas=="") empty=1;
+    if(empty===0)
+      $("#div_preview_save").css('visibility', 'visible'); 
+    else
+      alert("Todos los campos tienen que ser llenados");
+  }
 
-  // $("#select_sku_subdpto").change(function() { 
-  //   document.getElementById('txt_sku_prefijo').value = "";
-  //   document.getElementById('txt_sku_correlativo').value = "";
-  //   cargarSelectsSku('Subdpto', $(this).val());
-  // });
-  // $("#select_sku_prenda").change(function() {
-  //   document.getElementById('txt_sku_prefijo').value = "";
-  //   document.getElementById('txt_sku_correlativo').value = "";
-  //   cargarSelectsSku('Kayser_SEASON', $(this).val());
-  // });
 
 
 /*******************************************************************************************************/
 });
+//FUNCION PARA AUTORELLENAR LA DESCRIPCION
+function autoFillDescription(){
+  let descripcion = "";//inivar
+  let prenda = document.getElementById('select_sku_prenda');
+  let categoria = document.getElementById('select_sku_categoria');
+  let material = document.getElementById('select_sku_material');
+  if ((prenda.options[prenda.selectedIndex].text == "CALZON") || (prenda.options[prenda.selectedIndex].text == categoria.options[categoria.selectedIndex].text))
+    descripcion += categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
+  else
+    descripcion += prenda.options[prenda.selectedIndex].text + ' ' + categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
+  console.log(descripcion);
+  document.getElementById('txt_sku_descripcion').value=descripcion;
+}
+
+//FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
 function resetInputTextCodeArticle(){
   document.getElementById('txt_sku_prefijo').value = "";
   document.getElementById('txt_sku_correlativo').value = "";
