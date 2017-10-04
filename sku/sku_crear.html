@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- <meta http-equiv="refresh" content="1"> ESto lo usamos para refrescar la pagina cada 1 segundo -->
   <link rel="stylesheet" href="../shared/css/normalize.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
@@ -14,6 +15,7 @@
   <link rel="stylesheet" href="../shared/css/sku_crear.css">
   <link rel="stylesheet" href="../shared/css/controls.css">
   <link rel="stylesheet" href="../shared/css/modal.css">
+
   <title>SKU / Articulos</title>
 </head>
 <body>
@@ -197,26 +199,14 @@
     <div class="modal modal_panel" id="div_preview_save">
       <div class="content_modal">
         <div class="header_modal">
-          <span>Previsualización de SKUs a guardar</span>
+          <span>Preview Guardar SKUs</span>
           <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_prefix" alt="">
         </div>
         <div class="body_modal">
-          <div class="comp_filters container_row">
-            <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
+          <div class="preview_article">
+            <span class="title_item"></span>
           </div>
-          <div class="tabla_div" id="div_tabla_prefix">
-            <div class="thead_div">
-              <div class="row tr" id="div_head_tr_prefix"></div>
-            </div>
-            <div class="tbody_div" id="div_tbody">
-              <div class="row tr"></div>
-            </div>
-            <div class="tfooter_div">
-              <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
-              <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

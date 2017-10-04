@@ -112,19 +112,21 @@ $(document).ready(function() {
     }
   });
 /************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
-  document.getElementById('btn_guardar_enviar').onclick=function(){
-    let empty=0;
-    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-    document.querySelectorAll('.sku_control').forEach(function(control){
-      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-        if(control.value=='')  empty=1;
-    });
-    if (tallas=="") empty=1;
-    if(empty===0)
-      $("#div_preview_save").css('visibility', 'visible'); 
-    else
-      alert("Todos los campos tienen que ser llenados");
-  }
+  $("#div_preview_save").css('visibility', 'visible'); // lo mostramos rapidamente para editar los controles
+  
+  // document.getElementById('btn_guardar_enviar').onclick=function(){
+  //   let empty=0;
+  //   let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+  //   document.querySelectorAll('.sku_control').forEach(function(control){
+  //     if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+  //       if(control.value=='')  empty=1;
+  //   });
+  //   if (tallas=="") empty=1;
+  //   if(empty===0)
+  //     $("#div_preview_save").css('visibility', 'visible'); 
+  //   else
+  //     alert("Todos los campos tienen que ser llenados");
+  // }
 
 
 

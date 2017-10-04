@@ -234,6 +234,15 @@ body, html {
 #div_crud_prefix, #div_crud_prefix .header_modal { background-color: rgba(44, 2, 5, 0.61); }
 #div_crud_relations .body_modal { background-color: rgb(231, 243, 234); }
 #div_crud_prefix .body_modal { background-color: rgb(243, 230, 230); }
+#div_preview_save .body_modal {
+  background-color: rgba(3, 48, 66, 0.88);
+  border: 1px solid white;
+}
+#div_preview_save .header_modal { background-color: white; color: rgba(3, 48, 66, 0.88); }
+.preview_article {
+  background-color: #00FF6A;
+  border: 1px solid white;
+}
 /**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
 .cont_config .dropdown-menu {
   left: -5rem;
