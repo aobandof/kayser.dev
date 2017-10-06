@@ -1,4 +1,5 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual,cod_dpto;
+
 $(document).ready(function() {
 
   document.getElementById('div_copa').style.display = 'none'; //inicialmente ocultamos la caja que contiene las copas
@@ -112,26 +113,41 @@ $(document).ready(function() {
     }
   });
 /************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
-  $("#div_preview_save").css('visibility', 'visible'); // lo mostramos rapidamente para editar los controles
+
+  /////////////////////////////////////
+
+
+
+
   
-  // document.getElementById('btn_guardar_enviar').onclick=function(){
-  //   let empty=0;
-  //   let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-  //   document.querySelectorAll('.sku_control').forEach(function(control){
-  //     if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-  //       if(control.value=='')  empty=1;
-  //   });
-  //   if (tallas=="") empty=1;
-  //   if(empty===0)
-  //     $("#div_preview_save").css('visibility', 'visible'); 
-  //   else
-  //     alert("Todos los campos tienen que ser llenados");
-  // }
-
-
+  document.getElementById('btn_guardar_enviar').onclick=function(){
+    let empty=0;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+    document.querySelectorAll('.sku_control').forEach(function(control){
+      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+        if(control.value=='')  empty=1;
+    });
+    if (tallas=="") empty=1;
+    //sacar esto despues /
+    empty=0;
+    //////////////////////
+    if(empty===0) {
+        let modal_preview_save = document.getElementById('div_preview_save');
+        modal_preview_save.style.visibility = 'visible';
+        // makeFillArticlePreview();
+        console.log(cod_dpto);
+    }
+    else
+      alert("Todos los campos tienen que ser llenados");
+  }
 
 /*******************************************************************************************************/
 });
+function makeCodesSku(){
+  colores=document.getElementById('select_sku_color').value;
+  tallas = document.getElementById('span_tallas_chosen').innerHTML.split(',');
+  console.log(tallas);
+}
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
   let descripcion = "";//inivar
@@ -200,6 +216,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
       // console.log(parametros['option']);
       // console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
+      if (!!data.dpto) { cod_dpto = data.dpto /*console.log('codigo departamento:' + data.dpto)*/; }
       data.values.forEach(function(item,index){
         if(item['tabla']=="Talla"){
           // console.log(item['options']);

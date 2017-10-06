@@ -35,7 +35,7 @@ $sku = array(
 
 # ARRAY QUE CONTIENE DETALLES DE BDX, TABLAS, CAMPOS Y RELACIONES  SOBRE SKU
 $tablas_sku = Array(
-  'Kayser_OITB'      => Array( 'bd'=>'mssql', 'dep'=>'padre',        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
+  'Kayser_OITB'      => Array( 'bd'=>'mssql',                        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
   'Marca'            => Array( 'bd'=>'mysql',                        'campo_sku'=>'U_Marca',         'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'Subdpto'          => Array( 'bd'=>'mysql', 'dep'=>'Kayser_OITB',  'campo_sku'=>'U_SUBGRUPO1',     'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'Dpto_Subdpto', 'nom_cod_rel'=>'Subdpto_id', 'nom_cod_padre_rel'=>'Dpto_codigo'),
   'Kayser_SEASON'    => Array( 'bd'=>'mssql', 'dep'=>'Subdpto',      'campo_sku'=>'U_APOLLO_SEASON', 'id'=>'Code',       'type_id'=>'STRING',  'campo'=>'Name', 'tabla_rel'=>'Subdpto_Prenda', 'nom_cod_rel'=>'Prenda_codigo', 'nom_cod_padre_rel'=>'Subdpto_id'),

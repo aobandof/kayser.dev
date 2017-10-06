@@ -59,9 +59,10 @@ if($_POST['option']=="cargar_selects_dependientes") {
   $array_tabla_extraida=[];
   $options=[];
   $padre=$_POST['nom_tabla_padre'];
-  if($tablas_sku[$padre]['dep']=='padre')//se buscará dependientes de DEPARTAMENTO (el padre supremo)
-    $codigo_padre=getIdFromName($_POST['nom_tabla_padre'],$_POST['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
-  else
+  if($padre=='Kayser_OITB'){//se buscará dependientes de DEPARTAMENTO (el padre supremo)
+    $codigo_padre=getIdFromName($padre,$_POST['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
+    $data['dpto']=$codigo_padre;
+  } else
     $codigo_padre=$_POST['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $ops="";//"<option value=''></option>";
