@@ -431,6 +431,7 @@ function cargarTablaSeccion(tabla) {
           celdas_img+='<div class="td col-1 col-lg-1"><img src="../shared/img/cancel.ico" alt="" class="icon_fila" id="img_cancel_N"></div>';
           fila_modelo.insertAdjacentHTML('beforeend',celdas_img);
           body.insertBefore(fila_modelo,body.firstChild);
+          body.querySelector('.editable').firstChild.focus();
           /***** agregamos el evento click al icono guardar y cancel de esta fila nueva  ****/
           document.getElementById("img_save_N").onclick = function(){
             this.parentNode.parentNode.querySelectorAll('.editable').forEach(function (el) { //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
@@ -513,13 +514,21 @@ function deleteRegistry(cod_registro){
   return true;
 }
 function createRegistry(arr_contenido) {
-  JSON.stringify(arr_contenido.serializeArray());
+  var parameters = new Object();
+  parameters['option'] = 'create_item';
+  parameters['table'] = item_crud_selected;
+  for (var key in arr_contenido) {
+    parameters[key]=arr_contenido[key]
+  }
+  // JSON.stringify(arr_contenido.serializeArray());
   // console.log("ARRAY ANTES DE CODIFICAR: ", arr_contenido);
-  // JSON.stringify(arr_contenido);
+  // arr_contenido = JSON.stringify(arr_contenido);
   // console.log("ARRAY DESPUES DE CODIFICAR: ", arr_contenido);
-  parameters= { 'option': 'create_item', 'values' : arr_contenido, 'table' : item_crud_selected };
-  
+  // parameters= { 'option': 'create_item', 'table' : item_crud_selected  };
+
+  // arr_contenido = JSON.stringify(parameters);
   console.log("PARAMETROS ENVIADOS: ", parameters);
+
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
     success: function(data){
       console.log("DATOS RECIBIDOS: ",data);

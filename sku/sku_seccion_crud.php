@@ -3,10 +3,11 @@ require_once("../shared/clases/config.php");
 require_once("../shared/clases/DBConnection.php");
 require_once("../shared/clases/HelpersDB.php");
 require_once("../shared/clases/inflector.php");
-/// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+ini_set('display_errors', '0');
+$sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
 $mysqli=new DBConnection('mysqli', $MYSQL['dev']['host'], $MYSQL['dev']['user'], $MYSQL['dev']['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
-///if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
+if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
 if($existe_error_conexion){
   echo json_encode($data);
@@ -51,17 +52,30 @@ if($_POST['option']=="cargar_seccion"){
   $data['filas']=$arr_tabla;
   echo json_encode($data);
 }
-if($_POST['option']=="create_item") {
-  $tabla=$_POST['table'];
+if($_GET['option']=="create_item") {
+  echo "entro<br>";
+  $table=$_GET['table'];
   // $values=json_decode(stripslashes($_POST['values']));
-  $values=json_decode($_POST['values']);
-  // $query_crete="insert into $tabla values(";
+  // $values=json_decode($_POST['values']);
+  foreach ($_GET as $key => $value)
+    if($key!='table' && $key!='option')
+      $values[$key]=$value;
+    
+  // if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL
+    $result=$mysqli->insert($table,$values);
+  // }else
+    // $result=$sqlsrv->insert($table,$values);
+  if($result===false)
+    $data['errors'][]=$sqlsrv->getErrors();
+  else
+    $data['result']=$result;
+  // $data['values']=$values;  
   // foreach($values as $campo => $valor){
   //   $data[$campo]=$valor;
   // }
   //PRIMERO COMPROBAMOS QUE NO EXISTA EL NOMBRE A INGRESAR, NI EL 
-  $data['table']=$tabla;
-  $data['values']=$values;
+  // $data['table']=$table;
+  // $data['values']=$values;
   // echo "nada por ahora";
   echo json_encode($data);
 }

@@ -64,9 +64,42 @@ class DBConnection {
     else
       return $arr_export;
   }
-
-  public function insert($query){
-
+  // por ahora las inserciones solamente se haran a mysql
+  public function insert($table,$values){
+    $types="";
+    $questions="";
+    $string_keys="";
+    foreach ( $values as $key => $valor ){
+      $string_keys.=$key.",";
+      if(is_numeric($valor))
+        is_int($valor) ? $types.='i' : $types.='d';
+      else
+        $types.='s';
+      $questions.="?,";
+      $arr_values[]=$valor;
+    }
+    $questions=substr($questions,0,strlen($questions)-1);
+    $string_keys=substr($string_keys,0,strlen($string_keys)-1);
+    $query="INSERT INTO $table ($string_keys) values ($questions)";
+    // echo $query."<br>";  
+    if ($this->_driver=="mysqli"){
+      $stmt=$this->_connection->prepare($query);
+      if ($smtp===false){
+        return false;
+      }else{
+        $vals = array_merge(array($types), $arr_values);
+        // $stmt->bind_param($vals/*$types,$arr_values*/);
+        /// $types=array($types);//converitmos la cadena en array para poder MERGE con el arr_values
+        var_dump($vals);
+        call_user_func_array(array($stmt, 'bind_param'), $vals); 
+        if (mysqli_warning_count($this->_connection))
+            $warning = mysqli_get_warnings($this->_connection); 
+        $succes=$stmt->execute();
+        if ($succes) { return true; } 
+        else { return false; }
+      }    
+    }
+    
   }
   public function update($query){
 
