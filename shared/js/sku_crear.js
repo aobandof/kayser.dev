@@ -1,4 +1,4 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual,cod_dpto;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual,cod_dpto, item_crud_selected;
 
 $(document).ready(function() {
 
@@ -9,11 +9,12 @@ $(document).ready(function() {
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
   $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
   /**************** EVENTOS DENTRO DE LOS MODALES *****************/
-  $("#select_item_crud").change(function() {
+  document.getElementById('select_item_crud').onchange= function() {
+    item_crud_selected=this.value;
     $("#div_tabla_item>tbody_div").html('');
     $("#div_tabla_item").css('visibility', 'visible');
     cargarTablaSeccion($(this).val());
-  });
+  }
   /****************** EVENTOS PARA CERRAR LAS VENTANAS MODALES ****************/
   $(".close_modal, .close_modal2").click(function () {
     if ( this.className == "close_modal")
@@ -120,34 +121,34 @@ $(document).ready(function() {
 
 
   
-  document.getElementById('btn_guardar_enviar').onclick=function(){
-    let empty=0;
-    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-    document.querySelectorAll('.sku_control').forEach(function(control){
-      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-        if(control.value=='')  empty=1;
-    });
-    if (tallas=="") empty=1;
-    //sacar esto despues /
-    empty=0;
-    //////////////////////
-    if(empty===0) {
-        let modal_preview_save = document.getElementById('div_preview_save');
-        modal_preview_save.style.visibility = 'visible';
-        // makeFillArticlePreview();
-        console.log(cod_dpto);
-    }
-    else
-      alert("Todos los campos tienen que ser llenados");
-  }
+  ////descomentar despues // document.getElementById('btn_guardar_enviar').onclick=function(){
+  ////descomentar despues //   let empty=0;
+  ////descomentar despues //   let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+  ////descomentar despues //   document.querySelectorAll('.sku_control').forEach(function(control){
+  ////descomentar despues //     if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+  ////descomentar despues //       if(control.value=='')  empty=1;
+  ////descomentar despues //   });
+  ////descomentar despues //   if (tallas=="") empty=1;
+  ////descomentar despues //   //sacar esto despues /
+  ////descomentar despues //   empty=0;
+  ////descomentar despues //   //////////////////////
+  ////descomentar despues //   if(empty===0) {
+  ////descomentar despues //       let modal_preview_save = document.getElementById('div_preview_save');
+  ////descomentar despues //       modal_preview_save.style.visibility = 'visible';
+  ////descomentar despues //       // makeFillArticlePreview();
+  ////descomentar despues //       console.log(cod_dpto);
+  ////descomentar despues //   }
+  ////descomentar despues //   else
+  ////descomentar despues //     alert("Todos los campos tienen que ser llenados");
+  ////descomentar despues // }
 
 /*******************************************************************************************************/
 });
-function makeCodesSku(){
-  colores=document.getElementById('select_sku_color').value;
-  tallas = document.getElementById('span_tallas_chosen').innerHTML.split(',');
-  console.log(tallas);
-}
+////descomentar despues //function makeCodesSku(){
+////descomentar despues //  colores=document.getElementById('select_sku_color').value;
+////descomentar despues //  tallas = document.getElementById('span_tallas_chosen').innerHTML.split(',');
+////descomentar despues //  console.log(tallas);
+////descomentar despues //}
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
   let descripcion = "";//inivar
@@ -303,9 +304,12 @@ function cargarTablaSeccion(tabla) {
           body.appendChild(div_fila);
         })
         // *** CREAMOS LOS EVENTOS PARA LOS ICONOS CREADOS ***/
-        contenido_original=[];
-        contenido_actualizar=[];
-        contenido_guardar=[];
+        var contenido_original=[];
+        var contenido_actualizar=[];
+        var contenido_guardar=[];
+        // var contenido_original= new Object();
+        // var contenido_actualizar=new Object();
+        // var contenido_guardar=new Object();
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");//desactivamos el evento click
         // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
@@ -492,7 +496,9 @@ function getAllNodesEqualType(nodo,alcance,selector){
 }
 
 function updateRegistry(arr_contenido) {
+  console.log(arr_contenido);
   return true;
+  
   // var parameters={ 'option': 'update', 'values' : arr_contenido };
   // $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
   //   beforeSend: function (){ },
@@ -503,8 +509,24 @@ function updateRegistry(arr_contenido) {
   // });
 }
 function deleteRegistry(cod_registro){
+  console.log(item_crud_selected, cod_registro);
   return true;
 }
 function createRegistry(arr_contenido) {
+  JSON.stringify(arr_contenido.serializeArray());
+  // console.log("ARRAY ANTES DE CODIFICAR: ", arr_contenido);
+  // JSON.stringify(arr_contenido);
+  // console.log("ARRAY DESPUES DE CODIFICAR: ", arr_contenido);
+  parameters= { 'option': 'create_item', 'values' : arr_contenido, 'table' : item_crud_selected };
+  
+  console.log("PARAMETROS ENVIADOS: ", parameters);
+  $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    success: function(data){
+      console.log("DATOS RECIBIDOS: ",data);
+    },
+    error: function() {
+      console.log("error");
+    }    
+  });
   return true;
 }
