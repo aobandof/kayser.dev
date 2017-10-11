@@ -84,22 +84,22 @@ class DBConnection {
     // echo $query."<br>";  
     if ($this->_driver=="mysqli"){
       $stmt=$this->_connection->prepare($query);
-      if ($smtp===false){
+      $vals = array_merge(array($types), $arr_values);
+      // $stmt->bind_param($vals/*$types,$arr_values*/);
+      /// $types=array($types);//converitmos la cadena en array para poder MERGE con el arr_values
+      var_dump($vals);
+      call_user_func_array(array($stmt, 'bind_param'), $vals); 
+      $succes=$stmt->execute();
+      if ($this->_connection->connect_errno) {
+        echo "existe error";
         return false;
       }else{
-        $vals = array_merge(array($types), $arr_values);
-        // $stmt->bind_param($vals/*$types,$arr_values*/);
-        /// $types=array($types);//converitmos la cadena en array para poder MERGE con el arr_values
-        var_dump($vals);
-        call_user_func_array(array($stmt, 'bind_param'), $vals); 
-        if (mysqli_warning_count($this->_connection))
-            $warning = mysqli_get_warnings($this->_connection); 
-        $succes=$stmt->execute();
-        if ($succes) { return true; } 
-        else { return false; }
-      }    
+        echo "SIN ERROR";
+        return $this->_connection->affected_rows;
+      }
+      // if ($succes) { return true; } 
+      // else { return false; }  
     }
-    
   }
   public function update($query){
 
@@ -111,6 +111,7 @@ class DBConnection {
     if($this->_driver=="sqlsrv")  sqlsrv_close($this->_connection);
     else if ($this->_driver=="mysql")  $this->_connection->close(); // si hay mas driver se agregan mas aca
   }
+  ########################################   METODO PARA OBTENER LOS ERRORES  #########################################
   public function getErrors(){ // funcion que retorna un array con el/los errores de la conexion o la transaccion a la BDx
     $arr_errors=[];
     if($this->_driver=="sqlsrv") {
@@ -118,7 +119,8 @@ class DBConnection {
         foreach( $errors as $error )
             $arr_errors[]=array('sqlstate'=>$error[ 'SQLSTATE'], 'code'=>$error[ 'code'], 'message'=>$error[ 'message']);
     }elseif ($this->_driver=="mysqli"){
-      if ($this->_connection->connect_error){
+      // if ($this->_connection->connect_error){
+      if ($this->_connection->connect_errno){
         $arr_errors[]=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
       }else
         $arr_errors[]=array('code'=>$this->_connection->errno, 'message'=> $this->_connection->error);

@@ -52,36 +52,34 @@ if($_POST['option']=="cargar_seccion"){
   $data['filas']=$arr_tabla;
   echo json_encode($data);
 }
+#########################################  INSERT ITEM #############################################################
 if($_GET['option']=="create_item") {
   echo "entro<br>";
   $table=$_GET['table'];
-  // $values=json_decode(stripslashes($_POST['values']));
-  // $values=json_decode($_POST['values']);
   foreach ($_GET as $key => $value)
     if($key!='table' && $key!='option')
       $values[$key]=$value;
-    
+  //PRIMERO COMPROBAMOS QUE NO EXISTA EL NOMBRE A INGRESAR, NI EL   
+  
   // if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL
     $result=$mysqli->insert($table,$values);
   // }else
     // $result=$sqlsrv->insert($table,$values);
-  if($result===false)
-    $data['errors'][]=$sqlsrv->getErrors();
-  else
+  /// if($result===false)
+  ///   $data['errors'][]=$mysqli->getErrors();
+  /// else
     $data['result']=$result;
-  // $data['values']=$values;  
-  // foreach($values as $campo => $valor){
-  //   $data[$campo]=$valor;
-  // }
-  //PRIMERO COMPROBAMOS QUE NO EXISTA EL NOMBRE A INGRESAR, NI EL 
+
   // $data['table']=$table;
   // $data['values']=$values;
   // echo "nada por ahora";
   echo json_encode($data);
 }
+#########################################  UPDATE ITEM #############################################################
 if($_POST['option']=="update_item") {
   echo "nada por ahora";
 }
+#########################################  DELETE ITEM #############################################################
 if ($_POST['option'] == "delete_item" ){
   echo "nada por ahora";
 }

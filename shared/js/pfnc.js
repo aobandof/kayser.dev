@@ -43,6 +43,7 @@ $(document).ready(function() {
   });
 });
 
+
 function cargarTabla(){
     var obj_filtros=new Object();
     obj_filtros['opcion']='filtrar';

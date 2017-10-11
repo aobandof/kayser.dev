@@ -3,6 +3,9 @@ $(document).ready(function(){
     llenarSelect('tienda');
     $("#input_ciudad").prop('disabled', true);
     $("#button_ciudad").prop('disabled', true);
+    // $("#button_exportar").click(function(){
+
+    // });
 
     /********   EVENTOS *********/
     $("#chb_ciudad").click(function(){
@@ -18,7 +21,7 @@ $(document).ready(function(){
             $("#input_ciudad").val("")
             $("#input_ciudad").prop('disabled',true);
              $("#button_ciudad").prop('disabled',true);
-            resetearFiltros();
+            // resetearFiltros();
             $('#tbody_promotores tr').remove();
             $("#select_tienda").prop('disabled',false);
             llenarSelect('tienda');
@@ -26,7 +29,7 @@ $(document).ready(function(){
     });
     $("#select_tienda").change(function(){
          if($("#select_tienda").val()!='0'){
-             resetearFiltros();
+            //  resetearFiltros();
              $('#tbody_promotores tr').remove();
              cargarTabla("codigo_tienda",$("#select_tienda").val());
              $('#tbody_promotores tr').remove();
@@ -39,15 +42,15 @@ $(document).ready(function(){
         if(e.which == 13)
             reportarPromotoresCiudad();
     });
-    $('#img_exportar').click(function(){
-        generarExcel();
-    });
+    // $('#img_exportar').click(function(){
+    //     generarExcel();
+    // });
 });
 
 /********   FUNCIONES *********/
 function reportarPromotoresCiudad(){
     if($("#input_ciudad").val().length > 2 ) {
-        resetearFiltros();
+        // resetearFiltros();
         $('#tbody_promotores tr').remove();
         cargarTabla("nombre_ciudad",$("#input_ciudad").val());
     }
@@ -74,14 +77,13 @@ function llenarSelect(tabla){
         },
     });
 }
+
+
 function cargarTabla(campo,value){
     var parametros = { "solicitud" : 'cargar_tabla', "campo" : campo, "value" : value };
-     $.ajax({
-         data:  parametros,
-         url:   'modelo.php',
-         type:  'post',
-         dataType: "json",
+     $.ajax({ data:  parametros, url: 'modelo.php', type:  'post', dataType: "json",
          success: function(data){
+             console.log(data);
              var i=1;
              var fila;
              $.each(data, function(index){
@@ -90,60 +92,91 @@ function cargarTabla(campo,value){
                 $("#tbody_promotores").append(fila);
                 i++;
             });
+             var table = $('#table_promotoras').DataTable({
+                dom: 'Bfrtip',
+                buttons: [{
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i>',
+                    titleAttr: 'Exportar Excel',
+                    className: 'exportExcel',
+                    filename: 'Nt.Ventas_export'
+                }],
+                retrieve: true,//para que no hay error al crear datatable cuando ya existe
+                paging: false,//para que no hay error al crear datatable cuando ya existe
+                "ordering": false,
+                "paging": false,
+                "language": {
+                    "paginate": {
+                        "previous": "Anterior",
+                        "next": "Siguiente"
+                    },
+                    "search": "Buscar:",
+                    //"info": "Mostrando Página _PAGE_ de _PAGES_",
+                    "info": "",
+                    "infoEmpty": "Ningun despacho a mostrar",
+                    "sLengthMenu": "Mostrar _MENU_ Registros",
+                    "emptyTable": "Sin datos para mostrar",
+                    "infoFiltered": "(Filtros Obtenidos de _MAX_ entradas)",
+                    "zeroRecords": "Filtro no encontrado"
+                }
+            });
+
         },
         error: function() {
             alert('NO EXISTEN PROMOTORAS EN TIENDA ELEGIDA');
         }
      });
 }
-function resetearFiltros(){
-    $('.js-filter').val("");
-    $('#tbody_promotores tr').css('display','table -row');
-}
-function generarExcel() {
-    //alert("se clicqueo");
-    var hoy = new Date().toJSON().slice(0,10);
-    var creator = "aobandof";
-    var owner = "aobandof@outlook.com";
-    var subject = "Reporte Promotoras";
-    var filename = "temp/promotoras_(Tienda_"+$("#select_tienda option:selected").text()+"_fecha_"+hoy+")";
-    var array_tabla = new Array();
-    var i=0;
-    $('#tbody_promotores tr').each(function() {
-        if($(this).css('display')!='none'){
-            var j=0;
-            array_fila = new Array();
-            $(this).children("td").each(function() {
-                array_fila[j]=$(this).text();
-                j++;
-            });
-            array_tabla[i]=array_fila;
-            i++;
-        }
-    });
-    var dataset = JSON.stringify(array_tabla);
-    var position_title = 2;
-    var content_title = "Reporte de Promotoras";
-    var title_sheet = "promotoras";
-    var columns = new Array('N°','TIENDA','RUT', 'NOMBRES', 'CELULAR','TELEFONO','EMAIL','DIRECCION','COMUNA', 'CIUDAD', 'CUMPLEAÑOS','F. CREACION');
-    // switch a json
-    $.post("ReportExcel.php", {
-        creator: creator,
-        owner: owner,
-        subject: subject,
-        filename: filename,
-        dataset: dataset,
-        position_title: position_title,
-        content_title: content_title,
-        title_sheet: title_sheet,
-        columns: columns
-    })
-        .done(function(dataget) {
-            var output = $.parseJSON(dataget);
-            if (output.success) {
-                document.location.href = (output.url);
-            } else {
-                alert("There is no response, check the post data");
-            }
-        });
-}
+
+
+// function resetearFiltros(){
+//     $('.js-filter').val("");
+//     $('#tbody_promotores tr').css('display','table -row');
+// }
+// function generarExcel() {
+//     //alert("se clicqueo");
+//     var hoy = new Date().toJSON().slice(0,10);
+//     var creator = "aobandof";
+//     var owner = "aobandof@outlook.com";
+//     var subject = "Reporte Promotoras";
+//     var filename = "temp/promotoras_(Tienda_"+$("#select_tienda option:selected").text()+"_fecha_"+hoy+")";
+//     var array_tabla = new Array();
+//     var i=0;
+//     $('#tbody_promotores tr').each(function() {
+//         if($(this).css('display')!='none'){
+//             var j=0;
+//             array_fila = new Array();
+//             $(this).children("td").each(function() {
+//                 array_fila[j]=$(this).text();
+//                 j++;
+//             });
+//             array_tabla[i]=array_fila;
+//             i++;
+//         }
+//     });
+//     var dataset = JSON.stringify(array_tabla);
+//     var position_title = 2;
+//     var content_title = "Reporte de Promotoras";
+//     var title_sheet = "promotoras";
+//     var columns = new Array('N°','TIENDA','RUT', 'NOMBRES', 'CELULAR','TELEFONO','EMAIL','DIRECCION','COMUNA', 'CIUDAD', 'CUMPLEAÑOS','F. CREACION');
+//     // switch a json
+//     $.post("ReportExcel.php", {
+//         creator: creator,
+//         owner: owner,
+//         subject: subject,
+//         filename: filename,
+//         dataset: dataset,
+//         position_title: position_title,
+//         content_title: content_title,
+//         title_sheet: title_sheet,
+//         columns: columns
+//     })
+//         .done(function(dataget) {
+//             var output = $.parseJSON(dataget);
+//             if (output.success) {
+//                 document.location.href = (output.url);
+//             } else {
+//                 alert("There is no response, check the post data");
+//             }
+//         });
+// }

@@ -4,10 +4,15 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 @import url('https://fonts.googleapis.com/css?family=Libre+Baskerville');
 @import url('https://fonts.googleapis.com/css?family=Passion+One');
+body {
+ display: flex;
+ flex-direction: column;
+ align-items: center;  
+}
 
 #chb_ciudad {
     -webkit-appearance: checkbox !important;
-    width: 5rem;
+    width: 1.2rem !important;
 }
 .header {
     display: flex;
@@ -16,6 +21,9 @@
     justify-content: space-around;
     align-items: center;
     padding-left: 2rem;
+    padding-right: 1rem;
+    margin-bottom: .3rem;
+    width: 98%;
 }
 .titulo  span {
     color: #000080;
@@ -114,4 +122,34 @@ tbody tr td {
 }
 .fila td:nth-child(13) {
     text-align: right;
+}
+
+#table_promotoras {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+#table_promotoras th {
+    padding: 0.5em;
+    border: 1px solid #EEEEEE !important;
+    font-size: 0.7rem !important;
+}
+
+#table_promotoras td {
+    text-align: center;
+    color: #091161;
+    border: solid 1px #b1acaf !important;
+    font-size: 0.7rem !important;
+    /*border-collapse: inherit !important;*/
+}
+
+#div_tabla {
+    width: 98%;
+}
+
+.caption_option {
+    font-size: 1.3rem !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-weight: bold;
 }

@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="../shared/css/normalize.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="../shared/css/styles.css">
     <link rel="stylesheet" type="text/css" href="../shared/css/promotoras.css">
     <title>Listado Promotoras</title>
 </head>
@@ -13,39 +20,43 @@
     <div class="header">
         <div class="titulo" id="div_titulo"><span>PROMOTORAS</span></div>
         <div id="div_ciudad">
-            <input type="checkbox" name="activar_ciudad" id="chb_ciudad" class="">
-            <span><strong>Ciudad: </strong></span>
+            <input type="checkbox" name="activar_ciudad" id="chb_ciudad" class="form-control">&nbsp&nbsp
+            <span class="caption_option"><strong>Ciudad: </strong></span>
             <input type="text" id="input_ciudad" class="form-control">
             <button type="button" id="button_ciudad" class="btn btn-primary form-control">
-                <span class="glyphicon glyphicon-play-circle"></span>
+                <!-- <span class="glyphicon glyphicon-play-circle"></span> -->
+                <i class="fa fa-search" aria-hidden="true"></i>
             </button>
         </div>
         <div id="div_tienda">
             <!--<input type="checkbox" name="activar_tienda" id="chb_tienda" class="">-->
-            <span><strong>Tienda: </strong></span>
+            <span class="caption_option"><strong>Tienda: </strong></span>
             <select class="form-control" name="nombre_tienda" id="select_tienda" data-style="btn-primary">
             </select>
         </div>
+        <!-- <div id="div_exportar">
+            <button id="button_exportar" class="btn btn-primary">EXCEL</button>          
+        </div> -->
     </div>
     <div class="table-responsive" id="div_tabla" >
-        <table class="table-sm table-bordered">
+        <table class="table-sm table-bordered" id="table_promotoras">
             <thead>
                <tr class="nombre_campos">
                     <th >N°</th>
                     <th>TIENDA</th>
-                    <th>RUT<!--<span class="js-sorter-desc lyphicon glyphicon-chevron-down pull-right"></span><span class="js-sorter-asc     glyphicon glyphicon-chevron-up pull-right"></span>--></th>
-                    <th>NOMBRES<!--<span class="js-sorter-desc lyphicon glyphicon-chevron-down pull-right"></span> <span class="js-sorter-asc glyphicon glyphicon-chevron-up pull-right"></span>--></th>
+                    <th>RUT</th>
+                    <th>NOMBRES</th>
                     <th>CELULAR</th>
                     <th>TELEFONO</th>
                     <th>EMAIL</th>
                     <th>DIRECCION</th>
-                    <th>COMUNA <!--<span class="js-sorter-desc lyphicon glyphicon-chevron-down pull-right"></span> <span class="js-sorter-asc glyphicon glyphicon-chevron-up pull-right"></span>--></th>
-                    <th>CIUDAD <!--<span class="js-sorter-desc lyphicon glyphicon-chevron-down pull-right"></span> <span class="js-sorter-asc glyphicon glyphicon-chevron-up pull-right"></span>--></th>
+                    <th>COMUNA</th>
+                    <th>CIUDAD</th>
                     <th>CUMPLEAÑOS </th>
                     <th>ULT.COMPRA</th>
                     <th>MONTO</th>
                 </tr>
-                <tr id="fila_filtros">
+                <!-- <tr id="fila_filtros">
                     <th></th>
                     <th><input class="js-filter form-control" type="text" value=""></th>
                     <th><input class="js-filter form-control" type="text" value=""></th>
@@ -58,17 +69,23 @@
                     <th><input class="js-filter form-control" type="text" value=""></th>
                     <th></th>
                     <th></th>
-                </tr>
+                </tr> -->
             </thead>
             <tbody id="tbody_promotores" >
             </tbody>
         </table>
     </div>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../shared/js/dynamitable.jquery.min.js"></script>
-    <script src="../shared/js/tableExport.js"></script>
-    <script src="../shared/js/promotoras.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<!-- NO FUNCIONA CON JQUERY 3 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script src="../shared/js/promotoras.js"></script>
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>-->
 </body>
 </html>
