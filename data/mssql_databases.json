@@ -62,5 +62,11 @@
       "database" : "WMSTEK_KAYSER_INTERFAZ",
       "descripcion" : "Registros con codigo de SKU y Stock para Compras ONLINE"
     }
+  },
+  "COLUMNS": {
+    "AvgPrice": {
+      "table": "OITM",
+      "descripcion": "precio de cada SKU"
+    }
   }
 }

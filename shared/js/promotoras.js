@@ -99,7 +99,7 @@ function cargarTabla(campo,value){
                     text: '<i class="fa fa-file-excel-o"></i>',
                     titleAttr: 'Exportar Excel',
                     className: 'exportExcel',
-                    filename: 'Nt.Ventas_export'
+                    filename: 'Promotoras',
                 }],
                 retrieve: true,//para que no hay error al crear datatable cuando ya existe
                 paging: false,//para que no hay error al crear datatable cuando ya existe
