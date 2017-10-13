@@ -1,0 +1,30 @@
+html,body {
+  height: 100%;
+}
+#div_errores_tpv {
+  padding-top: 5rem !important;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(201, 234, 247, 0.59);
+}
+#div_errores_tpv>div {
+  height: 25%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 2px solid white;
+  background-color: rgba(68, 47, 255, 0.15);
+  border-radius: .5rem;
+}
+#div_errores_tpv button {
+  margin: .5rem;
+}
+#div_errores_tpv button:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.2);
+  transform: scale(1.1);
+}

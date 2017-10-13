@@ -102,6 +102,7 @@ $htx->print_header(1);
                 $costo=$row_stock_[0];
                   $costo_img='no_falta_costo.png';
             }
+
             $diferencia=$row_error[2] - $row_error[5];
             if ($row_error[0] ne $almacen and $costo > 0) {
                $almacen=$row_error[0];
@@ -159,7 +160,7 @@ $htx->print_header(3);
    my @Comments_array  =split("<",  $Comments_);
    my $te=0;
    while($RecordKey_array[$te]){
-         $htx->param('RecordKey_array'=>$RecordKey_array[$te],'Comments_array'=>$Comments_array[$te],'DocDate_array'=>$DocDate_);
+         $htx->param('RecordKey_array'=>$RecordKey_array[$te],'Comments_array'=>$Comments_array[$te],'c'=>$DocDate_);
          $htx->print_detail;
          $te++;
    }
