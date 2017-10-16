@@ -394,14 +394,7 @@ function cargarTablaSeccion(tabla) {
         document.querySelectorAll(".icon_delete").forEach(elemento => elemento.onclick = function() {
           codigo=(this.id).slice(11);
           if(confirm("DESEA REALMENTE ELIMINAR ESTE REGISTRO")){
-            if(deleteRegistry(codigo)){
-              alert("REGISTRO ELIMINADO EXITOSAMENTE!")
-              fila=this.parentNode.parentNode;
-              document.getElementById("div_tbody").removeChild(fila);
-            }
-            else {
-                alert("No se pudo Eliminar");
-            }
+            deleteRegistry(codigo);
           }
         });
         // ###################   EVENTO CLICK PARA LOS BUTTON_NUEVO ##############################
@@ -440,14 +433,7 @@ function cargarTablaSeccion(tabla) {
             });
             if (contenido_guardar['Nombre'] != "") {
               if (confirm("¿Desea realmente ingresar este NUEVO VALOR?")) {
-                if (createRegistry(contenido_guardar)) {
-                  cargarTablaSeccion(tabla);//funcion recursiva que vuelve a cargar la tabla
-                  document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
-                  document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
-                  alert("Registro creado Correctamente");
-                } else {
-                  alert("No se pudo crear el nuevo valor");
-                }
+                createRegistry(contenido_guardar);
               }
             } else {
               alert('Campo Nombre es necesario para crear un nuevo valor');
@@ -497,8 +483,16 @@ function getAllNodesEqualType(nodo,alcance,selector){
 }
 
 function updateRegistry(arr_contenido) {
-  console.log(arr_contenido);
+  var parameters = new Object();
+  parameters['option'] = 'update_item';
+  parameters['table'] = item_crud_selected;
+  for (var key in arr_contenido) {
+    parameters[key.toLocaleLowerCase()] = arr_contenido[key].toLocaleUpperCase();
+  }
+  console.log(parameters);
   return true;
+
+  
   
   // var parameters={ 'option': 'update', 'values' : arr_contenido };
   // $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
@@ -510,28 +504,48 @@ function updateRegistry(arr_contenido) {
   // });
 }
 function deleteRegistry(cod_registro){
-  console.log(item_crud_selected, cod_registro);
+  // console.log(item_crud_selected, cod_registro);
+  var parameters={'option': 'delete_item','table': item_crud_selected, 'id':cod_registro}
+  // console.log(parameters);
+  $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    success: function(data){
+      if (!!data.errors)
+        console.log("Errores encontrados:".data.errors);
+      if (data.result === 1) {
+        cargarTablaSeccion(item_crud_selected);//funcion recursiva que vuelve a cargar la tabla  
+        alert("REGISTRO ELIMINADO SATISFACTORIAMENTE")
+      } else {
+        console.log(data.result);
+        alert("NO SE PUDO ELIMINAR EL REGISTRO");
+      }  
+    },
+    error: function(){ console.log('error'); }
+  });
+
   return true;
 }
+//FUNCION PARA CREAR REGISTRO ENVIANDO PARAMETROS A LA API Y RECIBIENDO LA RESPUESTA DE QUERY.
 function createRegistry(arr_contenido) {
   var parameters = new Object();
   parameters['option'] = 'create_item';
   parameters['table'] = item_crud_selected;
   for (var key in arr_contenido) {
-    parameters[key]=arr_contenido[key]
+    parameters[key.toLocaleLowerCase()] = arr_contenido[key].toLocaleUpperCase()
   }
-  // JSON.stringify(arr_contenido.serializeArray());
-  // console.log("ARRAY ANTES DE CODIFICAR: ", arr_contenido);
-  // arr_contenido = JSON.stringify(arr_contenido);
-  // console.log("ARRAY DESPUES DE CODIFICAR: ", arr_contenido);
-  // parameters= { 'option': 'create_item', 'table' : item_crud_selected  };
-
-  // arr_contenido = JSON.stringify(parameters);
-  console.log("PARAMETROS ENVIADOS: ", parameters);
-
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
     success: function(data){
-      console.log("DATOS RECIBIDOS: ",data);
+      //if(!!data['errors']) quiere decir que existen errores / data["result"]=1 => DATOS INSERTADOS CORRECTAMENTE / data["result"]=-1 => NO SE PUEDEN REGISTRAR VALORES EXISTENTES, Revise por favor.
+      if(!!data.errors)
+        console.log("Errores encontrados:".data.errors);
+      if(data.result===1){
+          document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+          cargarTablaSeccion(item_crud_selected);//funcion recursiva que vuelve a cargar la tabla  
+          alert("REGISTRO CREADO SATISFACTORIAMENTE");               
+      }else {
+        console.log(data.result);
+        alert("NO SE PUDO CREAR EL REGISTRO");   
+      }        
     },
     error: function() {
       console.log("error");

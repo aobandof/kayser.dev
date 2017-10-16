@@ -13,6 +13,7 @@ if($existe_error_conexion){
   echo json_encode($data);
   exit;
 }
+#########################################  SELECT ITEM #############################################################
 if($_POST['option']=="cargar_seccion"){
   $filas=[];
   $cabecera=[];
@@ -53,26 +54,38 @@ if($_POST['option']=="cargar_seccion"){
   echo json_encode($data);
 }
 #########################################  INSERT ITEM #############################################################
-if($_GET['option']=="create_item") {
-  echo "entro<br>";
-  $table=$_GET['table'];
-  foreach ($_GET as $key => $value)
+if($_POST['option']=="create_item") {
+  $repeated=0;
+  $table=$_POST['table'];
+  // var_dump($_POST);
+  foreach ($_POST as $key => $value)
     if($key!='table' && $key!='option')
       $values[$key]=$value;
-  //PRIMERO COMPROBAMOS QUE NO EXISTA EL NOMBRE A INGRESAR, NI EL   
-  
-  // if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL
-    $result=$mysqli->insert($table,$values);
-  // }else
-    // $result=$sqlsrv->insert($table,$values);
-  /// if($result===false)
-  ///   $data['errors'][]=$mysqli->getErrors();
-  /// else
-    $data['result']=$result;
-
-  // $data['table']=$table;
-  // $data['values']=$values;
-  // echo "nada por ahora";
+  //EXCEPCIONES DE CIERTAS TABLAS:
+  if($table=="Marca"){
+    $prefijo=$_POST['Prefijo'];
+    $query_marca="select nombre from Marca where prefijo='$prefijo'";
+    if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
+      if($arr_marca!==0)//quiere decir que se encontró el valor
+        $repeated=1;
+    }else 
+      $data['errors'][]=$sqlsrv->getErrors();
+  }
+  ///////// FIN EXCEPCIONES ////////
+  if($repeated==0){
+    if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL
+      $result=$mysqli->insert($table,$values);
+      if($result===false) $data['errors'][]=$mysqli->getErrors();
+      else $data['result']=$result;
+    }elseif($tablas_sku[$table]['bd']=='mssql') {     
+      $result=$sqlsrv->insert($table,$values);
+      if($result===false) $data['errors'][]=$sqlsrv->getErrors();
+      else $data['result']=$result;
+    }else
+      $data['errors'][]="Nombre de Tabla o campos desconocidos";    
+  }else { //si el valor es repetido
+    $data['result']=-1;
+  }
   echo json_encode($data);
 }
 #########################################  UPDATE ITEM #############################################################
@@ -81,6 +94,27 @@ if($_POST['option']=="update_item") {
 }
 #########################################  DELETE ITEM #############################################################
 if ($_POST['option'] == "delete_item" ){
-  echo "nada por ahora";
+  $table=$_POST['table'];
+  $id=$_POST['id'];
+  if($tablas_sku[$table]['type_id']=='INT')
+    $query="DELETE from $table WHERE ".$tablas_sku[$table]['id']."=$id";
+  else 
+    $query="DELETE from $table WHERE ".$tablas_sku[$table]['id']."='$id'";
+  // echo $query."<br>";
+  if($tablas_sku[$table]['bd']=='mysql'){
+    if(($result=$mysqli->delete($query))===false)
+      $data['errors'][]=$mysqli->getErrors();
+  }elseif($tablas_sku[$table]['bd']=='mssql'){
+    if(($result=$sqlsrv->delete($query))===false)#Esta pendiente esto
+      $data['errors'][]=$sqlsrv->getErrors();
+  }else
+    $data['errors'][]="Nombre de Tabla o campos desconocidos";    
+  if($result!==null)
+    $data['result']=$result;
+  else{
+    // echo "el valor de result es: ".$result;
+    $data['errors'][]="ERROR, NO SE PUEDE ELIMINAR";  
+  }
+  echo json_encode($data);
 }
 ?>

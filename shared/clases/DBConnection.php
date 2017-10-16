@@ -25,7 +25,9 @@ class DBConnection {
   public function query($query){
 
   }
-
+######################   FUNCION SELECT  ########################
+//$query:  cadena de insersion
+//$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
   public function select($query,$tipo_array){
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
@@ -64,49 +66,53 @@ class DBConnection {
     else
       return $arr_export;
   }
-  // por ahora las inserciones solamente se haran a mysql
-  public function insert($table,$values){
+######################   FUNCION PARA LAS INSERCIONES   ########################
+//$table:  nombre de la tabla
+//$values: array asociativo donde las keys son los nombres de los campos de la tabla
+  public function insert($table,$values){ 
     $types="";
     $questions="";
     $string_keys="";
     foreach ( $values as $key => $valor ){
       $string_keys.=$key.",";
-      if(is_numeric($valor))
-        is_int($valor) ? $types.='i' : $types.='d';
-      else
+      if(is_numeric($valor))//SI VALOR PASADO DESDE LA VISTA ES NUMERO
+        is_int($valor) ? $types.='i' : $types.='d';//SI ES ENTERO O DOUBLE
+      else //SI VALOR PASADO DESDE LA VISTA ES UNA CADENA
         $types.='s';
       $questions.="?,";
       $arr_values[]=$valor;
     }
-    $questions=substr($questions,0,strlen($questions)-1);
-    $string_keys=substr($string_keys,0,strlen($string_keys)-1);
+    $questions=substr($questions,0,strlen($questions)-1);//SACAMOS LA COMA DEL FINAL DE:  ?,?,...?,
+    $string_keys=substr($string_keys,0,strlen($string_keys)-1);//SACAMOS LA COMA DEL FINAL DE LOS NOMBRES DE CAMPOS
     $query="INSERT INTO $table ($string_keys) values ($questions)";
-    // echo $query."<br>";  
-    if ($this->_driver=="mysqli"){
+    if ($this->_driver=="mysqli"){//POR AHORA SOLO MYSQLI y SERA EVITANDO INYECCIONES DE CODIGO
       $stmt=$this->_connection->prepare($query);
-      $vals = array_merge(array($types), $arr_values);
-      // $stmt->bind_param($vals/*$types,$arr_values*/);
-      /// $types=array($types);//converitmos la cadena en array para poder MERGE con el arr_values
-      var_dump($vals);
+      $vals = array_merge(array($types), $arr_values);//PARA PODER UNIRLOS, $types SE CONVIERTE EN UN ARRAY con: array($types)
       call_user_func_array(array($stmt, 'bind_param'), $vals); 
-      $succes=$stmt->execute();
+      $stmt->execute();
       if ($this->_connection->connect_errno) {
-        echo "existe error";
-        return false;
+        // echo "errores existentes<br>";
+        return false; //SI HUBIERON ERRORES, RETORNA FALSO
       }else{
-        echo "SIN ERROR";
-        return $this->_connection->affected_rows;
-      }
-      // if ($succes) { return true; } 
-      // else { return false; }  
+        // echo "esta arrojando null<br>";
+        return $this->_connection->affected_rows; //SI return -1 NO SE PUDO REALIZAR LA INSERSION, 1 QUE SE REALIZÓ CORRECTAMENTE
+      }  
     }
   }
   public function update($query){
 
   }
+  ######################   FUNCION DELETE   ########################
   public function delete($query){
-
+    if ($this->_driver=="mysqli"){//POR AHORA SOLO MYSQLI
+      $deleteds=$this->_connection->query($query);
+      if($deleteds===false)
+        return false;
+      else
+        return $this->_connection->affected_rows;
+    }
   }
+
   public function closeConnection(){
     if($this->_driver=="sqlsrv")  sqlsrv_close($this->_connection);
     else if ($this->_driver=="mysql")  $this->_connection->close(); // si hay mas driver se agregan mas aca
@@ -130,7 +136,10 @@ class DBConnection {
   ######################################################################################################################
   ###############################################  FUNCIONES PERSONALIZADAS ############################################
   ######################################################################################################################
-  public function selectArrayUniAssocIdName($query){ //funcion que  retorna un array unidimencional asociativo, donde el id es key de cada fila de la tabla y name es el valor
+  public function selectArrayUniAssocIdName($query){ 
+    //funcion que  retorna un array unidimencional asociativo
+    //ejemplo: $query="select id,nombre from tabla //tiene que se un par de campos y no necesariamente el id, sino otros campos que se relacionen
+    //se retornará el array: { 'id1'=>'nombre1', 'id2'=>'nombre2' .... }
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
       $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
