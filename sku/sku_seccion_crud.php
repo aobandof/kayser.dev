@@ -62,8 +62,8 @@ if($_POST['option']=="create_item") {
     if($key!='table' && $key!='option')
       $values[$key]=$value;
   //EXCEPCIONES DE CIERTAS TABLAS:
-  if($table=="Marca"){
-    $prefijo=$_POST['Prefijo'];
+  if($table=="Marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
+    $prefijo=$_POST['prefijo'];
     $query_marca="select nombre from Marca where prefijo='$prefijo'";
     if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
       if($arr_marca!==0)//quiere decir que se encontró el valor
@@ -90,7 +90,46 @@ if($_POST['option']=="create_item") {
 }
 #########################################  UPDATE ITEM #############################################################
 if($_POST['option']=="update_item") {
-  echo "nada por ahora";
+  $repeated=0;
+  $table=$_POST['table'];
+  $id_name=$tablas_sku[$table]['id'];
+  $id_value=$_POST['id'];
+  // var_dump($_POST);
+  foreach ($_POST as $key => $value)
+    if($key!='table' && $key!='option' && $key!="id")
+      $values[$key]=$value;
+  //EXCEPCIONES DE CIERTAS TABLAS:
+  if($table=="Marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
+    $prefijo=$_POST['prefijo'];
+    $query_marca="select nombre from Marca where prefijo='$prefijo' AND prefijo!='' AND $id_name!=$id_value";
+    if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
+      if($arr_marca!==0)//quiere decir que se encontró el valor
+        $repeated=1;
+    }else 
+      $data['errors'][]=$sqlsrv->getErrors();
+  }
+  ///////// FIN EXCEPCIONES ////////
+  // echo $table."<br>";
+
+  if($repeated==0){
+    if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL
+      $result=$mysqli->update($table,$id_name,$id_value,$values);
+      if($result===false)
+        $data['errors'][]=$mysqli->getErrors();
+      else 
+        $data['result']=$result;
+    }elseif($tablas_sku[$table]['bd']=='mssql') {     
+      $result=$sqlsrv->update($table,$id_name,$id_value,$values);
+      if($result===false) $data['errors'][]=$sqlsrv->getErrors();
+      else $data['result']=$result;
+    }else
+      $data['errors'][]="Nombre de Tabla o campos desconocidos";    
+  }else { //si el valor es repetido
+    $data['result']=-1;
+    $data['resp']="No se pueden Actualizar Valores Existentes";
+  }
+   
+  echo json_encode($data);
 }
 #########################################  DELETE ITEM #############################################################
 if ($_POST['option'] == "delete_item" ){

@@ -99,8 +99,38 @@ class DBConnection {
       }  
     }
   }
-  public function update($query){
-
+  ####################   FUNCION PARA ACTUALIZAR   ############################
+  public function update($table,$id_nam,$id_val,$values){
+    $types="";
+    $query= "UPDATE $table SET ";
+    $arr_values=[];
+    // var_dump($values);
+    foreach($values as $key => $value){
+      $query.=$key."=?,";
+      if(is_numeric($value))//SI VALOR PASADO DESDE LA VISTA ES NUMERO
+        is_int($value) ? $types.='i' : $types.='d';//SI ES ENTERO O DOUBLE
+      else //SI VALOR PASADO DESDE LA VISTA ES UNA CADENA
+        $types.='s';      
+      $arr_values[]=$value;
+    }
+    $query=substr($query,0,strlen($query1)-1);//sacamos la ultima coma del final de la cadena
+    $query=$query." WHERE $id_nam=?";
+    if(is_numeric($id_val))
+      is_int($id_val) ? $types.='i' : $types.='d';
+    else
+      $types.='s';
+    $arr_values[]=$id_val;
+    if($this->_driver=='mysqli'){//por ahora solo actualizaremos tablas Mysql
+      $stmt=$this->_connection->prepare($query);
+      $vals = array_merge(array($types),$arr_values);
+      // var_dump($vals);
+      call_user_func_array(array($stmt,"bind_param"),$vals);
+      $stmt->execute();
+      if($this->_connection->connect_errno)
+        return false;
+      else
+        return $this->_connection->affected_rows;
+    }
   }
   ######################   FUNCION DELETE   ########################
   public function delete($query){
@@ -112,7 +142,7 @@ class DBConnection {
         return $this->_connection->affected_rows;
     }
   }
-
+  ########################   FUNCION CERRAR CONEXION  ########################
   public function closeConnection(){
     if($this->_driver=="sqlsrv")  sqlsrv_close($this->_connection);
     else if ($this->_driver=="mysql")  $this->_connection->close(); // si hay mas driver se agregan mas aca

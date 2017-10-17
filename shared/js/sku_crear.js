@@ -307,6 +307,8 @@ function cargarTablaSeccion(tabla) {
         var contenido_original=[];
         var contenido_actualizar=[];
         var contenido_guardar=[];
+        var contenido_parametro=[];
+
         // var contenido_original= new Object();
         // var contenido_actualizar=new Object();
         // var contenido_guardar=new Object();
@@ -316,29 +318,43 @@ function cargarTablaSeccion(tabla) {
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
             keycita=(el.id).slice((el.id).indexOf("_")+1);
             contenido_actualizar[keycita]=el.firstChild.value;
+            // console.log(el.firstChild.value);
           });
           if(contenido_actualizar['Nombre']!=""){
             if(confirm("¿Desea realmente continuar modificando?")) {
-              if(updateRegistry(contenido_actualizar)===true){
-                for (var index in contenido_actualizar)
-                  contenido_original[index]=contenido_actualizar[index];//cargamos el contenido actualizado al contenido original
-                alert("Datos actualizados correctamente");
-              }else {
-                alert("No se pudo Actualizar");
-              }
+              codigo = (this.id).slice(9);
+              updateRegistry(codigo, contenido_actualizar, function (resultado) {
+                console.log(this);
+                if(resultado===true){
+                  for (var index in contenido_actualizar)
+                    contenido_original[index] = contenido_actualizar[index]; //cargamos el contenido actualizado al contenido original
+                  alert("REGISTRO ACTUALIZADO");
+                }else 
+                  alert("NO SE PUDO ACTUALIZAR");   
+                document.querySelectorAll(".icon_save").forEach(function(){
+                  
+                });
+              });
             }
           }
           else {
             alert('Campo Nombre o Codigo son necesarios para actualizar');
           }
+
+
+
           this.style.pointerEvents = "none";
           this.classList.toggle("disabled");
           this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
           this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
+
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
             keycita=(el.id).slice((el.id).indexOf("_")+1); //obtenemos el id de las celdas editables para agregar a esta celda, el valor actualizado correspondiente
+            console.log(keycita);
             el.innerHTML = contenido_original[keycita]; //cargamos el contenido origignal, actualizado a las celdas
+            console.log(el);
           });
+
           contenido_original.length=0; //vaciamos este arreglo
           contenido_actualizar.length=0; //vaciamos este arreglo
           getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
@@ -348,6 +364,9 @@ function cargarTablaSeccion(tabla) {
           this.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
           document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
           document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
+
+
+
         });
         // ###################   EVENTO CLICK PARA LOS ICON_EDIT ##############################
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
@@ -481,32 +500,42 @@ function getAllNodesEqualType(nodo,alcance,selector){
   // console.log(cousinsList);
   return cousinsList;
 }
-
-function updateRegistry(arr_contenido) {
+//FUNCION PARA ACTUALIZAR EL REGISTRO
+function updateRegistry(cod_registro, arr_contenido, callback) {
+  let resultado;
   var parameters = new Object();
   parameters['option'] = 'update_item';
   parameters['table'] = item_crud_selected;
+  parameters['id'] = cod_registro;
   for (var key in arr_contenido) {
     parameters[key.toLocaleLowerCase()] = arr_contenido[key].toLocaleUpperCase();
   }
-  console.log(parameters);
-  return true;
-
-  
-  
-  // var parameters={ 'option': 'update', 'values' : arr_contenido };
-  // $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
-  //   beforeSend: function (){ },
-  //   success: function(data){
-  //     console.log(data);
-  //   },
-  //   error: function(){ console.log('error'); }
-  // });
-}
-function deleteRegistry(cod_registro){
-  // console.log(item_crud_selected, cod_registro);
-  var parameters={'option': 'delete_item','table': item_crud_selected, 'id':cod_registro}
   // console.log(parameters);
+  $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    success: function(data){
+      console.log("datos desde api: ",data);
+      if (!!data.errors)
+        console.log("Errores encontrados:".data.errors);
+      if (data.result === 1) {
+        resultado=true;        
+        // return true;
+        // cargarTablaSeccion(item_crud_selected); //funcion recursiva que vuelve a cargar la tabla          
+      } else {
+        console.log(data.result);
+        // return false;
+        resultado=false;
+      }
+      // callback(resultado);
+      // setTimeout(function () {
+        callback(resultado);
+      // }, 5000);
+    },
+    error: function(){ console.log('error'); }
+  });
+}
+//FUNCION PARA ELIMINAR REGISTRO
+function deleteRegistry(cod_registro){
+  var parameters={'option': 'delete_item','table': item_crud_selected, 'id':cod_registro}
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
     success: function(data){
       if (!!data.errors)
@@ -521,7 +550,6 @@ function deleteRegistry(cod_registro){
     },
     error: function(){ console.log('error'); }
   });
-
   return true;
 }
 //FUNCION PARA CREAR REGISTRO ENVIANDO PARAMETROS A LA API Y RECIBIENDO LA RESPUESTA DE QUERY.
