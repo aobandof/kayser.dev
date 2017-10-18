@@ -143,3 +143,18 @@ a.dt-button {
     font-size: 1rem;
 }
 .campos th { text-align: center; }
+
+
+/***** STYLES PARA LOS TRF ****/
+#div_trf {
+  display: flex;
+  justify-content: center;
+}
+#div_trf>div{
+  width: 50%;
+}
+#div_trf .cont_titulo_form {
+  text-align: center;
+  font-weight: bold;
+  
+}

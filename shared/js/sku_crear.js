@@ -1,4 +1,4 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual,cod_dpto, item_crud_selected;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected;
 
 $(document).ready(function() {
 
@@ -62,7 +62,7 @@ $(document).ready(function() {
         cargarCategoriaCrear(id_cat_after_click);
         document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
         // $("#select_sku_color").selectpicker("deselectAll");
-      }
+      }      
     }
   });
   /********* EVENTO PARA AUTORELLENAR LA DESCRIPCION *****/
@@ -114,41 +114,32 @@ $(document).ready(function() {
     }
   });
 /************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
-
-  /////////////////////////////////////
-
-
-
-
-  
-  ////descomentar despues // document.getElementById('btn_guardar_enviar').onclick=function(){
-  ////descomentar despues //   let empty=0;
-  ////descomentar despues //   let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-  ////descomentar despues //   document.querySelectorAll('.sku_control').forEach(function(control){
-  ////descomentar despues //     if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-  ////descomentar despues //       if(control.value=='')  empty=1;
-  ////descomentar despues //   });
-  ////descomentar despues //   if (tallas=="") empty=1;
-  ////descomentar despues //   //sacar esto despues /
-  ////descomentar despues //   empty=0;
-  ////descomentar despues //   //////////////////////
-  ////descomentar despues //   if(empty===0) {
-  ////descomentar despues //       let modal_preview_save = document.getElementById('div_preview_save');
-  ////descomentar despues //       modal_preview_save.style.visibility = 'visible';
-  ////descomentar despues //       // makeFillArticlePreview();
-  ////descomentar despues //       console.log(cod_dpto);
-  ////descomentar despues //   }
-  ////descomentar despues //   else
-  ////descomentar despues //     alert("Todos los campos tienen que ser llenados");
-  ////descomentar despues // }
-
+  //  document.getElementById('btn_guardar_enviar').onclick=function(){
+  //    let empty=0;
+  //    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+  //    document.querySelectorAll('.sku_control').forEach(function(control){
+  //      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+  //        if(control.value=='')  empty=1;
+  //    });
+  //    if (tallas=="") empty=1;
+  //    //sacar esto despues /
+  //    empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
+  //    //////////////////////
+  //    if(empty===0) {
+  //        let modal_preview_save = document.getElementById('div_preview_save');
+  //        modal_preview_save.style.visibility = 'visible';
+  //        // makeFillArticlePreview();
+  //        console.log(code_dpto);
+  //    }
+  //    else
+  //      alert("Todos los campos tienen que ser llenados");
+  //  }
+  let modal_preview_save = document.getElementById('div_preview_save');
+  modal_preview_save.style.visibility = 'visible';
+  makeFillArticlePreview();
 /*******************************************************************************************************/
 });
-////descomentar despues //function makeCodesSku(){
-////descomentar despues //  colores=document.getElementById('select_sku_color').value;
-////descomentar despues //  tallas = document.getElementById('span_tallas_chosen').innerHTML.split(',');
-////descomentar despues //  console.log(tallas);
-////descomentar despues //}
+
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
   let descripcion = "";//inivar
@@ -203,7 +194,8 @@ function cargarCategoriaCrear(id_cat) {
   $(".cont_img_categoria:hover").css('filer', 'none !important');
   $(".comp_crear_sku").css('background-color', color);
   $('.borrar_contacto').attr('name');
-  cargarSelectsSku('Kayser_OITB', id_cat.substr(8,id_cat.length));
+  name_dpto = id_cat.substr(8, id_cat.length);
+  cargarSelectsSku('Kayser_OITB', name_dpto);
 }
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
@@ -217,7 +209,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
       // console.log(parametros['option']);
       // console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
-      if (!!data.dpto) { cod_dpto = data.dpto /*console.log('codigo departamento:' + data.dpto)*/; }
+      if (!!data.dpto) { code_dpto = data.dpto; }
       data.values.forEach(function(item,index){
         if(item['tabla']=="Talla"){
           // console.log(item['options']);
@@ -316,57 +308,44 @@ function cargarTablaSeccion(tabla) {
         // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
           this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-            keycita=(el.id).slice((el.id).indexOf("_")+1);
-            contenido_actualizar[keycita]=el.firstChild.value;
-            // console.log(el.firstChild.value);
+            keycita=(el.id).slice((el.id).indexOf("_")+1).toLocaleLowerCase();
+            contenido_actualizar[keycita] = el.firstChild.value.toLocaleUpperCase();
           });
           if(contenido_actualizar['Nombre']!=""){
             if(confirm("¿Desea realmente continuar modificando?")) {
               codigo = (this.id).slice(9);
               updateRegistry(codigo, contenido_actualizar, function (resultado) {
-                console.log(this);
                 if(resultado===true){
                   for (var index in contenido_actualizar)
-                    contenido_original[index] = contenido_actualizar[index]; //cargamos el contenido actualizado al contenido original
+                    contenido_original[index] = contenido_actualizar[index]; //cargamos el contenido actualizado al contenido original                  
+                  let img_save=document.getElementById('img_save_'+codigo);
+                  img_save.style.pointerEvents = "none";
+                  img_save.classList.toggle("disabled");
+                  img_save.parentNode.nextSibling.lastChild.classList.toggle('invisible'); //hacemos visible los demas iconos de esta fila
+                  img_save.parentNode.nextSibling.firstChild.classList.toggle('invisible'); //hacemos visible los demas iconos de esta fila
+                  img_save.parentNode.parentNode.querySelectorAll('.editable').forEach(function (el) { //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+                    keycita = (el.id).slice((el.id).indexOf("_") + 1).toLocaleLowerCase(); //obtenemos el id de las celdas editables para agregar a esta celda, el valor actualizado correspondiente
+                    el.innerHTML = contenido_original[keycita]; //cargamos el contenido origignal, actualizado a las celdas
+                  });
+                  contenido_original.length = 0; //vaciamos este arreglo
+                  contenido_actualizar.length = 0; //vaciamos este arreglo
+                  getAllNodesEqualType(img_save.parentNode.nextSibling.firstChild, 2, '.icon_edit, .icon_delete').forEach(function (ele) {
+                    ele.style.pointerEvents = "auto";
+                    ele.classList.toggle("disabled");
+                  });
+                  img_save.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
+                  document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
+                  document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
                   alert("REGISTRO ACTUALIZADO");
                 }else 
                   alert("NO SE PUDO ACTUALIZAR");   
-                document.querySelectorAll(".icon_save").forEach(function(){
-                  
-                });
+                //referenciamos a el elemento img_save que produde este evento guardar
               });
             }
           }
           else {
             alert('Campo Nombre o Codigo son necesarios para actualizar');
           }
-
-
-
-          this.style.pointerEvents = "none";
-          this.classList.toggle("disabled");
-          this.parentNode.nextSibling.lastChild.classList.toggle('invisible');
-          this.parentNode.nextSibling.firstChild.classList.toggle('invisible');
-
-          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-            keycita=(el.id).slice((el.id).indexOf("_")+1); //obtenemos el id de las celdas editables para agregar a esta celda, el valor actualizado correspondiente
-            console.log(keycita);
-            el.innerHTML = contenido_original[keycita]; //cargamos el contenido origignal, actualizado a las celdas
-            console.log(el);
-          });
-
-          contenido_original.length=0; //vaciamos este arreglo
-          contenido_actualizar.length=0; //vaciamos este arreglo
-          getAllNodesEqualType(this.parentNode.nextSibling.firstChild,2,'.icon_edit, .icon_delete').forEach(function(ele) {
-            ele.style.pointerEvents = "auto";
-            ele.classList.toggle("disabled");
-          }) ;
-          this.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
-          document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
-          document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
-
-
-
         });
         // ###################   EVENTO CLICK PARA LOS ICON_EDIT ##############################
         document.querySelectorAll(".icon_edit").forEach(elemento => elemento.onclick = function() {
@@ -447,8 +426,8 @@ function cargarTablaSeccion(tabla) {
           /***** agregamos el evento click al icono guardar y cancel de esta fila nueva  ****/
           document.getElementById("img_save_N").onclick = function(){
             this.parentNode.parentNode.querySelectorAll('.editable').forEach(function (el) { //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
-              keycita = (el.id).slice((el.id).indexOf("_") + 1);
-              contenido_guardar[keycita] = el.firstChild.value;
+              keycita = (el.id).slice((el.id).indexOf("_") + 1).toLocaleLowerCase();;
+              contenido_guardar[keycita] = el.firstChild.value.toLocaleUpperCase();
             });
             if (contenido_guardar['Nombre'] != "") {
               if (confirm("¿Desea realmente ingresar este NUEVO VALOR?")) {
@@ -508,7 +487,7 @@ function updateRegistry(cod_registro, arr_contenido, callback) {
   parameters['table'] = item_crud_selected;
   parameters['id'] = cod_registro;
   for (var key in arr_contenido) {
-    parameters[key.toLocaleLowerCase()] = arr_contenido[key].toLocaleUpperCase();
+    parameters[key] = arr_contenido[key];
   }
   // console.log(parameters);
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
@@ -558,7 +537,7 @@ function createRegistry(arr_contenido) {
   parameters['option'] = 'create_item';
   parameters['table'] = item_crud_selected;
   for (var key in arr_contenido) {
-    parameters[key.toLocaleLowerCase()] = arr_contenido[key].toLocaleUpperCase()
+    parameters[key] = arr_contenido[key];
   }
   $.ajax({ url: 'sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
     success: function(data){
