@@ -108,7 +108,7 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
 function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
   global $mysqli;
   $arr_return=[];
-  $query_coincidencias="SELECT nombre FROM DetalleTalla where Talla_codigo='".$value."' ORDER BY nombre";
+  $query_coincidencias="SELECT nombre,orden FROM DetalleTalla where Talla_codigo='".$value."' ORDER BY nombre";
   if(($arr_coincidencias=$mysqli->select($query_coincidencias,"mysqli_a_o"))===false)
     return -1;
   return $arr_coincidencias;

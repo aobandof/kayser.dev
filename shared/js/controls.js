@@ -4,28 +4,33 @@ function sortTallasLeters(arr_to_order) {
   // idx_menor=-1;
   arr_tallas=[];
   arr_to_order.forEach((function(item){
-    indice=arr_tallas_letras.indexOf(item);
+    indice=arr_tallas_letras.indexOf(item['talla']);
+    // console.log(item['talla']);
+    // console.log(indice);
     // arr_bidi.push({'indice':indice, 'talla':item});
     arr_tallas[indice]=item;
   }));
+  // console.log(arr_tallas);
   // console.log("array disque ordenado: ",arr_tallas);
   return(arr_tallas);
 
 }
 
-function sortTallas(arr_to_order){
+function sortTallas(arr_to_order){//recibe un array asociativo bidimensional con llaves nombre y orden
   arr_conjunto=[];
   arr_numeros=[];
   arr_letras=[];
   arr_otros=[];
+  //inicialmente separamos el arreglo en array numeros, array letras de tallas y array otros (como talla unica, etc)
   arr_to_order.forEach(function(item, index){
     talla = item['nombre'];
+    orden = item['orden'];
     if(talla % 1 == 0)
-      arr_numeros.push(parseInt(talla));
+      arr_numeros.push({ 'talla': parseInt(talla), 'orden': orden });// arr_numeros.push(parseInt(talla));
     else if(arr_tallas_letras.indexOf(talla)!=-1)
-      arr_letras.push(talla);
+      arr_letras.push({'talla':talla, 'orden':orden});//arr_letras.push(talla);
     else
-      arr_otros.push(talla);
+      arr_otros.push({ 'talla': talla, 'orden': orden });//arr_otros.push(talla);
   })
   if(arr_otros.length>0){
     // console.log("arr_otros",arr_otros);
@@ -33,7 +38,9 @@ function sortTallas(arr_to_order){
   }
   if(arr_numeros.length>0){
     // console.log("arr_numeros", arr_numeros);
-    arr_numeros = arr_numeros.sort((a, b) => a - b);
+    arr_numeros = arr_numeros.sort(function (a, b) {
+      return a.talla - b.talla;
+    });
     arr_numeros.forEach(item => arr_conjunto.push(item));
   }
   if(arr_letras.length>0){
@@ -66,7 +73,7 @@ function sortTallas(arr_to_order){
 //   });
 // });
 function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_name){
-  console.log(arr_item);
+  // console.log(arr_item);
   arr_tallas_ordenadas=[];
   arr_item.forEach(function(item,index){
     let div1=document.createElement('div');
@@ -80,7 +87,7 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
     var cont_div3="";
     arr_tallas_ordenadas=sortTallas(item['tallas']);
     arr_tallas_ordenadas.forEach(function(item, index){
-      cont_div3+='<input type="checkbox" name="'+item+'" disabled="true" class="check_talla">&nbsp<label>'+item+'</label>&nbsp&nbsp&nbsp'
+      cont_div3+='<input type="checkbox" name="'+(item['talla']+'|'+item['orden'])+'" disabled="true" class="check_talla">&nbsp<label>'+item['talla']+'</label>&nbsp&nbsp&nbsp'
     });
     div2.innerHTML=cont_div2;
     div3.innerHTML=cont_div3;
@@ -109,7 +116,8 @@ function fillSelectMultiplesGruposFromArray(arr_item,id_div_options,show_item_na
       $("#span_tallas_chosen").text(' ');
     else {
       $(".check_talla:checked").each(function () {
-        tallas_chosen += $(this).attr('name') + ",  "
+        solo_talla = $(this).attr('name');
+        tallas_chosen += solo_talla.slice(0,solo_talla.indexOf('|')) + ",  "//agregamos al span solamente los nombres de tallas y no las valores 'orden'
       })
       $("#span_tallas_chosen").text((tallas_chosen.trim()).slice(0, -1));
     }

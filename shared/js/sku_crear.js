@@ -114,29 +114,29 @@ $(document).ready(function() {
     }
   });
 /************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
-  //  document.getElementById('btn_guardar_enviar').onclick=function(){
-  //    let empty=0;
-  //    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-  //    document.querySelectorAll('.sku_control').forEach(function(control){
-  //      if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-  //        if(control.value=='')  empty=1;
-  //    });
-  //    if (tallas=="") empty=1;
-  //    //sacar esto despues /
-  //    empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
-  //    //////////////////////
-  //    if(empty===0) {
-  //        let modal_preview_save = document.getElementById('div_preview_save');
-  //        modal_preview_save.style.visibility = 'visible';
-  //        // makeFillArticlePreview();
-  //        console.log(code_dpto);
-  //    }
-  //    else
-  //      alert("Todos los campos tienen que ser llenados");
-  //  }
-  let modal_preview_save = document.getElementById('div_preview_save');
-  modal_preview_save.style.visibility = 'visible';
-  makeFillArticlePreview();
+   document.getElementById('btn_guardar_enviar').onclick=function(){
+     let empty=0;
+     let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+     document.querySelectorAll('.sku_control').forEach(function(control){
+       if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+         if(control.value=='')  empty=1;
+     });
+     if (tallas=="") empty=1;
+     //sacar esto despues /
+     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
+     //////////////////////
+     if(empty===0) {
+         let modal_preview_save = document.getElementById('div_preview_save');
+         modal_preview_save.style.visibility = 'visible';
+         makeFillArticlePreview();
+         console.log(code_dpto);
+     }
+     else
+       alert("Todos los campos tienen que ser llenados");
+   }
+  // let modal_preview_save = document.getElementById('div_preview_save');
+  // modal_preview_save.style.visibility = 'visible';
+  // makeFillArticlePreview();
 /*******************************************************************************************************/
 });
 

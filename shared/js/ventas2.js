@@ -1,4 +1,17 @@
+// let ahora;
 $(document).ready(function(){
+
+    //creo que sera mejor obtener la fecha en el servidor, ya que el cliente puede tener la fecha desactualizada
+    // ahora=new Date();
+    // console.log(ahora);
+    // console.log(ahora.getFullYear());
+    // console.log(ahora.getMonth());
+    // console.log(ahora.getDate());
+    // console.log(ahora.getHours());
+    // console.log(ahora.getMinutes());
+    // console.log(ahora.getSeconds());
+
+
     $("#tr_head_ventas_promotoras").hide();
     $('#tr_pie_ventas_promotoras').hide();
     // $("#tr_head_ventas").hide();
