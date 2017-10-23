@@ -1,6 +1,10 @@
 // let ahora;
 $(document).ready(function(){
-
+    el_loading=document.getElementById("div_loading_ventas");
+    el_loading.classList.toggle("cont_hidden")
+    // $("#div_loading_ventas").css('visibility', 'hidden');//para que cuando inciie la pagina no muestre por milisegundos estos controles
+    // $("#div_loading_ventas").css('background-color','yellow');
+    // $("#div_loading_ventas").hide();
     //creo que sera mejor obtener la fecha en el servidor, ya que el cliente puede tener la fecha desactualizada
     // ahora=new Date();
     // console.log(ahora);
@@ -47,7 +51,14 @@ $(document).ready(function(){
             url:   'modelo.php',
             type:  'post',
             dataType: "json",
+            beforeSend : function () {
+                el_loading.classList.toggle("cont_hidden")
+                
+                // $("#div_loading_ventas").show();
+            },            
             success: function(data){
+                // $("#div_loading_ventas").hide('500');
+                el_loading.classList.toggle("cont_hidden")                
                 var fila;
                 if(opcion=='ventas_promotoras'){
                     // alert("hasta aca el foot es rojo");

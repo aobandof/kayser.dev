@@ -5,6 +5,9 @@ html, body {
   padding: 0px;
   /*overflow: hidden;*/
 }
+.cont_hidden {
+    display: none !important;
+}
 .cont_general {
     height: 100%;
     width: 100%;
@@ -12,11 +15,35 @@ html, body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    /* align-items: center; */
 }
-.cont_logo {
+#div_ventas>.cont_logo {
+    width: 100%;
     flex: 0 0 auto;
+    display: flex;
+    /* flex-direction: row !important; */
+    justify-content: space-around; 
+    align-items: center;
+    background-color: rgba(0, 238, 255, 0.082);
 }
+#div_ventas>.cont_logo>select {
+    flex: 0 1 40%;
+    color: rgb(3, 3, 99);
+    /* color: white; */
+    font-weight: bold;
+    /* background-color: rgba(6, 6, 116, 0.726); */
+}
+select option[selected]{ 
+    background: yellow;
+    color: white;
+}
+select option[value="promotoras"]{ 
+    background: rgba(98, 6, 6, 0.79);
+    color: white;
+}
+
+/*#option_detalle, option.#option_detalle(:checked) { */
+
 .cont_tabla {
     overflow: hidden !important;
     flex: 1 1 auto;
