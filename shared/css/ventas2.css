@@ -43,6 +43,16 @@ select option[value="promotoras"]{
 }
 
 /*#option_detalle, option.#option_detalle(:checked) { */
+#div_loading_ventas {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#div_loading_ventas img {
+    width: 20%;
+}
 
 .cont_tabla {
     overflow: hidden !important;

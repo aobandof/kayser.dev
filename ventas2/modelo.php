@@ -14,10 +14,27 @@ if(!$conector){
     }
 }
 if(isset($_POST['opcion'])){
+
+
+            
+            
+            
+            
+            <tbody id="tbody_ventas" >
+            
+            </tbody>
+            
+            
+			<tfoot><tr class="pie" id="tr_pie_ventas_promotoras"><td colspan="2" class="col-xs-6">&nbsp</td><td class="col-xs-2">&nbsp</td><td class="col-xs-3">&nbsp</td><td class="col-xs-1">&nbsp</td></tr></tfoot>
+			
+
+
     $cuerpo="";
     $pie="";
     $cont=0;
     if($_POST['opcion']=="ventas") {
+        $thead='<thead><tr id="tr_head_ventas" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-5">TIENDA</th><th class="col-xs-3" id="th_hoy">VENTA<br>DIARIA<th class="col-xs-3" id="th_x_dia">VENTA<br>2016</th></tr></thead>';
+        $tbody='<tbody id="tbody_ventas">';
         $query="SELECT A1.WhsName, A2.VtaMinAct FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC";
         $registros = sqlsrv_query($conector, $query);
         if( $registros === false ){
@@ -28,17 +45,18 @@ if(isset($_POST['opcion'])){
             $venta_total=0;
             While ($reg = sqlsrv_fetch_array( $registros, SQLSRV_FETCH_NUMERIC)) {
                 $cont++;
-                $cuerpo.="<tr class='fila'><td class='col-xs-1'>$cont</td><td class='col-xs-6'>".$reg[0]."</td><td class='col-xs-3'>".number_format ( floatval($reg[1]), 0 , ',', '.')."</td><td class='col-xs-2'>lll</td></tr>";
+                $tbody.="<tr class='fila'><td class='col-xs-1'>$cont</td><td class='col-xs-5'>".$reg[0]."</td><td class='col-xs-3'>".number_format ( floatval($reg[1]), 0 , ',', '.')."</td><td class='col-xs-3'>lll</td></tr>";
                 $venta_total+=$reg[1];
             }
             $venta_total=number_format ( floatval($venta_total), 0 , ',', '.');
-            $pie.="<td colspan='2' class='col-xs-7'>VENTA TOTAL :&nbsp</td><td class='col-xs-3'>".$venta_total."</td><td class='col-xs-2'>nnnnn</td>";
-            $datos[]=array('cuerpo' => $cuerpo, 'pie' => $pie);
+            $tfoot='<tfoot><tr class="pie" id="tr_pie_ventas"><td colspan="2" class="col-xs-6">VENTA TOTAL :&nbsp</td><td class="col-xs-3">'.$venta_total.'</td><td class="col-xs-3">&nbsp</td></tr></tfoot>';
+            $datos['table']=$thead.$tbody.$tfoot;
             $conexion->desconectar();
             echo json_encode($datos);
         }
     }
     if($_POST['opcion']=="ventas_promotoras") {
+        $thead='<thead><tr id="tr_head_ventas_promotoras" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-5">TIENDA</th><th class="col-xs-2">VENTA<br>DIARIA</th><th  class="col-xs-3">VENTA<br>MENSUAL</th><th  class="col-xs-1">%</th></tr></thead>';
         $venta_total_mensual=0;
         $array_ventas_diarias=array();
         $total_porcentaje=0;

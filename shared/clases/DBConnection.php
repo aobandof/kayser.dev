@@ -2,6 +2,7 @@
 class DBConnection {
   private $_connection;
   private $_driver;
+  private $_registros_select;
   public function __construct( $driver, $host, $user, $pass, $database ) { // returna la conexion
     $this->_driver=$driver;
     if($this->_driver=="sqlsrv"){
@@ -31,33 +32,33 @@ class DBConnection {
   public function select($query,$tipo_array){
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
-      $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
-      if($registros===false){
+      $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
+      if($this->_registros_select===false){
         return false;
       }else {
-        if(sqlsrv_num_rows($registros)>0){
+        if(sqlsrv_num_rows($this->_registros_select)>0){
           if($tipo_array=='sqlsrv_a_p')
-            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_ASSOC)) 
+            while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_ASSOC)) 
               $arr_export[]=$reg;
           elseif($tipo_array=='sqlsrv_n_p') 
-            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC))
+            while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_NUMERIC))
               $arr_export[]=$reg;
           else 
-            while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_BOOT))
+            while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_BOOT))
               $arr_export[]=$reg;            
         }else
           return 0;
       }
     }else if ($this->_driver=="mysqli") {
-      $registros=$this->_connection->query($query);
-      if($registros===false)
+      $this->_registros_select=$this->_connection->query($query);
+      if($this->_registros_select===false)
         return false;
       else
           if($tipo_array=='mysqli_a_o')
-            while($reg=$registros->fetch_assoc()) 
+            while($reg=$this->_registros_select->fetch_assoc()) 
               $arr_export[]=$reg;
           elseif($tipo_array=='mysqli_b_o') // recordar que cuando es Orientado a Objetos solo existe ->fecth_assoc() y ->fetch_array(), el ultimo es asociativo y numerico
-            while($reg=$registros->fetch_array())
+            while($reg=$this->_registros_select->fetch_array())
               $arr_export[]=$reg;        
     }
     // var_dump($arr_export);
@@ -65,6 +66,40 @@ class DBConnection {
       return 0;
     else
       return $arr_export;
+  }
+
+  public function selectCsv($query,$del){//DEVUELVE UNA CADENA FORMATO CSV, SIN NOMBRES DE COLUMNAS    
+    if($this->_driver=="sqlsrv"){       
+      $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
+      if($this->_registros_select===false){
+        return false;
+      }else {
+        if(sqlsrv_num_rows($this->_registros_select)>0){
+            $content="";
+            while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_NUMERIC)) {
+              $content.=implode(';',$reg);
+              $content.=";\r\n";
+            }
+        }else
+          return 0;
+      }
+    }else if ($this->_driver=="mysqli") {
+      $this->_registros_select=$this->_connection->query($query);
+      if($this->_registros_select===false)
+        return false;
+      else{
+        $content="";
+        while($reg=$this->_registros_select->fetch_assoc()){
+          $content.=implode(';',$reg);
+          $content.=";\r\n";
+        }
+      }  
+    }
+    // echo "el contenido para CSV es: <br>".$content;
+    if($content!="") // consulta vacia
+      return $content;
+    else
+      return 0;
   }
 ######################   FUNCION PARA LAS INSERCIONES   ########################
 //$table:  nombre de la tabla
@@ -163,6 +198,20 @@ class DBConnection {
     }
     return $arr_errors;
   }
+
+  ######################################   METODO PARA OBTENER LA CABECERA DEL ULTIMO SELECT ###########################
+  function getColumnsLastSelect(){
+    $arr_columns=[];
+    if($this->_driver=="sqlsrv"){ 
+      foreach( sqlsrv_field_metadata( $this->_registros_select) as $fieldMetadata )
+        $arr_columns[]=$fieldMetadata['Name'];
+    }elseif($this->_driver=="mysqli"){
+      $info_columns=$this->_registros_select->fetch_fields();
+      foreach($info_columns as $valor)
+        $arr_columns[]=$valor->name;
+    }
+    return $arr_columns;
+  }
   ######################################################################################################################
   ###############################################  FUNCIONES PERSONALIZADAS ############################################
   ######################################################################################################################
@@ -196,6 +245,8 @@ class DBConnection {
     else
       return $arr_export;       
   }
+
+
 
   // public function selectParameterized($name_table,$arr_select,$name_key, $name_field,$val_field){
   //   echo "hola";

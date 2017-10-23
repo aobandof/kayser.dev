@@ -43,7 +43,7 @@ else {
         $contenido.=$fila."\r\n";
     }
     $conexion->desconectar();
-    $destinatario ="ronny@kayser.cl,cmarino@kayser.cl,jshahwan@kayser.cl,informatica@kayser.cl";
+    $destinatario ="aobando@kayser.cl";#"ronny@kayser.cl,cmarino@kayser.cl,jshahwan@kayser.cl,informatica@kayser.cl";
     $titulo = "Promotoras Ingresadas el ".$ayer;
     $headers = "From: INFORMATICA KAYSER <informatica@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
@@ -56,6 +56,7 @@ else {
     if(mail($destinatario, $titulo,"", $headers)){
         //mail("aobando@kayser.cl", "Mensaje enviadado a usuario de forma correcta", $mensaje, $headers);
         echo "mail eviado correctamente<br><br>";
+        echo $contenido;
     }
     else{
       mail("informatica@kayser.cl", "Error en envío de mail / REPORTE INGRESO PROMOTORAS", "Error en envio de mensaje", "From: Informática Kayser <aobando@kayser.cl>\r\n");

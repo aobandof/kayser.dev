@@ -50,7 +50,7 @@ else {
     $headers .= "\r\n"; //retorno de carro y salto de linea
     //$cuerpo="Envio Archivo con listado de Promotora ingresadas el: ".$ayer;
 if(mail($destinatario, $titulo,"", $headers)){
-        //echo $contenido;
+        echo $contenido;
         echo "mail eviado correctamente<br><br>";
     }
     else{
