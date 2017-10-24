@@ -29,18 +29,15 @@ html, body {
 #div_ventas>.cont_logo>select {
     flex: 0 1 40%;
     color: rgb(3, 3, 99);
-    /* color: white; */
+    color: white;
     font-weight: bold;
-    /* background-color: rgba(6, 6, 116, 0.726); */
+    background-color: #004080;
 }
-select option[selected]{ 
-    background: yellow;
-    color: white;
+select option{ 
+    background: rgb(230, 243, 245);
+    color: rgb(2, 27, 59);
 }
-select option[value="promotoras"]{ 
-    background: rgba(98, 6, 6, 0.79);
-    color: white;
-}
+
 
 /*#option_detalle, option.#option_detalle(:checked) { */
 #div_loading_ventas {
@@ -104,7 +101,7 @@ tbody tr td {
     text-align: center;
     padding: 0.7rem !important;
 }
-#tr_head_ventas_promotoras th { background-color: rgba(98, 6, 6, 0.79) !important; }
+#tr_head_ventas_promotoras th { background-color: #8f2e2efa !important; }
 .nombre_campos th:nth-child(3), .nombre_campos th:nth-child(4) { font-size: 0.95rem !important; }
 .nombre_campos th:nth-child(-n+2), #tr_head_ventas_promotoras.nombre_campos th:nth-child(5){
     padding-top: 1.2rem !important;
