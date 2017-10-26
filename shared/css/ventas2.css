@@ -12,37 +12,48 @@ html, body {
     height: 100%;
     width: 100%;
     padding-top: 0px !important;
+    display: -webkit-box;
     display: flex;
+    display: -webkit-flex;
     flex-direction: column;
+    -webkit-box-orient: vertical;
     justify-content: flex-start;
-    /* align-items: center; */
+    align-items: center;
 }
 #div_ventas>.cont_logo {
     width: 100%;
-    flex: 0 0 auto;
-    display: flex;
-    /* flex-direction: row !important; */
-    justify-content: space-around; 
+    /* display: flex; */
+    display: -webkit-box;
+    -webkit-box-orient: horizontal;
+    /* -webkit-box-flex:1; */
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    justify-content: center;
     align-items: center;
-    /* background-color: rgba(0, 238, 255, 0.082); */
 }
 #div_ventas>.cont_logo>select {
+    /* -webkit-appearance: menulist-button !important; */
     font-size: 1.2rem;
-    flex: 0 1 40%;
+    width: 45%;
+    margin: 0rem 1rem;
+    /* flex: 0 1 40%; */
     color: rgb(3, 3, 99);
     color: white;
     font-weight: bold;
     background-color: #004080;
     text-align: center;
 }
-select option{ 
-    background: rgb(230, 243, 245);
-    color: rgb(2, 27, 59);
-    text-align: left;
+#div_ventas>.cont_logo>select>option {
+    width: 45%;
+    background-color: white;
+    color: black;
 }
 
+#link_update img {
+    max-height: 6rem;
+    margin: 0rem 1rem;
+}
 
-/*#option_detalle, option.#option_detalle(:checked) { */
 #div_loading_ventas {
     height: 100%;
     width: 100%;
@@ -51,7 +62,7 @@ select option{
     justify-content: center;
 }
 #div_loading_ventas img {
-    width: 20%;
+    width: 15%;
 }
 /**** ESTILOS PARA EL CALENDARIO ****/
 #div_cont_calendario {
@@ -61,18 +72,10 @@ select option{
     justify-content: center;
     margin-bottom: 1rem;
 }
-#div_cont_calendario>button{
-    margin: 0rem .5rem;
-}
-/* #div_cont_calendario>img {
-    height: 3.3rem;
-    width: 5rem;
-} */
-#datetimepicker1 {
-    /* flex: 1 0 70% !important; */
-    width: 70%;
-    /* display: flex; */
-}
+#div_cont_calendario>button{   margin: 0rem .5rem; }
+#datetimepicker1 { width: 60% !important; }
+
+
 .cont_tabla {
     overflow: hidden !important;
     flex: 1 1 auto;
@@ -80,9 +83,6 @@ select option{
     justify-content: center;
     margin-bottom: 0px !important;
     padding: 0px;
-}
-#link_update img {
-    max-height: 6rem;
 }
 .table-fixed {
     width: 100%;
@@ -123,6 +123,7 @@ tbody tr td {
     padding: 0.7rem !important;
 }
 #tr_head_ventas_promotoras th { background-color: #8f2e2e !important; }
+#tr_head_busqueda th { background-color: #05a872 !important; }
 .nombre_campos th:nth-child(3), .nombre_campos th:nth-child(4) { font-size: 0.95rem !important; }
 .nombre_campos th:nth-child(-n+2), #tr_head_ventas_promotoras.nombre_campos th:nth-child(5){
     padding-top: 1.2rem !important;
@@ -145,16 +146,17 @@ tbody tr td {
     padding: 0.7rem !important;
     color: white;
 }
-#tr_pie_ventas.pie td { font-size: 1.2rem !important; }
-#tr_pie_ventas_promotoras.pie td {
-    font-size: 1rem !important;
-    background-color: #8f2e2e !important;
-}
-
+#tr_pie_ventas.pie td, #tr_pie_ventas_promotoras.pie td, #tr_pie_busqueda td { font-size: 1.2rem !important; }
+#tr_pie_ventas_promotoras.pie td { background-color: #8f2e2e !important; }
+#tr_pie_busqueda td { background-color: #05a872 !important; }
+/**** large dispositives ***/
 @media (min-width: 940px) {
     .table-fixed tbody {
       width: 102%;
+    }  
+    #div_loading_ventas img {
+        width: 5% !important;
+        /* background-color: yellow; */
     }
-
 }
 
