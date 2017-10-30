@@ -1,0 +1,29 @@
+html, body {
+  height: 100% !important;
+}
+#div_documentos {
+  height: 100%;
+}
+#div_documentos>.cont_options {
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+#div_documentos>.cont_options>* { margin : 1rem; }
+#div_documentos>.cont_options>select{ flex: 0 0 30%; }
+#div_documentos>.cont_options>button{ flex: 0 0 20%; }
+
+.cont_hidden {
+  display: none !important;
+}
+#div_documentos>.cont_table {
+  flex: 1 0 auto;
+  /* height: 50%; */
+  background-color: rgba(128, 227, 240, 0.212);
+  width: 100%;
+}
+#table_documents {
+  border: 1px solid black;
+  width: 95%;
+
+}
