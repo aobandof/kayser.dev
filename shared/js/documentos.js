@@ -11,6 +11,7 @@ $(document).ready(function(){
   el_but_consult.onclick = function(){
     // alert("COMENZAREMOS LA BUSQUEDA CON: tienda="+el_sel_store.value + " Y estado doc=" + el_sel_state.value);
     if(el_sel_store.value!=""  && el_sel_state.value!=""){
+      el_cont_table.classList.add('cont_hidden');
       showTableDocuments(el_sel_store.value, el_sel_state.value);
     }
   }
@@ -25,7 +26,7 @@ function loadSelectStore(){
         console.log(data['errors']);
       }else {
         if(data['options']!="SIN RESULTADOS"){
-          let first_option="<option value=''>SELECCIONE LA TIENDA</option>";
+          let first_option="<option value=''>Seleccione la Tienda</option>";
           el_sel_store.innerHTML=first_option + data.options;
         }
       }
@@ -46,9 +47,12 @@ function showTableDocuments(cod_store, type_doc){
         el_loading.classList.toggle("cont_hidden");
     },
     success: function (data) {
+      console.log(data);        
         el_loading.classList.toggle("cont_hidden")
         el_cont_table.classList.remove('cont_hidden');
-        // document.getElementById('table_documents').innerHTML = data.table;
+        document.getElementById('table_documents').innerHTML = data.table;
+        if (!!data.resp)
+          alert(data.resp)
     },
     error: function () {
         document.getElementById('table_documents').innerHTML = "";

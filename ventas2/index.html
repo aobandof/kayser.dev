@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 	<!-- <link rel="stylesheet" href="../shared/css/styles.css"> -->
 	<link rel="stylesheet" href="../shared/css/ventas2.css">
 	<title>Ventas al Minuto</title>
@@ -17,18 +18,30 @@
 <body>
 	<div class="cont_general" id="div_ventas">
 		<div class="cont_logo">
-			<a href="#" id="link_update"><img src="../shared/img/logo_kayser_azul.png" alt="logo"></a>
+			<a href="#" id="link_update">
+				<img src="../shared/img/logo_kayser_azul.png" alt="logo">
+			</a>
 			<select name="" id="select_venta" class="form-control">
 				<option value="total">AL MINUTO</option>
 				<option value="promotoras">PROMOTORAS</option>
 				<option value="busqueda">FECHA / HORA</option>
 			</select>
 		</div>
-		<div id="div_cont_calendario" class="cont_hidden">
-			<div class='input-group date' id='datetimepicker1'>
-				<input type='text' class="form-control" id="text_calendar" />
-				<span class="input-group-addon">
-					<span class="fa fa-calendar"></span>
+		<div id='div_cont_calendario1' class=''>
+			<!-- <div class='input-group date' id='datetimepicker1'>
+				<input type='text' class='form-control' id='text_calendar1' />
+				<span class='input-group-addon'>
+					<span class='fa fa-calendar'></span>
+				</span>
+			</div>
+			<button class="btn btn-success" id="">BUSCAR</button> -->
+		</div>
+		
+		<div id='div_cont_calendario2' class='cont_hidden'>
+			<div class='input-group date' id='datetimepicker2'>
+				<input type='text' class='form-control' id='text_calendar2' />
+				<span class='input-group-addon'>
+					<span class='fa fa-calendar'></span>
 				</span>
 			</div>
 			<!-- <img src="../shared/img/play_azul.png" alt=""> -->

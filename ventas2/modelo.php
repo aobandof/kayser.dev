@@ -16,18 +16,42 @@ if($existe_error_conexion){
   exit;
 }
 
-if(isset($_POST['opcion'])){       
+
+if(isset($_POST['opcion'])){      
     $day=(int)date('d');
     $month=(int)date('m');
     $year=(int)date('Y')-1;
     $current_time= date ("H:i:s");
+    $fecha_dia_anterior=$year.'-'.$month.'-'.$day;
 
     if($_POST['opcion']=="total") {
-        $fecha_anterior=$year.'-'.$month.'-'.$day;
-        $thead='<thead><tr id="tr_head_ventas" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-5">TIENDA</th><th class="col-xs-3" id="th_hoy">VENTA<br>DIARIA</th><th class="col-xs-3" id="th_x_dia">VENTA<br>2016</th></tr></thead>';
+        $_POST['date']=='' ? $fecha_anterior=$fecha_dia_anterior." ".$current_time : $fecha_anterior=$_POST['date'];             
+        $fecha_anterior=substr($fecha_anterior,0,strlen($fecha_anterior)-3);
+        $data['fecha']=$fecha_anterior;
+        $fecha_actual=date('Y-m-d H:i');
+        $div_calendar="<div class='input-group date' id='datetimepicker1'>
+				<input type='text' class='form-control' id='text_calendar1' />
+				<span class='input-group-addon'>
+					<span class='fa fa-calendar'></span>
+				</span>
+            </div>";
+            //            <button class='btn btn-success' id=''>BUSCAR</button>";
+        $data['calendar']=$div_calendar;
+        // $div_calendar="<div id='div_cont_calendario1' class=''>
+        //                 <div class='input-group date' id='datetimepicker1'>
+        //                     <input type='text' class='' id='text_calendar' value=''/>
+        //                     <button class='input-group-addon btn' id='button_calendar'><span class='fa fa-calendar'></span></button>                       
+        //                 </div></div>";  
+        // $div_calendar="<div class='form-group'>
+        //             <input type='text' class='' id='datetimepicker1' value='".$fecha_actual."'/><br>
+        //             <button class='btn' id='button_calendar'><span class='fa fa-calendar'></span></button>   
+        //             <button class='btn btn-warning btn-sm' id='button_search'><i class='fa fa-search' aria-hidden='true'></i></button>                      
+        //         </div><br>";                       
+        $thead='<thead><tr id="tr_head_ventas" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-5">TIENDA</th><th class="col-xs-3" id="th_hoy">VENTA HOY<br>'.$fecha_actual.'</th><th class="col-xs-3" id="th_x_dia">'.$div_calendar.'</th></tr></thead>';
+        // $thead='<div><div id="div_tr_head_ventas" class="nombre_campos"><div class="col-xs-1">N°</div><div class="col-xs-5">TIENDA</div><div class="col-xs-3" id="div_hoy">VENTA HOY<br>'.$fecha_actual.'</div><div class="col-xs-3" id="div_x_dia">'.$div_calendar.'</div></div></div>';
         $tbody='<tbody id="tbody_ventas">';
-        $query_total_diaria="SELECT A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC";
-        $query_total_anterior="SELECT bodega as cod_tienda,CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '$fecha_anterior', 20) AND Horas<=CONVERT(datetime, '$current_time', 20) group by Almacen, Bodega";        
+        $query_total_diaria="SELECT  top 1 A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC";
+        $query_total_anterior="SELECT bodega as cod_tienda,CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '$fecha_dia_anterior', 20) AND Horas<=CONVERT(datetime, '$current_time', 20) group by Almacen, Bodega";        
         $arr_venta_diaria=$sqlsrv_33->select($query_total_diaria,"sqlsrv_a_p");
         $arr_venta_anterior=$sqlsrv_13->selectArrayUniAssocIdName($query_total_anterior);        
         if($arr_venta_diaria!==false){
@@ -63,14 +87,12 @@ if(isset($_POST['opcion'])){
         $tbody='<tbody id="tbody_ventas">';
         $venta_diaria_total=0;
         $venta_mensual_total=0;
-        // $total_porcentaje=0;
         $query_promotoras_diaria="SELECT A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct AS total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinutoPromotoras as A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY VtaMinAct DESC";
         $query_promotoras_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year' AND MONTH(Fecha) = '$month'  AND [Lista de Precios]='PROMOTORA CKL' group by bodega";
         $query_total_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year' AND MONTH(Fecha) = '$month' group by bodega";
         $arr_venta_diaria_promotoras=$sqlsrv_33->select($query_promotoras_diaria,"sqlsrv_a_p");
         $arr_venta_mensual_total = $sqlsrv_13->selectArrayUniAssocIdName($query_total_mensual); 
-        $arr_venta_mensual_promotoras=$sqlsrv_13->selectArrayUniAssocIdName($query_promotoras_mensual);
-                                  
+        $arr_venta_mensual_promotoras=$sqlsrv_13->selectArrayUniAssocIdName($query_promotoras_mensual);                                  
         if($arr_venta_diaria_promotoras!==false){
             if($arr_venta_diaria_promotoras!==0){
              for ($i=0; $i < count($arr_venta_diaria_promotoras); $i++) { 
@@ -100,7 +122,6 @@ if(isset($_POST['opcion'])){
         echo json_encode($data);        
     }
     elseif ($_POST['opcion']=="busqueda") {
-        // echo "hola";
         $date=$_POST['date'];
         // $date_from =substr($date_to,0,10)." 00:00:00";
         $date_day=substr($date,0,10);
@@ -108,21 +129,29 @@ if(isset($_POST['opcion'])){
         // echo $date_to."<br>";
         $thead='<thead><tr id="tr_head_busqueda" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-7">TIENDA</th><th class="col-xs-4">VENTA DIARIA<br>'.$date_day.' '.$date_hour.'</th></tr></thead>';
         $tbody='<tbody id="tbody_ventas">';
-        $query_stores="SELECT WhsCode AS cod_tienda, WhsName AS tienda from OWHS where U_GSP_SENDTPV = 'Y'";
+        $query_stores="SELECT WhsCode AS cod_tienda, WhsName AS tienda from OWHS where U_GSP_SENDTPV = 'Y' ORDER BY WhsCode";
         $query_diax="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '$date_day', 20) AND Horas<=CONVERT(datetime, '$date_hour', 20) group by Almacen, Bodega ORDER BY total DESC";        
-        // echo $query_diax;
-        $arr_stores=$sqlsrv_33->select($query_stores,"sqlsrv_a_p");
+        // $arr_venta_diaria=$sqlsrv_13->select($query_diax,"sqlsrv_a_p"); 
         $arr_venta_diaria=$sqlsrv_13->selectArrayUniAssocIdName($query_diax); 
-        // var_dump($arr_venta_diaria);    
-        if($arr_stores!==false){
-            if($arr_stores!=0){
+        $arr_stores=$sqlsrv_33->selectArrayUniAssocIdName($query_stores);
+        if($arr_venta_diaria!==false){
+            if($arr_venta_diaria!=0){
                 $venta_diaria_total=0;
-                for($i=0; $i<count($arr_stores);$i++){
-                    $cod_tienda=$arr_stores[$i]['cod_tienda'];
-                    $tbody.="<tr class='fila'><td class='col-xs-1'>".($i+1)."</td>";
-                    $tbody.="<td class='col-xs-7'>".$arr_stores[$i]['tienda']."</td>";
-                    $tbody.="<td class='col-xs-4'>".number_format ( floatval($arr_venta_diaria[$cod_tienda]), 0 , ',', '.')."</td></tr>";
-                    $venta_diaria_total+=$arr_venta_diaria[$cod_tienda];
+                $i=1;
+                foreach($arr_venta_diaria as $item=>$value){
+                    $tbody.="<tr class='fila'><td class='col-xs-1'>".$i."</td>";
+                    $tbody.="<td class='col-xs-7'>".$arr_stores[$item]."</td>";
+                    $tbody.="<td class='col-xs-4'>".number_format ( floatval($value), 0 , ',', '.')."</td></tr>";
+                    $venta_diaria_total+=$value;
+                    $i++;
+                }
+                foreach($arr_stores as $item=>$value){//PARA IMPRIMIR LAS TIENDAS QUE NO TUVIERON VENTAS PERO QUEREMOS QUE APARESCAN EN EL REPORTE
+                    if(!isset($arr_venta_diaria[$item])){
+                        $tbody.="<tr class='fila'><td class='col-xs-1'>".$i."</td>";
+                        $tbody.="<td class='col-xs-7'>".$value."</td>";
+                        $tbody.="<td class='col-xs-4'>0</td></tr>";
+                        $i++;
+                    }
                 }
                 $tbody.="</tbody>";
             }else
@@ -130,11 +159,12 @@ if(isset($_POST['opcion'])){
             $venta_diaria_total=number_format ( floatval($venta_diaria_total), 0 , ',', '.');
             $tfoot='<tfoot><tr class="pie" id="tr_pie_busqueda"><td colspan="2" class="col-xs-8">VENTA TOTAL :&nbsp</td><td class="col-xs-4">'.$venta_diaria_total.'</td></tr></tfoot>';
             $data['table']=$thead.$tbody.$tfoot;
-            $data['query']=$query_diax;
+            // $data['query']=$query_diax;
         }else{
             $data['errors'][]=$sqlsrv->POSTErrors();
         }
         $sqlsrv_13->closeConnection();
+        // echo "<table border='1px'>$tbody</table>";
         echo json_encode($data);                
     }
 

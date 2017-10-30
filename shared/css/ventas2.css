@@ -65,16 +65,67 @@ html, body {
     width: 15%;
 }
 /**** ESTILOS PARA EL CALENDARIO ****/
-#div_cont_calendario {
+#div_cont_calendario2 {
     flex: 0 0 auto;
     display: flex;
     flex-direction: row;
     justify-content: center;
     margin-bottom: 1rem;
 }
+/* #div_cont_calendario1 {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 1rem;
+    text-align: center;
+    background-color: yellow;
+} */
 #div_cont_calendario>button{   margin: 0rem .5rem; }
-#datetimepicker1 { width: 60% !important; }
-
+    #datetimepicker1>.bootstrap-datetimepicker-widget{
+    /* width: 18rem !important;  */
+    /* height: 10rem; */
+    /* background-color: yellow; */
+    /* text-align: center; */
+}
+.bootstrap-datetimepicker-widget table tr {
+    display: flex;
+    justify-content: center;
+    width: 100% !important;
+}
+.bootstrap-datetimepicker-widget table th {
+    text-align: center;
+    border-radius: 0px;
+    background-color: #2B6D8D;
+    color: #fff;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.bootstrap-datetimepicker-widget table th.dow {
+    width: 3.5rem;
+    font-size: 1.2rem !important;
+    text-align: center !important;
+    padding: .3rem !important
+}
+.bootstrap-datetimepicker-widget table td {
+    text-align: center;
+    border-radius: 0px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:blue;
+    border: 1px solid rgba(192, 192, 192, 0.418);
+}
+.bootstrap-datetimepicker-widget table td.day {
+    color: blue;
+    width: 3.5rem;
+}
+.bootstrap-datetimepicker-widget table td.old {
+    color: gray;
+}
 
 .cont_tabla {
     overflow: hidden !important;
@@ -120,7 +171,7 @@ tbody tr td {
     color: white;
     border: 1px solid white !important;
     text-align: center;
-    padding: 0.7rem !important;
+    height: 5rem;
 }
 #tr_head_ventas_promotoras th { background-color: #8f2e2e !important; }
 #tr_head_busqueda th { background-color: #05a872 !important; }
@@ -129,6 +180,10 @@ tbody tr td {
     padding-top: 1.2rem !important;
     padding-bottom: 1.1rem !important;
 }
+.nombre_campos th:nth-child(4) {
+    padding: 0.4rem !important;
+}
+
 .fila td { font-size: 1.1rem !important; }
 .fila_promotoras td { font-size: 1rem !important; }
 .fila td, .fila_promotoras td {
@@ -149,6 +204,27 @@ tbody tr td {
 #tr_pie_ventas.pie td, #tr_pie_ventas_promotoras.pie td, #tr_pie_busqueda td { font-size: 1.2rem !important; }
 #tr_pie_ventas_promotoras.pie td { background-color: #8f2e2e !important; }
 #tr_pie_busqueda td { background-color: #05a872 !important; }
+
+#button_calendar {
+    padding: 0 1rem;
+    color: white;
+    margin-right: .2rem;
+}
+#button_search {
+    padding: 0 1rem;
+    color: white;
+    margin-left: .2rem;
+}
+/* #text_calendar {
+    border: 0px;
+    color: white;
+    background-color:#004080;
+    text-align: center;
+    width: 80%;
+    margin-bottom: .2rem;
+    padding: 0px !important;
+    font-size: .9rem;
+} */
 /**** large dispositives ***/
 @media (min-width: 940px) {
     .table-fixed tbody {

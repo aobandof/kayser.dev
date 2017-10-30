@@ -3,9 +3,10 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="../shared/css/normalize.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../shared/css/styles.css">
     <link rel="stylesheet" href="../shared/css/documentos.css">
     <title>Documentos No Procesados / Errados</title>
@@ -14,14 +15,14 @@
     <div class="container_column" id="div_documentos">
       <div class="container_row cont_options">
         <select name="" id="select_store" class="form-control" >
-            <option value="">Seleccione Tienda</option>
         </select>
         <select name="" id="select_state" class="form-control">
-            <option value="">Estado de Documento</option>
+            <option value="">Estado Documento</option>
             <option value="no_procesados">NO PROCESADOS</option>        
             <option value="con_errores">CON ERRORES</option>        
         </select>
-        <button class="btn btn-primary" id="button_consult">CONSULTAR</button>
+        <button class="btn btn-primary" id="button_consult"><i class="fa fa-search" aria-hidden="true"></i></button>
+
       </div>
 
       <div id="div_loading_documents" class="cont_hidden">
