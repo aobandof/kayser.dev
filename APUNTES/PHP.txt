@@ -1,0 +1,66 @@
+CONVERTIR UNA FECHA A CADENA: date_format($valor, 'd/m/Y'); // BUSCASR OTRAS FORMAS DEL SEPARADOR U ORDEN DE MESES
+
+CONVERTIR A ENTERO:
+intval(variable)
+(int)variable
+
+CUANDO USAMOS UN VARIABLE COMO INDICE EN UN ARRAY ASOCIATIVO, EN PHP 5.6, SOLO PODEMOS USAR LAS COMILLAS DOBLES:
+nombre_array["$variable"]['tipo'] # Correcto
+nombre_array['$variable']['tipo'] # incorrecto por tener comillas simples
+nombre_array[$variable]['tipo']   # tambien funciona sin comillas
+
+
+destruye UN ARRAY (o variable):		unset($nom_array)  // OjO, este metodo deja a $nombre_array como null, hay que volver a inicializarlo
+
+para vaciar un array oidem:		array_splice($array,0) // y elimina el contenido del array  manteniendo el array y count=0;
+
+BUSCAR VALOR EN ARRAY:	
+---------------------		
+in_array($valor, $nom_array) // OJO CON #valor, ESTA FUNCION DISTINGUE MINUSCULAS Y MAYUSCULAS, esto devuelve true o 1 si encontro el archivo
+array_search(value, array, strict) // RETORNA EL IDINCE // strict opcionl y booleano, si es true, diferencia entre 8 y "8".
+array_search(value, array_column($array_multidimensioanal_asociativo, 'indice'));
+supongamos que tenemos:
+	$arr_persona[]=array('nombre' => 'Abel', 'apellido' => 'Obando' );
+	$arr_persona[]=array('nombre' => 'Eder', 'apellido' => 'Valderrama' );
+	$arr_persona[]=array('nombre' => 'Jaime', 'apellido' => 'Luján' );
+	$indice= array_search("Valderrama", array_column($arr_persona, 'apellido')); // devuelve 1 (segundo elemento de array)
+
+CONDICIONAL TERNARIO:
+--------------------
+valor_condicion ? valor : valor_else
+
+
+LONGITUD DE ARRAY (COUNT O SIZEOF)
+----------------------------------
+count($arr_name) // muetra la cantidad de elementos del array
+sizeof($arr_name) // Tambien muestra la cantidad de elementos (sizeof es un alias de count)
+
+
+SABER SI UN VALOR ES NUMERICO O CADENA
+---------------------------------------
+is_numeric($valor) ? ... : ... ;
+
+
+
+cadena desde array:	$cadena= implode(',',$arreglo);
+-------------------
+
+
+texto heredoc
+-------------
+$str = <<<EOD
+Ejemplo de una cadena expandida en varias líneas
+empleando la sintaxis heredoc.
+EOD;
+
+echo <<<EOT
+Mi nombre es "$nombre". Estoy escribiendo un poco de $foo->foo. Ahora, estoy escribiendo un poco de {$foo->bar[1]}.
+Esto debería mostrar una 'A' mayúscula: \x41
+EOT;
+
+
+
+FECHAS
+------
+getdate() //Devuelve la un array asociativo con los datos de fecha actual
+checkdate( $month , $day , $year )   //PARAMETROS ENTEROS -- Devuelve True o False si la fecha es correcta y existe

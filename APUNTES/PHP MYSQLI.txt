@@ -1,0 +1,6 @@
+ERRORES
+-------
+
+ERROR DE CONEXION :   	IF($connection->connect_error) // condicional para ver si existio un error
+			$connection->connect_error // Devuelve una cadena con la descripción del último error de conexión
+			$connection->connect_errno // Devuelve el código de error del error de conexion	

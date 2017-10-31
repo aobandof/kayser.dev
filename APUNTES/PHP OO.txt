@@ -1,0 +1,28 @@
+PALABRA RESERVADA STATIC:
+------------------------
+- Propiedades o metodos estaticos pueden accederse sin la necesidad de instanciar clase.
+
+
+PROPIEDAD STATIC :
+------------------
+- No puede ser accedido con un objeto de clase instanciada.
+- No puede ser accedido a traves del objeto usando el operador de felcha (->)
+- Solo puede ser inicializada con un string literal ( string, int, double, array ...) o una constante.
+- No se puede inicializar con expresiones, con otra variable, con el valor o devolucion de funcion, ni con un objeto.
+
+METODO STATIC:
+--------------
+- Puede ser accedido por un objeto de clase instaciada.
+- la pseudovariable $this no esta disponible dentro de los metodos estaticos 
+
+
+::	: Para acceder desde la clase no instanciada al metodo o propiedad estatico ( return classBD::$mi_static )
+self	: Para acceder, dentro de la misma clase a un metodo o propiedad estatica ( self::$mi_static )
+parent	: Para acceder, en una clase hija, al metodo o propiedad estastica ( parent::$mi_static )
+
+
+*** Cuando Redefinimos un metodo de la clase padre en una clase extendidad, podemos seguir usando parent::metodoPadre() para acceder al metodo original 
+
+*** 	Para crear una instancia "UNICA" de conexion a base de datos (singleton), hay que crear una variable statica "$instance" en la clase
+	la cual la crearemos por primera vez cuando instanciemos la clase y construllamos la conexion, después solo preguntamos si esta instenciada,
+	entonces seguiremos usando esa misma clase.

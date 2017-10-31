@@ -1,0 +1,20 @@
+DESPSUES DE:
+$registros=sqlsrv_query($conector, $query);
+
+PODEMOS CONSULTAR:
+    	foreach( sqlsrv_field_metadata( $registros) as $fieldMetadata ) {
+        	... = $fieldMetadata['Name'];
+    	}// CONSULTAR LOS NOMBRES DE COLUMNAS DE LA CONSULTA
+	* Esto también muestra otros metadatos de las colmnas como type, size, etc...
+
+
+
+
+$select=sqlsrv_query($conector, $query, array(), array( "Scrollable" => 'static' ));
+* agregando los 2 ultimos parametros podemos usar la opcion: sqlsrv_num_rows($select) para obtener el numero de filas afectadas
+
+while($reg=sqlsrv_fetch_array($select,SQLSRV_FETCH_ASSOC)) 	// para recorrer los registros consultados, guardando cada registro en array asociativo
+while($reg=sqlsrv_fetch_array($select,SQLSRV_FETCH_NUMERIC))	// para recorrer los registros consultados, guardando cada registro en array numerico
+
+
+

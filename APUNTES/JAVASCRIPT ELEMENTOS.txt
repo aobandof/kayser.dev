@@ -1,0 +1,6 @@
+OBTENER EL VALOR DE OPTION SELECT: 	el.value
+OBTENER EL TEXTO DEL OPTION SELECT:	el.options[el.selectedIndex].text
+
+SELECTORES:
+input type text:	input[type="text"]
+...

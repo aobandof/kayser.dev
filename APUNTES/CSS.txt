@@ -1,0 +1,7 @@
+cont_tabla_full		Es un div con flex: 1 1 auto, PARA QUE LA TABLA QUE CONTIENE OCUPE TODO EL ESPACIO DISPONOBLE DEL PADRE Y ASI SE VEA SOLO EL ANCJHO DE LA PANTALLA
+check_sel_desel_tabla	es un checkbox en un th de tabla que selecciona/deselecciona los check en las filas y misma columna de la misma tabla
+
+sombras:
+---------
+box-shadow : 1rem 1.5rem 5px black
+//  derecha inferior radio propagacion color (si se desea izquiera o arriba se usan valores negativos en los 2 primeros parametros / la propagacion es para todos los lados y se puede obviar)

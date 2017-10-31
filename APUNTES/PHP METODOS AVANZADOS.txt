@@ -1,0 +1,47 @@
+call_user_func_array: LLamamos a un METODO o FUNCION (Obtenemos los valores que retorna) ingresandole parametros de entrada enviados desde un ARRAY
+---------------------
+
+Ejemplo1 :
+
+function imprimir() {
+	echo "imprimimos la cantidad de: ". func_num_args() . " valores. Siendo los valores:<br>";
+	var_dump(func_get_args());
+}
+
+class Priner {
+	function print() {
+		echo "imprimimos la cantidad de: ". func_num_args() . " valores. Siendo los valores:<br>";
+		var_dump(func_get_args());
+	}
+}
+
+
+$params=array( 10, "Hola mundo", "Ejemplo de metodo o funcion")
+
+call_user_func_array("imprimir", $params); //le pasamos el array $params y en la funcion impirmir usamos metodos relacionados con los parametros enviados.
+$impresora= new Printer;
+call_user_func_array(array($impresora,"print"),$params) //para un metodo de clase, solo cambia el array que creamos con el objeto y el nombre de metodo
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Ejemplo2: (ejemplo de PHP.net: http://php.net/manual/es/function.call-user-func-array.php )
+
+function foobar($arg1, $arg2) {
+	echo __FUNCTION__, " obtuvo $arg1 y $arg2\n";
+}
+class Foo {
+	function bar($arg1, $arg2){
+		echo __METHOD__, " obtuvo $arg1 y $arg2\n";
+	}
+}
+
+//llamar a la funcion foobar() con 2 argumentos:
+call_user_func_array("foobar", array("uno","dos");
+//llamar al metodo $foo->bar() con 2 argumentos
+$foo = new Foo;
+call_user_func_array(array($foo,"bar"), array("tres", "cuatro");
+
+//Imprimira:
+foobar obtuvo 1 uno y dos
+foo::bar obtuvo tres y cuatro
+

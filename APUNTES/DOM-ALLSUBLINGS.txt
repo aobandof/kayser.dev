@@ -1,0 +1,28 @@
+// METHOD A (ARRAY.FILTER, STRING.INDEXOF)
+var siblings = function(node, children) {
+    siblingList = children.filter(function(val) {
+        return [node].indexOf(val) != -1;
+    });
+    return siblingList;
+}
+
+// METHOD B (FOR LOOP, IF STATEMENT, ARRAY.PUSH)
+var siblings = function(node, children) {
+    var siblingList = [];
+    for (var n = children.length - 1; n >= 0; n--) {
+        if (children[n] != node) {
+            siblingList.push(children[n]);
+        }  
+    }
+    return siblingList;
+}
+
+// METHOD C (STRING.INDEXOF, ARRAY.SPLICE)
+var siblings = function(node, children) {
+   siblingList = children;
+   index = siblingList.indexOf(node);
+   if(index != -1) {
+       siblingList.splice(index, 1);
+   }
+   return siblingList;
+}

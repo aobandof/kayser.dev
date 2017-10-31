@@ -1,0 +1,36 @@
+CAMBIAR LA CLAVE DE ROOT:
+---------------------------
+mysql -u root -p
+mysql> use mysql;
+mysql> update user set password=PASSWORD("nuevaclave") where User='root';
+mysql> flush privileges;
+mysql> quit
+
+
+
+INSERT
+------
+Ultimo ID insertado:	$ultimo_id = mysql_insert_id($connec); //donde connect es la conexion obtneida con mysql->conect
+
+$mysqli->affected_rows:	Retorna el numero de filas afectadas despues de la transaccion ( 1 si es correcto y -1 si no resulto)
+Existen excepciones para los valores devueltos por este metodo, muy importantes ( http://php.net/manual/es/function.mysql-affected-rows.php )
+
+
+
+show create table Categoria_Prenda
+sirve para ver como es que se creo una tabla, ademas podemos ver los nombres de las CONSTRAIN (claves foraraneas) SIN NECESIDAD DE RECURRIR AL MODELO
+
+
+SI QUEREMOS QUITAR LA RESTRICCION 'UNIQUE' DE UN CAMPO, TENEMOS QUE VER EL NOMBRE "CONSTRAIN" CREADO, para ello usamos SHOW CREATE TABLE NOMBRE_TABLA y al final verifiamos el nomre que por lo general es '"nombre_campo"_UNIQUE'  y lo eliminamos con:
+alter table nombreTabla drop index nombreCampo_UNIQUE;
+
+SI QUEREMOS AGREGAR EL ATRIBUTO AUNTO_INCREMENT A UNA LLAVE QUE YA SE CREO Y ESTA RELACIONADA CON OTRAS TABLAS, ENTONCES:
+SET FOREIGN_KEY_CHECKS = 0;
+ALTER TABLE Presentacion MODIFY COLUMN id TINYINT(4) NOT NULL AUTO_INCREMENT;
+SET FOREIGN_KEY_CHECKS = 1;
+
+----------------------------
+*******  IMPORTANTE ********
+----------------------------
+* cuando se inserta o actualiza un valor UNIQUE, si el valor ya existe, NO GENERA ERROR, simplemte no realiza la accion y no hay filas afecatdas.
+  Es una buena practica detectar esto con $mysqli->>affected_rows ( -1 indica que no realizó accion )

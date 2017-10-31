@@ -1,0 +1,30 @@
+acceder a la carpeta del proyecto:
+
+###########  Inicializamos el proyecto: ######################################
+npm init -y
+
+########### Instalamos y configuramos webpack de forma local como dependencia de desarrollo: ###############
+
+npm i webpack --save-dev	ó 	npm i webpack -D
+
+en script de package.json agregar la siguiente clave:valor:
+"dev" : "node_modules/.bin/webpack"
+
+en la carpeta raiz, creamos el archivo: "webpack.config.js" con el siguiente contenido:
+const path = require('path');
+const CONFIG = {
+  entry: './src/js/app.js',
+  output: { path: path.resolve(__dirname,'dist'), filename: 'bundle.js'  }
+}
+module.exports = CONFIG;
+
+*** CADA VEZ QUE MODIFIQUEMOS el package.json (instalar alguna dependencia), DEBEMOS ENSAMBLAR NUEVAMENTE EL ARCHIVO bundle.js, para eso utilizamos el comando: npm run dev
+
+############# Instalamos otras dependencias necesarias #########################
+npm i jquery --save
+npm i bootstrap@4.0.0-alpha.6 --save
+npm install style-loader css-loader -D  //para poder inicializar archivos de estilos.
+
+
+ 
+

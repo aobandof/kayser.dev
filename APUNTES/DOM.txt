@@ -1,0 +1,117 @@
+JAVASCRIPT PURO:
+---------------
+- CREAR ELEMENTO:
+	elemento= 8 // u otro tag: ul, p, h1, etc
+
+- CREAR NODO DE TEXTO:
+	nodo_texto = document.createTextNode("Hola Qué tal?");
+
+- AGREGAR ATRIBTO A ELEMENTO:
+	elemento.setAttribute('atributo','valor_atributo');
+	elemento.id="nombre_id"; // tb se puede agregar con setAttribute
+	elemento.className="nombre_clase"; // // tb se puede agregar con setAttribute
+
+- AGREGAR ESTILO:
+	elemento.style.color = "red";
+
+- AGREGAR ELEMENTO o NODO a CONTENEDOR:
+	contenedor.appendChild(elemento) ó  contenedor.appendChild(nodo_texto) //appendChild no funciona para codigo HTML
+
+- AGREGAR CONTENIDO HTML (TAGs con hijos, atributos, etc):
+	elemento.innerHTML="<div><span>Hola</span><input....></div>";
+
+- PARA AGREGAR cualquier HTML o XML, antes, dentro inicio, dentro final y despues de otro elemento, en forma de nodo, usamos:
+	elemento.insertAdjacentHTML('posicion','html_a_agregar')
+ 	posicion:
+		- beforebegin = antes del elemento
+		- afterbegin  = dentro y al inicio del elemento
+		- beforeend   = dentro y al final del elemento
+		- afterend    = despues del elemento.
+	html_a_agregar, es cualquier cadena HTMl que contenga uno o mas elementos con sus textos, los cuales seran analizados y agregados como nodos a elemento
+
+- REFERENCIAR ELEMENTO
+	element = document.getElementById("nombre_id");
+	element = document.getElementsByTagName("p");
+	element = document.getElementsByClassName("nombre_clase");
+		Esto obtiene una coleccion HTML y si el elemento tiene Ids duplicará la cantidad de elementos siendo el indice de duplicados el id
+		Es decir, si tenemos 2 cajas:
+			<div class="classX" id="id1">div1</div>
+			<div class="classX" id="id2">div2</div> y usamos:
+			document.getElementsByClassName("classX"); devuelve una coleccion de 4 elementos, en lugar de 2: veamos el objeto con console.log
+			
+				(2) [div#id1.classX, div#id2.classX, id1: div#id1.classX, id2: div#id2.classX]
+					0: div#id1.classX
+					1: div#id2.classX
+					id1: div#id1.classX
+					id2: div#id2.classX
+					length : 2
+			4 elementos aunque la longitud diga que es 2
+				
+	element = document.querySelectorAll("selector igual que jquery o CSS"); // una lista, pudiendo usar foreach
+	veamos el array con los mismos elementos pero usando querySelectorAll
+			document.querySelectorAll('.classX')
+
+				(2) [div#id1.classX, div#id2.classX]
+					0: div#id1.classX
+					1: div#id2.classX
+					length: 2
+	element = document.querySelector('.name_clase') // selecciona el primer elemento de todos los selccionados
+
+- RERERENCIAS A FAMILIA:
+	element.parentNode;			//	referencia al padre
+	element.firstChild			//	referencia al primer hijo
+	element.lastChild			//	referencia al ultimo hijo
+	element.childNodes			//	referencia a todos los hijos (iterable con foreach)
+	element.querySelectorAll(Selector) 	//	referencia a elementos dentro de elemento
+	elemento.netxSibling			// 	referencia al hermano siguiente
+	elemento.previousSibling		//	referencia al hermano anterior
+	 SI QUEREMOS OBTENER TODOS LOS HERMANOS TENEMOS QUE USAR FUNCIONES, VER ANEXO "DOM-ALLSUBLINGS.txt"
+	
+
+- AGREGAR HIJO AL FINAL:
+	element.appendChild(child)
+
+- REMOVER HIJO:
+	elemento.removeChild(child) // donde child es un elemento hijo referenciado por algun id, class o tag.
+- REMOVER TODOS LOS HIJOS
+	while (element.firstChild) { //MIENTRAS EXISTE UN PRIMER ELEMENTO, LO ELIMINAMOS y el siguiente pasa a ser el primero, hasta que se eliminen todos
+  		element.removeChild(element.firstChild);
+	}
+- REEMPLAZAR HIJO:
+	elemento.replaceChild(hijo1, hijo2)
+
+- INSERTAR ANTES DE UN ELEMENTO:
+	parentElement.insertBefore(newElement, referenceElement);
+- INSERTAR DESPUES DE ELEMENTO:
+	parentElement.insertAfter(newElement, referenceElement);
+- TRABAJAR POR COLECCIONES
+	cant_elementos_formulario = document.getElementById("myForm").elements.length; // puede ser de un UL, etc
+	valor_elemento_1 = document.getElementById("myForm").elements[0].value; // puede ser de un input, etc
+	ó
+	valor_elemento_1 = document.getElementById("myForm").elements.item(0).value; // puede ser de un input, etc
+	valor_de_input_con_name_valor_name = document.getElementById("myForm").elements.namedItem("valor_name").value;
+	
+
+EVENTOS:
+-------
+element.addEventListener("click",function(){...});
+element.focus() // para obtener el foco del elemento
+
+ESTILOS
+-------
+Agregar estilo:
+elemento.style.property = style // donde property es la propiedad y el estylo es el valor entre comillas (ejemplo: element.style.backgroundColor = "red"; )
+elemento.setAttribute("style", "background-color:darkblue;");
+
+para agregar y quitar una clase mas a/de las existentes, en un elemento:
+	elemento.classList.add("otra_clase");
+	elemento.classList.remove("otra_clase");
+una forma mas inteligente es usar toogle, que quita si existe o agrega sino existe, pudiento agregar multiples clases al claseList:
+	elemento.toggle("class1");
+	elemento.toggle("class2");
+		o
+	elemento.toggle("clase1","clase2")
+Si queremos trabajar en elementos obtenidos por document.getElementsByClassName, puede que algunas veces los indices de la coleccion obteneida sean variados y no pueda referenciar a ellos de na manera optima por lo que estos metodos podrian fallar
+
+Si queremos quitar el evento click a un elemento o boton:
+element.style.pointerEvents = "none"; // despues si queremos habilitarlo, cambiamos a "auto"

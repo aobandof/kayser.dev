@@ -1,0 +1,13 @@
+cadena.slice(cadena.indexOf("_")+1) //para extraer cadena desde una posicion despues de la primera aparicion del caracter '-' hasta el final
+
+cadena.toLowerCase() //convertir a minusculas
+cadena.toUpperCase() // convertir a mayusculas
+
+
+cadena.indexOf("char_o_string") //  obtiene la posicion del caractaer o subcadena buscada en la cadena
+cadena.slice(pos_inicio) // retorna una subcadena desde la posicion hasta el final
+cadena.slice(pos_inicio, pos_final_menos ) // retorna una subcadena desde la pos inicio hasta la posicion final menos pos_final_menos.
+	pos_final_menos en negativo para retroceder la posicion final.
+	Ejemplo:
+		cadena="adios mundo cruel";
+		cadena.slice(6,-6) // retorna "mundo"

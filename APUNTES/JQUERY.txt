@@ -1,0 +1,46 @@
+	NOTAS JQUERY: 
+* los input son todos los 
+
+
+$(".cont_filtro :input[type=text]").each(function() {......});	//recorre todos los input tipo text del los contenedores con cierta clase
+$(".cont_filtro :input:enabled").each(...			//recorre todos los input habilitados
+$(".cont_filtro :input:disabled").each(...			//recorre todos los input desabilitados	
+$(".cont_filtro :input[type!=checkbox]:enabled").each(		//recorre todos los input habilitados que no sean del tipo checkbox
+alert($(this).attr("id"));					//para mostrar el nombre de atributo de un elemento
+
+$(".cont_filtro :input[type=checkbox]").eq(1).prop('checked', true); // para activar el segundo hijo de todos los checkbox dentro de contenedores con clase...
+if( $(this).prop('checked')===false){				// si estuvo chekeado pero lo desactive cambiando el estado a false
+alert($(this).parent().siblings('input').attr('id'));		// mostrar el id del hermano del padre
+alert($(this).parent().parent().children('input,select').attr('id') // muestra lo mismo que el anterior
+
+#### importante ####
+***OJO****
+cuando uso $(".... :input)... se consideran todos los input, incluso lo select
+cuando uso $(this).parent().parent().children('input')...   o   $(this).parent().siblings('input')... solo me toman los input text pero no los select
+escribiendo $(this).parent().parent().children('input,select') o $(this).parent().siblings('input,select') tambien se consideran los select
+
+if($(...).attr('type')=='text')		// para saber si  es de tipo text
+
+JQUERY ELEMENTOS:
+-----------------
+asignar texto a un elemento:
+$("selector").text("html_to_agregar");
+
+asignar html a elemento:
+$("selector").html("html_to_agregar");
+
+todos los checkbox checkados:
+$(".check_talla:checked").each(function () { }
+$("input[type!=checkbox]:cheched").each...
+
+longitud de seleccion jquery:
+$("selector").length
+
+JQUERY TABLAS
+-------------
+$("#miTabla tr").find('td:eq(1)').each(function ()		// PARA RECORRER LA PRIMERA CELDA DE TODAS LAS FILAS DE LA TABLA
+
+
+  
+
+   if(!!$("#ul_items>.active>a").attr('id')) si el id de a activo es distinto de undefined

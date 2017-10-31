@@ -1,0 +1,154 @@
+var el = document.body.querySelector("input[type='text']");  // se obtiene el html con el primeer input texto (ejemplo: <input type='text' /> )
+
+para comparar null en un condicional  se compara de la siguiente manera: if(var_x !== null) ...
+
+para comparar undefined en un condicional se compara de la siguiente manera: if(!!var_x) ...
+
+Para hacer un explode en javascript, usamos: nombre_cadena.split(" ") // lo que va dentro de commillas es el delimitador, en este caso el espacio en blanco
+
+PROGRAMACION DECLARATIVA
+-----------------------
+    filtros.forEach( function(item,index){           O          filtros.forEach( (item,index) => obj_filtros[index]=item );
+	obj_filtros[index]=item;
+    });
+
+
+ARRAYS
+------
+
+LA FORMA CORRECTA DE VACIAR UN ARRAY ES HACIENDO A SU entD=0 (array.length=0) // PARA ARRAY ASOCIATIVOS NO FUNCA
+
+si copiapmos un array de manera convencional con "=", estarriamos creando una referencia al array y cuando modifiquemos tal referencia, modificará tambien el array original
+PARA COPIAR POR VALOR UN ARRAY USAMOS:
+	new_array=array.slice(); // PARA ARRAY ASOCIATIVOS NO FUNCA
+
+
+DECLARAR ARRAY:
+	var array=[];
+	var array=['a','b','c'];
+	var array=[[1,2,3,4,5],['a','e','i','o','u']];
+	/******* NO ENCUENTRO LA FORMA DE INICIALIZAR UN ARREGLO CON LLAVES, INDEX O KEYS, SOLO VEO POSIBLE CON OBJETOS O UN ARRAY DE OBJETOS ****/
+
+RECORRER ARRAY Y OBJETOS:
+- el array se recorre con:
+	nom_array.forEach(function(item,index){
+		console.log(index,item) // muestra indice y valor, OJO que en la funcion el parametro item es antes que index
+	}
+	// si queremos usar el array principal dentro de la funcion es necesario agregarlo como parametro: function(item,index,array)...
+	// ESTO NO FUNCIONA PARA RECORRER OBJETOS
+- el objeto se recorre de la siguiente forma:
+	for ( index in nom_objeto ) {
+		console.log(index,nom_objeto[index]) // muetra indice y valor
+	}
+- Otra forma de recorrer ojetos, asegurandose que existe el index:
+	for(var index in object) { 
+  		if (object.hasOwnProperty(index)) {
+      			var attr = object[index];
+  		}
+	}
+-otra forma de recorrer objetos, con los nombres de columnas:
+	Object.keys(object).map(function(objectKey, index) {
+    		var value = object[objectKey];
+   		 console.log(value);
+	});
+
+***** CORRECCION ***** 
+SI RECORREMOS UN OBJETO O UN ARRAY ASOCIATIVO UNIDIMENSIONAL (osea con pares key valor { key1 : valor, key2 : valor2 ... } ), la unica forma de recorrer las llaves es con FOR IN.
+EL ARRAY ASOCIATIVO UNIDIMENSIONAL, SI LO RECORREMOS CON FOREACH, NO MOSTRARÁ RESULTADOS
+
+
+INICIALIZAR Y LLENAR ARRAY DINAMICAMENTE:
+	var filtros = [];
+	filtros.push('opcion' + " : " + 'filtrar' );
+	filtros.push({'opcion' : valor ,"opcion2":otro_valor });
+INICIALIZAR Y LLENAR OBJETO:
+	var obj_filtros=new Object();
+	obj_filtros['opcion']='filtrar';
+
+
+ALCANCE DE VARIABLES Y FUNCIONES
+--------------------------------
+1. si una variable se declara pero no se instancia (var varcita;) cuando la quieres mostrar, no sucede "Error" e imprime "Undefined". Pero, si una variable nunca es declarada y se quiere imprimir mostrará "Error"
+
+2. si llamamos a una funcion que despues se define y es nombrada, se ejecuta la primera llamada antes de la definicion de la funcion.
+foo(); //se imprimirá asi la funcion se llame antes de definir la funcion
+function foo(){  console.log("hola mundo") }  
+
+3. Pero si llamamos a una funcion que nunca la definimos sucederá ERROR
+foo(); //sucederá error ya que foo() nunca se definió como funcion, aunque en la siguiente linea se asignó a la variable "foo" una funcion
+var foo = function() { console.log("hola mundo"); }
+
+4. De modo que, si asignamos una funcion anonima a una varible, solo podemos llamar a la variable "como funcion", despues de que la variable se cargue con la funcion
+var foo = function() { console.log("hola mundo"); }
+foo() // imprimirá "hola mundo"
+
+5. para llamar a la funcion en el caso anterior, si o si se tiene que llamar a la funcion, ya que si llamamos a la variable, no obtenderemos nada
+var foo = function() { console.log("hola mundo"); }
+foo // si foo se llama sin los parentesis, tendrá el valor de varible y no de funcion
+
+FILTER:
+-------
+Suponemos que tenemmos el siguiente array: let numbers = [1,5,23,4,12,45,78,8,8.9,10,11,3.4,10.1,84,6]
+Usamos filter para obtener todos los elementos mayores qe 10
+	ES6:	let greaterTen = numbers.filter( number => number>10 ) // RETURN IMPLICITO
+	ES5:	var greaterTen = numbers.filter(function(number){ return number > 10 });
+* En ES6 para que retorne el valor, el cuerpo del arrow function no debe ir entre llaves.
+
+INDEXOF
+-------
+string.indexOf:
+______________
+* Distingue mayusculas y minusculas 
+* Devuelve la posicion desde donde se encontro el carater o la subcadena. Devuelve -1 si no encontro el dato.
+	cadena.indexOf("char_o_string", position)  
+		donde posicion [opcional], 0 si no se especifica.
+		si char_o_string="", sea cual sea la posicion (incluso una posicion fuera del rango) retorna la posicion indicada
+array.indexOf:
+_____________
+var array = [2, 5, 9];
+var index = array.indexOf(2); // index es 0
+
+FORMATO DE NUMEROS MILES Y DECIMALES:
+------------------------------------
+var number = 3500;
+console.log(number.toLocaleString()); // Displays "3,500" if in U.S. English locale
+
+var number = 123456.789;
+console.log(number.toLocaleString('de-DE')); // ? 123.456,789 - German uses comma as decimal separator and period for thousands
+
+
+CONVERSION Y TIPO DE CADENAS
+-----------------------------
+PARA SABER SI UN STRING ES UN ENTERO
+if(cadena % 1 == 0 ) ...
+
+PARA CONVERTIR UNA CADENA EN ENTERO:
+entero=parseInt(cadena)
+
+
+ORDENANDO ARRAY:
+----------------
+Ordenando un array
+Un array de elementos string, sin especificar una función de comparación:
+
+var arr = [ 'a', 'b', 'Z', 'Aa', 'AA' ];
+arr.sort();  //[ 'AA', 'Aa', 'Z', 'a', 'b' ]
+Un array de elementos numéricos,  sin función de comparación:
+
+var arr = [ 40, 1, 5, 200 ];
+arr.sort();  //[ 1, 200, 40, 5 ]
+Un array de elementos numéricos, usando una función de comparación:
+
+var arr = [ 40, 1, 5, 200 ];
+function comparar ( a, b ){ return a - b; }
+arr.sort( comparar );  // [ 1, 5, 40, 200 ]
+Lo mismo pero usando una función anónima normal:
+
+var arr = [ 40, 1, 5, 200 ];
+arr.sort(function(a,b){return a - b;});  // [ 1, 5, 40, 200 ]
+Lo mismo escrito más compacto mediante una función flecha:
+
+var arr = [ 40, 1, 5, 200 ];
+arr.sort((a,b)=>a-b);  // [ 1, 5, 40, 200 ]
+
+

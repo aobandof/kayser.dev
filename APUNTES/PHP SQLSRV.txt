@@ -1,0 +1,5 @@
+ERRORES:
+-------
+if( ($errors = sqlsrv_errors() ) != null)
+        foreach( $errors as $error )
+            $arr_errors[]=array('sqlstate'=>$error[ 'SQLSTATE'], 'code'=>$error[ 'code'], 'message'=>$error[ 'message']);

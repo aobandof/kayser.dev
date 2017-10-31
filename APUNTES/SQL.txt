@@ -1,0 +1,23 @@
+Si queremos acompañar un select con columna que indique el numero de registro usamos:
+
+ROW_NUMBER() OVER(ORDER BY NOMBRE_CAMPO ASC) AS Row, NOMBRE_CAMPO ...
+O
+RANK() OVER(ORDER BY NOMBRE_CAMPO ASC) AS Row, NOMBRE_CAMPO
+
+
+* CONVERTIR DE STRING A ENTERO:
+
+SELECT CAST(YourVarcharCol AS INT) FROM Table
+SELECT CONVERT(INT, YourVarcharCol) FROM Table
+
+* AVG
+------
+Selecciona el promedio de un campo de una seleccion (Devuelve una Fila), tiene muchas opciones
+https://msdn.microsoft.com/es-es/library/ms177677(v=sql.120).aspx
+
+
+
+
+CONVERTIR STRIN A FECHA:
+CONVERT(datetime, '2016-10-24',20) // convierte a 2016-10-24 00:00:00.000
+revisar para mas casos en:  https://www.w3schools.com/sql/func_sqlserver_convert.asp

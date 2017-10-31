@@ -1,0 +1,10 @@
+en centos:
+----------
+por defecto el archivo donde estan las tareas lo encontramos en: /var/spool/cron/user donde user seria el usuario, en nuestro caso el root
+ese mismo archio podremos verlo con crontab -l    y editarlo con crontab -e
+
+
+
+cambiar editor:
+--------------
+export VISUAL='nano'
