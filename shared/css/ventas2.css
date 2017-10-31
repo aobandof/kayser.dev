@@ -81,19 +81,47 @@ html, body {
     text-align: center;
     background-color: yellow;
 } */
+/******* PARA EL DIV DIAS ********/
 #div_cont_calendario>button{   margin: 0rem .5rem; }
-    #datetimepicker1>.bootstrap-datetimepicker-widget{
-    /* width: 18rem !important;  */
-    /* height: 10rem; */
-    /* background-color: yellow; */
-    /* text-align: center; */
+#datetimepicker1 .bootstrap-datetimepicker-widget ul.list-unstyled{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-.bootstrap-datetimepicker-widget table tr {
+#datetimepicker1 .bootstrap-datetimepicker-widget table tr {
     display: flex;
     justify-content: center;
     width: 100% !important;
 }
-.bootstrap-datetimepicker-widget table th {
+#datetimepicker1 .bootstrap-datetimepicker-widget table th.picker-switch {
+    width: 19.5rem;
+    font-size: 1.5rem !important;
+}
+#datetimepicker1 .bootstrap-datetimepicker-widget li.picker-switch tr{
+    margin: .5rem 0rem;
+    background-color: green;
+    height: 3rem;
+    width: 24.5rem !important;
+}
+#datetimepicker1 .bootstrap-datetimepicker-widget li.picker-switch tr td{
+    background-color: green;
+    height: 3rem;
+    border: 0px;
+}
+#datetimepicker1 .bootstrap-datetimepicker-widget li.picker-switch tr td a{
+    background-color: green;
+    height: 3rem;
+}
+#datetimepicker1 .bootstrap-datetimepicker-widget li.picker-switch tr td a span{
+    background-color: green;
+    height: 0rem !important;
+}
+#datetimepicker1 .bootstrap-datetimepicker-widget table th.prev, 
+.bootstrap-datetimepicker-widget table th.next {
+    width: 2.5rem;
+}    
+#datetimepicker1 .bootstrap-datetimepicker-widget table th {
     text-align: center;
     border-radius: 0px;
     background-color: #2B6D8D;
@@ -103,13 +131,13 @@ html, body {
     align-items: center;
     justify-content: center;
 }
-.bootstrap-datetimepicker-widget table th.dow {
+#datetimepicker1 .bootstrap-datetimepicker-widget table th.dow {
     width: 3.5rem;
     font-size: 1.2rem !important;
     text-align: center !important;
     padding: .3rem !important
 }
-.bootstrap-datetimepicker-widget table td {
+#datetimepicker1 .bootstrap-datetimepicker-widget table td {
     text-align: center;
     border-radius: 0px;
     height: 3rem;
@@ -119,14 +147,31 @@ html, body {
     color:blue;
     border: 1px solid rgba(192, 192, 192, 0.418);
 }
-.bootstrap-datetimepicker-widget table td.day {
+#datetimepicker1 .bootstrap-datetimepicker-widget table td.day {
     color: blue;
     width: 3.5rem;
 }
-.bootstrap-datetimepicker-widget table td.old {
+#datetimepicker1 .bootstrap-datetimepicker-widget table td.old {
     color: gray;
 }
+#datetimepicker1 .bootstrap-datetimepicker-widget table tbody tr td {
+    background-color: #2B6D8D;
+}
+/******* PARA EL DIV MESES *****/
+#datetimepicker1 .datepicker-months {
 
+}
+#datetimepicker1 .datepicker-months table tbody tr td {
+  display: flex;
+  width: 24.5rem;
+  height: 18rem;
+  flex-wrap: wrap;  
+}
+#datetimepicker1 .datepicker-months table tbody tr td span {
+    width: 5rem !important;
+    height: 5rem !important;
+    /* background-color: rgba(180, 238, 240, 0.719); */
+}
 .cont_tabla {
     overflow: hidden !important;
     flex: 1 1 auto;

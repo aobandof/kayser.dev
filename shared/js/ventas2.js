@@ -1,13 +1,4 @@
 $(document).ready(function(){  
-    // $('#datetimepicker1').datetimepicker({
-    //     locale: 'es',
-    //     focusOnShow: false,
-    //     format: 'YYYY-MM-DD HH:mm:ss',
-    //     widgetPositioning: {
-    //         horizontal: 'right',
-    //         vertical: 'bottom'
-    //     }
-    // });
 
     $('#datetimepicker2').datetimepicker({
         locale: 'es',
@@ -32,13 +23,13 @@ $(document).ready(function(){
     el_loading=document.getElementById("div_loading_ventas");
     el_cont_table = document.getElementById('div_cont_table_ventas');
     el_select_venta = document.getElementById('select_venta');
-    el_cont_calendar = document.getElementById('div_cont_calendario');
-    // document.getElementById('link_update').onclick = function () {
-    //     if (el_select_venta.value!="busqueda"){
-    //         el_cont_table.classList.add('cont_hidden');
-    //         cargarTabla(el_select_venta.value, "");
-    //     }
-    // }
+    el_cont_calendar2 = document.getElementById('div_cont_calendario2');
+    document.getElementById('link_update').onclick = function () {
+        if (el_select_venta.value!="busqueda"){
+            el_cont_table.classList.add('cont_hidden');
+            cargarTabla(el_select_venta.value, "");
+        }
+    }
     document.getElementById('search_sale').onclick = function () {
         el_text_calendar = document.getElementById('text_calendar');
         if(el_text_calendar.value!=''){
@@ -49,19 +40,20 @@ $(document).ready(function(){
     cargarTabla('total',"");//inicialmente cargamos la tabla VENTAS TOTALES AL DETALLE */
     el_select_venta.onchange = function(){
         el_cont_table.classList.add('cont_hidden');
+        console.log(this);
         switch(this.value){
             case 'detalle':
-                el_cont_calendar.classList.add('cont_hidden');
+                el_cont_calendar2.classList.add('cont_hidden');
                 this.style.backgroundColor = "#004080";
                 cargarTabla(this.value,"");
                 break;
             case 'promotoras':
-                el_cont_calendar.classList.add('cont_hidden');            
+                el_cont_calendar2.classList.add('cont_hidden');            
                 this.style.backgroundColor = "#8f2e2e";
                 cargarTabla(this.value,"");
                 break;
             case 'busqueda': 
-                el_cont_calendar.classList.remove('cont_hidden');
+                el_cont_calendar2.classList.remove('cont_hidden');
                 this.style.backgroundColor ="#05a872";
                 break;             
         }
@@ -96,16 +88,29 @@ function cargarTabla(opcion,param_show) {
                     focusOnShow: false,
                     format: 'YYYY-MM-DD HH:mm:ss',
                     // sideBySide: true, //para que se pueda ver la eleccion de la hora abajo del calendario
-                    // autoclose: 1,
+                    // autoclose: true,
+                    // todayBtn: true,
+                    minDate: '01/01/2015',
+                    maxDate: moment(),
                     // startView: 2,
                     // todayBtn: 1,
                     // todayHighlight: 1,
                     // forceParse: 0,
+                    // collapse: false, //para mostrar el panel de horas debajo de el de dias
+                    // sideBySide: true,  // para mostrar el panel de horas a un costado
+                    // viewMode: 'years',   // para indicar que panel se muestra predeterminado, panel de: 'decades','years','months','days'              
                     widgetPositioning: {
                         horizontal: 'right',
                         vertical: 'bottom'
                     }
-                });
+                }).on('dp.show dp.update', function () {
+                    $(".datepicker-months .picker-switch").removeAttr('title')
+                        //.css('cursor', 'default')  <-- this is not needed if the CSS above is used
+                        //.css('background', 'inherit')  <-- this is not needed if the CSS above is used
+                        .on('click', function (e) {
+                            e.stopPropagation();
+                        });
+                    });
                 
                 // console.log(document.getElementById('button_search'));
                 // document.getElementById('button_search').onclick=function(){

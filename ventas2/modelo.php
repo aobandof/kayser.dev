@@ -5,16 +5,16 @@ require_once("../shared/clases/HelpersDB.php");
 require_once("../shared/clases/inflector.php");
 ini_set('display_errors', '0');
 
-$sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
-$sqlsrv_13=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$sqlsrv_promes=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$data=[]; $existe_error_conexion=0;
-if(($sqlsrv_33->getConnection())===false) { $data['errors'][]=$sqlsrv_33->getErrors(); $existe_error_conexion=1; }
-if(($sqlsrv_13->getConnection())===false) { $data['errors'][]=$sqlsrv_13->getErrors(); $existe_error_conexion=1; }
-if($existe_error_conexion){
-  echo json_encode($data);
-  exit;
-}
+///$sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
+///$sqlsrv_13=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+///$sqlsrv_promes=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+///$data=[]; $existe_error_conexion=0;
+///if(($sqlsrv_33->getConnection())===false) { $data['errors'][]=$sqlsrv_33->getErrors(); $existe_error_conexion=1; }
+///if(($sqlsrv_13->getConnection())===false) { $data['errors'][]=$sqlsrv_13->getErrors(); $existe_error_conexion=1; }
+///if($existe_error_conexion){
+///  echo json_encode($data);
+///  exit;
+///}
 
 
 if(isset($_POST['opcion'])){      
@@ -49,7 +49,7 @@ if(isset($_POST['opcion'])){
         //         </div><br>";                       
         $thead='<thead><tr id="tr_head_ventas" class="nombre_campos"><th class="col-xs-1">N°</th><th class="col-xs-5">TIENDA</th><th class="col-xs-3" id="th_hoy">VENTA HOY<br>'.$fecha_actual.'</th><th class="col-xs-3" id="th_x_dia">'.$div_calendar.'</th></tr></thead>';
         // $thead='<div><div id="div_tr_head_ventas" class="nombre_campos"><div class="col-xs-1">N°</div><div class="col-xs-5">TIENDA</div><div class="col-xs-3" id="div_hoy">VENTA HOY<br>'.$fecha_actual.'</div><div class="col-xs-3" id="div_x_dia">'.$div_calendar.'</div></div></div>';
-        $tbody='<tbody id="tbody_ventas">';
+        /*$tbody='<tbody id="tbody_ventas">';
         $query_total_diaria="SELECT  top 1 A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC";
         $query_total_anterior="SELECT bodega as cod_tienda,CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '$fecha_dia_anterior', 20) AND Horas<=CONVERT(datetime, '$current_time', 20) group by Almacen, Bodega";        
         $arr_venta_diaria=$sqlsrv_33->select($query_total_diaria,"sqlsrv_a_p");
@@ -118,7 +118,8 @@ if(isset($_POST['opcion'])){
         $data['table']=$thead.$tbody.$tfoot;
         // $data['query']=$query_total_mensual;
         $sqlsrv_13->closeConnection();
-        $sqlsrv_33->closeConnection();
+        $sqlsrv_33->closeConnection();*/
+        $data['table']=$thead;
         echo json_encode($data);        
     }
     elseif ($_POST['opcion']=="busqueda") {
