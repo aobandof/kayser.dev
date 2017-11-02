@@ -129,4 +129,10 @@ if($_POST['option']=="cargar_selects_dependientes") {
   $sqlsrv->closeConnection();
   echo json_encode($data);
 }
+if($_POST['option']=='get_last_barcode') {
+  $query_barcode="SELECT top 1 CodeBars from Kayser_OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";
+  $data['query']=$query_barcode;
+  echo json_encode($data);
+}
+
 ?>

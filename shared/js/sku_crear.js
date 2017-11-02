@@ -113,32 +113,52 @@ $(document).ready(function() {
       } else document.getElementById('txt_sku_descripcion').value = "";
     }
   });
-/************************************** EVENTO PARA GUARDAR Y ENVIAR ************************************/
-   document.getElementById('btn_guardar_enviar').onclick=function(){
-     let empty=0;
-     let tallas = document.getElementById('span_tallas_chosen').innerHTML;
-     document.querySelectorAll('.sku_control').forEach(function(control){
+/************************************** EVENTOS PARA GUARDAR Y ENVIAR ************************************/
+/*********************************************************************************************************/
+  let modal_preview_save = document.getElementById('div_preview_save');
+  let body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
+  /////----- EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL 
+  document.getElementById('button_cancel_save_sku').onclick=function(){  
+    modal_preview_save.style.visibility = 'hidden';
+    body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
+  };
+  /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
+  document.getElementById('btn_guardar_enviar').onclick=function(){
+    let empty=0;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+    document.querySelectorAll('.sku_control').forEach(function(control){
        if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
          if(control.value=='')  empty=1;
-     });
-     if (tallas=="") empty=1;
-     //sacar esto despues /
-     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
-     //////////////////////
-     if(empty===0) {
-         let modal_preview_save = document.getElementById('div_preview_save');
-         modal_preview_save.style.visibility = 'visible';
-         makeFillArticlePreview();
-         console.log(code_dpto);
-     }
-     else
-       alert("Todos los campos tienen que ser llenados");
-   }
+    });
+    if (tallas=="") empty=1;
+    //sacar esto despues /
+    empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
+    if(empty===0) {        
+      /////-----CONSULTAMOS A LA API EL ULTIMO CORRELATIVO CON LA SERIE 780001..., SI NO EXISTE, EL PRIMER BARCODE SERA EL 780001000000      
+      let parameters = { 'option': 'get_last_barcode' };
+      $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function (){ },
+        success: function(data){
+          console.log(data);
+        },
+        error: function(){ console.log('error'); }
+      });
+
+
+      modal_preview_save.style.visibility = 'visible';
+      makeFillArticlePreview();
+      
+    }
+    else
+      alert("Todos los campos tienen que ser llenados");
+  }
   // let modal_preview_save = document.getElementById('div_preview_save');
   // modal_preview_save.style.visibility = 'visible';
   // makeFillArticlePreview();
+/*********************************************************************************************************/
 /*******************************************************************************************************/
 });
+//780001000000
 
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){

@@ -87,17 +87,17 @@ function setValues(){
     'U_APOLLO_S_GROUP': { 'cod': ele_tcatalogo.value, 'val': ele_tcatalogo.options[ele_tcatalogo.selectedIndex].text  }, //temporada catalogo
   }
 
-  console.log(articulo_values);
+  // console.log(articulo_values);
   
-  sku_values = {
-    'ItemCode': { 'cod': '', 'val': '' }, //codigo sku
-    'BarCode': { 'val': '' }, //barcode ean13
-    'U_APOLLO_SEG2': { 'cod': '', 'val': '' }, //color
-    'U_APOLLO_SSEG3': { 'val': '' }, //talla
-    'U_APOLLO_SSEG3VO': { 'val': '' }, //orden de talla
-    'U_IDCopa': { 'val': '' }, //copa
-    'U_GSP_SECTION': { 'val': '' }, //copa
-  }
+  // sku_values = {
+  //   'ItemCode': { 'cod': '', 'val': '' }, //codigo sku
+  //   'BarCode': { 'val': '' }, //barcode ean13
+  //   'U_APOLLO_SEG2': { 'cod': '', 'val': '' }, //color
+  //   'U_APOLLO_SSEG3': { 'val': '' }, //talla
+  //   'U_APOLLO_SSEG3VO': { 'val': '' }, //orden de talla
+  //   'U_IDCopa': { 'val': '' }, //copa
+  //   'U_GSP_SECTION': { 'val': '' }, //copa
+  // }
 }
 //FUNCION QUE OBTIENE EL DIGITO VERFICADOR DE UN BARCODE EAN-13
 function getControlDigit(barcode){
@@ -121,44 +121,51 @@ function makeFillArticlePreview(){
   let title=document.createElement('div');
       title.innerHTML="<span>"+itemname+"</span>"
   article.appendChild(title);
-  let table_sku=document.createElement('div',{className:'table_article_preview'});
-  let head_sku = document.createElement('div');
-      head_sku.className='head_sku';
-      let th_sku=document.createElement('div');      
-      let th_barcode=document.createElement('div');
-      let th_dun=document.createElement('div');
-      th_sku.innerHTML = 'SKU';
-      th_barcode.innerHTML='BARCODE';
-      th_dun.innerHTML='DUN';
-  head_sku.appendChild(th_sku);
-  head_sku.appendChild(th_barcode);   
-  head_sku.appendChild(th_dun);
-  table_sku.appendChild(head_sku);
-  article.appendChild(table_sku);      
 
-  let body_sku = document.createElement('div');
-  // arr_skus=getCodesSku();
-  arr_skus = [  { 'sku': '50.1000-BLA-XS', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-                { 'sku': '50.1000-BLA-S', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-                { 'sku': '50.1000-BLA-M', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-                { 'sku': '50.1000-BLA-L', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-                { 'sku': '50.1000-BLA-XL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-                { 'sku': '50.1000-BLA-XXL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' }] //ARRAY DE PRUEBA
-
-  setValues(); //llamamos a funcion para llenar los arrays con los valores
-                
-  arr_skus.forEach(function(item) {
-
+  article.className = 'article_preview';
+  title.className = 'title_article_preview';
     
+  /////----- TABLA
+  let dtable_sku=document.createElement('div');
+  dtable_sku.className = 'dtable_sku_preview';
+  /////----- CABECERA DE TABLA
+  let dhead_sku = document.createElement('div');
+      dhead_sku.className='dhead_sku';
+      let dth_sku=document.createElement('div');      
+      let dth_barcode=document.createElement('div');
+      let dth_dun=document.createElement('div');
+      dth_sku.innerHTML = 'SKU';
+      dth_barcode.innerHTML='BARCODE';
+      dth_dun.innerHTML='DUN';
+  dhead_sku.appendChild(dth_sku);
+  dhead_sku.appendChild(dth_barcode);   
+  dhead_sku.appendChild(dth_dun);
+  dtable_sku.appendChild(dhead_sku);
+  /////----- CUERPO DE TABLA
+  let dbody_sku = document.createElement('div');
+      dbody_sku.className='dbody_sku';
+ 
+  // item=getCodesSku();
+  item = [  { 'sku': '50.1000-BLA-XS', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
+            { 'sku': '50.1000-BLA-S', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
+            { 'sku': '50.1000-BLA-M', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
+            { 'sku': '50.1000-BLA-L', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
+            { 'sku': '50.1000-BLA-XL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
+            { 'sku': '50.1000-BLA-XXL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' } ] //ARRAY DE PRUEBA  
+              
+  item.forEach(function(item) {
+    console.log(item['sku']);
+    let dtr_sku = "<div class='dtr_sku' id='" + item['sku'] + "'><div>" + item['sku'] + "</div><div>" + item['barcode'] + "</div><div>" + item['dun'] +"</div></div>"
+    dbody_sku.insertAdjacentHTML('beforeend', dtr_sku);
   });
-  
-  body_modal.appendChild(article);
+  dtable_sku.appendChild(dbody_sku);
+  article.appendChild(dtable_sku);
+  body_modal.insertAdjacentElement('afterbegin',article)
+  setValues(); //llamamos a funcion para llenar los arrays con los valores
   // console.log(body_modal);
   // let div2=document.createElement(div1);
   //...
-  article.className = 'article_preview';
-  title.className='title_article_preview';
-  table_sku.className='table_sku_preview'; 
+
 
   // console.log(getControlDigit('780000005483'));
 
