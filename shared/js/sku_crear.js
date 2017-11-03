@@ -135,16 +135,19 @@ $(document).ready(function() {
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if(empty===0) {        
       /////-----CONSULTAMOS A LA API EL ULTIMO CORRELATIVO CON LA SERIE 780001..., SI NO EXISTE, EL PRIMER BARCODE SERA EL 780001000000      
-      let parameters = { 'option': 'get_last_barcode' };
+      let barcode='';
+      /*let parameters = { 'option': 'get_last_barcode' };
       $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function (){ },
         success: function(data){
           console.log(data);
+          if(!!data.errors)
+            console.log(data.errors);          
+          data.barcode==0 ? barcode = 780001000000 : barcode=resp.barcode;
         },
         error: function(){ console.log('error'); }
-      });
-
-
+      });*/
+      barcode=780001000000 //sacar esto despues /      
       modal_preview_save.style.visibility = 'visible';
       makeFillArticlePreview();
       
@@ -173,7 +176,6 @@ function autoFillDescription(){
   console.log(descripcion);
   document.getElementById('txt_sku_descripcion').value=descripcion;
 }
-
 //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
 function resetInputTextCodeArticle(){
   document.getElementById('txt_sku_prefijo').value = "";
@@ -196,7 +198,6 @@ function getPrefix(values){
     error : function() { console.log("error"); }
   });
 }
-
 //FUNCION QUE MUESTRA EL PANEL CREAR SEGUN EL DPTO (mujer, varon, lola, ...)
 function cargarCategoriaCrear(id_cat) {
   $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
@@ -266,7 +267,6 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     }
   });
 }
-
 // FUNCION QUE CARGA LA TABLA SECCION CRUD EN EL MODAL (Dpto, Subdpto, Marca, Prenda, ...)
 function cargarTablaSeccion(tabla) {
   //INICIALMENTE REMOVEMOS LAS CELDAS DE LA CABCERA Y LAS FILAS DE LA TABLA EXISTENTES
@@ -472,7 +472,6 @@ function cargarTablaSeccion(tabla) {
     }
   });
 }
-
 // **** FUNCIION GENERAL ****
 //FUNCION QUE OBTIENE TODOS LOS HERMANOS, pasandode los siguientes parametros:
 //  nodo actual: El nodo capturado, de quien hay que encontrar sus hijos
