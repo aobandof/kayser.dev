@@ -1,0 +1,102 @@
+html, body {
+  height: 100% !important;
+}
+#div_inventario {
+  height: 100%;
+  width: 100%;
+  margin: .5rem !important;
+  /* justify-content: center; */
+}
+/* #div_inventario .cont_menu_body {
+  padding: 2rem !important;
+  background-color: rgba(105, 189, 154, 0.342);
+} */
+#div_inventario .cont_menu_head_tabs {
+  justify-content: center;
+  align-content: center;
+  /* border: 1px solid green; */
+  flex : 0 0 auto;
+}
+#div_inventario .cont_menu_item {
+  margin: .1rem .1rem 0rem .1rem !important;
+  justify-content: center;
+  border-top-left-radius: .3rem;
+  border-top-right-radius: .3rem;
+  border: 1px solid silver;
+  padding: .5rem !important;
+  background-color: rgba(192, 192, 192, 0.5);
+  font-size: .7rem;
+  color: rgb(96, 107, 153);
+  text-align: center;
+}
+#div_inventario .cont_menu_item:hover {
+  cursor: pointer;
+}
+#div_inventario .active {
+  background-color: rgba(91, 212, 131, 0.349) !important;
+  color: rgb(4, 83, 59);
+  border: 0px;
+  font-weight: bold;
+}
+  #div_inventario_content {
+    /* background-color: rgba(91, 212, 131, 0.349); */
+    color: white;
+    flex: 1 0 auto;
+    width: 100%;
+    padding: 1rem;
+}
+
+#div_inventario_documentos {
+  height: 100%;
+  align-items: center;
+  
+}
+#div_inventario_documentos>.cont_options {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem !important;
+  background-color: rgba(3, 41, 97, 0.185);  
+}
+#div_inventario_documentos>.cont_options>* { 
+  margin : .3rem; 
+  font-size: .8rem;
+}
+#div_inventario_documentos>.cont_options>select{ flex: 0 0 40%; }
+#div_inventario_documentos>.cont_options>button{ flex: 0 1 15%; }
+
+
+#div_inventario_documentos>.cont_table {
+  flex: 1 0 auto;
+  /* background-color: rgba(128, 227, 240, 0.212); */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+#table_documents {
+  border: 1px solid black;
+  width: 95%;
+}
+#table_documents th {
+  border: 1px solid white;
+  background-color: rgba(3, 65, 116, 0.856);
+  color: white;
+  text-align: center;
+  font-size: .7rem;
+  padding: .3rem;
+}
+#table_documents td {
+  border: 1px solid silver;
+  color: rgb(2, 17, 66);
+  text-align: center;
+  padding: .3rem;
+  font-size: .6rem;
+}
+#table_documents td:nth-child(4){
+  text-align: left;  
+}
+
+.cont_hidden {
+  display: none !important;
+}

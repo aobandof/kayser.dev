@@ -86,9 +86,13 @@ function cargarTabla(opcion,param_show) {
             el_loading.classList.toggle("cont_hidden");
         },
         success: function (data) {
+            console.log(data);
+            console.log(data.query);
             // console.log(data.time);
             // console.log(data.fecha);
             // console.log(data.query);
+            if(!!data.query)
+                console.log(data.query);
             el_loading.classList.toggle("cont_hidden")
             el_cont_table.classList.remove('cont_hidden');
             document.getElementById('table_ventas').innerHTML = data.table;

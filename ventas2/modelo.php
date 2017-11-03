@@ -83,8 +83,8 @@ if(isset($_POST['opcion'])){
         $venta_diaria_total=0;
         $venta_mensual_total=0;
         $query_promotoras_diaria="SELECT A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct AS total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinutoPromotoras as A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY VtaMinAct DESC";
-        $query_promotoras_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year' AND MONTH(Fecha) = '$month'  AND [Lista de Precios]='PROMOTORA CKL' group by bodega";
-        $query_total_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year' AND MONTH(Fecha) = '$month' group by bodega";
+        $query_promotoras_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year_actual' AND MONTH(Fecha) = '$month'  AND [Lista de Precios]='PROMOTORA CKL' group by bodega";
+        $query_total_mensual="SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '$year_actual' AND MONTH(Fecha) = '$month' group by bodega";
         $arr_venta_diaria_promotoras=$sqlsrv_33->select($query_promotoras_diaria,"sqlsrv_a_p");
         $arr_venta_mensual_total = $sqlsrv_13->selectArrayUniAssocIdName($query_total_mensual); 
         $arr_venta_mensual_promotoras=$sqlsrv_13->selectArrayUniAssocIdName($query_promotoras_mensual);                                  
@@ -111,7 +111,7 @@ if(isset($_POST['opcion'])){
         $venta_mensual_total=number_format ( floatval($venta_mensual_total), 0 , ',', '.');
         $tfoot='<tfoot><tr class="pie" id="tr_pie_ventas_promotoras"><td colspan="2" class="col-xs-6">TOTAL PROMOTORAS</td><td class="col-xs-2">'.$venta_diaria_total.'</td><td class="col-xs-3">'.$venta_mensual_total.'</td><td class="col-xs-1">&nbsp</td></tr></tfoot>';
         $data['table']=$thead.$tbody.$tfoot;
-        // $data['query']=$query_total_mensual;
+        $data['query']=$query_promotoras_mensual;
         $sqlsrv_13->closeConnection();
         $sqlsrv_33->closeConnection();
         // $data['table']=$thead;

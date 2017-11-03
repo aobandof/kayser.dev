@@ -158,3 +158,19 @@ a.dt-button {
   font-weight: bold;
   
 }
+.cont_menu_body {
+    border-radius:.5rem;
+    padding: 1rem;
+}
+.cont_menu_body .btn {
+    margin: .5rem;    
+}
+.cont_menu_body .btn:hover {
+    cursor: pointer;
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    -webkit-transition: .2s ease-in-out;
+    transition: .2s ease-in-out;
+    -webkit-filter: sepia(0.3);
+    filter: sepia(0.3);
+}
