@@ -7,10 +7,6 @@ html, body {
   margin: .5rem !important;
   /* justify-content: center; */
 }
-/* #div_inventario .cont_menu_body {
-  padding: 2rem !important;
-  background-color: rgba(105, 189, 154, 0.342);
-} */
 #div_inventario .cont_menu_head_tabs {
   justify-content: center;
   align-content: center;
@@ -25,7 +21,7 @@ html, body {
   border: 1px solid silver;
   padding: .5rem !important;
   background-color: rgba(192, 192, 192, 0.5);
-  font-size: .7rem;
+  font-size: .9rem;
   color: rgb(96, 107, 153);
   text-align: center;
 }
@@ -38,18 +34,17 @@ html, body {
   border: 0px;
   font-weight: bold;
 }
-  #div_inventario_content {
+  #div_inventary_content {
     /* background-color: rgba(91, 212, 131, 0.349); */
     color: white;
     flex: 1 0 auto;
     width: 100%;
     padding: 1rem;
 }
-
+/* ESTILOS PARA DOCUMENTOS_PROCESADOS.HTML */
 #div_inventario_documentos {
   height: 100%;
   align-items: center;
-  
 }
 #div_inventario_documentos>.cont_options {
   width: 100%;
@@ -99,4 +94,30 @@ html, body {
 
 .cont_hidden {
   display: none !important;
+}
+
+/* ESTILO PARA GUIAS_EMITIDAS.HTML */
+#div_inventario_guias {
+  height: 100%;
+  align-items: center;
+}
+#div_inventario_guias .cont_options {
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+#div_inventario_guias .cont_options * {
+  font-size: .9rem;
+}
+#div_inventario_guias .cont_options .form-control {
+  padding: .3rem !important;
+  background-color: yellow;
+}
+#datetimepicker1, #datetimepicker2 {
+  width: 20% !important;
+}
+#select_store {
+  width: 25% !important;
+}
+#select_type_report {
+  width: 15%;
 }

@@ -135,4 +135,8 @@ if($_POST['option']=='get_last_barcode') {
   echo json_encode($data);
 }
 
+function setContentExcel(){
+  
+}
+
 ?>

@@ -114,11 +114,10 @@ function cargarTabla(opcion,param_show) {
                         vertical: 'bottom'
                     },                    
                 }).on('dp.show dp.update', function () {
-                    $(".datepicker-months .picker-switch").removeAttr('title')
-                        .on('click', function (e) {
-                            e.stopPropagation();
-                        });
-                    });               
+                    $(".datepicker-months .picker-switch").removeAttr('title').on('click', function (e) {
+                        e.stopPropagation();
+                    });
+                });               
                 // document.getElementById('button_search').onclick=function(){
                 //     el_cont_table.classList.add('cont_hidden');
                 //     cargarTabla("total", document.getElementById('text_calendar1').value)

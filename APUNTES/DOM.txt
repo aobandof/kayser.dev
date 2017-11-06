@@ -17,7 +17,7 @@ JAVASCRIPT PURO:
 - AGREGAR ELEMENTO o NODO a CONTENEDOR:
 	contenedor.appendChild(elemento) ó  contenedor.appendChild(nodo_texto) //appendChild no funciona para codigo HTML
 
-- AGREGAR CONTENIDO HTML (TAGs con hijos, atributos, etc):
+- AGREGAR CONTENIDO HTML (TAGs con , atributos, etc):
 	elemento.innerHTML="<div><span>Hola</span><input....></div>";
 
 - PARA AGREGAR cualquier HTML o XML, antes, dentro inicio, dentro final y despues de otro elemento, en forma de nodo, usamos:
