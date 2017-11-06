@@ -1,4 +1,4 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode;
 
 $(document).ready(function() {
 
@@ -91,9 +91,11 @@ $(document).ready(function() {
           document.getElementById('txt_sku_descripcion').value = "";
           cargarSelectsSku('Kayser_SEASON', el.value); 
         } else {
-          if (el.id === "select_sku_categoria")
-            (el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
-          //verificaremos que todos esten llenos, si es asi, poner el prefijo
+          if (el.id === "select_sku_categoria"){
+            el_prenda=document.getElementById('select_sku_prenda');
+            // console.log(el_prenda);
+            (el_prenda.options[el_prenda.selectedIndex].text=="SOSTEN" || el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
+          }//verificaremos que todos esten llenos, si es asi, poner el prefijo
           let is_empty = 0;
           var valores = new Object();//valores necesarios para consultar la BDx y obtener el prefijo
           valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
@@ -124,6 +126,7 @@ $(document).ready(function() {
   };
   /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
   document.getElementById('btn_guardar_enviar').onclick=function(){
+    console.log('entró');
     let empty=0;
     let tallas = document.getElementById('span_tallas_chosen').innerHTML;
     document.querySelectorAll('.sku_control').forEach(function(control){
@@ -133,35 +136,18 @@ $(document).ready(function() {
     if (tallas=="") empty=1;
     //sacar esto despues /
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
-    if(empty===0) {        
-      /////-----CONSULTAMOS A LA API EL ULTIMO CORRELATIVO CON LA SERIE 780001..., SI NO EXISTE, EL PRIMER BARCODE SERA EL 780001000000      
-      let barcode='';
-      /*let parameters = { 'option': 'get_last_barcode' };
-      $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function (){ },
-        success: function(data){
-          console.log(data);
-          if(!!data.errors)
-            console.log(data.errors);          
-          data.barcode==0 ? barcode = 780001000000 : barcode=resp.barcode;
-        },
-        error: function(){ console.log('error'); }
-      });*/
-      barcode=780001000000 //sacar esto despues /      
-      modal_preview_save.style.visibility = 'visible';
+    if(empty===0) { 
+      modal_preview_save.style.visibility = 'visible';       
       makeFillArticlePreview();
-      
     }
     else
       alert("Todos los campos tienen que ser llenados");
   }
-  // let modal_preview_save = document.getElementById('div_preview_save');
-  // modal_preview_save.style.visibility = 'visible';
+  
   // makeFillArticlePreview();
 /*********************************************************************************************************/
 /*******************************************************************************************************/
 });
-//780001000000
 
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
@@ -218,6 +204,7 @@ function cargarCategoriaCrear(id_cat) {
   name_dpto = id_cat.substr(8, id_cat.length);
   cargarSelectsSku('Kayser_OITB', name_dpto);
 }
+
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   var recorrido=0;
@@ -230,10 +217,12 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
       // console.log(parametros['option']);
       // console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
-      if (!!data.dpto) { code_dpto = data.dpto; }
+      if(!!data.dpto) { code_dpto = data.dpto; }
+      if(!!data.first_barcode) {first_barcode=data.first_barcode; }
       data.values.forEach(function(item,index){
         if(item['tabla']=="Talla"){
           // console.log(item['options']);
+          document.getElementById('span_tallas_chosen').innerHTML='';
           document.getElementById("div_sel_grupo_opciones").innerHTML = "";
           fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
         } else {

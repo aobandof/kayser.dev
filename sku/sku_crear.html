@@ -56,9 +56,9 @@
               <div><span class="">PRESENT.&nbsp</span><select name="Presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo"><option value=""></option></select></div>
               <div><span class="">MATERIAL&nbsp</span><select name="Material" id="select_sku_material" class="form-control sku_control"><option value=""></option></select></div>
             </div>
-            <div class="full_fila">
+            <div class="full_fila" id="div_row_colours">
                 <span class="">COLOR&nbsp</span>
-                <select name="Color" id="select_sku_color" class="form-control sku_control" data-live-search="true" title="" multiple></select>
+                <select name="Color" name='colores' id="select_sku_color" class="form-control sku_control" data-live-search="true" title="" multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
@@ -89,13 +89,13 @@
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
             <div class="cont_fila_crear_sku container_row" >
-              <span>C. ARTICULO&nbsp</span>
+              <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
                 <input type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
                 <input type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" >
               </div>
             </div>
-            <div class="cont_fila_crear_sku container_row" ><span>DESCRIPCION&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control sku_control"></div>
+            <div class="cont_fila_crear_sku container_row" ><span>DESCRIP.&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control sku_control"></div>
             <!-- <div class="cont_fila_crear_sku container_row" ><span>BARCODE&nbsp</span><input type="text" id="txt_sku_barcode" name="" value="" class="form-control"></div> -->
             <!-- <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp -->
             <!-- <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br> -->

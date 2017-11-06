@@ -6,7 +6,7 @@ body, html {
 }
 
 /******* estilos para SKU_FILTROS *****/
-.cont_botonera, #table_sku {     visibility: hidden; }
+.cont_botonera, #table_sku {   visibility: hidden; }
 
 /******** estilos para el .cont_tabs y las tabs **********/
 #ul_items {

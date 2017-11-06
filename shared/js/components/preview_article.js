@@ -1,104 +1,9 @@
-var excel_columns_default = {
-  'RecordKey': { 'default': 1, 'column': 'A' },
-  'ForceSelectionOfSerialNumber': { 'default': 'tNO', 'column': 'D' },
-  'GLMethod': { 'default': 'C', 'column': 'F' },
-  'InventoryItem': { 'default': 'tYES', 'column': 'G' },
-  'IsPhantom': { 'default': 'tNO', 'column': 'H' },
-  'IssueMethod': { 'default': 'M', 'column': 'I' },
-  'SalUnitMsr': { 'default': '1', 'column': 'J' },
-  'ManageStockByWarehouse': { 'default': 'tYES', 'column': 'M' },
-  'PlanningSystem': { 'default': 'M', 'column': 'N' },
-  'U_APOLLO_APPGRP': { 'default': '1', 'column': 'U' },
-  'U_GSP_TPVACTIVE': { 'default': 'Y', 'column': 'AD' },
-  'AvgPrice': { 'default': '', 'column': 'AE' },
-  'U_IDDiseno': { 'default': '', 'column': 'AG' }
-}
-var excel_columns = {
-  'ItemCode': 'B',
-  'BarCode': 'C',
-  'ForeignName': 'E',
-  'ItemName': 'K',
-  'ItmsGrpCod': 'L',
-  'SWW': 'O',
-  'U_APOLLO_SEG1': 'P',
-  'U_APOLLO_SEG2': 'Q',
-  'U_APOLLO_SSEG3': 'R',
-  'U_APOLLO_SEG3': 'S',
-  'U_APOLLO_SEASON': 'T',
-  'U_APOLLO_SSEG3VO': 'V',
-  'U_MARCA': 'X',
-  'U_EVD': 'Y',
-  'U_MATERIAL': 'Z',
-  'U_ESTILO': 'AA',
-  'U_SUBGRUPO1': 'AB',
-  'U_APOLLO_COO': 'AC',
-  'U_APOLLO_DIV': 'AF',
-  'U_IDCopa': 'AH',
-  'U_FILA': 'AI',
-  'U_APOLLO_S_GROUP': 'AJ',
-  'U_GSP_SECTION': 'AK'
-}
-var articulos_values=[];
-var sku_values=[];
-var itemname, val_article;
+let itemname;
+let colores_text = []; let colores_code = [];
+let familia;
+let tallas_text = []; let tallas_orden = [];
+let skus=[]; let barcodes=[]; let duns = [];
 
-
-//FUNCTION PARA CREAR LOS CODIGOS SKU en un array
-function getCodesSku() {
-  colores = document.getElementById('select_sku_color').value;
-  tallas = document.getElementById('span_tallas_chosen').innerHTML.split(',');
-  console.log(tallas);
-}
-//FUNCION PARA SETEAR LOS VALORES DE LOS ARRAYS QUE SE USARANA PARA CREAR LOS EXCEL
-function setValues(){
-  console.log(code_dpto,name_dpto); //code_dpto se cargara cuando
-  ele_marca=document.getElementById('select_marca');
-  ele_subdpto=document.getElementById('select_sku_subdpto');
-  ele_prenda = document.getElementById('select_sku_prenda');
-  ele_categoria=document.getElementById('select_sku_categoria');
-  ele_presentacion=document.getElementById('select_sku_presentacion');
-  ele_material=document.getElementById('select_sku_material');
-  arr_color=[];//ver de que se compone este array
-  arr_talla=[];//aun esta pendiente que hacer con esto
-  ele_tprenda=document.getElementById('select_sku_tprenda');
-  ele_tcatalogo=document.getElementById('select_sku_tcatalogo');
-  ele_grupo_uso=document.getElementById('select_sku_grupo_uso');
-  ele_caracteristica = document.getElementById('txa_sku_caracteristicas');
-  ele_composicion = document.getElementById('select_sku_composicion');
-  else_peso = document.getElementById('txt_sku_peso');
-  
-
-  articulo_values = {
-    'ForeignName': { 'val': ele_caracteristica.value }, // caracteristica
-    'ItemName': { 'val': itemname }, //nombre
-    'ItmsGrpCod': { 'cod': code_dpto, 'val': name_dpto }, //dpto
-    'SWW': { 'val': ele_prenda.options[ele_prenda.selectedIndex].text }, //prenda (deprecated)    
-    'U_APOLLO_SEG1': { 'val': val_article },  //codigo articulo
-    'U_APOLLO_SEG3': { 'cod': '', 'val': '' }, // familia talla
-    'U_APOLLO_SEASON': { 'cod': ele_prenda.value, 'val': ele_prenda.options[ele_prenda.selectedIndex].text }, //prenda  
-    'U_MARCA': { 'cod': ele_marca.value, 'val': ele_marca.options[ele_marca.selectedIndex].text }, //marca    
-    'U_EVD': { 'cod': ele_tprenda.value, 'val': ele_tprenda.options[ele_tprenda.selectedIndex].text  }, //temporada
-    'U_MATERIAL': { 'cod': ele_material.value, 'val': ele_material.options[ele_material.selectedIndex].text  }, //material
-    'U_ESTILO': { 'cod': ele_grupo_uso.value, 'val': ele_grupo_uso.options[ele_grupo_uso.selectedIndex].text  }, //grupo uso
-    'U_SUBGRUPO1': { 'cod': ele_subdpto.value, 'val': ele_subdpto.options[ele_subdpto.selectedIndex].text  }, //supdpto
-    'U_APOLLO_COO': { 'cod': ele_composicion.value, 'val': ele_composicion.options[ele_composicion.selectedIndex].text  }, //composicion 
-    'U_APOLLO_DIV': { 'cod': ele_categoria.value, 'val': ele_categoria.options[ele_categoria.selectedIndex].text  }, //categoria
-    'U_FILA': { 'cod': ele_presentacion.value, 'val': ele_presentacion.options[ele_presentacion.selectedIndex].text  }, //presentacion
-    'U_APOLLO_S_GROUP': { 'cod': ele_tcatalogo.value, 'val': ele_tcatalogo.options[ele_tcatalogo.selectedIndex].text  }, //temporada catalogo
-  }
-
-  // console.log(articulo_values);
-  
-  // sku_values = {
-  //   'ItemCode': { 'cod': '', 'val': '' }, //codigo sku
-  //   'BarCode': { 'val': '' }, //barcode ean13
-  //   'U_APOLLO_SEG2': { 'cod': '', 'val': '' }, //color
-  //   'U_APOLLO_SSEG3': { 'val': '' }, //talla
-  //   'U_APOLLO_SSEG3VO': { 'val': '' }, //orden de talla
-  //   'U_IDCopa': { 'val': '' }, //copa
-  //   'U_GSP_SECTION': { 'val': '' }, //copa
-  // }
-}
 //FUNCION QUE OBTIENE EL DIGITO VERFICADOR DE UN BARCODE EAN-13
 function getControlDigit(barcode){
   arr_barcode=barcode.split('');
@@ -112,10 +17,13 @@ function getControlDigit(barcode){
   return result;
 }
 //FUNCION QUE CREA EL COMPONENTE ARTCULO  que contiene LA TABLA CON LOS SKUs a GENERAR
-function makeFillArticlePreview(){  
-  val_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;
-  itemname = val_article + '-' + document.getElementById('txt_sku_descripcion').value;
-  // console.log(itemname);
+function makeFillArticlePreview(){ 
+  colores_code.length=0; colores_text.length=0;
+  tallas_text.length=0; tallas_orden.length=0;
+  skus.length=0; barcodes.length=0; duns.length=0;
+
+  code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;
+  itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
   let body_modal = document.querySelector('#div_preview_save .body_modal'); //referenciamos al body del modal
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let title=document.createElement('div');
@@ -144,29 +52,59 @@ function makeFillArticlePreview(){
   /////----- CUERPO DE TABLA
   let dbody_sku = document.createElement('div');
       dbody_sku.className='dbody_sku';
- 
-  // item=getCodesSku();
-  item = [  { 'sku': '50.1000-BLA-XS', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-            { 'sku': '50.1000-BLA-S', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-            { 'sku': '50.1000-BLA-M', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-            { 'sku': '50.1000-BLA-L', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-            { 'sku': '50.1000-BLA-XL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' },
-            { 'sku': '50.1000-BLA-XXL', 'barcode': 'BARCODEBARCODE', 'dun': 'DUNDUNDUNDUN' } ] //ARRAY DE PRUEBA  
-              
-  item.forEach(function(item) {
-    console.log(item['sku']);
-    let dtr_sku = "<div class='dtr_sku' id='" + item['sku'] + "'><div>" + item['sku'] + "</div><div>" + item['barcode'] + "</div><div>" + item['dun'] +"</div></div>"
+  ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente
+  el_sel_colors = document.getElementById('select_sku_color');
+  // console.log(el_sel_colors);
+  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++)
+    colores_code.push(el_sel_colors.selectedOptions[i].value);
+  colores_text = document.querySelector('#div_row_colours .filter-option').innerHTML.split(',');  
+  colores_text = colores_text.map(item => item.trim());
+  ///--- SI LA PRENDA TIENE COPA, ENTONCES HAY QUE AGREGAR EL LA LETRA DE COPA DESPUES DE LA ABREVIATURA DEL COLOR
+  ///--- para esto creamos una variable que la contenga y que sera "" en caso de no haber copa
+  let copa;
+  el_copa = document.getElementById('select_sku_copa')
+  el_copa.value!== '' ? copa = el_copa.options[el_copa.selectedIndex].text : copa='';
+
+  ///--- OBTENEMOS VALOR DE LA FAMILIA, ARRAY_TALLAS Y $ARRAY_ORDENES RESPECTIVAMENTE
+  list_check_familias = document.querySelectorAll('.check_familia');
+  for (i = 0; i < list_check_familias.length; i++)
+    if (list_check_familias[i].checked == true) check_familia = list_check_familias[i];
+  familia = check_familia.parentNode.parentNode.id;
+
+  list_check_tallas = check_familia.parentNode.nextSibling.querySelectorAll('.check_talla');
+  for (i = 0; i < list_check_tallas.length; i++) {
+    if (list_check_tallas[i].checked) {
+      checked = list_check_tallas[i].name.split('|');
+      tallas_orden.push(checked[1]);
+      tallas_text.push(checked[0]);
+    }
+  }
+
+  ///--- AHORA OBTENEMOS EL ARRAY CON LOS CODES SKU
+  // console.log('first_barcode: ',first_barcode);
+  leng_colores = colores_text.length;
+  leng_tallas = tallas_text.length;
+  for (let i = 0; i < leng_colores; i++){
+    for (var j = 0; j < leng_tallas; j++){
+      skus.push(code_article + '-' + colores_text[i].substr(0, 3) + copa + '-' + tallas_text[j])
+      barcode = parseInt(first_barcode) + (i * leng_tallas) + j;
+      barcodes.push(String(barcode) + getControlDigit(String(barcode)));
+    }
+  }
+  // console.log(familia);
+  // console.log(tallas_orden);
+  // console.log(tallas_text);
+  // console.log(colores_code);
+  // console.log(colores_text);
+  // console.log(skus);
+  // console.log(barcodes);
+
+  leng_skus = skus.length;           
+  for (i=0; i<leng_skus; i++) {
+    let dtr_sku = "<div class='dtr_sku' id='" + skus[i] + "'><div>" + skus[i] + "</div><div>" + barcodes[i] + "</div><div>" + 'DUN_PENDIENTE' +"</div></div>"
     dbody_sku.insertAdjacentHTML('beforeend', dtr_sku);
-  });
+  }
   dtable_sku.appendChild(dbody_sku);
   article.appendChild(dtable_sku);
   body_modal.insertAdjacentElement('afterbegin',article)
-  setValues(); //llamamos a funcion para llenar los arrays con los valores
-  // console.log(body_modal);
-  // let div2=document.createElement(div1);
-  //...
-
-
-  // console.log(getControlDigit('780000005483'));
-
 }

@@ -1,6 +1,7 @@
 /*** SELECTORES GENERALES ****/
 .collapse, .collapsing  {
   position: absolute;
+  z-index: 2;
 }
 button:hover {
   cursor: pointer;

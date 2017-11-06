@@ -17,6 +17,9 @@ if($existe_error_conexion){
 }
 
 if($_POST['option']=="cargar_selects_independientes"){
+  ///--- INICIALMENTE MANDAMOS DE LLAPA EL PRIMER BARCODE PARA APLICAR ---
+  $data['first_barcode']=getFirstBarcode();
+  ///////////////////////////////////
   $options=[];
   $nombre_name="";
   $nombre_id="";
@@ -52,6 +55,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   echo json_encode($data);
 }
 if($_POST['option']=="cargar_selects_dependientes") {
+ 
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
   //es decir segun el nombre y valor del padre, se buscarán tablas dependientes y se cargarán valores relacionados al padre
@@ -129,14 +133,92 @@ if($_POST['option']=="cargar_selects_dependientes") {
   $sqlsrv->closeConnection();
   echo json_encode($data);
 }
-if($_POST['option']=='get_last_barcode') {
+function getFirstBarcode() {
+  global $sqlsrv;
   $query_barcode="SELECT top 1 CodeBars from Kayser_OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";
-  $data['query']=$query_barcode;
-  echo json_encode($data);
+  $arr_last_barcode=$sqlsrv->select($query_barcode,'sqlsrv_a_p');
+  if($arr_last_barcode!==false){
+    ($arr_last_barcode!=0) ? $first_barcode=((int)$arr_first_barcode[0]['CodeBars'])+1 : $first_barcode=780001000000;
+  }
+  return $first_barcode;
 }
 
 function setContentExcel(){
-  
+  $excel_columns_default = array(
+    'RecordKey' => array('default'=> 1, 'column'=> 'A' ),
+    'ForceSelectionOfSerialNumber'=> array('default'=> 'tNO', 'column'=> 'D' ),
+    'GLMethod'=> array('default'=> 'C', 'column'=> 'F' ),
+    'InventoryItem' => array('default'=> 'tYES', 'column'=> 'G' ),
+    'IsPhantom' => array('default'=> 'tNO', 'column'=> 'H' ),
+    'IssueMethod' => array('default'=> 'M', 'column'=> 'I' ),
+    'SalUnitMsr'=> array('default'=> '1', 'column'=> 'J' ),
+    'ManageStockByWarehouse'=> array('default'=> 'tYES', 'column'=> 'M' ),
+    'PlanningSystem'=> array('default'=> 'M', 'column'=> 'N' ),
+    'U_APOLLO_APPGRP' => array('default'=> '1', 'column'=> 'U' ),
+    'U_GSP_TPVACTIVE' => array('default'=> 'Y', 'column'=> 'AD' ),
+    'AvgPrice'=> array('default'=> '', 'column'=> 'AE' ),
+    'U_IDDiseno'=> array('default'=> '', 'column'=> 'AG' )
+  );
+  $excel_columns = array(
+    'ItemCode'=> 'B',
+    'BarCode'=> 'C',
+    'ForeignName'=> 'E',
+    'ItemName'=> 'K',
+    'ItmsGrpCod'=> 'L',
+    'SWW'=> 'O',
+    'U_APOLLO_SEG1'=> 'P',
+    'U_APOLLO_SEG2'=> 'Q',
+    'U_APOLLO_SSEG3'=> 'R',
+    'U_APOLLO_SEG3'=> 'S',
+    'U_APOLLO_SEASON'=> 'T',
+    'U_APOLLO_SSEG3VO'=> 'V',
+    'U_MARCA'=> 'X',
+    'U_EVD'=> 'Y',
+    'U_MATERIAL'=> 'Z',
+    'U_ESTILO'=> 'AA',
+    'U_SUBGRUPO1'=> 'AB',
+    'U_APOLLO_COO'=> 'AC',
+    'U_APOLLO_DIV'=> 'AF',
+    'U_IDCopa'=> 'AH',
+    'U_FILA'=> 'AI',
+    'U_APOLLO_S_GROUP'=> 'AJ',
+    'U_GSP_SECTION'=> 'AK'
+  );  
+
+  $ele_marca=$_POST['select_marca'];
+  $ele_subdpto=$_POST['select_sku_subdpto'];
+  $ele_prenda = $_POST['select_sku_prenda'];
+  $ele_categoria=$_POST['select_sku_categoria'];
+  $ele_presentacion=$_POST['select_sku_presentacion'];
+  $ele_material=$_POST['select_sku_material'];
+  $arr_color=[];//ver de que se compone este array
+  $arr_talla=[];//aun esta pendiente que hacer con esto
+  $ele_tprenda=$_POST['select_sku_tprenda'];
+  $ele_tcatalogo=$_POST['select_sku_tcatalogo'];
+  $ele_grupo_uso=$_POST['select_sku_grupo_uso'];
+  $ele_caracteristica = $_POST['txa_sku_caracteristicas'];
+  $ele_composicion = $_POST['select_sku_composicion'];
+  $else_peso = $_POST['txt_sku_peso'];
+
+  // $articulo_values = array(
+  //   'ForeignName'=> array( 'val'=> ele_caracteristica.value ], // caracteristica
+  //   'ItemName'=> array( 'val'=> itemname ), //nombre
+  //   'ItmsGrpCod'=> array( 'cod'=> code_dpto, 'val'=> name_dpto ), //dpto
+  //   'SWW'=> array( 'val'=> ele_prenda.options[ele_prenda.selectedIndex].text ), //prenda (deprecated)    
+  //   'U_APOLLO_SEG1'=> array( 'val'=> val_article ),  //codigo articulo
+  //   'U_APOLLO_SEG3'=> array( 'cod'=> '', 'val'=> '' ), // familia talla
+  //   'U_APOLLO_SEASON'=> array( 'cod'=> ele_prenda.value, 'val'=> ele_prenda.options[ele_prenda.selectedIndex].text ), //prenda  
+  //   'U_MARCA'=> array( 'cod'=> ele_marca.value, 'val'=> ele_marca.options[ele_marca.selectedIndex].text ), //marca    
+  //   'U_EVD'=> array( 'cod'=> ele_tprenda.value, 'val'=> ele_tprenda.options[ele_tprenda.selectedIndex].text  ), //temporada
+  //   'U_MATERIAL'=> array( 'cod'=> ele_material.value, 'val'=> ele_material.options[ele_material.selectedIndex].text  ), //material
+  //   'U_ESTILO'=> array( 'cod'=> ele_grupo_uso.value, 'val'=> ele_grupo_uso.options[ele_grupo_uso.selectedIndex].text  ), //grupo uso
+  //   'U_SUBGRUPO1'=> array( 'cod'=> ele_subdpto.value, 'val'=> ele_subdpto.options[ele_subdpto.selectedIndex].text  ), //supdpto
+  //   'U_APOLLO_COO'=> array( 'cod'=> ele_composicion.value, 'val'=> ele_composicion.options[ele_composicion.selectedIndex].text  ), //composicion 
+  //   'U_APOLLO_DIV'=> array( 'cod'=> ele_categoria.value, 'val'=> ele_categoria.options[ele_categoria.selectedIndex].text  ), //categoria
+  //   'U_FILA'=> array( 'cod'=> ele_presentacion.value, 'val'=> ele_presentacion.options[ele_presentacion.selectedIndex].text  ), //presentacion
+  //   'U_APOLLO_S_GROUP'=> array( 'cod'=> ele_tcatalogo.value, 'val'=> ele_tcatalogo.options[ele_tcatalogo.selectedIndex].text  ), //temporada catalogo
+  // );
+  return $excel_columns_default;
 }
 
 ?>
