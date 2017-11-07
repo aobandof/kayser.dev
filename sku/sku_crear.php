@@ -133,6 +133,17 @@ if($_POST['option']=="cargar_selects_dependientes") {
   $sqlsrv->closeConnection();
   echo json_encode($data);
 }
+if($_POST['option']=='save_and_send_skus'){
+
+  ///$send=sendMail($_POST);
+  ///if($send===true)
+  ///  $data['resp']='READY';
+  ///else
+  ///  $data['resp']='NO SE PUDO ENVIAR EL ARCHIVO...';
+
+  $resp=sendMail($_POST);
+  echo json_encode($data);
+}
 function getFirstBarcode() {
   global $sqlsrv;
   $query_barcode="SELECT top 1 CodeBars from Kayser_OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";
@@ -142,7 +153,6 @@ function getFirstBarcode() {
   }
   return $first_barcode;
 }
-
 function setContentExcel(){
   $excel_columns_default = array(
     'RecordKey' => array('default'=> 1, 'column'=> 'A' ),
@@ -220,5 +230,51 @@ function setContentExcel(){
   // );
   return $excel_columns_default;
 }
-
+function sendMail($arr_cont){
+  $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;\r\n";
+  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;\r\n";
+  for($i=0; $i<count($arr_cont['skus']); $i++){
+    $fila_csv="";
+    $fila_csv.= ($i+1).";";
+    $fila_csv.= $arr_cont['skus'][$i].";";
+    $fila_csv.= $arr_cont['barcode'][$i].";tNO;";                         ///---con columna default
+    $fila_csv.= $arr_cont['caracteristica_name'].";C;tYES;tNO;M;1;";               ///---con columnaS default
+    $fila_csv.= $arr_cont['itemname'].";"; 
+    $fila_csv.= $arr_cont['categoria_code'].";tYES;M;";                   ///---con columnaS default                   
+    $fila_csv.= $arr_cont['prenda_name'].";";
+    $fila_csv.= $arr_cont['articulo'].";"; 
+    $fila_csv.= $arr_cont['colores_name'][$i].";";
+    $fila_csv.= $arr_cont['tallas_name'][$i].";";
+    $fila_csv.= $arr_cont['talla_familia'].";";
+    $fila_csv.= $arr_cont['prenda_code'].";1;";                           ///---con columnaS default
+    $fila_csv.= $arr_cont['tallas_orden'][$i].";Y;";                      ///---con columnaS default
+    $fila_csv.= $arr_cont['marca_name'].";";
+    $fila_csv.= $arr_cont['tprenda_name'].";";
+    $fila_csv.= $arr_cont['material_name'].";";
+    $fila_csv.= $arr_cont['grupo_uso_name'].";";
+    $fila_csv.= $arr_cont['subdpto_name'].";";
+    $fila_csv.= $arr_cont['composicion_name'].";Y;;";                     ///---con columnaS default
+    $fila_csv.= $arr_cont['dpto_code'].";\r\n"; 
+    $content_csv.=$fila_csv;  
+    return($content_csv);    
+  }
+  ///--- ############################### ---
+  ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
+  ///--- ############################### ---
+  $destinatario ="aobando@kayser.cl";#"mmora@kayser.cl";
+  $titulo = "PLANTILLA_CARGA_SKUS_SAP_".$fila_csv.= $arr_cont['articulo'];
+  $headers = "From: DISEÑO <diseno@kayser.cl>\r\n";
+  $headers .= "MIME-Version: 1.0\r\n";
+  $headers .= "Content-Type: application/octet-stream; name=".$titulo.".csv\r\n"; //envio directo de datos
+  $headers .= "Content-Disposition: attachment; filename=".$titulo.".csv\r\n";
+  $headers .= "Content-Transfer-Encoding: binary\r\n";
+  $headers .= utf8_decode($content_csv);
+  $headers .= "\r\n";
+  // if(mail($destinatario, $titulo,"", $headers)){
+  //   return true;
+  // }
+  // else{
+  //   return false;
+  // }
+}
 ?>

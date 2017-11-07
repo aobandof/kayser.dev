@@ -1,4 +1,4 @@
-let itemname;
+let itemname; let code_article;
 let colores_text = []; let colores_code = [];
 let familia;
 let tallas_text = []; let tallas_orden = [];

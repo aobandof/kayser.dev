@@ -41,12 +41,16 @@ $(document).ready(function() {
   $(".cont_img_categoria").click(function() {
     id_cat_after_click=$(this).attr('id');
     if(id_cat_actual!==id_cat_after_click){
-      $(".cont_fila_crear_sku :input, .full_fila :input").each(function() {
+      $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
         if($(this).val()!="" /* $(this).val()!=null*/) {
           campos_llenos=1;
+          console.log('elemento: ',$(this));         
           return; // igual recorre todo el bucle
         }
       });
+      if ($("#span_tallas_chosen").text().trim()!==''){
+         campos_llenos = 1;
+      }
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
           campos_llenos=0;
@@ -55,10 +59,12 @@ $(document).ready(function() {
           // $("#select_sku_composicion").selectpicker("deselect");
           $("#select_sku_composicion").attr("selected", false);
           $("#select_sku_composicion").selectpicker("refresh");
+          $("#div_sel_grupo_opciones").html("");
           $("#span_tallas_chosen").text(' ');
           document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
-        }
+        }else { campos_llenos=0; }
       }else {
+        $("#div_sel_grupo_opciones").html("");
         cargarCategoriaCrear(id_cat_after_click);
         document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
         // $("#select_sku_color").selectpicker("deselectAll");
@@ -143,7 +149,80 @@ $(document).ready(function() {
     else
       alert("Todos los campos tienen que ser llenados");
   }
-  
+  document.getElementById('button_save_article').onclick = function () {
+    var params = new Object();
+    let parameters = [];
+    params['articulo']=code_article;
+    params['itemname']=itemname;
+    params['option'] = 'save_and_send_skus';
+    params['skus'] = skus;
+    params['barcodes'] = barcodes;
+    params['familia'] = familia;
+    params['tallas_name'] = tallas_text;
+    params['tallas_orden'] = tallas_orden;
+    params['colores_code'] = colores_code;
+    params['colores_name'] = colores_text;
+    params['dpto_code'] =  code_dpto;
+    params['dpto_name'] = name_dpto;
+    el_marca=document.getElementById('select_marca');
+    params['marca_code'] = el_marca.value;
+    params['marca_name'] = el_marca.options[el_marca.selectedIndex].text;
+    el_subdpto=document.getElementById('select_sku_subdpto');
+    params['subdpto_code'] = el_subdpto.value;
+    params['subdpto_name'] = el_subdpto.options[el_subdpto.selectedIndex].text;
+    el_prenda = document.getElementById('select_sku_prenda');
+    params['prenda_code'] = el_prenda.value;
+    params['prenda_name'] = el_prenda.options[el_prenda.selectedIndex].text;
+    el_categoria = document.getElementById('select_sku_categoria');
+    params['categoria_code'] = el_categoria.value;
+    params['categoria_name'] = el_categoria.options[el_categoria.selectedIndex].text;
+    el_presentacion = document.getElementById('select_sku_presentacion');
+    params['presentacion_code'] = el_presentacion.value;
+    params['presentacion_name'] = el_presentacion.options[el_presentacion.selectedIndex].text;
+    el_material = document.getElementById('select_sku_material');
+    params['material_code'] = el_material.value;
+    params['material_name'] = el_material.options[el_material.selectedIndex].text;
+    params['colores_code']= colores_code;
+    params['colores_name'] = colores_text;
+    params['talla_familia'] = familia;
+    params['tallas_name'] = tallas_text;
+    params['tallas_orden'] = tallas_orden;
+    el_tprenda = document.getElementById('select_sku_tprenda');
+    params['tprenda_code'] = el_tprenda.value;
+    params['tprenda_name'] = el_tprenda.options[el_tprenda.selectedIndex].text;
+    el_tcatalogo = document.getElementById('select_sku_tcatalogo');
+    params['tcatalogo_code'] = el_tcatalogo.value;
+    params['tcatalogo_name'] = el_tcatalogo.options[el_tcatalogo.selectedIndex].text;
+    el_grupo_uso = document.getElementById('select_sku_grupo_uso');
+    params['grupo_uso_code'] = el_grupo_uso.value;
+    params['grupo_uso_name'] = el_grupo_uso.options[el_grupo_uso.selectedIndex].text;
+    params['caracteristica'] = document.getElementById('txa_sku_caracteristicas').value;
+    el_composicion = document.getElementById('select_sku_composicion');
+    params['composicion_code'] = el_composicion.value;
+    params['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
+    params['peso'] = document.getElementById('txt_sku_peso').value;
+    console.log(params);
+    $.ajax({
+      url: 'sku_crear.php',
+      type: 'post',
+      dataType: 'json',
+      data: params,
+      beforeSend: function () {},
+      success: function (data) {
+        console.log(data);
+        if(data.resp='READY')
+          alert('DATOS GUARDADOS CON EXITO ( archivo con SKUs fueron enviados correctamente )');
+        else  
+          alert(data.resp);
+      },
+      error: function () {
+        console.log('error');
+      }
+    });
+
+  }
+
+
   // makeFillArticlePreview();
 /*********************************************************************************************************/
 /*******************************************************************************************************/
