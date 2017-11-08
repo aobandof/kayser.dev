@@ -1,14 +1,13 @@
 <?php
 require_once "../shared/clases/config.php";
-
-require_once "../shared/clases/DBConnection.php";
+require_once("../shared/clases/DBConnection.php");
 // require_once "../shared/clases/MssqlConexion.php";
-require_once "../shared/clases/HelpersDB.php";
+require_once "../shared/clases/HelpersDB.PHP";
 require_once "../shared/clases/inflector.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
+$mysqli=new DBConnection('mysqli', $MYSQL['dev']['host'], $MYSQL['dev']['user'], $MYSQL['dev']['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
 if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
@@ -16,7 +15,7 @@ if($existe_error_conexion){
   echo json_encode($data);
   exit;
 }
- // echo "hola";
+
 if($_POST['option']=="cargar_selects_independientes"){
   ///--- INICIALMENTE MANDAMOS DE LLAPA EL PRIMER BARCODE PARA APLICAR ---
   $data['first_barcode']=getFirstBarcode();
@@ -26,7 +25,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   $nombre_id="";
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $arr_ops=[];
-    if(!isset($array_tabla['dep']) && $tabla!="relacionprefijo"){
+    if(!isset($array_tabla['dep']) && $tabla!="RelacionPrefijo"){
       $nombre_name=$array_tabla['campo'];
       if(!isset($array_tabla['id']))//TABLA SIN DEPENDENCIA SIN ID
         $query="select ".$array_tabla['campo']." as id,".$array_tabla['campo']." as name from $tabla ORDER BY ".$array_tabla['campo'];
@@ -56,7 +55,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   echo json_encode($data);
 }
 if($_POST['option']=="cargar_selects_dependientes") {
-  // echo "hola";
+ 
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
   //es decir segun el nombre y valor del padre, se buscarán tablas dependientes y se cargarán valores relacionados al padre
@@ -90,7 +89,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
               $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."' ORDER BY ".$array_tabla['campo'];
           }
           if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
-            $data['errors'][]=$mysqli->getErrors();
+            $data['errors'][]=$mysqi->getErrors();
             continue;//pasamos al siguiente recorrido de foreach
           }else {
             if($arr_ops==0)
@@ -118,7 +117,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
             }
           }
         }
-        if($tabla=='talla'){
+        if($tabla=='Talla'){
           $arr_tallas=[];
           foreach ($arr_ops as $value)
             $arr_tallas[]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
@@ -232,8 +231,8 @@ function setContentExcel(){
   return $excel_columns_default;
 }
 function sendMail($arr_cont){
-  $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
-  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
+  $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION;\r\n";
+  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION;\r\n";
   $cant_colores=count($arr_cont['colores_name']);
   $cant_tallas=count($arr_cont['tallas_name']);
   if(isset($arr_cont['copa_name']))
@@ -277,15 +276,14 @@ function sendMail($arr_cont){
     $fila_csv.= $arr_cont['copa_name'].";";
     $fila_csv.= $arr_cont['presentacion_name'].";";
     $fila_csv.= $arr_cont['tcatalogo_name'].";";
-    $fila_csv.= $arr_cont['copa_name']."\r\n"; 
+    $fila_csv.= $arr_cont['copa_name'].";\r\n"; 
     $content_csv.=$fila_csv;       
   }
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
-  $hoy=date("Y-m-d H.i.s");
-  $destinatario ="aobando@kayser.cl,mmora@kayser.cl";
-  $titulo = "PLANTILLA_CARGA_SKUS_(".$hoy.")";
+  $destinatario ="aobando@kayser.cl";#"mmora@kayser.cl";
+  $titulo = "PLANTILLA_CARGA_SKUS_".$arr_cont['articulo'];
   $headers = "From: DISENO <diseno@kayser.cl>\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
   $headers .= "Content-Type: application/octet-stream; name=".$titulo.".csv\r\n"; //envio directo de datos

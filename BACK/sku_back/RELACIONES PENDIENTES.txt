@@ -1,0 +1,2 @@
+PRENDA: BABY DOLL 	-> COPA  // hay que agregar datos a esta relacion (DATO QUE EN CATEGORIA EXISTE CON COPA)
+PRENDA: BODY		-> COPA  // hay que agregar datos a esta relacion (DATO QUE EN CATEGORIA EXISTE CON SOSTEN)
