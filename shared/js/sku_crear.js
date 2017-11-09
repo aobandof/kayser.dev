@@ -1,4 +1,5 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
+
 
 $(document).ready(function() {
 
@@ -126,10 +127,10 @@ $(document).ready(function() {
   let modal_preview_save = document.getElementById('div_preview_save');
   let body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   /////----- EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL 
-  document.getElementById('button_cancel_save_sku').onclick=function(){  
-    modal_preview_save.style.visibility = 'hidden';
-    body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
-  };
+  // document.getElementById('button_cancel_save_sku').onclick=function(){  
+  //   modal_preview_save.style.visibility = 'hidden';
+  //   body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
+  // };
   /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
   document.getElementById('btn_guardar_enviar').onclick=function(){
     console.log('entró');
@@ -223,7 +224,7 @@ $(document).ready(function() {
   }
 
 
-  // makeFillArticlePreview();
+  loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
 });
@@ -283,7 +284,6 @@ function cargarCategoriaCrear(id_cat) {
   name_dpto = id_cat.substr(8, id_cat.length);
   cargarSelectsSku('Kayser_OITB', name_dpto);
 }
-
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   var recorrido=0;
@@ -391,9 +391,6 @@ function cargarTablaSeccion(tabla) {
         var contenido_guardar=[];
         var contenido_parametro=[];
 
-        // var contenido_original= new Object();
-        // var contenido_actualizar=new Object();
-        // var contenido_guardar=new Object();
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");//desactivamos el evento click
         // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
@@ -648,4 +645,22 @@ function createRegistry(arr_contenido) {
     }    
   });
   return true;
+}
+
+function loadToModifyArticleList(articulo){
+  tablas=[];
+  document.querySelectorAll('.sku_control').forEach(function (control) {
+    if (control.name != 'color' && control.name != 'talla' && control.name != 'copa' && control.name != 'caracteristicas' && control.name != 'peso' && control.name != 'prefijo' && control.name != 'correlativo' && control.name != 'descripcion') {
+      tablas.push(control.name);  
+    }
+  });
+  // console.log(tablas);  
+  parameters = { 'option': 'load_article_list', 'tables' : tablas }; 
+  $.ajax({ url: 'articulo_cargar.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function (){ },
+    success: function(data){
+      console.log(data);
+    },
+    error: function(){ console.log('error'); }
+  });
 }

@@ -74,9 +74,12 @@ else {
           $fila=$fila.$arr_precio_promotoras[$sku].";";
         else
           $fila=$fila.";";# code...*/
-        $fila=$fila."\r\n";
-        fwrite($file, $fila);
       }
+      else {
+        $fila=$fila.$sku.";0;";
+      }
+      $fila=$fila."\r\n";
+      fwrite($file, $fila);
   }
 }
 fclose($file);

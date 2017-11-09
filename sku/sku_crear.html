@@ -77,25 +77,25 @@
             </div>
             <div class="cont_fila_crear_sku container_row  ">
               <div><span class="">GRUPO USO&nbsp</span><select name="grupouso" id="select_sku_grupo_uso" class="form-control sku_control"><option value=""></option></select></div>
-              <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="" rows="1" cols="10" class="form-control sku_control"></textarea></div>
+              <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="caracteristicas" rows="1" cols="10" class="form-control sku_control"></textarea></div>
             </div>
             <div class="cont_fila_crear_sku container_row d75-25">
               <div><span class="">COMPOSIC.&nbsp</span>
                 <!-- <input type="text" id="txt_sku_composicion" name="" value="" class="form-control"> -->
                 <select name="composicion" id="select_sku_composicion" class="form-control sku_control" data-live-search="true" title=""></select>
               </div>
-              <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="" value="" class="form-control sku_control"></div>
+              <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="peso" value="" class="form-control sku_control"></div>
             </div>
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
             <div class="cont_fila_crear_sku container_row" >
               <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
-                <input type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
-                <input type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" >
+                <input name='prefijo' type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
+                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" >
               </div>
             </div>
-            <div class="cont_fila_crear_sku container_row" ><span>DESCRIP.&nbsp</span><input type="text" id="txt_sku_descripcion" name="" value="" class="form-control sku_control"></div>
+            <div class="cont_fila_crear_sku container_row" ><span>DESCRIP.&nbsp</span><input type="text" id="txt_sku_descripcion" name="descripcion" value="" class="form-control sku_control"></div>
             <!-- <div class="cont_fila_crear_sku container_row" ><span>BARCODE&nbsp</span><input type="text" id="txt_sku_barcode" name="" value="" class="form-control"></div> -->
             <!-- <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp -->
             <!-- <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br> -->
@@ -103,8 +103,8 @@
           </div>
         </div>
         <div class="cont_botonera_inf container_row">
-          <button type="button" name="button" id="btn_guardar_enviar" class="btn btn-primary">GUARDAR Y ENVIAR</button>
-          <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">GUARDAR EN LISTA</button>
+          <button type="button" name="button" id="btn_guardar_enviar" class="btn btn-primary">GUARDAR EN LISTA</button>
+          <!-- <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">AGREGAR OTRO<br>ARTICULO</button> -->
           <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
         </div>
     </div>
@@ -214,10 +214,12 @@
           <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_prefix" alt="">
         </div>
         <div class="body_modal">
-        <div class="dfooter_sku">
-            <button class="btn btn-primary btn_footer" id="button_save_article">GUARDAR SKUs</button>
-            <button class="btn btn-danger btn_footer" id="button_cancel_save_sku">CANCELAR</button>
+
         </div>
+        <div class="footer_modal">
+          <button class="btn btn-primary btn_footer" id="button_save_article">GUARDAR SKUs</button>
+          <button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>
+          <!-- <button class="btn btn-warning btn_footer" id="button_cancel_save_sku">CONTINUAR</button> -->
         </div>
       </div>
     </div>

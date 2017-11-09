@@ -35,12 +35,27 @@ body, html {
 .body_modal {
   flex: 1 1 auto;
   background-color: rgb(222, 234, 241);
-  border-bottom-right-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
+  /* border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem; */
   display: flex;
   flex-direction: column;
   /*align-items: center;*/
   width: 100%;
+}
+.footer_modal {
+  flex: 0 0 auto;
+  background-color: rgb(222, 234, 241);
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: .5rem;
+}
+.footer_modal>button {
+  margin-left: .5rem;
+  margin-right: .5rem;
 }
 .botonera_modal {
   display: flex;

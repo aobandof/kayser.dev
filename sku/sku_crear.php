@@ -136,13 +136,13 @@ if($_POST['option']=="cargar_selects_dependientes") {
 }
 if($_POST['option']=='save_and_send_skus'){
 
-  $send=sendMail($_POST);
-  if($send===true)
-    $data['resp']='READY';
-  else
-    $data['resp']='NO SE PUDO ENVIAR EL ARCHIVO...';
+  // $send=sendMail($_POST);
+  // if($send===true)
+  //   $data['resp']='READY';
+  // else
+  //   $data['resp']='NO SE PUDO ENVIAR EL ARCHIVO...';
 
-  // $data=sendMail($_POST);
+  $data=sendMail($_POST);
   echo json_encode($data);
 }
 function getFirstBarcode() {
@@ -154,83 +154,7 @@ function getFirstBarcode() {
   }
   return $first_barcode;
 }
-function setContentExcel(){
-  $excel_columns_default = array(
-    'RecordKey' => array('default'=> 1, 'column'=> 'A' ),
-    'ForceSelectionOfSerialNumber'=> array('default'=> 'tNO', 'column'=> 'D' ),
-    'GLMethod'=> array('default'=> 'C', 'column'=> 'F' ),
-    'InventoryItem' => array('default'=> 'tYES', 'column'=> 'G' ),
-    'IsPhantom' => array('default'=> 'tNO', 'column'=> 'H' ),
-    'IssueMethod' => array('default'=> 'M', 'column'=> 'I' ),
-    'SalUnitMsr'=> array('default'=> '1', 'column'=> 'J' ),
-    'ManageStockByWarehouse'=> array('default'=> 'tYES', 'column'=> 'M' ),
-    'PlanningSystem'=> array('default'=> 'M', 'column'=> 'N' ),
-    'U_APOLLO_APPGRP' => array('default'=> '1', 'column'=> 'U' ),
-    'U_GSP_TPVACTIVE' => array('default'=> 'Y', 'column'=> 'AD' ),
-    'AvgPrice'=> array('default'=> '', 'column'=> 'AE' ),
-    'U_IDDiseno'=> array('default'=> '', 'column'=> 'AG' )
-  );
-  $excel_columns = array(
-    'ItemCode'=> 'B',
-    'BarCode'=> 'C',
-    'ForeignName'=> 'E',
-    'ItemName'=> 'K',
-    'ItmsGrpCod'=> 'L',
-    'SWW'=> 'O',
-    'U_APOLLO_SEG1'=> 'P',
-    'U_APOLLO_SEG2'=> 'Q',
-    'U_APOLLO_SSEG3'=> 'R',
-    'U_APOLLO_SEG3'=> 'S',
-    'U_APOLLO_SEASON'=> 'T',
-    'U_APOLLO_SSEG3VO'=> 'V',
-    'U_MARCA'=> 'X',
-    'U_EVD'=> 'Y',
-    'U_MATERIAL'=> 'Z',
-    'U_ESTILO'=> 'AA',
-    'U_SUBGRUPO1'=> 'AB',
-    'U_APOLLO_COO'=> 'AC',
-    'U_APOLLO_DIV'=> 'AF',
-    'U_IDCopa'=> 'AH',
-    'U_FILA'=> 'AI',
-    'U_APOLLO_S_GROUP'=> 'AJ',
-    'U_GSP_SECTION'=> 'AK'
-  );  
 
-  $ele_marca=$_POST['select_marca'];
-  $ele_subdpto=$_POST['select_sku_subdpto'];
-  $ele_prenda = $_POST['select_sku_prenda'];
-  $ele_categoria=$_POST['select_sku_categoria'];
-  $ele_presentacion=$_POST['select_sku_presentacion'];
-  $ele_material=$_POST['select_sku_material'];
-  $arr_color=[];//ver de que se compone este array
-  $arr_talla=[];//aun esta pendiente que hacer con esto
-  $ele_tprenda=$_POST['select_sku_tprenda'];
-  $ele_tcatalogo=$_POST['select_sku_tcatalogo'];
-  $ele_grupo_uso=$_POST['select_sku_grupo_uso'];
-  $ele_caracteristica = $_POST['txa_sku_caracteristicas'];
-  $ele_composicion = $_POST['select_sku_composicion'];
-  $else_peso = $_POST['txt_sku_peso'];
-
-  // $articulo_values = array(
-  //   'ForeignName'=> array( 'val'=> ele_caracteristica.value ], // caracteristica
-  //   'ItemName'=> array( 'val'=> itemname ), //nombre
-  //   'ItmsGrpCod'=> array( 'cod'=> code_dpto, 'val'=> name_dpto ), //dpto
-  //   'SWW'=> array( 'val'=> ele_prenda.options[ele_prenda.selectedIndex].text ), //prenda (deprecated)    
-  //   'U_APOLLO_SEG1'=> array( 'val'=> val_article ),  //codigo articulo
-  //   'U_APOLLO_SEG3'=> array( 'cod'=> '', 'val'=> '' ), // familia talla
-  //   'U_APOLLO_SEASON'=> array( 'cod'=> ele_prenda.value, 'val'=> ele_prenda.options[ele_prenda.selectedIndex].text ), //prenda  
-  //   'U_MARCA'=> array( 'cod'=> ele_marca.value, 'val'=> ele_marca.options[ele_marca.selectedIndex].text ), //marca    
-  //   'U_EVD'=> array( 'cod'=> ele_tprenda.value, 'val'=> ele_tprenda.options[ele_tprenda.selectedIndex].text  ), //temporada
-  //   'U_MATERIAL'=> array( 'cod'=> ele_material.value, 'val'=> ele_material.options[ele_material.selectedIndex].text  ), //material
-  //   'U_ESTILO'=> array( 'cod'=> ele_grupo_uso.value, 'val'=> ele_grupo_uso.options[ele_grupo_uso.selectedIndex].text  ), //grupo uso
-  //   'U_SUBGRUPO1'=> array( 'cod'=> ele_subdpto.value, 'val'=> ele_subdpto.options[ele_subdpto.selectedIndex].text  ), //supdpto
-  //   'U_APOLLO_COO'=> array( 'cod'=> ele_composicion.value, 'val'=> ele_composicion.options[ele_composicion.selectedIndex].text  ), //composicion 
-  //   'U_APOLLO_DIV'=> array( 'cod'=> ele_categoria.value, 'val'=> ele_categoria.options[ele_categoria.selectedIndex].text  ), //categoria
-  //   'U_FILA'=> array( 'cod'=> ele_presentacion.value, 'val'=> ele_presentacion.options[ele_presentacion.selectedIndex].text  ), //presentacion
-  //   'U_APOLLO_S_GROUP'=> array( 'cod'=> ele_tcatalogo.value, 'val'=> ele_tcatalogo.options[ele_tcatalogo.selectedIndex].text  ), //temporada catalogo
-  // );
-  return $excel_columns_default;
-}
 function sendMail($arr_cont){
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
@@ -256,23 +180,23 @@ function sendMail($arr_cont){
     $fila_csv="";
     $fila_csv.= ($i+1).";";
     $fila_csv.= $arr_cont['skus'][$i].";";
-    $fila_csv.= strval($arr_cont['barcodes'][$i]).";tNO;";                         ///---con columna default
-    $fila_csv.= $arr_cont['caracteristica'].";C;tYES;tNO;M;1;";            ///---con columnaS default
+    $fila_csv.= strval($arr_cont['barcodes'][$i]).";tNO;";                  ///---con columna default
+    $fila_csv.= $arr_cont['caracteristica'].";C;tYES;tNO;M;1;";             ///---con columnaS default
     $fila_csv.= $arr_cont['itemname'].";"; 
-    $fila_csv.= $arr_cont['dpto_code'].";tYES;M;";                   ///---con columnaS default                   
+    $fila_csv.= $arr_cont['dpto_code'].";tYES;M;";                          ///---con columnaS default                   
     $fila_csv.= $arr_cont['prenda_name'].";";
     $fila_csv.= $arr_cont['articulo'].";"; 
     $fila_csv.= $colorito.";";
     $fila_csv.= $tallita.";";
     $fila_csv.= $arr_cont['talla_familia'].";";
-    $fila_csv.= $arr_cont['prenda_code'].";1;";                           ///---con columnaS default
-    $fila_csv.= $ordencito.";Y;";                                         ///---con columnaS default
+    $fila_csv.= $arr_cont['prenda_code'].";1;";                             ///---con columnaS default
+    $fila_csv.= $ordencito.";Y;";                                           ///---con columnaS default
     $fila_csv.= $arr_cont['marca_name'].";";
     $fila_csv.= $arr_cont['tprenda_name'].";";
     $fila_csv.= $arr_cont['material_name'].";";
     $fila_csv.= $arr_cont['grupo_uso_name'].";";
     $fila_csv.= $arr_cont['subdpto_name'].";";
-    $fila_csv.= $arr_cont['composicion_name'].";Y;;";                     ///---con columnaS default
+    $fila_csv.= $arr_cont['composicion_name'].";Y;;";                       ///---con columnaS default
     $fila_csv.= $arr_cont['categoria_code'].";;";
     $fila_csv.= $arr_cont['copa_name'].";";
     $fila_csv.= $arr_cont['presentacion_name'].";";
@@ -294,12 +218,12 @@ function sendMail($arr_cont){
   $headers .= utf8_decode($content_csv);
   $headers .= "\r\n";
 
-  if(mail($destinatario, $titulo,"", $headers)){
-    return true;
-  }
-  else{
-    return false;
-  }
-  // return($content_csv);   
+  // if(mail($destinatario, $titulo,"", $headers)){
+  //   return true;
+  // }
+  // else{
+  //   return false;
+  // }
+  return($content_csv);   
 }
 ?>

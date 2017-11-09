@@ -25,29 +25,69 @@ function makeFillArticlePreview(){
   code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;
   itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
   let body_modal = document.querySelector('#div_preview_save .body_modal'); //referenciamos al body del modal
+  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
-  let title=document.createElement('div');
-      title.innerHTML="<span>"+itemname+"</span>"
-  article.appendChild(title);
 
-  article.className = 'article_preview';
-  title.className = 'title_article_preview';
+  let article_title = document.createElement('div');
+    article_title.innerHTML = "<span>" + itemname + "</span>"
+  let article_content = document.createElement('div');
+  let dtable_sku = document.createElement('div');
+    dtable_sku.className = 'dtable_sku_preview';
+  let article_button_container = document.createElement('div');
+  
+  article.appendChild(article_title);
+  article.appendChild(article_content);
+
+  article_content.appendChild(dtable_sku);
+  article_content.appendChild(article_button_container);
+
+ 
+  
+
+  ///--- BOTONES DE ARTICLE_BUTTON_CONTAINER ---
+  let but_edit_detalle = document.createElement('button');
+  let but_edit_color_talla = document.createElement('button');
+  let but_article_delete = document.createElement('button');
+  but_edit_detalle.className='btn btn-primary';
+  but_edit_color_talla.className = 'btn btn-success';
+  but_article_delete.className = 'btn btn-danger';
+  but_edit_detalle.innerHTML="EDITAR<br>DETALLE"
+  but_edit_color_talla.innerHTML="AGREGAR<br>COLOR/TALLA";
+  but_article_delete.innerHTML="SACAR<br>ARTICULO";
+  article_button_container.appendChild(but_edit_detalle);
+  article_button_container.appendChild(but_edit_color_talla);
+  article_button_container.appendChild(but_article_delete);
+
+
     
-  /////----- TABLA
-  let dtable_sku=document.createElement('div');
-  dtable_sku.className = 'dtable_sku_preview';
+  article.id = code_article;
+  article.className = 'article_preview'; // flex row
+  article_content.className = 'article_content'; // flex column
+  article_button_container.className = 'article_button_container'; // flex column
+  article_title.className = 'title_article_preview';
+    
+
   /////----- CABECERA DE TABLA
   let dhead_sku = document.createElement('div');
       dhead_sku.className='dhead_sku';
+      let dth_cont = document.createElement('div');
       let dth_sku=document.createElement('div');      
       let dth_barcode=document.createElement('div');
-      let dth_dun=document.createElement('div');
+      let dth_color = document.createElement('div');
+      let dth_talla = document.createElement('div');
+      // let dth_dun=document.createElement('div');
+      dth_cont.innerHTML = 'N°';
       dth_sku.innerHTML = 'SKU';
       dth_barcode.innerHTML='BARCODE';
-      dth_dun.innerHTML='DUN';
+      // dth_dun.innerHTML='DUN';
+      dth_color.innerHTML = 'COLOR';
+      dth_talla.innerHTML = 'TALLA';
+  dhead_sku.appendChild(dth_cont);
   dhead_sku.appendChild(dth_sku);
   dhead_sku.appendChild(dth_barcode);   
-  dhead_sku.appendChild(dth_dun);
+  // dhead_sku.appendChild(dth_dun);
+  dhead_sku.appendChild(dth_color);
+  dhead_sku.appendChild(dth_talla);
   dtable_sku.appendChild(dhead_sku);
   /////----- CUERPO DE TABLA
   let dbody_sku = document.createElement('div');
@@ -101,10 +141,9 @@ function makeFillArticlePreview(){
 
   leng_skus = skus.length;           
   for (i=0; i<leng_skus; i++) {
-    let dtr_sku = "<div class='dtr_sku' id='" + skus[i] + "'><div>" + skus[i] + "</div><div>" + barcodes[i] + "</div><div>" + 'DUN_PENDIENTE' +"</div></div>"
+    let dtr_sku = "<div class='dtr_sku' id='" + skus[i] + "'><div>" + (i + 1) + "</div><div>" + skus[i] + "</div><div>" + barcodes[i] + "</div>"  /* + "<div>" + 'DUN_PENDIENTE' +"</div>"*/ + "<div>" + colores_text[i] + "</div><div>" + tallas_text[i] + "</div></div>"
     dbody_sku.insertAdjacentHTML('beforeend', dtr_sku);
   }
   dtable_sku.appendChild(dbody_sku);
-  article.appendChild(dtable_sku);
   body_modal.insertAdjacentElement('afterbegin',article)
 }
