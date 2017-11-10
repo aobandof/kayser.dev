@@ -70,6 +70,10 @@ function cargarItems(contenedor) {
         }
     });
 }
+
+
+
+
 function cargarTabla(tabla) {
     let check = document.querySelectorAll('input.check_items[type="checkbox"]:checked');
     // console.log(check);

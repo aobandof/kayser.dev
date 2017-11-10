@@ -45,7 +45,7 @@ $(document).ready(function() {
       $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
         if($(this).val()!="" /* $(this).val()!=null*/) {
           campos_llenos=1;
-          console.log('elemento: ',$(this));         
+          // console.log('elemento: ',$(this));         
           return; // igual recorre todo el bucle
         }
       });
@@ -132,10 +132,9 @@ $(document).ready(function() {
   //   body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
   // };
   /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
-  document.getElementById('btn_guardar_enviar').onclick=function(){
-    console.log('entró');
+  document.getElementById('btn_save_article').onclick=function(){
     let empty=0;
-    let tallas = document.getElementById('span_tallas_chosen').innerHTML;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
     document.querySelectorAll('.sku_control').forEach(function(control){
        if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
          if(control.value=='')  empty=1;
@@ -144,18 +143,52 @@ $(document).ready(function() {
     //sacar esto despues /
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if(empty===0) { 
-      modal_preview_save.style.visibility = 'visible';       
-      makeFillArticlePreview();
+      // modal_preview_save.style.visibility = 'visible';
+      parameters=getObjectArticle();
+      console.log(parameters);
+      // makeFillArticlePreview();
+      parameters['option'] ='save_article_list';
+      $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function (){ },
+        success: function(data){
+          console.log(data.resp);
+          ///--- ACA DEBERIAMOS OBTENER EL ARRAY CON LOS SKUS AGREGADOS PARA DIBUJARLOS, POR AHORA CREAREMOS UN ARRY TEMPORAL
+          arr_sku=[];
+          arr_sku.push(['150.100-BLA-XS','870001000000', 'BLANCO', 'XS']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'S']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'M']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'L']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'XL']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'XS']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'S']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'M']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'L']);
+          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'XL']);
+          
+          
+          modal_preview_save.style.visibility = 'visible';
+          ////  AGREGAMOS ALA TABLA DEL ARTICULO PREVIEW, LOS SKUS OBTENIDOS DEL BACKEND (ARRAY COMO ARRIBA O HTML CON LAS FILAS CREADAS EN LA API)
+          //// RESETEAMOS LOS CONTROLES DE LA VISTA SKU_CREAR
+          //// CREAMOS LOS EVENTOS PARA LOS ICONOS ELIMINAR DE LAS FILAS DE SKUS
+          ////  DESPUES MOSTRAMOS EL MODAL
+          makeArticlePreview(parameters['artciculo'], parameters['itemname']);
+
+        },
+        error: function(){ console.log('error'); }
+      });
     }
     else
-      alert("Todos los campos tienen que ser llenados");
+      alert("TODOS LOS CAMPOS SON NECESARIOS");
   }
+
+
   document.getElementById('button_save_article').onclick = function () {
+    /////////////////////////////////////////////////////////////////////////////////
     var params = new Object();
-    let parameters = [];
     params['articulo']=code_article;
     params['itemname']=itemname;
-    params['option'] = 'save_and_send_skus';
+    // params['option'] = 'save_and_send_skus';
+    params['option']='save_skus'
     params['skus'] = skus;
     params['barcodes'] = barcodes;
     params['familia'] = familia;
@@ -202,6 +235,7 @@ $(document).ready(function() {
     params['composicion_code'] = el_composicion.value;
     params['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
     params['peso'] = document.getElementById('txt_sku_peso').value;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     console.log(params);
     $.ajax({
       url: 'sku_crear.php',
@@ -213,6 +247,8 @@ $(document).ready(function() {
         console.log(data);
         if(data.resp=='READY')
           alert('DATOS GUARDADOS CON EXITO ( archivo con SKUs fueron enviados correctamente )');
+
+          
         else  
           alert(data.resp);
       },
@@ -228,7 +264,97 @@ $(document).ready(function() {
 /*********************************************************************************************************/
 /*******************************************************************************************************/
 });
+///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
+function getObjectArticle(){
+  code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;
+  itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
 
+  colores_code.length = 0; colores_text.length = 0;
+  tallas_text.length = 0; tallas_orden.length = 0;
+
+  ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente
+  el_sel_colors = document.getElementById('select_sku_color');
+  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++)
+    colores_code.push(el_sel_colors.selectedOptions[i].value);
+  colores_text = document.querySelector('#div_row_colours .filter-option').innerHTML.split(',');
+  colores_text = colores_text.map(item => item.trim());
+  ///--- SI LA PRENDA TIENE COPA, ENTONCES HAY QUE AGREGAR EL LA LETRA DE COPA DESPUES DE LA ABREVIATURA DEL COLOR
+  ///--- para esto creamos una variable que la contenga y que sera "" en caso de no haber copa
+  let copa;
+  el_copa = document.getElementById('select_sku_copa')
+  el_copa.value !== '' ? copa = el_copa.options[el_copa.selectedIndex].text : copa = '';
+
+  ///--- OBTENEMOS VALOR DE LA FAMILIA, ARRAY_TALLAS Y $ARRAY_ORDENES RESPECTIVAMENTE
+  list_check_familias = document.querySelectorAll('.check_familia');
+  for (i = 0; i < list_check_familias.length; i++)
+    if (list_check_familias[i].checked == true) check_familia = list_check_familias[i];
+  familia = check_familia.parentNode.parentNode.id;
+
+  list_check_tallas = check_familia.parentNode.nextSibling.querySelectorAll('.check_talla');
+  for (i = 0; i < list_check_tallas.length; i++) {
+    if (list_check_tallas[i].checked) {
+      checked = list_check_tallas[i].name.split('|');
+      tallas_orden.push(checked[1]);
+      tallas_text.push(checked[0]);
+    }
+  }
+
+
+  let obj_article=new Object();
+  obj_article['articulo'] = code_article;
+  obj_article['itemname'] = itemname;
+
+  // obj_article['skus'] = skus;
+  // obj_article['barcodes'] = barcodes;
+
+
+  obj_article['familia'] = familia;
+  obj_article['tallas_name'] = tallas_text;
+  obj_article['tallas_orden'] = tallas_orden;
+  obj_article['colores_code'] = colores_code;
+  obj_article['colores_name'] = colores_text;
+  obj_article['dpto_code'] = code_dpto;
+  obj_article['dpto_name'] = name_dpto;
+  el_marca = document.getElementById('select_marca');
+  obj_article['marca_code'] = el_marca.value;
+  obj_article['marca_name'] = el_marca.options[el_marca.selectedIndex].text;
+  el_subdpto = document.getElementById('select_sku_subdpto');
+  obj_article['subdpto_code'] = el_subdpto.value;
+  obj_article['subdpto_name'] = el_subdpto.options[el_subdpto.selectedIndex].text;
+  el_prenda = document.getElementById('select_sku_prenda');
+  obj_article['prenda_code'] = el_prenda.value;
+  obj_article['prenda_name'] = el_prenda.options[el_prenda.selectedIndex].text;
+  el_categoria = document.getElementById('select_sku_categoria');
+  obj_article['categoria_code'] = el_categoria.value;
+  obj_article['categoria_name'] = el_categoria.options[el_categoria.selectedIndex].text;
+  el_presentacion = document.getElementById('select_sku_presentacion');
+  obj_article['presentacion_code'] = el_presentacion.value;
+  obj_article['presentacion_name'] = el_presentacion.options[el_presentacion.selectedIndex].text;
+  el_material = document.getElementById('select_sku_material');
+  obj_article['material_code'] = el_material.value;
+  obj_article['material_name'] = el_material.options[el_material.selectedIndex].text;
+  obj_article['colores_code'] = colores_code;
+  obj_article['colores_name'] = colores_text;
+  obj_article['talla_familia'] = familia;
+  obj_article['tallas_name'] = tallas_text;
+  obj_article['tallas_orden'] = tallas_orden;
+  el_tprenda = document.getElementById('select_sku_tprenda');
+  obj_article['tprenda_code'] = el_tprenda.value;
+  obj_article['tprenda_name'] = el_tprenda.options[el_tprenda.selectedIndex].text;
+  el_tcatalogo = document.getElementById('select_sku_tcatalogo');
+  obj_article['tcatalogo_code'] = el_tcatalogo.value;
+  obj_article['tcatalogo_name'] = el_tcatalogo.options[el_tcatalogo.selectedIndex].text;
+  el_grupo_uso = document.getElementById('select_sku_grupo_uso');
+  obj_article['grupo_uso_code'] = el_grupo_uso.value;
+  obj_article['grupo_uso_name'] = el_grupo_uso.options[el_grupo_uso.selectedIndex].text;
+  obj_article['caracteristica'] = document.getElementById('txa_sku_caracteristicas').value;
+  el_composicion = document.getElementById('select_sku_composicion');
+  obj_article['composicion_code'] = el_composicion.value;
+  obj_article['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
+  obj_article['peso'] = document.getElementById('txt_sku_peso').value;
+
+  return obj_article;
+}
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
   let descripcion = "";//inivar
@@ -659,8 +785,14 @@ function loadToModifyArticleList(articulo){
   $.ajax({ url: 'articulo_cargar.php', type: 'post', dataType: 'json', data: parameters,
     beforeSend: function (){ },
     success: function(data){
-      console.log(data);
+      // console.log(data);
     },
     error: function(){ console.log('error'); }
   });
+}
+
+
+function fillSkusInArticle(articulo){
+
+
 }

@@ -145,6 +145,29 @@ if($_POST['option']=='save_and_send_skus'){
   $data=sendMail($_POST);
   echo json_encode($data);
 }
+///--- GUARDAREMOS EL ARTICULO CON SKUS O SOLAMENTE SKUS DEPENDIENDO DE LA OPCION
+if($_POST['option']=="save_article_list"){
+  $data=[];
+  $code_article=$_POST['article'];
+
+  ///--- TAREAS
+  //ESTA OPCION ES CUANDO SE DISPARA EL EVENTO DE GENERAR UN ARTICULO NUEVO, POR LO QUE NO HAY QUE PREGUNTAR POR NADA,
+  //CREAMOS LOS SKUS CON SUS BARCODES CORRESPONDIENTES PARA DESPUES
+  //DEDICARNOSS A INSERTAR EN LAS TABLAS: ARTICULO, SKU Y LISTA
+
+
+
+  //DEVOLVEREMOS UN ARRAY CON LOS SKUS (sku_code, barcode, color y talla) para poder llenar el componente a crear
+
+  $data['resp']='ESTAOS EN ESTO';
+  echo json_encode($data);
+
+}
+
+
+
+
+
 function getFirstBarcode() {
   global $sqlsrv;
   $query_barcode="SELECT top 1 CodeBars from Kayser_OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";

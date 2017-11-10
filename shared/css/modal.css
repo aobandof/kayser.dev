@@ -41,6 +41,7 @@ body, html {
   flex-direction: column;
   /*align-items: center;*/
   width: 100%;
+  /* overflow-y: auto; */
 }
 .footer_modal {
   flex: 0 0 auto;
