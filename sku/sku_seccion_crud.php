@@ -22,7 +22,7 @@ if($_POST['option']=="cargar_seccion"){
     if($ntabla!='marca')//TABLA MARCA TIENE OTRO CAMPO "prefijo"
       $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo,".$tablas_sku[$ntabla]['campo']." AS Nombre from  $ntabla";
     else
-      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo, ".$tablas_sku[$ntabla]['campo']." AS Nombre, Prefijo from  $ntabla";
+      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo, ".$tablas_sku[$ntabla]['campo']." AS Nombre, simbolo, posicion, tipo from  $ntabla";
   else {
     $query="select ".$tablas_sku[$ntabla]['campo']." AS Nombre from  $ntabla";
   }
@@ -62,15 +62,16 @@ if($_POST['option']=="create_item") {
     if($key!='table' && $key!='option')
       $values[$key]=$value;
   //EXCEPCIONES DE CIERTAS TABLAS:
-  if($table=="Marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
-    $prefijo=$_POST['prefijo'];
-    $query_marca="select nombre from Marca where prefijo='$prefijo'";
-    if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
-      if($arr_marca!==0)//quiere decir que se encontró el valor
-        $repeated=1;
-    }else 
-      $data['errors'][]=$sqlsrv->getErrors();
-  }
+  ///ESTA EXCEPCION QUEDA NULA DADO QUE MARCA PUEDE TENER MISMO SIMBOLO
+  // if($table=="Marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
+  //   $prefijo=$_POST['prefijo'];
+  //   $query_marca="select nombre from Marca where prefijo='$prefijo'";
+  //   if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
+  //     if($arr_marca!==0)//quiere decir que se encontró el valor
+  //       $repeated=1;
+  //   }else 
+  //     $data['errors'][]=$sqlsrv->getErrors();
+  // }
   ///////// FIN EXCEPCIONES ////////
   if($repeated==0){
     if($tablas_sku[$table]['bd']=='mysql'){// inicialmente solo se podran editar BDx de motor MYSQL

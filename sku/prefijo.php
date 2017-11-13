@@ -22,6 +22,7 @@ if($existe_error_conexion){
   $presentacion=$_POST['presentacion'];
 
   $prefijo="";
+  $sufijo='';
   $first='';
   $data=[];
   $query4=" SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Categoria_codigo='$categoria' AND Presentacion_id=$presentacion";
@@ -32,7 +33,7 @@ if($existe_error_conexion){
     $query3_1="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Categoria_codigo='$categoria'";
     $query3_2="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Presentacion_id=$presentacion";
     $query3_3="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id=$subdpto  AND Presentacion_id=$presentacion"; 
-    echo $query3_1."<br>";       
+    // echo $query3_1."<br>";       
     if(($arr_prefijos3=$mysqli->select($query3_1,"mysqli_a_o"))!=0){
       $prefijo=$arr_prefijos3[0]['prefijo'];
     }elseif(($arr_prefijos3=$mysqli->select($query3_2,"mysqli_a_o"))!=0){
@@ -49,27 +50,49 @@ if($existe_error_conexion){
       }
     }
   }
-
-  if($prefijo!=''){
-    ///--- OBTENEMOS LA ABREVIATURA DE LA MARCA PARA AGREGAR AL PREFIJO
-    $query_marca="SELECT nombre,prefijo FROM marca WHERE id=$marca";
+  
+  if($prefijo!=''){    
+    $query_marca="SELECT nombre,simbolo,posicion,tipo FROM marca WHERE id=$marca";
     $arr_marca=$mysqli->select($query_marca,'mysqli_a_o');
-    $arr_marca[0]['nombre']=='SENS' ? $prefijo=$prefijo.$arr_marca[0]['prefijo'] : $prefijo=$arr_marca[0]['prefijo'].$prefijo;
-    ///--- AGREGAMOS EL PUNTO DESPUES DEL PREFIJO SI Y SOLO SI CONTIENE PUROS DIJITOS NUMERICOS
-    if(ctype_digit($prefijo))
+    $kayser=0;
+    if($arr_marca[0]['posicion']=='inicio'){
+      $prefijo=$arr_marca[0]['simbolo'].$prefijo;
+    }else{
+      $sufijo=$arr_marca[0]['simbolo'];
+    }
+    if(ctype_digit($prefijo) AND $sufijo==''){ // ESCEPCION ESTATICA
       $prefijo=$prefijo.'.';
-    ///--- OBTENEMOS EL ULTIMO NUMERO DE ARTICULO REGISTRADO CON ESTE PREFIJO
-    $query_ultimo="SELECT TOP 1 SUBSTRING( itemCode ,0,CHARINDEX('-',U_APOLLO_SEG1)-1) FROM Kayser_OITM WHERE ItemCode like '$prefijo%' AND U_APOLLO_SEG1 IS NOT NULL GROUP BY itemCode ORDER BY SUBSTRING(itemCode,0,CHARINDEX('-',U_APOLLO_SEG1)-1) DESC";
-    $arr_ultimo=$sqlsrv->select($query_ultimo,'sqlsrv_n_p');
+    }
+    ///--- CONSULTAMOS LOS CODIGOS DE ESTA PRENDA
+    $query_ultimo="SELECT SUBSTRING( itemCode ,LEN('$prefijo')+1,CHARINDEX('-',itemCode)-LEN('$prefijo')-1) FROM Kayser_OITM WHERE ItemCode LIKE '$prefijo%' GROUP BY SUBSTRING( itemCode ,LEN('$prefijo')+1,CHARINDEX('-',itemCode)-LEN('$prefijo')-1);";
+    $arr_ultimo=$sqlsrv->select($query_ultimo,'sqlsrv_n_p');//Este array obtiene correlativos puros y con letras al final que corresponden a los sufijos de algunas marcas
+    $mayor=0;
     if($arr_ultimo!=0){
-      $last=intval(substr($arr_ultimo[0][0],strlen($prefijo),strlen($arr_ultimo[0][0])));
-      ($last>=1000) ? $first=(string)(ultimo+1) : $first='1000';
+      if($sufijo==''){ //para que cuando recorra el array buscando el mayor correlativo, solo considere los que no tienen letras al final, 
+        for($i=0;$i<count($arr_ultimo);$i++){      
+          if(ctype_digit($arr_ultimo[$i][0])){
+            if (intval($arr_ultimo[$i][0])>=$mayor)
+              $mayor=intval($arr_ultimo[$i][0]);
+          }
+        }
+      }else{        
+        for($i=0;$i<count($arr_ultimo);$i++){
+          $simbolo=getLetersCadena($cadena);
+          if($simbolo==$arr_marca[0]['simbolo']){
+            $correlito=substr($arr_ultimo[$i][0],0,strlen($arr_ultimo[$i][0])-strlen($simbolo)-1);
+              if (intval($correlito)>=$mayor)
+                $mayor=intval($correlito);
+          }  
+        }        
+      }
+      ($mayor>=1000) ? $first=$mayor+1 : $first=1000;
     }else{
       ($arr_ultimo==0) ? $first='1000' : $first='';
     }
   }
+  $data['query_ultimo']=$query_ultimo;
   $data['prefijo']=$prefijo;
-  $data['ultimo']=$ultimo;
+  $data['first']=$first;
+  $data['sufijo']=$sufijo;
   echo json_encode($data);
-
 ?>

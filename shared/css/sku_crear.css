@@ -156,14 +156,32 @@ body, html {
    font-family: "Verdana";
 }
 #txt_sku_prefijo {
-  flex: 0 1 40%;
+  flex: 0 1 30%;
   text-align: right;
   border: 0px;
   font-weight: bold;
   font-size: .9rem;
 }
 #txt_sku_correlativo {
-  flex: 0 1 60%;
+  flex: 0 1 40%;
+  text-align: center;
+  border: 0px;
+  font-weight: bold;
+  font-size: .9rem;
+}
+/***** PARA QUITAR LAS FELCHAS DE LOS INPUT NUMBER ***/
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}/****************************************************/
+
+#txt_sku_sufijo {
+  flex: 0 1 30%;
   text-align: left;
   border: 0px;
   font-weight: bold;

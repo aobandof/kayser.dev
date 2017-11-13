@@ -118,7 +118,9 @@ $(document).ready(function() {
           } else
             resetInputTextCodeArticle()
         }
-      } else document.getElementById('txt_sku_descripcion').value = "";
+      } else {
+        document.getElementById('txt_sku_descripcion').value = "";
+      }
     }
   });
 /************************************** EVENTOS PARA GUARDAR Y ENVIAR ************************************/
@@ -143,10 +145,11 @@ $(document).ready(function() {
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if(empty===0) { 
       // modal_preview_save.style.visibility = 'visible';
+      parameters=new Object();
       parameters=getObjectArticle();
       console.log(parameters);
       // makeFillArticlePreview();
-      parameters['option'] ='save_article_list';
+      parameters['option']='save_article_list';
       $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function (){ },
         success: function(data){
@@ -265,16 +268,16 @@ $(document).ready(function() {
 });
 ///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
 function getObjectArticle(){
-  code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;
-  itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
-
   colores_code.length = 0; colores_text.length = 0;
   tallas_text.length = 0; tallas_orden.length = 0;
-
+  code_article = document.getElementById('txt_sku_prefijo').value + document.getElementById('txt_sku_correlativo').value + document.getElementById('txt_sku_sufijo').value;
+  itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
+  colores_code=[];colores_text=[];
   ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente
   el_sel_colors = document.getElementById('select_sku_color');
-  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++)
+  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++){
     colores_code.push(el_sel_colors.selectedOptions[i].value);
+  }
   colores_text = document.querySelector('#div_row_colours .filter-option').innerHTML.split(',');
   colores_text = colores_text.map(item => item.trim());
   ///--- SI LA PRENDA TIENE COPA, ENTONCES HAY QUE AGREGAR EL LA LETRA DE COPA DESPUES DE LA ABREVIATURA DEL COLOR
@@ -298,20 +301,15 @@ function getObjectArticle(){
     }
   }
 
-
   let obj_article=new Object();
+  // obj_article['option'] = '';//DESPUES SE MODIFICARA ESTE DATO PARA LLAMAR A LA API
   obj_article['articulo'] = code_article;
   obj_article['itemname'] = itemname;
-
-  // obj_article['skus'] = skus;
-  // obj_article['barcodes'] = barcodes;
-
-
   obj_article['familia'] = familia;
-  obj_article['tallas_name'] = tallas_text;
-  obj_article['tallas_orden'] = tallas_orden;
-  obj_article['colores_code'] = colores_code;
-  obj_article['colores_name'] = colores_text;
+  obj_article['tallas_name'] = tallas_text.slice();
+  obj_article['tallas_orden'] = tallas_orden.slice();
+  obj_article['colores_code'] = colores_code.slice();
+  obj_article['colores_name'] = colores_text.slice();
   obj_article['dpto_code'] = code_dpto;
   obj_article['dpto_name'] = name_dpto;
   el_marca = document.getElementById('select_marca');
@@ -332,14 +330,6 @@ function getObjectArticle(){
   el_material = document.getElementById('select_sku_material');
   obj_article['material_code'] = el_material.value;
   obj_article['material_name'] = el_material.options[el_material.selectedIndex].text;
-  obj_article['colores_code'] = colores_code;
-  obj_article['colores_name'] = colores_text;
-  obj_article['talla_familia'] = familia;
-  obj_article['tallas_name'] = tallas_text;
-  obj_article['tallas_orden'] = tallas_orden;
-  el_tprenda = document.getElementById('select_sku_tprenda');
-  obj_article['tprenda_code'] = el_tprenda.value;
-  obj_article['tprenda_name'] = el_tprenda.options[el_tprenda.selectedIndex].text;
   el_tcatalogo = document.getElementById('select_sku_tcatalogo');
   obj_article['tcatalogo_code'] = el_tcatalogo.value;
   obj_article['tcatalogo_name'] = el_tcatalogo.options[el_tcatalogo.selectedIndex].text;
@@ -351,7 +341,13 @@ function getObjectArticle(){
   obj_article['composicion_code'] = el_composicion.value;
   obj_article['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
   obj_article['peso'] = document.getElementById('txt_sku_peso').value;
-
+  el_copa=document.getElementById('select_sku_copa');
+  el_fcopa = document.getElementById('select_sku_fcopa');
+  if(el_copa.value!=0){
+    obj_article['copa'] = el_copa.options[el_copa.selectedIndex].text;
+    obj_article['fcopa'] = el_fcopa.options[el_fcopa.selectedIndex].text;
+  }
+  // console.log(obj_article);
   return obj_article;
 }
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
@@ -371,18 +367,22 @@ function autoFillDescription(){
 function resetInputTextCodeArticle(){
   document.getElementById('txt_sku_prefijo').value = "";
   document.getElementById('txt_sku_correlativo').value = "";
+  document.getElementById('txt_sku_sufijo').value = ""
+
 }
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
+  console.log(values);
   $.ajax({ url : 'prefijo.php', type : 'post', dataType : 'json', data : values,
     success : function(data) {
-      // console.log(data);
+      console.log(data);
       if(!!data['errors']){
         console.log("Error al consultar PRECIOS, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
       }else {
         document.getElementById('txt_sku_prefijo').value=data['prefijo'];
         document.getElementById('txt_sku_correlativo').value=data['first'];
+        document.getElementById('txt_sku_sufijo').value = data['sufijo'];
       }
     },
     error : function() { console.log("error"); }

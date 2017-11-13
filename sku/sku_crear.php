@@ -147,15 +147,96 @@ if($_POST['option']=='save_and_send_skus'){
 }
 ///--- GUARDAREMOS EL ARTICULO CON SKUS O SOLAMENTE SKUS DEPENDIENDO DE LA OPCION
 if($_POST['option']=="save_article_list"){
+
+  $hoy=datetime('Y-m-d h:i:s');
   $data=[];
+  $skus=[];
+  $sku_refused=[];
+  $barcodes=[];
   $code_article=$_POST['article'];
 
+  $query_insert_article="INSERT INTO articulo VALUES ('$code_article','".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."'";
   ///--- TAREAS
+  $colores_name=$_POST['colores_name'];
+  $colores_code=$_POST['colores_name'];
+  $tallas_name=$_POST['tallas_name'];
+  $tallas_orden=$_POST['tallas_orden'];
+  $colores_length=count($colores_name);
+  $tallas_length=count($tallas_name);
+  if(isset($_POST['copa'])){
+    $copa=$_POST['copa'];
+    $fcopa=$_POST['fcopa'];
+  }else {
+    $copa='';
+    $fcopa='';
+  }
+  $filas='';
+  $values=[];
+  for ($i = 0; $i < $colores_length; $i++){
+    for ($j = 0; $j < $tallas_length; $j++){
+      $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
+      // $query_sku="INSERT INTO sku VALUES('$sku','$code_article',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')";
+      $values['sku_code']=$sku;
+      $values['articulo_codigo']=$code_article;
+      $values['color_code']=$colores_code[$i];
+      $values['color_name']=$colores_name[$i];
+      
+      ///---BUSCAR EN 192.168.0.13 y en MYSQL list
+      $query_search_13="SELECT itemCode from Kayser_OITM WHERE itemCode='$sku'";
+      $arr_exist_13=$sqlsrv->select($query_search_13,'sqlsrv_n_p');
+      $query_search_list="SELECT sku_code from sku WHERE sku_code='$sku'";
+      $arr_exist_list=$mysqli->select($query_search_list,'mysqli_a_o');
+      if($arr_exist_13!=0 AND $arr_exist_13!=false){
+        $sku_refused['sku']=$sku;
+        $sku_refused['origin']='192.138.0.13';
+      }elseif($arr_exist_list!=0 AND $arr_exist_list!=false){
+        $sku_refused['sku']=$sku;
+        $sku_refused['origin']='LISTA';
+      }else{
+        //ACA REGISTRAMOS EL SKU EN LA LISTA Y DIBUJAMOS LA FILA DE DIVS
+        
+      }
+        
+
+      ///---Buscar en Mysql Lista_Articulo
+      
+
+    }
+  }
+
+  
+  
+
+
+  /*
+  ///--- AHORA OBTENEMOS EL ARRAY CON LOS CODES SKU
+  leng_colores = colores_text.length;
+  leng_tallas = tallas_text.length;
+  for (let i = 0; i < leng_colores; i++){
+    for (var j = 0; j < leng_tallas; j++){
+      skus.push(code_article + '-' + colores_text[i].substr(0, 3) + copa + '-' + tallas_text[j])
+      barcode = parseInt(first_barcode) + (i * leng_tallas) + j;
+      barcodes.push(String(barcode) + getControlDigit(String(barcode)));
+    }
+  }
+  ///---AHORA CREAMOS LAS FILAS Y DIBUJAMOS LOS SKU
+  leng_skus = skus.length;           
+  for (i=0; i<leng_skus; i++) {
+    img_delete_sku_list = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'+ skus[i] +'">'
+    let dtr_sku = "<div class='dtr_sku' id='" + skus[i] + "'><div>" + (i + 1) + "</div><div>" + skus[i] + "</div><div>" + barcodes[i] + "</div><div>" + colores_text[i] + "</div><div>" + tallas_text[i] + "</div><div>" + img_delete_sku_list + "</div></div>"
+    dbody_sku.insertAdjacentHTML('beforeend', dtr_sku);
+  }*/
+
+
+
+
+
+
+
+
   //ESTA OPCION ES CUANDO SE DISPARA EL EVENTO DE GENERAR UN ARTICULO NUEVO, POR LO QUE NO HAY QUE PREGUNTAR POR NADA,
   //CREAMOS LOS SKUS CON SUS BARCODES CORRESPONDIENTES PARA DESPUES
   //DEDICARNOSS A INSERTAR EN LAS TABLAS: ARTICULO, SKU Y LISTA
-
-
 
   //DEVOLVEREMOS UN ARRAY CON LOS SKUS (sku_code, barcode, color y talla) para poder llenar el componente a crear
 
@@ -163,9 +244,6 @@ if($_POST['option']=="save_article_list"){
   echo json_encode($data);
 
 }
-
-
-
 
 
 function getFirstBarcode() {

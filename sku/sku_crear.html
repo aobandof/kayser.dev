@@ -92,7 +92,8 @@
               <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
                 <input name='prefijo' type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
-                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" >
+                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" min="1000" max="9999">
+                <input name='sufijo' id="txt_sku_sufijo" class="form-control sku_control" value="" readonly>
               </div>
             </div>
             <div class="cont_fila_crear_sku container_row" ><span>DESCRIP.&nbsp</span><input type="text" id="txt_sku_descripcion" name="descripcion" value="" class="form-control sku_control"></div>
