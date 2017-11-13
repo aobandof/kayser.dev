@@ -90,7 +90,7 @@ $(document).ready(function() {
         if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
           resetInputTextCodeArticle()  
           cargarSelectsSku('Subdpto', el.value);
-          document.getElementById('txt_sku_descripcion').value = "";
+          document.getElementById('txt_sku_descripcion').value = ""; // RESETEAOS DADO QUE VOLVEREMOS A SELECCIONAR
           document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  -- OCULTAMOS EL DIV Con los controles para copa
         }else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
           el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
@@ -100,7 +100,6 @@ $(document).ready(function() {
         } else {
           if (el.id === "select_sku_categoria"){
             el_prenda=document.getElementById('select_sku_prenda');
-            // console.log(el_prenda);
             (el_prenda.options[el_prenda.selectedIndex].text=="SOSTEN" || el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
           }//verificaremos que todos esten llenos, si es asi, poner el prefijo
           let is_empty = 0;
@@ -382,9 +381,8 @@ function getPrefix(values){
         console.log("Error al consultar PRECIOS, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
       }else {
-        if(data['prefijo']!="SIN RESULTADOS")
-          document.getElementById('txt_sku_prefijo').value=data['prefijo'];
-          document.getElementById('txt_sku_correlativo').value=data['ultimo'];
+        document.getElementById('txt_sku_prefijo').value=data['prefijo'];
+        document.getElementById('txt_sku_correlativo').value=data['first'];
       }
     },
     error : function() { console.log("error"); }

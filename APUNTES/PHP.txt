@@ -22,7 +22,7 @@ array_search(value, array_column($array_multidimensioanal_asociativo, 'indice'))
 supongamos que tenemos:
 	$arr_persona[]=array('nombre' => 'Abel', 'apellido' => 'Obando' );
 	$arr_persona[]=array('nombre' => 'Eder', 'apellido' => 'Valderrama' );
-	$arr_persona[]=array('nombre' => 'Jaime', 'apellido' => 'Luján' );
+	$arr_persona[]=array('nombre' => 'Jaime', 'apellido' => 'Lujï¿½n' );
 	$indice= array_search("Valderrama", array_column($arr_persona, 'apellido')); // devuelve 1 (segundo elemento de array)
 
 CONDICIONAL TERNARIO:
@@ -40,7 +40,9 @@ SABER SI UN VALOR ES NUMERICO O CADENA
 ---------------------------------------
 is_numeric($valor) ? ... : ... ;
 
-
+SABER SI UNA CADENA CONTIENE SOLO NUMEROS
+-----------------------------------------
+ctype_digit($cadena) //DEVUELDE true si solo numeros Y false si no
 
 cadena desde array:	$cadena= implode(',',$arreglo);
 -------------------
@@ -49,13 +51,13 @@ cadena desde array:	$cadena= implode(',',$arreglo);
 texto heredoc
 -------------
 $str = <<<EOD
-Ejemplo de una cadena expandida en varias líneas
+Ejemplo de una cadena expandida en varias lï¿½neas
 empleando la sintaxis heredoc.
 EOD;
 
 echo <<<EOT
 Mi nombre es "$nombre". Estoy escribiendo un poco de $foo->foo. Ahora, estoy escribiendo un poco de {$foo->bar[1]}.
-Esto debería mostrar una 'A' mayúscula: \x41
+Esto deberï¿½a mostrar una 'A' mayï¿½scula: \x41
 EOT;
 
 

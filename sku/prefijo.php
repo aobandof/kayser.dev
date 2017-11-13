@@ -20,44 +20,55 @@ if($existe_error_conexion){
   $prenda=$_POST['Kayser_SEASON'];
   $categoria=$_POST['Kayser_DIV'];
   $presentacion=$_POST['presentacion'];
-  // echo "Marca: ".$marca."<br>";
-  // echo "Dpto: ".$dpto."<br>";
-  // echo "Subdpto: ".$subdpto."<br>";
-  // echo "Prenda: ".$prenda."<br>";
-  // echo "Categoria: ".$categoria."<br>";
-  // echo "Presentacion: ".$presentacion."<br>";
-  $solo2="";
+
   $prefijo="";
+  $first='';
   $data=[];
-  $query="SELECT Dpto_codigo,SubDpto_id,Prenda_codigo,Categoria_codigo,Presentacion_id, prefijo from relacionprefijo ";
-  $arr_prefijos=$mysqli->select($query,"mysqli_a_o");
-  // var_dump($arr_prefijos);
-  foreach ($arr_prefijos as $value) {
-    if($value['Dpto_codigo']==$dpto AND $value['Prenda_codigo']==$prenda){
-      if($solo2==""){
-        $solo2="cualquier_valor";
-        $prefijo=$value['prefijo'];
-      }
-      if($value['SubDpto_id']==$subdpto){
-        $prefijo=$value['prefijo'];
-        break;
-      }
-      if($value['Categoria_codigo']==$categoria){
-        $prefijo=$value['prefijo'];
-        break;
+  $query4=" SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Categoria_codigo='$categoria' AND Presentacion_id=$presentacion";
+  ///--- NIVEL 4
+  if(($arr_prefijos4=$mysqli->select($query4,"mysqli_a_o"))!=0){
+    $prefijo=$arr_prefijos4[0]['prefijo'];
+  }else{ ///--- NIVEL 3
+    $query3_1="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Categoria_codigo='$categoria'";
+    $query3_2="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'  AND Presentacion_id=$presentacion";
+    $query3_3="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id=$subdpto  AND Presentacion_id=$presentacion"; 
+    echo $query3_1."<br>";       
+    if(($arr_prefijos3=$mysqli->select($query3_1,"mysqli_a_o"))!=0){
+      $prefijo=$arr_prefijos3[0]['prefijo'];
+    }elseif(($arr_prefijos3=$mysqli->select($query3_2,"mysqli_a_o"))!=0){
+      $prefijo=$arr_prefijos3[0]['prefijo'];
+    }elseif(($arr_prefijos3=$mysqli->select($query3_3,"mysqli_a_o"))!=0){
+      $prefijo=$arr_prefijos3[0]['prefijo'];
+    }else{ ///--- NIVEL 2
+      $query2_1="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'";
+      $query2_2="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id=$subdpto";
+      if(($arr_prefijos2=$mysqli->select($query2_1,"mysqli_a_o"))!=0){
+        $prefijo=$arr_prefijos2[0]['prefijo'];
+      }elseif(($arr_prefijos2=$mysqli->select($query2_2,"mysqli_a_o"))!=0){
+        $prefijo=$arr_prefijos2[0]['prefijo'];
       }
     }
   }
+
+  if($prefijo!=''){
+    ///--- OBTENEMOS LA ABREVIATURA DE LA MARCA PARA AGREGAR AL PREFIJO
+    $query_marca="SELECT nombre,prefijo FROM marca WHERE id=$marca";
+    $arr_marca=$mysqli->select($query_marca,'mysqli_a_o');
+    $arr_marca[0]['nombre']=='SENS' ? $prefijo=$prefijo.$arr_marca[0]['prefijo'] : $prefijo=$arr_marca[0]['prefijo'].$prefijo;
+    ///--- AGREGAMOS EL PUNTO DESPUES DEL PREFIJO SI Y SOLO SI CONTIENE PUROS DIJITOS NUMERICOS
+    if(ctype_digit($prefijo))
+      $prefijo=$prefijo.'.';
+    ///--- OBTENEMOS EL ULTIMO NUMERO DE ARTICULO REGISTRADO CON ESTE PREFIJO
+    $query_ultimo="SELECT TOP 1 SUBSTRING( itemCode ,0,CHARINDEX('-',U_APOLLO_SEG1)-1) FROM Kayser_OITM WHERE ItemCode like '$prefijo%' AND U_APOLLO_SEG1 IS NOT NULL GROUP BY itemCode ORDER BY SUBSTRING(itemCode,0,CHARINDEX('-',U_APOLLO_SEG1)-1) DESC";
+    $arr_ultimo=$sqlsrv->select($query_ultimo,'sqlsrv_n_p');
+    if($arr_ultimo!=0){
+      $last=intval(substr($arr_ultimo[0][0],strlen($prefijo),strlen($arr_ultimo[0][0])));
+      ($last>=1000) ? $first=(string)(ultimo+1) : $first='1000';
+    }else{
+      ($arr_ultimo==0) ? $first='1000' : $first='';
+    }
+  }
   $data['prefijo']=$prefijo;
-  //AHORA OBTENEMOS EL CORRELATIVO:
-  $query_ultimo="SELECT TOP 1 CONVERT(INT,SUBSTRING( U_APOLLO_SEG1 ,CHARINDEX('.',U_APOLLO_SEG1)+1 , LEN(U_APOLLO_SEG1 ))) AS CORRELATIVO FROM Kayser_OITM WHERE ItemCode like '$prefijo.%' AND U_APOLLO_SEG1 IS NOT NULL GROUP BY U_APOLLO_SEG1 ORDER BY CONVERT(INT,SUBSTRING( U_APOLLO_SEG1 ,CHARINDEX('.',U_APOLLO_SEG1)+1 , LEN(U_APOLLO_SEG1 ))) DESC";
-  // echo $query_ultimo."<br>";
-  $arr_ultimo=$sqlsrv->select($query_ultimo,'sqlsrv_n_p');
-  // var_dump($arr_ultimo);
-  if($arr_ultimo[0][0]>=1000)
-    $ultimo=intval($arr_ultimo[0][0])+1;
-  else 
-    $ultimo=1000;
   $data['ultimo']=$ultimo;
   echo json_encode($data);
 
