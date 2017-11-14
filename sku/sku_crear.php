@@ -7,16 +7,17 @@ require_once "sku_funciones.php";
 
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
-///$sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
-///if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
+if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
 if($existe_error_conexion){
   echo json_encode($data);
   exit;
 }
- // echo "hola";
+
 if($_POST['option']=="cargar_selects_independientes"){
   ///--- INICIALMENTE MANDAMOS DE LLAPA EL PRIMER BARCODE PARA APLICAR ---
   $data['first_barcode']=getFirstBarcode();
@@ -55,7 +56,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   $data['values']=$options;
   echo json_encode($data);
 }
-if($_POST['option']=="cargar_selects_dependientes") {
+if($_GET['option']=="cargar_selects_dependientes") {
   // echo "hola";
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
@@ -63,12 +64,12 @@ if($_POST['option']=="cargar_selects_dependientes") {
   //y en  $array_grand_child se guardaran los nombres de descendientes de estas tablas y se enviaran a la vista para resetearse //este array con nombres se enviara en el index 0 del array data enviado a la vista
   $array_tabla_extraida=[];
   $options=[];
-  $padre=$_POST['nom_tabla_padre'];
-  if($padre=='Kayser_OITB'){//se buscará dependientes de DEPARTAMENTO (el padre supremo)
-    $codigo_padre=getIdFromName($padre,$_POST['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
+  $padre=$_GET['nom_tabla_padre'];
+  if($padre=='OITB'){//se buscará dependientes de DEPARTAMENTO (el padre supremo)
+    $codigo_padre=getIdFromName($padre,$_GET['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
     $data['dpto']=$codigo_padre;
   } else
-    $codigo_padre=$_POST['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
+    $codigo_padre=$_GET['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $ops="";//"<option value=''></option>";
     $arr_ops=[];

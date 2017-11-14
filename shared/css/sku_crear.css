@@ -26,16 +26,16 @@ body, html {
     padding: 0.2em 0.4em 0em 0.4em;
     flex: 1 1 auto;
 }
-.cont_config { /*** contenedor a la derecha que contiene una imagen */
+.cont_config, .cont_menu { /*** contenedor a la derecha que contiene una imagen */
   display: flex;
   justify-content: center;
   align-items: center;
   padding-right: 0.5rem;
 }
-.cont_config>div>img {
+.cont_config>div>img, .cont_menu>div>img {
   max-height: 2rem;
 }
-.cont_config>div>img:hover {
+.cont_config>div>img:hover, .cont_menu>div>img:hover {
   cursor: pointer;
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
@@ -261,6 +261,12 @@ input[type="number"] {
 .cont_config .dropdown-menu>a { color: yellow; }
 .cont_config .dropdown-menu>a:hover { color: blue; }
 
+.cont_menu .dropdown-menu {
+  left: -5rem;
+  background-color: rgba(3, 61, 52, 0.808) !important;
+}
+.cont_menu .dropdown-menu>a { color: rgb(255, 255, 255); }
+.cont_menu .dropdown-menu>a:hover { color: rgb(4, 70, 75); }
 
 /*************** MEDIAS QUERYS SKU_CREAR ******/
 @media (max-width: 750px) {
@@ -305,6 +311,14 @@ input[type="number"] {
       padding-right: 2rem;
     }
     .cont_config>div>img {
+      max-height: 3.5rem;
+    }
+    .cont_menu {
+      /*** contenedor a la derecha que contiene una imagen */
+      padding-right: 2rem;
+    }
+
+    .cont_menu>div>img {
       max-height: 3.5rem;
     }
 }

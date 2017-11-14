@@ -135,7 +135,7 @@ $(document).ready(function() {
   //   body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
   // };
   /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
-  document.getElementById('btn_save_article').onclick=function(){
+  document.getElementById('btn_save_article_new_list').onclick=function(){
     console.log('RESPONDE AL ENVENTO');
     let empty=0;
     let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
@@ -148,55 +148,22 @@ $(document).ready(function() {
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if(empty===0) { 
       parameters=new Object();
-      ///parameters=getObjectArticle();
-     
-      ///--- SACAR ESTO DESPUES ---
-      tallas_text=['XS', 'S'];
-      tallas_orden=['7','1'];
-      colores_code=[1];
-      colores_text=['ACERO'];
-      parameters['articulo'] = '50.8017';
-      parameters['itemname'] = '50.8017-SOSTE MATERNAR ALGODON';
-      parameters['familia'] = 'T03';
-      parameters['tallas_name'] = tallas_text.slice();
-      parameters['tallas_orden'] = tallas_orden.slice();
-      parameters['colores_code'] = colores_code.slice();
-      parameters['colores_name'] = colores_text.slice();
-      parameters['dpto_code'] = 106;
-      parameters['dpto_name'] = 'dama';
-      parameters['marca_code'] = '3';
-      parameters['marca_name'] = 'SENS';
-      parameters['subdpto_code'] = '5';
-      parameters['subdpto_name'] = 'CORSETERIA';
-      parameters['prenda_code'] = '25';
-      parameters['prenda_name'] = 'SOSTEN';
-      parameters['categoria_code'] = '54';
-      parameters['categoria_name'] = 'MATERNAL';
-      parameters['presentacion_code'] = '1';
-      parameters['presentacion_name'] = 'UNITARIO';
-      parameters['material_code'] = '2';
-      parameters['material_name'] = 'ALGOD0N';
-      parameters['tcatalogo_code'] = '';
-      parameters['tcatalogo_name'] = '';
-      parameters['grupo_uso_code'] = '';
-      parameters['grupo_uso_name'] = '';
-      parameters['composicion_code'] = '';
-      parameters['composicion_name'] = '';
-      parameters['peso'] = '';
-      parameters['copa'] = '';
-      parameters['fcopa'] = '';
-      
+      parameters=getObjectArticle();           
       console.log(parameters);
-      parameters['option']='save_article_list';
+      parameters['option']='save_article_new_list';
       $.ajax({ url: 'sku_lista.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function (){ },
         success: function(data){          
           console.log(data);
-          ///--- ACA DEBERIAMOS OBTENER EL ARRAY CON LOS SKUS AGREGADOS PARA DIBUJARLOS, POR AHORA CREAREMOS UN ARRY TEMPORAL 
-          renderArticleList(data.articulo,data.itemname,data.filas);        
-          
-          
-          ///
+          if(data.filas!='') 
+            renderArticleList(data.articulo,data.itemname,data.filas); 
+          if(!!data.refused){
+            mensaje='LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
+            for (var item in data.refused) {
+              mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] +'\n';                
+            }
+            alert(mensaje);
+          }
         },
         error: function(){ console.log('error'); }
       });
@@ -204,7 +171,6 @@ $(document).ready(function() {
     else
       alert("TODOS LOS CAMPOS SON NECESARIOS");
   }
-
 
   document.getElementById('button_save_article').onclick = function () {
     /////////////////////////////////////////////////////////////////////////////////
@@ -283,16 +249,16 @@ $(document).ready(function() {
   loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
-});
+
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
 function renderArticleList(art,itn,rows){
-  makeArticlePreview(data.articulo, data.itemname);  
-  id_articulo=data.articulo;
+  makeArticlePreview(art, itn);  
+  id_articulo=art;
   if(id_articulo.indexOf('.') != -1){
     id_articulo="div_"+id_articulo.replace('.','_');    
   }     
   el_articulo=document.getElementById(id_articulo);//
-  el_articulo.querySelector('.dbody_sku').innerHTML=data.filas;
+  el_articulo.querySelector('.dbody_sku').innerHTML=rows;
   modal_preview_save.style.visibility = 'visible';
 
   ///CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
@@ -300,12 +266,54 @@ function renderArticleList(art,itn,rows){
     icon.onclick=function(){
       console.log(this.id);
       ///ACA LLAMARESMOS A LA API ELIMINANDO
+      
+
     }
   })
 }
 ///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
 function getObjectArticle(){
-  colores_code.length = 0; colores_text.length = 0;
+                            ///--- SACAR ESTO DESPUES ---
+                            obj_static=new Object();
+                            tallas_text = ['XS', 'S', 'M', 'L'];
+                            tallas_orden = [7, 1, 2, 3];
+                            colores_code = [1, 8];
+                            colores_text = ['ACERO', 'AZUL'];
+                            obj_static['articulo'] = '50.8017';
+                            obj_static['itemname'] = '50.8017-SOSTE MATERNAR ALGODON';
+                            obj_static['familia'] = 'T03';
+                            obj_static['tallas_name'] = tallas_text.slice();
+                            obj_static['tallas_orden'] = tallas_orden.slice();
+                            obj_static['colores_code'] = colores_code.slice();
+                            obj_static['colores_name'] = colores_text.slice();
+                            obj_static['dpto_code'] = 106;
+                            obj_static['dpto_name'] = 'dama';
+                            obj_static['marca_code'] = '3';
+                            obj_static['marca_name'] = 'SENS';
+                            obj_static['subdpto_code'] = '5';
+                            obj_static['subdpto_name'] = 'CORSETERIA';
+                            obj_static['prenda_code'] = '25';
+                            obj_static['prenda_name'] = 'SOSTEN';
+                            obj_static['categoria_code'] = '54';
+                            obj_static['categoria_name'] = 'MATERNAL';
+                            obj_static['presentacion_code'] = '1';
+                            obj_static['presentacion_name'] = 'UNITARIO';
+                            obj_static['material_code'] = '2';
+                            obj_static['material_name'] = 'ALGOD0N';
+                            obj_static['tcatalogo_code'] = '';
+                            obj_static['tcatalogo_name'] = '';
+                            obj_static['grupo_uso_code'] = '';
+                            obj_static['grupo_uso_name'] = '';
+                            obj_static['composicion_code'] = '';
+                            obj_static['composicion_name'] = '';
+                            obj_static['caracteristica'] = '';
+                            obj_static['peso'] = '';
+                            obj_static['copa'] = '';
+                            obj_static['fcopa'] = '';
+                            return obj_static;
+                            ///--- SACAR LO ANTERIOR
+
+  /*colores_code.length = 0; colores_text.length = 0;
   tallas_text.length = 0; tallas_orden.length = 0;
   code_article = document.getElementById('txt_sku_prefijo').value + document.getElementById('txt_sku_correlativo').value + document.getElementById('txt_sku_sufijo').value;
   itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
@@ -342,7 +350,7 @@ function getObjectArticle(){
   // obj_article['option'] = '';//DESPUES SE MODIFICARA ESTE DATO PARA LLAMAR A LA API
   obj_article['articulo'] = code_article;
   obj_article['itemname'] = itemname;
-  obj_article['familia'] = familia;
+  obj_article['talla_familia'] = familia;
   obj_article['tallas_name'] = tallas_text.slice();
   obj_article['tallas_orden'] = tallas_orden.slice();
   obj_article['colores_code'] = colores_code.slice();
@@ -384,8 +392,7 @@ function getObjectArticle(){
     obj_article['copa'] = el_copa.options[el_copa.selectedIndex].text;
     obj_article['fcopa'] = el_fcopa.options[el_fcopa.selectedIndex].text;
   }
-  // console.log(obj_article);
-  return obj_article;
+  return obj_article;*/
 }
 //FUNCION PARA AUTORELLENAR LA DESCRIPCION
 function autoFillDescription(){
@@ -443,7 +450,7 @@ function cargarCategoriaCrear(id_cat) {
   $(".comp_crear_sku").css('background-color', color);
   $('.borrar_contacto').attr('name');
   name_dpto = id_cat.substr(8, id_cat.length);
-  cargarSelectsSku('Kayser_OITB', name_dpto);
+  cargarSelectsSku('OITB', name_dpto);
 }
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
@@ -452,10 +459,10 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_independientes'};
   else
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-  // console.log(parametros);
+  console.log(parametros);
   $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      // console.log(data);
+      console.log(data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       if(!!data.dpto) { code_dpto = data.dpto; }
       if(!!data.first_barcode) {first_barcode=data.first_barcode; }
@@ -741,7 +748,7 @@ function updateRegistry(cod_registro, arr_contenido, callback) {
     success: function(data){
       console.log("datos desde api: ",data);
       if (!!data.errors)
-        console.log("Errores encontrados:".data.errors);
+        console.log("Errores encontrados:"+data.errors);
       if (data.result === 1) {
         resultado=true;        
         // return true;
@@ -813,7 +820,7 @@ function loadToModifyArticleList(articulo){
   document.querySelectorAll('.sku_control').forEach(function (control) {
     if (control.name != 'color' && control.name != 'talla' && control.name != 'copa' && control.name != 'caracteristicas' && control.name != 'peso' && control.name != 'prefijo' && control.name != 'correlativo' && control.name != 'descripcion') {
       tablas.push(control.name);  
-    }
+    } 
   });
   // console.log(tablas);  
   parameters = { 'option': 'load_article_list', 'tables' : tablas }; 
@@ -831,3 +838,4 @@ function fillSkusInArticle(articulo){
 
 
 }
+});

@@ -7,10 +7,11 @@ require_once "sku_funciones.php";
 
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
-///$sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
-///if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
+if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
 if($existe_error_conexion){
   echo json_encode($data);
@@ -28,17 +29,45 @@ if($_POST['option']=='save_and_send_skus'){
 }
 
 ///--- GUARDAREMOS EL ARTICULO CON SKUS O SOLAMENTE SKUS DEPENDIENDO DE LA OPCION
-if($_POST['option']=="save_article_list"){
+
+
+
+
+if($_POST['option']=="save_article_new_list"){
   ///$first_barcode=getFirstBarcode()  
   $hoy=date('Y-m-d h:i:s');
   $data=[];
   $skus=[];
-  $sku_refused=[];
   $barcodes=[];
   $code_article=$_POST['articulo'];
   $itemname=$_POST['itemname'];
-  
-  $query_insert_article="INSERT INTO articulo VALUES ('$code_article','".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."'";
+  $estado='listado';
+  $id_list_inserted=0;
+
+  //COMPROBAMOS QUE EL ARTICULO NO ESTE PENDIENTE DE REVISION O CARGA
+  $query_exist_aritcle="SELECT codigo FROM articulo WHERE codigo='$code_article' AND estado!='cargado'";  
+  $arr_exist_article=$mysqli->select($query_exist_aritcle,'mysqli_a_o');
+  if($arr_exist_article!=0 AND $arr_exist_article!=false){
+    $data['EXISTE']='ARTICULO PENDIENTE DE REVISION O CARGAR\nREVISAR o consultar a INFORMARTICA por favor.';
+    echo json_encode($data);
+    exit();
+  }
+  //DE LO CONTRARIO SEGUIMOS
+  // $query_insert_list="INSERT INTO lista VALUES(NULL,'creacion','$hoy')";
+  // if(($mysqli->insert_easy($query_insert_list))==1){
+  //   $arr_last_list=$mysqli->select('SELECT @@identity AS id','mysqli_a_o');
+  //   if($arr_last_list!=0 AND $arr_last_list!=false)
+  //     $id_list_inserted=$arr_last_list[0]['id'];
+  // }
+
+  $query_insert_article="INSERT INTO articulo VALUES (";
+  $query_insert_article.="'$code_article',$id_list_inserted,'".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
+  $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";
+  $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
+  $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
+  $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."','".$_POST['caracteristica']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
+  $query_insert_article.="'".$_POST['talla_familia']."',".$_POST['peso'].",'$estado')";
+  $data['query_article']=$query_insert_article;
   $colores_name=$_POST['colores_name'];
   $colores_code=$_POST['colores_code'];
   $tallas_name=$_POST['tallas_name'];
@@ -54,57 +83,42 @@ if($_POST['option']=="save_article_list"){
   }
   $filas='';
   $values=[];
-  // $data['colores']=$colores_name;
-  // $data['colores_length']=$colores_length;
-  // $data['tallas_length']=$tallas_length;
-  
+  $querys=[];
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
       $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
-      // $query_sku="INSERT INTO sku VALUES('$sku','$code_article',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')";
-      $values['sku_code']=$sku;
-      $values['articulo_codigo']=$code_article;
-      $values['color_code']=$colores_code[$i];
-      $values['color_name']=$colores_name[$i];
-      $values['talla_name']=$tallas_name[$j];
-      $values['talla_orden']=$tallas_orden[$j];
-      $values['copa']=$copa;
-      $values['fcopa']=$fcopa;
-      $values['fecha_creacion']=$hoy;
-      /// if($mysqli->insert('sku',$values)==1){
-        $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
-        $filas.="<div><div>".($i*$j+1)."</div><div>$sku</div><div>barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$i]</div><div>$img_delete</div></div>";        
-      /// }
+      $query_sku="INSERT INTO sku VALUES('$sku','$code_article',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')";
       
-      ///---BUSCAR EN 192.168.0.13 y en MYSQL list
-      ///$query_search_13="SELECT itemCode from Kayser_OITM WHERE itemCode='$sku'";
-      ///$arr_exist_13=$sqlsrv->select($query_search_13,'sqlsrv_n_p');
-      ///$query_search_list="SELECT sku_code from sku WHERE sku_code='$sku'";
-      ///$arr_exist_list=$mysqli->select($query_search_list,'mysqli_a_o');
-      ///if($arr_exist_13!=0 AND $arr_exist_13!=false){
-        ///$sku_refused['sku']=$sku;
-        ///$sku_refused['origin']='192.138.0.13';
-      ///}elseif($arr_exist_list!=0 AND $arr_exist_list!=false){
-        ///$sku_refused['sku']=$sku;
-        ///$sku_refused['origin']='LISTA';
-      ///}else{
-        //ACA REGISTRAMOS EL SKU EN LA LISTA Y DIBUJAMOS LA FILA DE DIVS
-        
-      ///}        
-      ///---Buscar en Mysql Lista_Articulo      
+      // $querys[]=$query_sku; 
+      // $values['sku_code']=$sku; // $values['articulo_codigo']=$code_article; // $values['color_code']=$colores_code[$i]; // $values['color_name']=$colores_name[$i]; // $values['talla_name']=$tallas_name[$j]; // $values['talla_orden']=$tallas_orden[$j]; // $values['copa']=$copa;  // $values['fcopa']=$fcopa; // $values['fecha_creacion']=$hoy;
+      ///---BUSCAR EN 192.168.0.13 y en MYSQL list y si no existe guardamos en TABLA
+      $query_search_13="SELECT itemCode from OITM WHERE itemCode='$sku'";
+      $arr_exist_13=$sqlsrv->select($query_search_13,'sqlsrv_n_p');
+      $query_search_list="SELECT sku_code from sku WHERE sku_code='$sku'";
+      $arr_exist_list=$mysqli->select($query_search_list,'mysqli_a_o');
+      if($arr_exist_13!=0 AND $arr_exist_13!=false){
+        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN 192.138.0.13');
+      }elseif($arr_exist_list!=0 AND $arr_exist_list!=false){
+        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
+      }else{
+        if($mysqli->insert_easy($query_sku)==1){
+          $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
+          $filas.="<div><div>".(($i*$tallas_length)+$j+1)."</div><div>$sku</div><div>barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$j]</div><div>$img_delete</div></div>";        
+        }else{
+          $data[errors]=$mysqli->getErrors();
+          $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR EN INSERSION");    
+        }
+      }         
     }
   }
-
-  //ESTA OPCION ES CUANDO SE DISPARA EL EVENTO DE GENERAR UN ARTICULO NUEVO, POR LO QUE NO HAY QUE PREGUNTAR POR NADA,
-  //CREAMOS LOS SKUS CON SUS BARCODES CORRESPONDIENTES PARA DESPUES
-  //DEDICARNOSS A INSERTAR EN LAS TABLAS: ARTICULO, SKU Y LISTA
-
-  //DEVOLVEREMOS UN ARRAY CON LOS SKUS (sku_code, barcode, color y talla) para poder llenar el componente a crear
+  $data['lista'];
   $data['articulo']=$code_article;
   $data['itemname']=$itemname;
-  $data['skus']=$values;
+  // $data['skus']=$values;
   $data['filas']=$filas;
-
+  // $data['querys_sku']=$querys;
+  if(isset($sku_refused))
+    $data['refused']=$sku_refused;
   echo json_encode($data);
 
 }

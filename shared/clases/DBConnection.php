@@ -104,7 +104,15 @@ class DBConnection {
 ######################   FUNCION PARA LAS INSERCIONES   ########################
 //$table:  nombre de la tabla
 //$values: array asociativo donde las keys son los nombres de los campos de la tabla
-  public function insert($table,$values){ 
+public function insert_easy($query){
+  if(($this->_connection->query($query))===true){
+    return $this->_connection->affected_rows;
+  }else {
+    return false;
+  }
+
+}   
+public function insert($table,$values){ 
     $types="";
     $questions="";
     $string_keys="";

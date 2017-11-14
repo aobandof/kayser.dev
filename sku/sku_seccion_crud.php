@@ -4,7 +4,8 @@ require_once("../shared/clases/DBConnection.php");
 require_once("../shared/clases/HelpersDB.php");
 require_once("../shared/clases/inflector.php");
 ini_set('display_errors', '0');
-$sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
 if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
@@ -100,13 +101,13 @@ if($_POST['option']=="update_item") {
     if($key!='table' && $key!='option' && $key!="id")
       $values[$key]=$value;
   //EXCEPCIONES DE CIERTAS TABLAS:
-  if($table=="Marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
+  if($table=="marca"){//dado que marca tiene el campo prefijo que es unico excepto cuando es vacio
     $prefijo=$_POST['prefijo'];
-    $query_marca="select nombre from Marca where prefijo='$prefijo' AND prefijo!='' AND $id_name!=$id_value";
+    $query_marca="select nombre from marca where prefijo='$prefijo' AND prefijo!='' AND $id_name!=$id_value";
     if(($arr_marca=$mysqli->select($query_marca,'mysqli_a_o'))!==false){
       if($arr_marca!==0)//quiere decir que se encontró el valor
         $repeated=1;
-    }else 
+    }else
       $data['errors'][]=$sqlsrv->getErrors();
   }
   ///////// FIN EXCEPCIONES ////////

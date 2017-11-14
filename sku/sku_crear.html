@@ -31,6 +31,18 @@
             <div class="cont_img_categoria" id="div_cat_niño"><img src="../shared/img/img_niño.jpg" alt=""><span>Niño</span></div>
             <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/K.jpg" alt=""><span>Otro</span></div>
         </div>
+        <div class="cont_menu">
+          <div class="dropdown">
+            <img src="../shared/img/menu.png" alt="" class="dropdown-toggle" id="dropdownMenuButton_menu" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_items" href="index.html">Inicio</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_relations" href="sku_consultar.html">Consulstar SKU</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="#">Modificar SKU</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="sku_proveedor.html">Envío a Proveedor</a>
+            </div>
+          </div>
+        </div>
         <div class="cont_config">
           <div class="dropdown">
           <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -49,8 +61,8 @@
               <div><span class="">SUBDPTO&nbsp</span><select name="subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRENDA&nbsp</span><select name="Kayser_SEASON" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
-              <div><span class="">CAT.PRENDA&nbsp</span><select name="Kayser_DIV" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">PRENDA&nbsp</span><select name="APOLLO_SEASON" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">CAT.PRENDA&nbsp</span><select name="APOLLO_DIV" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
               <div><span class="">PRESENT.&nbsp</span><select name="presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo"><option value=""></option></select></div>
@@ -92,7 +104,7 @@
               <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
                 <input name='prefijo' type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
-                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" min="1000" max="9999">
+                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" readonly min="1000" max="9999">
                 <input name='sufijo' id="txt_sku_sufijo" class="form-control sku_control" value="" readonly>
               </div>
             </div>
@@ -104,7 +116,7 @@
           </div>
         </div>
         <div class="cont_botonera_inf container_row">
-          <button type="button" name="button" id="btn_save_article" class="btn btn-primary">GUARDAR EN LISTA</button>
+          <button type="button" name="button" id="btn_save_article_new_list" class="btn btn-primary">GUARDAR EN LISTA</button>
           <!-- <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">AGREGAR OTRO<br>ARTICULO</button> -->
           <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
         </div>
