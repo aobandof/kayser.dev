@@ -2,13 +2,13 @@ var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual,
 
 
 $(document).ready(function() {
-
-  document.getElementById('div_copa').style.display = 'none'; //inicialmente ocultamos la caja que contiene las copas
-
-
+  //inicialmente ocultamos la caja que contiene las copas
+  document.getElementById('div_copa').style.display = 'none'; 
+  ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
   $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
+
   /**************** EVENTOS DENTRO DE LOS MODALES *****************/
   document.getElementById('select_item_crud').onchange= function() {
     item_crud_selected=this.value;
@@ -37,6 +37,8 @@ $(document).ready(function() {
   // $("#select_sku_color").change(function(){
   //   console.log($("#select_sku_color").val());
   // })
+  
+  ///--- ################  EVENTOS PARA SKU_CREAR.HTML ###########################
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
@@ -123,8 +125,8 @@ $(document).ready(function() {
       }
     }
   });
-/************************************** EVENTOS PARA GUARDAR Y ENVIAR ************************************/
-/*********************************************************************************************************/
+/**************************   EVENTOS PARA GUARDAR Y ENVIAR ************************************/
+/***********************************************************************************************/
   let modal_preview_save = document.getElementById('div_preview_save');
   let body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   /////----- EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL 
@@ -134,6 +136,7 @@ $(document).ready(function() {
   // };
   /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU
   document.getElementById('btn_save_article').onclick=function(){
+    console.log('RESPONDE AL ENVENTO');
     let empty=0;
     let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
     document.querySelectorAll('.sku_control').forEach(function(control){
@@ -144,37 +147,56 @@ $(document).ready(function() {
     //sacar esto despues /
     empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if(empty===0) { 
-      // modal_preview_save.style.visibility = 'visible';
       parameters=new Object();
-      parameters=getObjectArticle();
+      ///parameters=getObjectArticle();
+     
+      ///--- SACAR ESTO DESPUES ---
+      tallas_text=['XS', 'S'];
+      tallas_orden=['7','1'];
+      colores_code=[1];
+      colores_text=['ACERO'];
+      parameters['articulo'] = '50.8017';
+      parameters['itemname'] = '50.8017-SOSTE MATERNAR ALGODON';
+      parameters['familia'] = 'T03';
+      parameters['tallas_name'] = tallas_text.slice();
+      parameters['tallas_orden'] = tallas_orden.slice();
+      parameters['colores_code'] = colores_code.slice();
+      parameters['colores_name'] = colores_text.slice();
+      parameters['dpto_code'] = 106;
+      parameters['dpto_name'] = 'dama';
+      parameters['marca_code'] = '3';
+      parameters['marca_name'] = 'SENS';
+      parameters['subdpto_code'] = '5';
+      parameters['subdpto_name'] = 'CORSETERIA';
+      parameters['prenda_code'] = '25';
+      parameters['prenda_name'] = 'SOSTEN';
+      parameters['categoria_code'] = '54';
+      parameters['categoria_name'] = 'MATERNAL';
+      parameters['presentacion_code'] = '1';
+      parameters['presentacion_name'] = 'UNITARIO';
+      parameters['material_code'] = '2';
+      parameters['material_name'] = 'ALGOD0N';
+      parameters['tcatalogo_code'] = '';
+      parameters['tcatalogo_name'] = '';
+      parameters['grupo_uso_code'] = '';
+      parameters['grupo_uso_name'] = '';
+      parameters['composicion_code'] = '';
+      parameters['composicion_name'] = '';
+      parameters['peso'] = '';
+      parameters['copa'] = '';
+      parameters['fcopa'] = '';
+      
       console.log(parameters);
-      // makeFillArticlePreview();
       parameters['option']='save_article_list';
-      $.ajax({ url: 'sku_crear.php', type: 'post', dataType: 'json', data: parameters,
+      $.ajax({ url: 'sku_lista.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function (){ },
-        success: function(data){
-          console.log(data.resp);
-          ///--- ACA DEBERIAMOS OBTENER EL ARRAY CON LOS SKUS AGREGADOS PARA DIBUJARLOS, POR AHORA CREAREMOS UN ARRY TEMPORAL
-          arr_sku=[];
-          arr_sku.push(['150.100-BLA-XS','870001000000', 'BLANCO', 'XS']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'S']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'M']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'L']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'BLANCO', 'XL']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'XS']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'S']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'M']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'L']);
-          arr_sku.push(['150.100-BLA-XS', '870001000000', 'AZUL', 'XL']);
+        success: function(data){          
+          console.log(data);
+          ///--- ACA DEBERIAMOS OBTENER EL ARRAY CON LOS SKUS AGREGADOS PARA DIBUJARLOS, POR AHORA CREAREMOS UN ARRY TEMPORAL 
+          renderArticleList(data.articulo,data.itemname,data.filas);        
           
           
-          modal_preview_save.style.visibility = 'visible';
-          ////  AGREGAMOS ALA TABLA DEL ARTICULO PREVIEW, LOS SKUS OBTENIDOS DEL BACKEND (ARRAY COMO ARRIBA O HTML CON LAS FILAS CREADAS EN LA API)
-          //// RESETEAMOS LOS CONTROLES DE LA VISTA SKU_CREAR
-          //// CREAMOS LOS EVENTOS PARA LOS ICONOS ELIMINAR DE LAS FILAS DE SKUS
-          ////  DESPUES MOSTRAMOS EL MODAL
-          makeArticlePreview(parameters['artciculo'], parameters['itemname']);
-
+          ///
         },
         error: function(){ console.log('error'); }
       });
@@ -240,7 +262,7 @@ $(document).ready(function() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     console.log(params);
     $.ajax({
-      url: 'sku_crear.php',
+      url: 'sku_lista.php',
       type: 'post',
       dataType: 'json',
       data: params,
@@ -248,9 +270,7 @@ $(document).ready(function() {
       success: function (data) {
         console.log(data);
         if(data.resp=='READY')
-          alert('DATOS GUARDADOS CON EXITO ( archivo con SKUs fueron enviados correctamente )');
-
-          
+          alert('DATOS GUARDADOS CON EXITO ( archivo con SKUs fueron enviados correctamente )');          
         else  
           alert(data.resp);
       },
@@ -258,14 +278,31 @@ $(document).ready(function() {
         console.log('error');
       }
     });
-
   }
-
 
   loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
 });
+///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
+function renderArticleList(art,itn,rows){
+  makeArticlePreview(data.articulo, data.itemname);  
+  id_articulo=data.articulo;
+  if(id_articulo.indexOf('.') != -1){
+    id_articulo="div_"+id_articulo.replace('.','_');    
+  }     
+  el_articulo=document.getElementById(id_articulo);//
+  el_articulo.querySelector('.dbody_sku').innerHTML=data.filas;
+  modal_preview_save.style.visibility = 'visible';
+
+  ///CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
+  el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function(icon){
+    icon.onclick=function(){
+      console.log(this.id);
+      ///ACA LLAMARESMOS A LA API ELIMINANDO
+    }
+  })
+}
 ///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
 function getObjectArticle(){
   colores_code.length = 0; colores_text.length = 0;

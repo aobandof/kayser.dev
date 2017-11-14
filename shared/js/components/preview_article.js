@@ -19,11 +19,15 @@ function getControlDigit(barcode){
 
 ///--- FUNCION QUE SOLO CREA EL ARTICULO PREVIEW Y LO AGREGA AL MODAL
 function makeArticlePreview(arti,desc){ 
+  id_articulo=arti;
+  if(id_articulo.indexOf('.') != -1)
+    id_articulo='div_'+id_articulo.replace('.','_');
   colores_code.length=0; colores_text.length=0;
   tallas_text.length=0; tallas_orden.length=0;
   skus.length=0; barcodes.length=0; duns.length=0;
   code_article=arti;
   itemname=desc;
+
   let body_modal = document.querySelector('#div_preview_save .body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
@@ -38,7 +42,7 @@ function makeArticlePreview(arti,desc){
   article_content.appendChild(dtable_sku);
   article_content.appendChild(article_button_container);
 
-  article.id = code_article;
+  article.id = id_articulo;
   article.className = 'article_preview'; // flex row
   article_title.className = 'title_article_preview';
   article_content.className = 'article_content'; // flex column
