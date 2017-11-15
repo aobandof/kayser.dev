@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- <meta http-equiv="refresh" content="1"> ESto lo usamos para refrescar la pagina cada 1 segundo -->
-  <link rel="stylesheet" href="../shared/css/normalize.css">
+  <link rel="stylesheet" href="./src/css/normalize.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="../shared/css/bootstrap-select.css">
-  <link rel="stylesheet" href="../shared/css/styles.css">
-  <!-- <link rel="stylesheet" href="../shared/css/sku.css"> -->
-  <link rel="stylesheet" href="../shared/css/sku_crear.css">
-  <link rel="stylesheet" href="../shared/css/controls.css">
-  <link rel="stylesheet" href="../shared/css/modal.css">
-  <link rel="stylesheet" href="../shared/css/components.css">
+  <link rel="stylesheet" href="./src/css/bootstrap-select.css">
+  <link rel="stylesheet" href="./src/css/styles.css">
+  <!-- <link rel="stylesheet" href="./src/css/sku.css"> -->
+  <link rel="stylesheet" href="./src/css/sku_crear.css">
+  <link rel="stylesheet" href="./src/css/controls.css">
+  <link rel="stylesheet" href="./src/css/modal.css">
+  <link rel="stylesheet" href="./src/css/components.css">
 
   <title>SKU / Articulos</title>
 </head>
@@ -61,8 +61,8 @@
               <div><span class="">SUBDPTO&nbsp</span><select name="subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRENDA&nbsp</span><select name="APOLLO_SEASON" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
-              <div><span class="">CAT.PRENDA&nbsp</span><select name="APOLLO_DIV" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">PRENDA&nbsp</span><select name="[@APOLLO_SEASON]" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">CAT.PRENDA&nbsp</span><select name="[@APOLLO_DIV]" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
               <div><span class="">PRESENT.&nbsp</span><select name="presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo"><option value=""></option></select></div>
@@ -116,7 +116,7 @@
           </div>
         </div>
         <div class="cont_botonera_inf container_row">
-          <button type="button" name="button" id="btn_save_article_new_list" class="btn btn-primary">GUARDAR EN LISTA</button>
+          <button type="button" name="button" id="btn_create_article_list" class="btn btn-primary">GUARDAR EN LISTA</button>
           <!-- <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">AGREGAR OTRO<br>ARTICULO</button> -->
           <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
         </div>
@@ -144,8 +144,8 @@
             <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
             <select name="" id="select_item_crud" class="form-control">
               <option></option>
-              <option value="Kayser_OITB">Departamentos</option><option value="marca">Marcas</option><option value="subdpto">Sub Departamentos</option>
-              <option value="Kayser_SEASON">Prendas</option><option value="Kayser_DIV">Categ. Prenda</option><option value="presentacion">Presentación</option>
+              <option value="OITB">Departamentos</option><option value="marca">Marcas</option><option value="subdpto">Sub Departamentos</option>
+              <option value="[@APOLLO_SEASON]">Prendas</option><option value="[@APOLLO_DIV]">Categ. Prenda</option><option value="presentacion">Presentación</option>
               <option value="color">Colores</option><option value="talla">Tallas</option><option value="copa">Copas</option>
               <option value="formacopa">Formas Copa</option><option value="material">Materiales</option><option value="tempprenda">Temp. Prenda</option>
               <option value="tempcatalogo">Temp. Catalogo</option><option value="grupouso">Grupos Uso</option>
@@ -230,7 +230,7 @@
 
         </div>
         <div class="footer_modal">
-          <button class="btn btn-primary btn_footer" id="button_save_article">GUARDAR SKUs</button>
+          <button class="btn btn-primary btn_footer" id="button_save_new_list">ENVIAR EXCEL CON SKUs</button>
           <button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>
           <!-- <button class="btn btn-warning btn_footer" id="button_cancel_save_sku">CONTINUAR</button> -->
         </div>
@@ -242,10 +242,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
-    <script type="text/javascript" src="../shared/js/modal.js"></script>
-    <script type="text/javascript" src="../shared/js/controls.js"></script>
-    <!-- <script type="text/javascript" src="../shared/js/preview_article.js"></script> -->
-    <script type="text/javascript" src="../shared/js/sku_crear.js"></script>
-<script type="text/javascript" src="../shared/js/components/preview_article.js"></script>
+    <script type="text/javascript" src="./src/js/components/modal.js"></script>
+    <script type="text/javascript" src="./src/js/components/controls.js"></script>
+    <!-- <script type="text/javascript" src="./src/js/preview_article.js"></script> -->
+    <script type="text/javascript" src="./src/js/sku_crear.js"></script>
+<script type="text/javascript" src="./src/js/components/preview_article.js"></script>
 </body>
 </html>

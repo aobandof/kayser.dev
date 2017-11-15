@@ -1,10 +1,9 @@
 <?php
-require_once "../shared/clases/config.php";
-require_once "../shared/clases/DBConnection.php";
-require_once "../shared/clases/HelpersDB.php";
-require_once "../shared/clases/inflector.php";
-require_once "sku_funciones.php";
-
+require_once "../config/config.php";
+require_once "../config/DBConnection.php";
+require_once "../config/HelpersDB.php";
+require_once "../config/inflector.php";
+require_once "../config/sku_funciones.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 // $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
@@ -56,7 +55,8 @@ if($_POST['option']=="cargar_selects_independientes"){
   $data['values']=$options;
   echo json_encode($data);
 }
-if($_GET['option']=="cargar_selects_dependientes") {
+if($_POST['option']=="cargar_selects_dependientes") {
+  $querys_export=[];
   // echo "hola";
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
@@ -64,18 +64,21 @@ if($_GET['option']=="cargar_selects_dependientes") {
   //y en  $array_grand_child se guardaran los nombres de descendientes de estas tablas y se enviaran a la vista para resetearse //este array con nombres se enviara en el index 0 del array data enviado a la vista
   $array_tabla_extraida=[];
   $options=[];
-  $padre=$_GET['nom_tabla_padre'];
+  $padre=$_POST['nom_tabla_padre'];
   if($padre=='OITB'){//se buscará dependientes de DEPARTAMENTO (el padre supremo)
-    $codigo_padre=getIdFromName($padre,$_GET['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
+    $codigo_padre=getIdFromName($padre,$_POST['val_tabla_padre']); //en este caso, la vista envió el valor del nombre del departamente y no el id
     $data['dpto']=$codigo_padre;
   } else
-    $codigo_padre=$_GET['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
+    $codigo_padre=$_POST['val_tabla_padre']; // para este caso, se pasó el id de la tabla obtenido del val del option padre
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $ops="";//"<option value=''></option>";
     $arr_ops=[];
+    $data['all_tables'][]=$tabla;
     if(isset($array_tabla['dep'])){//si la tabla recorrida tiene padre
       if($padre==$array_tabla['dep']){//si la tabla padre de la tabla recorrida es padre que vino de la vista
         addGrandChild($tabla); // buscamos descendientes dependientes de esta tabla y la agregamos al array $array_grand_child
+        // $data['all_with_childs'][]=$tabla;
+        // $data['descendientes']=$array_grand_child;
         $nombre_id=$array_tabla['id'];
         $nombre_name=$array_tabla['campo'];
         if($array_tabla['bd']=="mysql") { // la tabla y la relacion estan en MOTOR MYSQL
@@ -84,11 +87,13 @@ if($_GET['option']=="cargar_selects_dependientes") {
               $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre ORDER BY ".$array_tabla['campo'];
             else
               $query = "select ".$array_tabla['campo']." as id, ".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['campo']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."' ORDER BY ".$array_tabla['campo'];
+            $querys_export[]=$query;
           }else {// TABLA DEPENDIENTE CON ID
             if($tablas_sku[$padre]['type_id']=="INT") //TABLA DEPENDIENTE CON ID PROPIO E ID PADRE ENTERO
               $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."=$codigo_padre ORDER BY ".$array_tabla['campo'];
             else
               $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla AS T INNER JOIN ".$array_tabla['tabla_rel']." AS R ON T.".$array_tabla['id']."=".$array_tabla['nom_cod_rel']." where R.".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."' ORDER BY ".$array_tabla['campo'];
+            $querys_export[]=$query;
           }
           if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
             $data['errors'][]=$mysqli->getErrors();
@@ -97,9 +102,11 @@ if($_GET['option']=="cargar_selects_dependientes") {
             if($arr_ops==0)
               $arr_ops="SIN RESULTADOS";
           }
+          // $querys_export[]=$query;
         }//fin if if($array_tabla['bd']=="mysql")
         else {//cargamos en un array el id y name de la tabla en mencion
           $query_id_name="SELECT ".$array_tabla['id'].",".$array_tabla['campo']." from $tabla ORDER BY ".$array_tabla['campo'];
+          $querys_export[]=$query_id_name;
           if($tablas_sku[$tabla]['bd']=="mysql")
             $array_tabla_extraida=$mysqli->selectArrayUniAssocIdName($query_id_name);
           else 
@@ -118,6 +125,8 @@ if($_GET['option']=="cargar_selects_dependientes") {
               $arr_ops[]=Array('id'=>$value[1], 'name'=> $array_tabla_extraida[$nom_id_dep_rel]);
             }
           }
+          
+          $querys_export[]=$query_relacion;
         }
         if($tabla=='talla'){
           $arr_tallas=[];
@@ -130,7 +139,8 @@ if($_GET['option']=="cargar_selects_dependientes") {
     }
   }//fin foreach
   // array_unshift($options, $array_grand_child);//agregmos los descendientes al inicio de la data a enviar por json
-  $data['grand_childs']=$array_grand_child;
+  // $data['grand_childs']=$array_grand_child;
+  // $data['querys']=$querys_export;
   $mysqli->closeConnection();
   $sqlsrv->closeConnection();
   echo json_encode($data);

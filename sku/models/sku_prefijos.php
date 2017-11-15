@@ -1,12 +1,8 @@
 <?php
 require_once("../shared/clases/config.php");
-require_once("../shared/clases/DBConnection.php");
-require_once("../shared/clases/HelpersDB.php");
+require_once("sku_db.php");
 require_once("../shared/clases/inflector.php");
 ini_set('display_errors', '0');
-// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
-$mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
 if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }

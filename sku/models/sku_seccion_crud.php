@@ -1,8 +1,9 @@
 <?php
-require_once("../shared/clases/config.php");
-require_once("../shared/clases/DBConnection.php");
-require_once("../shared/clases/HelpersDB.php");
-require_once("../shared/clases/inflector.php");
+require_once("../config/config.php");
+require_once("../config/DBConnection.php");
+require_once("../config/HelpersDB.php");
+require_once("../config/inflector.php");
+require_once("../config/sku_funciones.php");
 ini_set('display_errors', '0');
 // $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
 $sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');

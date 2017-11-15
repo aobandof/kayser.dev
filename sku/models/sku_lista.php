@@ -1,9 +1,9 @@
 <?php
-require_once "../shared/clases/config.php";
-require_once "../shared/clases/DBConnection.php";
-require_once "../shared/clases/HelpersDB.php";
-require_once "../shared/clases/inflector.php";
-require_once "sku_funciones.php";
+require_once "../config/config.php";
+require_once "../config/DBConnection.php";
+require_once "../config/HelpersDB.php";
+require_once "../config/inflector.php";
+require_once "../config/sku_funciones.php";
 
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
@@ -18,32 +18,18 @@ if($existe_error_conexion){
   exit;
 }
 
-if($_POST['option']=='save_and_send_skus'){
-  // $send=sendMail($_POST);
-  // if($send===true)
-  //   $data['resp']='READY';
-  // else
-  //   $data['resp']='NO SE PUDO ENVIAR EL ARCHIVO...';
-  $data=sendMail($_POST);
-  echo json_encode($data);
-}
-
-///--- GUARDAREMOS EL ARTICULO CON SKUS O SOLAMENTE SKUS DEPENDIENDO DE LA OPCION
-
-
-
-
-if($_POST['option']=="save_article_new_list"){
-  ///$first_barcode=getFirstBarcode()  
+if($_POST['option']=="save_article"){
+  $first_barcode=getFirstBarcode();
+  $lista=$_POST['list'];
   $hoy=date('Y-m-d h:i:s');
   $data=[];
   $skus=[];
-  $barcodes=[];
+  // $barcodes=[];
   $code_article=$_POST['articulo'];
   $itemname=$_POST['itemname'];
   $estado='listado';
   $id_list_inserted=0;
-
+  $sku_inserteds=0;
   //COMPROBAMOS QUE EL ARTICULO NO ESTE PENDIENTE DE REVISION O CARGA
   $query_exist_aritcle="SELECT codigo FROM articulo WHERE codigo='$code_article' AND estado!='cargado'";  
   $arr_exist_article=$mysqli->select($query_exist_aritcle,'mysqli_a_o');
@@ -52,6 +38,30 @@ if($_POST['option']=="save_article_new_list"){
     echo json_encode($data);
     exit();
   }
+
+  ///--- INICIALMENTE ANALIZAMOS LOS SKUS, POR QUE PUEDE QUE YA EXISTA EL ARTICULO Y LA LISTA, ADEMAS DEPENDERÁ
+
+    ///--- YA SEA PARA UNA NUEVA LISTA O UNA LISTA EXISTENTE, ES NECESARIO QUE EL NUEVO ARTICULO QUE SE INTENTA AGREGAR A LA LISTA, NO SE ENCUENTRE EN LA MISMA LISTA NI EN OTRA LISTA NI EN SAP
+    if(existeArticle($code_article,'SAP')==true){
+      $data['EXISTE_ARTICLE']='ARTICULO YA REGISTRADO EN SAP, elija la OPCION MODIFICAR ARTICULO para cambier algun detalle o AGREGAR + SKU';
+      echo json_encode($data); exit();
+    }
+    if(existArticle($code_article,'LISTA')===true){
+      $data['EXISTE_ARTICLE']='ARTICULO AGREGADO A OTRA LISTA, Revise las Listas pendientes para Cargarlas a SAP o modificarlas';
+      echo json_encode($data); exit();
+    }
+
+  if($lista==0){
+    //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
+
+  }
+
+
+
+
+
+
+
   //DE LO CONTRARIO SEGUIMOS
   // $query_insert_list="INSERT INTO lista VALUES(NULL,'creacion','$hoy')";
   // if(($mysqli->insert_easy($query_insert_list))==1){
@@ -68,6 +78,10 @@ if($_POST['option']=="save_article_new_list"){
   $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."','".$_POST['caracteristica']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
   $query_insert_article.="'".$_POST['talla_familia']."',".$_POST['peso'].",'$estado')";
   $data['query_article']=$query_insert_article;
+
+
+
+
   $colores_name=$_POST['colores_name'];
   $colores_code=$_POST['colores_code'];
   $tallas_name=$_POST['tallas_name'];
@@ -87,10 +101,27 @@ if($_POST['option']=="save_article_new_list"){
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
       $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
-      $query_sku="INSERT INTO sku VALUES('$sku','$code_article',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')";
+      if(existeSku($sku,'SAP')==true){
+        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
+      }elseif(existeSku($sku,'LISTA')==true){
+        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
+      }else{
+        $query_sku="INSERT INTO sku VALUES('$sku','$code_article',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')";        
+        if($mysqli->insert_easy($query_sku)==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article
+          $barcode=intval($first_barcode) + $sku_inserteds;
+          $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
+          $filas.="<div><div>".(($i*$tallas_length)+$j+1)."</div><div>$sku</div><div>$barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$j]</div><div>$img_delete</div></div>"; 
+          $sku_inserteds++;       
+        }else{
+          $data[errors]=$mysqli->getErrors();
+          $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR EN INSERSION");    
+        }
+      }
+
       
       // $querys[]=$query_sku; 
       // $values['sku_code']=$sku; // $values['articulo_codigo']=$code_article; // $values['color_code']=$colores_code[$i]; // $values['color_name']=$colores_name[$i]; // $values['talla_name']=$tallas_name[$j]; // $values['talla_orden']=$tallas_orden[$j]; // $values['copa']=$copa;  // $values['fcopa']=$fcopa; // $values['fecha_creacion']=$hoy;
+
       ///---BUSCAR EN 192.168.0.13 y en MYSQL list y si no existe guardamos en TABLA
       $query_search_13="SELECT itemCode from OITM WHERE itemCode='$sku'";
       $arr_exist_13=$sqlsrv->select($query_search_13,'sqlsrv_n_p');
@@ -122,7 +153,9 @@ if($_POST['option']=="save_article_new_list"){
   echo json_encode($data);
 
 }
+if($_POST['option']=="save_list"){
 
+}
 function sendMail($arr_cont){
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
@@ -194,4 +227,5 @@ function sendMail($arr_cont){
   // }
   return($content_csv);   
 }
+function 
 ?>

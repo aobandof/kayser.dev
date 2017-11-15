@@ -1,6 +1,6 @@
 <?php
-$env_mysql='dev';//prod$ // env= enviroment = entorno
-$env_mssql='prod';
+$env='dev';//prod$ // env= enviroment = entorno
+// $env_mssql='prod';
 // error_reporting(E_ALL);
 error_reporting(E_ALL ^ E_NOTICE); // desactivamos los notices para efectos de llamada Asincrona, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 ini_set('display_errors', '1');

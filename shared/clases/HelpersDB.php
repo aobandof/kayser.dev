@@ -11,28 +11,6 @@ $MYSQL = array(
   'prod' => array( 'host' => 'localhost', 'user' => 'root', 'pass' => 'qweasd' )
 );
 
-$sku = array(
-  "codigo"             =>  "ItemCode",       //0
-  "nombre"             =>  "ItemName",       //1
-  "articulo"           =>  "U_APOLLO_SEG1",  //2
-  "material"           =>  "U_MATERIAL",     //3
-  "color"              =>  "U_APOLLO_SEG2",
-  "presentacion"       =>  "U_FILA",
-  "marca"              =>  "U_Marca",
-  "temporadaPrenda"    =>  "U_EVD",
-  "temporadaCatalogo"  =>  "QryGroup44",
-  "grupoUso"           =>  "U_ESTILO",
-  "formaCopa"          =>  "QryGroup2",
-  "caracteristica"     =>  "FrgnName",
-  "barcode"            =>  "CodeBars",
-  "composicion"        =>  "U_APOLLO_COO",
-  "peso"               =>  "BWeight1",
-  "Grupo_nombre"       =>  "U_SUBGRUPO1",
-  "Prenda_nombre"      =>  "SWW",
-  "Categoria_codigo"   =>  "ItmsGrpCod",
-  "Producto_codigo"    =>  "U_APOLLO_SEASON"
-);
-
 # ARRAY QUE CONTIENE DETALLES DE BDX, TABLAS, CAMPOS Y RELACIONES  SOBRE SKU
 $tablas_sku = Array(
   'OITB'             => Array( 'bd'=>'mssql',                        'campo_sku'=>'ItmsGrpCod',      'id'=>'ItmsGrpCod', 'type_id'=>'INT',     'campo'=>'ItmSGrpNam'),
