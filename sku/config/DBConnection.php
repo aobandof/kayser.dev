@@ -26,6 +26,20 @@ class DBConnection {
   public function query($query){
 
   }
+  //FUNCION QUE DETERMINA SI HAY REGISTROS SEGUN UNA $QUERY, de existir, devuelve la cantidad
+  function quantityRecords($query){
+    $arr_registry=[];
+    $cant_registros=0;
+    if($this->_driver=="mysqli"){  
+      if(($arr_registry=$this->_connection->query($query))!=false){
+        while($arr_registry->fetch_array())
+          $cant_registros++;
+      }else
+        return false;
+    }
+    // echo "cantidad de registros con esta consulta: ".$cant_registros;
+    return $cant_registros;
+  }
 ######################   FUNCION SELECT  ########################
 //$query:  cadena de insersion
 //$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )

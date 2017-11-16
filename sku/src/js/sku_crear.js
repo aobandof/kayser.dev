@@ -174,14 +174,22 @@ $(document).ready(function() {
         beforeSend: function (){ },
         success: function(data){          
           console.log('FROM API (option: ' + parameters.option + ') ',data);
-          if(data.filas!='') 
-            renderArticleList(data.articulo,data.itemname,data.filas); 
-          if(!!data.refused){
-            mensaje='LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
-            for (var item in data.refused) {
-              mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] +'\n';                
+          if (!!data.nothing){
+            alert("NO SE PUDO AGREGAR EL ARTICULO");
+            console.log(data.nothing);
+          }else{
+
+            if (!!data.filas && data.filas != '') {
+              active_list=data.lista;
+              renderArticleList(data.articulo,data.itemname,data.filas); 
             }
-            alert(mensaje);
+            if(!!data.refused){
+              mensaje='LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
+              for (var item in data.refused) {
+                mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] +'\n';                
+              }
+              alert(mensaje);
+            }
           }
         },
         error: function(){ console.log('error'); }
@@ -239,46 +247,6 @@ function renderArticleList(art,itn,rows){
 }
 ///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
 function getObjectArticle(){
-                            ///--- SACAR ESTO DESPUES ---
-                            /*obj_static=new Object();
-                            tallas_text = ['XS', 'S', 'M', 'L'];
-                            tallas_orden = [7, 1, 2, 3];
-                            colores_code = [1, 8];
-                            colores_text = ['ACERO', 'AZUL'];
-                            obj_static['articulo'] = '50.8017';
-                            obj_static['itemname'] = '50.8017-SOSTE MATERNAR ALGODON';
-                            obj_static['familia'] = 'T03';
-                            obj_static['tallas_name'] = tallas_text.slice();
-                            obj_static['tallas_orden'] = tallas_orden.slice();
-                            obj_static['colores_code'] = colores_code.slice();
-                            obj_static['colores_name'] = colores_text.slice();
-                            obj_static['dpto_code'] = 106;
-                            obj_static['dpto_name'] = 'dama';
-                            obj_static['marca_code'] = '3';
-                            obj_static['marca_name'] = 'SENS';
-                            obj_static['subdpto_code'] = '5';
-                            obj_static['subdpto_name'] = 'CORSETERIA';
-                            obj_static['prenda_code'] = '25';
-                            obj_static['prenda_name'] = 'SOSTEN';
-                            obj_static['categoria_code'] = '54';
-                            obj_static['categoria_name'] = 'MATERNAL';
-                            obj_static['presentacion_code'] = '1';
-                            obj_static['presentacion_name'] = 'UNITARIO';
-                            obj_static['material_code'] = '2';
-                            obj_static['material_name'] = 'ALGOD0N';
-                            obj_static['tcatalogo_code'] = '';
-                            obj_static['tcatalogo_name'] = '';
-                            obj_static['grupo_uso_code'] = '';
-                            obj_static['grupo_uso_name'] = '';
-                            obj_static['composicion_code'] = '';
-                            obj_static['composicion_name'] = '';
-                            obj_static['caracteristica'] = '';
-                            obj_static['peso'] = '';
-                            obj_static['copa'] = '';
-                            obj_static['fcopa'] = '';
-                            return obj_static;*/
-                            ///--- SACAR LO ANTERIOR
-
   colores_code.length = 0; colores_text.length = 0;
   tallas_text.length = 0; tallas_orden.length = 0;
   code_article = document.getElementById('txt_sku_prefijo').value + document.getElementById('txt_sku_correlativo').value + document.getElementById('txt_sku_sufijo').value;
@@ -344,10 +312,13 @@ function getObjectArticle(){
   el_tcatalogo = document.getElementById('select_sku_tcatalogo');
   obj_article['tcatalogo_code'] = el_tcatalogo.value;
   obj_article['tcatalogo_name'] = el_tcatalogo.options[el_tcatalogo.selectedIndex].text;
+  el_tprenda = document.getElementById('select_sku_tprenda');
+  obj_article['tprenda_code'] = el_tprenda.value;
+  obj_article['tprenda_name'] = el_tprenda.options[el_tprenda.selectedIndex].text;
   el_grupo_uso = document.getElementById('select_sku_grupo_uso');
-  obj_article['grupo_uso_code'] = el_grupo_uso.value;
-  obj_article['grupo_uso_name'] = el_grupo_uso.options[el_grupo_uso.selectedIndex].text;
-  obj_article['caracteristica'] = document.getElementById('txa_sku_caracteristicas').value;
+  obj_article['grupouso_code'] = el_grupo_uso.value;
+  obj_article['grupouso_name'] = el_grupo_uso.options[el_grupo_uso.selectedIndex].text;
+  obj_article['caracteristica'] = document.getElementById('txa_sku_caracteristicas').value.toLocaleUpperCase();
   el_composicion = document.getElementById('select_sku_composicion');
   obj_article['composicion_code'] = el_composicion.value;
   obj_article['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
@@ -370,7 +341,7 @@ function autoFillDescription(){
     descripcion += categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
   else
     descripcion += prenda.options[prenda.selectedIndex].text + ' ' + categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
-  console.log(descripcion);
+  // console.log(descripcion);
   document.getElementById('txt_sku_descripcion').value=descripcion;
 }
 //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
@@ -382,10 +353,10 @@ function resetInputTextCodeArticle(){
 }
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
-  console.log(values);
+  // console.log(values);
   $.ajax({ url : './models/sku_prefijo.php', type : 'post', dataType : 'json', data : values,
     success : function(data) {
-      console.log('FROM API: (api: sku_prefijo.php ) ', data);
+      // console.log('FROM API: (api: sku_prefijo.php ) ', data);
       if(!!data['errors']){
         console.log("Error al consultar PREFIJO, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
@@ -425,10 +396,10 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_independientes'};
   else
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-  console.log(parametros);
+  // console.log(parametros);
   $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      console.log('FROM API: (option: '+ parametros.option +') ',data);
+      // console.log('FROM API: (option: '+ parametros.option +') ',data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       if(!!data.dpto) { code_dpto = data.dpto; }
       if(!!data.first_barcode) {first_barcode=data.first_barcode; }
@@ -457,7 +428,9 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
               $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
             }
           } //FIN if(item['options']!="SIN RESULTADOS")
-          else { console.log("SIN RESULTADOS, Si cantidad de este log=2, posiblemente sean las copas y formacopa") ;}
+          else { 
+            //console.log("SIN RESULTADOS, Si cantidad de este log=2, posiblemente sean las copas y formacopa");
+          }
         }
       });
       if (!!data.grand_childs) {
