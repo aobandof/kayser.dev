@@ -14,7 +14,7 @@ truncate table sku;
 SET FOREIGN_KEY_CHECKS=1;
 
 delete from lista where id=5;
-
+SELECT barcode from sku order by barcode DESC -- LIMIT 1
 SELECT @@identity AS id
 SELECT codigo FROM articulo WHERE lista_codigo=2
 
@@ -24,8 +24,5 @@ INSERT INTO sku VALUES('10.100s2-ACE-XS','10.1002',-1683047872,1,'ACERO','XS','7
 
 truncate table marca;
 truncate table composicion;
-drop table marca;
-drop table composicion;
-
 select * from marca;
 select * from composicion;

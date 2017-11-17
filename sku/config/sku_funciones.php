@@ -8,15 +8,15 @@ function getFirstBarcode() {
   $arr_last_barcode=$sqlsrv->select($query_barcode,'sqlsrv_a_p');
   if($arr_last_barcode!==false){
     if ($arr_last_barcode!=0)
-      $last_barcode_sap=((int)$arr_last_barcode_sap[0]['CodeBars']);
+      $last_barcode_sap=((double)$arr_last_barcode_sap[0]['CodeBars']);
   }
-  $query_barcode="SELECT top 1 barcode from sku order by barcode DESC";
+  $query_barcode="SELECT barcode from sku order by barcode DESC LIMIT 1";
   $arr_last_barcode=$mysqli->select($query_barcode,'mysqli_a_o');
-  if($arr_last_barcode!==false){
+  if($arr_last_barcode!=false){
     if($arr_last_barcode!=0)
-      $last_barcode_lista=((int)$arr_last_barcode_lista[0]['barcode']);
+      $last_barcode_lista=((double)$arr_last_barcode[0]['barcode']);
   }
-  $last_barcode_lista>=$last_barcode_sap ? $first_barcode=$last_barcode_lista : $first_barcode=$last_barcode_sap;
+  $last_barcode_lista>=$last_barcode_sap ? $first_barcode=$last_barcode_lista + 1 : $first_barcode=$last_barcode_sap + 1 ;
   return $first_barcode;
 }
 

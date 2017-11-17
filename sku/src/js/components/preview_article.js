@@ -56,7 +56,7 @@ function makeArticlePreview(arti,desc){
   but_article_delete.className = 'btn btn-danger';
   but_edit_detalle.innerHTML="EDITAR<br>DETALLE"
   but_edit_color_talla.innerHTML="AGREGAR<br>COLOR/TALLA";
-  but_article_delete.innerHTML="SACAR<br>ARTICULO";
+  but_article_delete.innerHTML="QUITAR<br>ARTICULO";
   article_button_container.appendChild(but_edit_detalle);
   article_button_container.appendChild(but_edit_color_talla);
   article_button_container.appendChild(but_article_delete);

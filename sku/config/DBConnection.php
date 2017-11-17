@@ -124,7 +124,6 @@ public function insert_easy($query){
   }else {
     return false;
   }
-
 }   
 public function insert($table,$values){ 
     $types="";
