@@ -1,11 +1,11 @@
-#div_preview_save {
+#div_modal_article_creaction {
   height: 100% !important;
 }
-#div_preview_save .content_modal {
+#div_modal_article_creaction .content_modal {
   width: 95%;
   height:  95% !important;
 }
-#div_preview_save .body_modal {
+#div_modal_article_creaction .body_modal {
   background-color: rgba(3, 48, 66, 0.88);
   border: 1px solid white;
   overflow-y: auto !important;
@@ -14,7 +14,7 @@
 
 
 
-#div_preview_save .header_modal {
+#div_modal_article_creaction .header_modal {
   background-color: white;
   color: rgba(3, 48, 66, 0.88);
 }
@@ -24,13 +24,13 @@
   border: 1px solid white;
 }
 
-#div_preview_save .dfooter_sku {
+#div_modal_article_creaction .dfooter_sku {
     /* margin: 1rem; */
     display: flex;
     justify-content: center;
     background-color: white;
 }
-  #div_preview_save>.content_modal>.body_modal>.dfooter_sku>button {
+  #div_modal_article_creaction>.content_modal>.body_modal>.dfooter_sku>button {
   margin : 1rem !important;
 }
 .article_preview {

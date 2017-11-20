@@ -28,7 +28,7 @@ function makeArticlePreview(arti,desc){
   code_article=arti;
   itemname=desc;
 
-  let body_modal = document.querySelector('#div_preview_save .body_modal'); //referenciamos al body del modal  
+  let body_modal = document.querySelector('#div_modal_article_creaction .body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
     article_title.innerHTML = "<span>" + itemname + "</span>"
@@ -105,7 +105,7 @@ function makeFillArticlePreview(){
   code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;  
   itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
 
-  let body_modal = document.querySelector('#div_preview_save .body_modal'); //referenciamos al body del modal  
+  let body_modal = document.querySelector('#div_modal_article_creaction .body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
     article_title.innerHTML = "<span>" + itemname + "</span>"

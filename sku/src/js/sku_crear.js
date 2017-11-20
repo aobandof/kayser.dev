@@ -1,7 +1,11 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
 let active_list=0;
+let el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
+let modal_preview_save, body_modal_preview_save;
+
 $(document).ready(function() {
   //inicialmente ocultamos la caja que contiene las copas
+  getElementsControls();
   document.getElementById('div_copa').style.display = 'none'; 
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
@@ -16,7 +20,7 @@ $(document).ready(function() {
     cargarTablaSeccion($(this).val());
   }
   /****************** EVENTOS PARA CERRAR LAS VENTANAS MODALES ****************/
-  $(".close_modal, .close_modal2").click(function () {
+  $("#button_close_crud_prefix, #img_close_crud_prefix").click(function () {
     if ( this.className == "close_modal")
       modal = this.parentNode.parentNode.parentNode; //obtenemos la referenca al modal para ocultarlo
     else 
@@ -30,6 +34,31 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });/********************* FIN CERRAR EVENTOS MODALES  ***********************/
+
+  document.querySelectorAll('#button_clear_list, #img_close_article_creation').forEach(function(el_close){
+    el_close.onclick=function(){
+      if (confirm("ESTA A PUNTO DE SALIR Y VACIAR ESTA LISTA DE TRABAJO, Se borraran el/los Articulos Agregados en ella.\n\n¿ DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO")) {
+        ///---ELIMINAR LISTADO Y ACTUALIZAR PAGINA
+        ///ELIMINAR EL CONTENIDO DE LA LISTA
+        $parameters = { 'option': 'delete_list', 'list':active_list }
+        $.ajax({ url: 'url_of_api', type: 'post', dataType: 'json', data: parameters,
+          beforeSend: function (){ },
+          success: function(data){
+            console.log(data);
+          },
+          error: function(){ console.log('error'); }
+        });
+        resetAllControls();
+        modal_preview_save.style.visibility = 'hidden';
+
+      }
+    }
+  })
+
+  document.getElementById('btn_show_modal_article_revision').onclick=function(el_show_list){    
+    if(active_list!=0)
+      modal_preview_save.style.visibility = 'visible';
+  }
   // $("#select_sku_composicion").change(function(){
   //   console.log($("#select_sku_composicion").val());
   // });
@@ -88,14 +117,15 @@ $(document).ready(function() {
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
       if(el.value!=""){ // el valor cambiado del control select debe ser diferente de vacio
+        resetInputTextCodeArticle();
         if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
-          resetInputTextCodeArticle()  
+          // resetInputTextCodeArticle()  
           cargarSelectsSku('subdpto', el.value);
           document.getElementById('txt_sku_descripcion').value = ""; // RESETEAOS DADO QUE VOLVEREMOS A SELECCIONAR
           document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  -- OCULTAMOS EL DIV Con los controles para copa
         }else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
           el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
-          resetInputTextCodeArticle();
+          // resetInputTextCodeArticle();
           document.getElementById('txt_sku_descripcion').value = "";
           cargarSelectsSku('[@APOLLO_SEASON]', el.value);
         } else {
@@ -119,8 +149,7 @@ $(document).ready(function() {
             //ademas verificamos si select_sku_material tiene valors, si es asi, autorellenar la descripcion
             if(document.getElementById('select_sku_material').value!="")
               autoFillDescription();
-          } else
-            resetInputTextCodeArticle()
+          }
         }
       } else {
         document.getElementById('txt_sku_descripcion').value = "";
@@ -129,8 +158,7 @@ $(document).ready(function() {
   });
 /**************************   EVENTOS PARA GUARDAR Y ENVIAR ************************************/
 /***********************************************************************************************/
-  let modal_preview_save = document.getElementById('div_preview_save');
-  let body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
+
   /////----- EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL 
   // document.getElementById('button_cancel_save_sku').onclick=function(){  
   //   modal_preview_save.style.visibility = 'hidden';
@@ -223,7 +251,32 @@ $(document).ready(function() {
   loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
+  ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
+  function getElementsControls() {
+    el_sel_marca =  document.getElementById('select_sku_marca');
+    el_sel_subdpto = document.getElementById('select_sku_subdpto'); 
 
+    el_sel_prenda = document.getElementById('select_sku_prenda');
+    el_sel_categoria = document.getElementById('select_sku_categoria');
+    el_sel_presentacion = document.getElementById('select_sku_presentacion');
+    el_sel_material = document.getElementById('select_sku_material');
+    el_sel_color = document.getElementById('select_sku_color');
+    ///tallas
+    el_sel_copa = document.getElementById('select_sku_copa');
+    el_sel_fcopa = document.getElementById('select_sku_fcopa');
+    el_sel_tprenda = document.getElementById('select_sku_tprenda');
+    el_sel_tcatalogo = document.getElementById('select_sku_tcatalogo');
+    el_sel_grupouso = document.getElementById('select_sku_grupouso');
+    el_sel_caracteristica = document.getElementById('select_sku_caracteristica');
+    el_sel_composicion = document.getElementById('select_sku_composicion');
+    el_txt_prefijo = document.getElementById('txt_sku_prefijo');
+    el_txt_correlativo = document.getElementById('txt_sku_correlativo');
+    el_txt_sufijo = document.getElementById('txt_sku_sufijo');
+    el_txt_descripcion = document.getElementById('txt_sku_descripcion');
+
+    modal_preview_save = document.getElementById('div_modal_article_creaction');
+    body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
+  }
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
 function renderArticleList(art,itn,rows){
   makeArticlePreview(art, itn);  
@@ -249,21 +302,19 @@ function renderArticleList(art,itn,rows){
 function getObjectArticle(){
   colores_code.length = 0; colores_text.length = 0;
   tallas_text.length = 0; tallas_orden.length = 0;
-  code_article = document.getElementById('txt_sku_prefijo').value + document.getElementById('txt_sku_correlativo').value + document.getElementById('txt_sku_sufijo').value;
-  itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
+  code_article = el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value;
+  itemname = code_article + '-' + el_txt_descripcion.value;
   colores_code=[];colores_text=[];
-  ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente
-  el_sel_colors = document.getElementById('select_sku_color');
-  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++){
-    colores_code.push(el_sel_colors.selectedOptions[i].value);
+  ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente  
+  for (var i = 0; i < el_sel_color.selectedOptions.length; i++){
+    colores_code.push(el_sel_color.selectedOptions[i].value);
   }
   colores_text = document.querySelector('#div_row_colours .filter-option').innerHTML.split(',');
   colores_text = colores_text.map(item => item.trim());
   ///--- SI LA PRENDA TIENE COPA, ENTONCES HAY QUE AGREGAR EL LA LETRA DE COPA DESPUES DE LA ABREVIATURA DEL COLOR
   ///--- para esto creamos una variable que la contenga y que sera "" en caso de no haber copa
   let copa;
-  el_copa = document.getElementById('select_sku_copa')
-  el_copa.value !== '' ? copa = el_copa.options[el_copa.selectedIndex].text : copa = '';
+  el_sel_copa.value !== '' ? copa = el_sel_copa.options[el_sel_copa.selectedIndex].text : copa = '';
 
   ///--- OBTENEMOS VALOR DE LA FAMILIA, ARRAY_TALLAS Y $ARRAY_ORDENES RESPECTIVAMENTE
   list_check_familias = document.querySelectorAll('.check_familia');
@@ -291,43 +342,32 @@ function getObjectArticle(){
   obj_article['colores_name'] = colores_text.slice();
   obj_article['dpto_code'] = code_dpto;
   obj_article['dpto_name'] = name_dpto;
-  el_marca = document.getElementById('select_marca');
-  obj_article['marca_code'] = el_marca.value;
-  obj_article['marca_name'] = el_marca.options[el_marca.selectedIndex].text;
-  el_subdpto = document.getElementById('select_sku_subdpto');
-  obj_article['subdpto_code'] = el_subdpto.value;
-  obj_article['subdpto_name'] = el_subdpto.options[el_subdpto.selectedIndex].text;
-  el_prenda = document.getElementById('select_sku_prenda');
-  obj_article['prenda_code'] = el_prenda.value;
-  obj_article['prenda_name'] = el_prenda.options[el_prenda.selectedIndex].text;
-  el_categoria = document.getElementById('select_sku_categoria');
-  obj_article['categoria_code'] = el_categoria.value;
-  obj_article['categoria_name'] = el_categoria.options[el_categoria.selectedIndex].text;
-  el_presentacion = document.getElementById('select_sku_presentacion');
-  obj_article['presentacion_code'] = el_presentacion.value;
-  obj_article['presentacion_name'] = el_presentacion.options[el_presentacion.selectedIndex].text;
-  el_material = document.getElementById('select_sku_material');
-  obj_article['material_code'] = el_material.value;
-  obj_article['material_name'] = el_material.options[el_material.selectedIndex].text;
-  el_tcatalogo = document.getElementById('select_sku_tcatalogo');
-  obj_article['tcatalogo_code'] = el_tcatalogo.value;
-  obj_article['tcatalogo_name'] = el_tcatalogo.options[el_tcatalogo.selectedIndex].text;
-  el_tprenda = document.getElementById('select_sku_tprenda');
-  obj_article['tprenda_code'] = el_tprenda.value;
-  obj_article['tprenda_name'] = el_tprenda.options[el_tprenda.selectedIndex].text;
-  el_grupo_uso = document.getElementById('select_sku_grupo_uso');
-  obj_article['grupouso_code'] = el_grupo_uso.value;
-  obj_article['grupouso_name'] = el_grupo_uso.options[el_grupo_uso.selectedIndex].text;
-  obj_article['caracteristica'] = document.getElementById('txa_sku_caracteristicas').value.toLocaleUpperCase();
-  el_composicion = document.getElementById('select_sku_composicion');
-  obj_article['composicion_code'] = el_composicion.value;
-  obj_article['composicion_name'] = el_composicion.options[el_composicion.selectedIndex].text;
-  obj_article['peso'] = document.getElementById('txt_sku_peso').value;
-  el_copa=document.getElementById('select_sku_copa');
-  el_fcopa = document.getElementById('select_sku_fcopa');
-  if(el_copa.value!=0){
-    obj_article['copa'] = el_copa.options[el_copa.selectedIndex].text;
-    obj_article['fcopa'] = el_fcopa.options[el_fcopa.selectedIndex].text;
+  obj_article['marca_code'] = el_sel_marca.value;
+  obj_article['marca_name'] = el_sel_marca.options[el_sel_marca.selectedIndex].text;
+  obj_article['subdpto_code'] = el_sel_subdpto.value;
+  obj_article['subdpto_name'] = el_sel_subdpto.options[el_sel_subdpto.selectedIndex].text;
+  obj_article['prenda_code'] = el_sel_prenda.value;
+  obj_article['prenda_name'] = el_sel_prenda.options[el_sel_prenda.selectedIndex].text;
+  obj_article['categoria_code'] = el_sel_categoria.value;
+  obj_article['categoria_name'] = el_sel_categoria.options[el_sel_categoria.selectedIndex].text;
+  obj_article['presentacion_code'] = el_sel_presentacion.value;
+  obj_article['presentacion_name'] = el_sel_presentacion.options[el_sel_presentacion.selectedIndex].text;
+  obj_article['material_code'] = el_sel_material.value;
+  obj_article['material_name'] = el_sel_material.options[el_sel_material.selectedIndex].text;
+  obj_article['tcatalogo_code'] = el_sel_tcatalogo.value;
+  obj_article['tcatalogo_name'] = el_sel_tcatalogo.options[el_sel_tcatalogo.selectedIndex].text;
+  obj_article['tprenda_code'] = el_sel_tprenda.value;
+  obj_article['tprenda_name'] = el_sel_tprenda.options[el_sel_tprenda.selectedIndex].text;
+  obj_article['grupouso_code'] = el_sel_grupouso.value;
+  obj_article['grupouso_name'] = el_sel_grupouso.options[el_sel_grupouso.selectedIndex].text;
+  obj_article['caracteristica_code'] = el_sel_caracteristica.value;
+  obj_article['caracteristica_name'] = el_sel_caracteristica.options[el_sel_caracteristica.selectedIndex].text;
+  obj_article['composicion_code'] = el_sel_composicion.value;
+  obj_article['composicion_name'] = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
+
+  if(el_sel_copa.value!=0){
+    obj_article['copa'] = el_sel_copa.options[el_sel_copa.selectedIndex].text;
+    obj_article['fcopa'] = el_sel_fcopa.options[el_sel_fcopa.selectedIndex].text;
   }
   return obj_article;
 }
@@ -353,14 +393,14 @@ function resetInputTextCodeArticle(){
 }
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
-  // console.log(values);
+  console.log(values);
   $.ajax({ url : './models/sku_prefijo.php', type : 'post', dataType : 'json', data : values,
     success : function(data) {
-      // console.log('FROM API: (api: sku_prefijo.php ) ', data);
+      console.log('FROM API: (api: sku_prefijo.php ) ', data);
       if(!!data['errors']){
         console.log("Error al consultar PREFIJO, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
-      }else {
+      }else {        
         document.getElementById('txt_sku_prefijo').value=data['prefijo'];
         document.getElementById('txt_sku_correlativo').value=data['first'];
         document.getElementById('txt_sku_sufijo').value = data['sufijo'];
@@ -396,10 +436,10 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_independientes'};
   else
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-  // console.log(parametros);
+  console.log(parametros);
   $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     success : function(data) {
-      // console.log('FROM API: (option: '+ parametros.option +') ',data);
+      console.log('FROM API: (option: '+ parametros.option +') ',data);
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       if(!!data.dpto) { code_dpto = data.dpto; }
       if(!!data.first_barcode) {first_barcode=data.first_barcode; }
@@ -753,14 +793,14 @@ function createRegistry(arr_contenido) {
   });
   return true;
 }
-
+///--- FUNCION QUE INICIA ESTA VISTA ... AVERIGUAR DESPUES QUE HACE
 function loadToModifyArticleList(articulo){
   tablas=[];
   document.querySelectorAll('.sku_control').forEach(function (control) {
-    if (control.name != 'color' && control.name != 'talla' && control.name != 'copa' && control.name != 'caracteristicas' && control.name != 'peso' && control.name != 'prefijo' && control.name != 'correlativo' && control.name != 'descripcion') {
+    if (control.name != 'color' && control.name != 'talla' && control.name != 'copa' && control.name != 'caracteristica' && control.name != 'peso' && control.name != 'prefijo' && control.name != 'correlativo' && control.name != 'descripcion') {
       tablas.push(control.name);  
     } 
-  });
+  });  
   // console.log(tablas);  
   parameters = { 'option': 'load_article_list', 'tables' : tablas }; 
   $.ajax({ url: './models/articulo_cargar.php', type: 'post', dataType: 'json', data: parameters,
@@ -771,10 +811,13 @@ function loadToModifyArticleList(articulo){
     error: function(){ console.log('error'); }
   });
 }
-
-
-function fillSkusInArticle(articulo){
-
-
+///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
+function resetAllControls(){
+  document.querySelectorAll('.ind').forEach( el_ind => el_ind.value="" );
+  document.querySelectorAll('.dep').forEach( el_dep => el_dep.innerHTML="" );
+  cargarSelectsSku('OITB', name_dpto);
+  resetInputTextCodeArticle();
+  el_txt_descripcion.value='';
 }
+
 });

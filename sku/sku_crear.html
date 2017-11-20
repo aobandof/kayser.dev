@@ -57,20 +57,20 @@
         <div class="comp_crear_sku container_row">
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">MARCA&nbsp</span><select name="marca" id="select_marca" class="form-control sku_control prefijo"><option value=""></option></select></div>
-              <div><span class="">SUBDPTO&nbsp</span><select name="subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">MARCA&nbsp</span><select name="marca" id="select_sku_marca" class="form-control sku_control prefijo ind"><option value=""></option></select></div>
+              <div><span class="">SUBDPTO&nbsp</span><select name="subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo dep"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRENDA&nbsp</span><select name="[@APOLLO_SEASON]" id="select_sku_prenda" class="form-control sku_control prefijo"><option value=""></option></select></div>
-              <div><span class="">CAT.PRENDA&nbsp</span><select name="[@APOLLO_DIV]" id="select_sku_categoria" class="form-control sku_control prefijo"><option value=""></option></select></div>
+              <div><span class="">PRENDA&nbsp</span><select name="[@APOLLO_SEASON]" id="select_sku_prenda" class="form-control sku_control prefijo dep"><option value=""></option></select></div>
+              <div><span class="">CAT.PRENDA&nbsp</span><select name="[@APOLLO_DIV]" id="select_sku_categoria" class="form-control sku_control prefijo dep"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">PRESENT.&nbsp</span><select name="presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo"><option value=""></option></select></div>
-              <div><span class="">MATERIAL&nbsp</span><select name="material" id="select_sku_material" class="form-control sku_control"><option value=""></option></select></div>
+              <div><span class="">PRESENT.&nbsp</span><select name="presentacion" id="select_sku_presentacion" class="form-control sku_control prefijo ind"><option value=""></option></select></div>
+              <div><span class="">MATERIAL&nbsp</span><select name="material" id="select_sku_material" class="form-control sku_control ind"><option value=""></option></select></div>
             </div>
             <div class="full_fila" id="div_row_colours">
                 <span class="">COLOR&nbsp</span>
-                <select name="color" id="select_sku_color" class="form-control sku_control" data-live-search="true" title="" multiple></select>
+                <select name="color" id="select_sku_color" class="form-control sku_control ind" data-live-search="true" title="" multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
@@ -80,23 +80,23 @@
               </div>
             </div>
             <div class="cont_fila_crear_sku container_row " id="div_copa">
-              <div><span class="">COPA&nbsp</span><select name="copa" id="select_sku_copa" class="form-control sku_control"><option value=""></option></select></div>
-              <div><span class="">FORMA COPA.&nbsp</span><select name="formacopa" id="select_sku_fcopa" class="form-control sku_control"><option value=""></option></select></div>
+              <div><span class="">COPA&nbsp</span><select name="copa" id="select_sku_copa" class="form-control sku_control dep"><option value=""></option></select></div>
+              <div><span class="">FORMA COPA.&nbsp</span><select name="formacopa" id="select_sku_fcopa" class="form-control sku_control dep"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">T.PRENDA&nbsp</span><select name="tempprenda" id="select_sku_tprenda" class="form-control sku_control"><option value=""></option></select></div>
-              <div><span class="">T.CATALOGO&nbsp</span><select name="tempcatalogo" id="select_sku_tcatalogo" class="form-control sku_control"><option value=""></option></select></div>
+              <div><span class="">T.PRENDA&nbsp</span><select name="tempprenda" id="select_sku_tprenda" class="form-control sku_control ind"><option value=""></option></select></div>
+              <div><span class="">T.CATALOGO&nbsp</span><select name="tempcatalogo" id="select_sku_tcatalogo" class="form-control sku_control ind"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">GRUPO USO&nbsp</span><select name="grupouso" id="select_sku_grupo_uso" class="form-control sku_control"><option value=""></option></select></div>
-              <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="caracteristicas" rows="1" cols="10" class="form-control sku_control"></textarea></div>
+              <div><span class="">GRUPO USO&nbsp</span><select name="grupouso" id="select_sku_grupouso" class="form-control sku_control ind"><option value=""></option></select></div>
+              <div><span class="">CARATERIS.&nbsp</span><select name="caracteristica" id="select_sku_caracteristica" class="form-control sku_control ind"><option value=""></option></select></div>
+              <!-- <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="caracteristicas" rows="1" cols="10" class="form-control sku_control"></textarea></div> -->
             </div>
-            <div class="cont_fila_crear_sku container_row d75-25">
-              <div><span class="">COMPOSIC.&nbsp</span>
-                <!-- <input type="text" id="txt_sku_composicion" name="" value="" class="form-control"> -->
-                <select name="composicion" id="select_sku_composicion" class="form-control sku_control" data-live-search="true" title=""></select>
-              </div>
-              <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="peso" value="" class="form-control sku_control"></div>
+            <!-- <div class="cont_fila_crear_sku container_row d75-25"> -->
+            <div class="full_fila">
+              <span class="">COMPOSIC.&nbsp</span>
+              <select name="composicion" id="select_sku_composicion" class="form-control sku_control" data-live-search="true" title=""></select>
+              <!-- <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="peso" value="" class="form-control sku_control"></div> -->
             </div>
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
@@ -118,7 +118,7 @@
         <div class="cont_botonera_inf container_row">
           <button type="button" name="button" id="btn_create_article_list" class="btn btn-primary">GUARDAR EN LISTA</button>
           <!-- <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">AGREGAR OTRO<br>ARTICULO</button> -->
-          <button type="button" name="button" id="btn_ver_lista" class="btn btn-warning">VER LISTA</button>
+          <button type="button" name="button" id="btn_show_modal_article_revision" class="btn btn-warning">VER LISTA</button>
         </div>
     </div>
 
@@ -211,7 +211,7 @@
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2" id="button_close_crud_prefix">Salir</button>
             </div>
           </div>
         </div>
@@ -220,11 +220,11 @@
     <!-- FIN COMPONENTE MODAL PREFIJOS -->
 
     <!-- COMPONENTE MODAL PREVIEW GUARDAR SKU -->
-    <div class="modal modal_panel" id="div_preview_save">
+    <div class="modal modal_panel" id="div_modal_article_creaction">
       <div class="content_modal">
         <div class="header_modal">
-          <span>Preview Guardar SKUs</span>
-          <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_prefix" alt="">
+          <span id="span_title_article_creation_modal">Preview Guardar SKUs</span>
+          <img src="../shared/img/close.png" class="close_modal" id="img_close_article_creation" alt="">
         </div>
         <div class="body_modal">
 
@@ -232,6 +232,7 @@
         <div class="footer_modal">
           <button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR Y ENVIAR PLANTILLA</button>
           <button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>
+          <button class="btn btn-danger btn_footer" id="button_clear_list">CANCELAR LISTA</button>
           <!-- <button class="btn btn-warning btn_footer" id="button_cancel_save_sku">CONTINUAR</button> -->
         </div>
       </div>

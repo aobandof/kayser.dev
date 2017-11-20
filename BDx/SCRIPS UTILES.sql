@@ -4,6 +4,13 @@ select * from sku;
 select * from lista;
 select * from lista_has_usuario
 
+describe presentacion;
+
+select* from presentacion;
+
+
+SELECT nombre as name FROM subdpto WHERE id=3;
+SELECT abreviatura from presentacion where id=2
 
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -11,6 +18,15 @@ TRUNCATE TABLE lista;
 truncate table lista_has_usuario;
 truncate table articulo;
 truncate table sku;
+SET FOREIGN_KEY_CHECKS=1;
+
+
+truncate table marca;
+truncate table presentacion;
+truncate table relacionprefijo;
+
+SET FOREIGN_KEY_CHECKS=0;
+drop table usuario;
 SET FOREIGN_KEY_CHECKS=1;
 
 delete from lista where id=5;

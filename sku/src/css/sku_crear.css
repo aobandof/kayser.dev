@@ -156,14 +156,14 @@ body, html {
    font-family: "Verdana";
 }
 #txt_sku_prefijo {
-  flex: 0 1 30%;
+  flex: 0 1 45%;
   text-align: right;
   border: 0px;
   font-weight: bold;
   font-size: .9rem;
 }
 #txt_sku_correlativo {
-  flex: 0 1 40%;
+  flex: 0 1 35%;
   text-align: center;
   border: 0px;
   font-weight: bold;
@@ -181,7 +181,7 @@ input[type="number"] {
 }/****************************************************/
 
 #txt_sku_sufijo {
-  flex: 0 1 30%;
+  flex: 0 1 25%;
   text-align: left;
   border: 0px;
   font-weight: bold;

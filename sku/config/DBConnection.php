@@ -257,7 +257,7 @@ public function insert($table,$values){
       if($registros===false)
         return false;
       else {
-        while($reg=$registros->fetch_arrow()) 
+        while($reg=$registros->fetch_array()) 
           $arr_export[intval($reg[0])]=$reg[1];
       }
     }
@@ -267,11 +267,31 @@ public function insert($table,$values){
       return $arr_export;       
   }
 
-
-
-  // public function selectParameterized($name_table,$arr_select,$name_key, $name_field,$val_field){
-  //   echo "hola";
-  // }
+  public function getColumnFromColumn($nom_tabla,$nom_column_search,$nom_column,$type_column,$val_column){
+    //sirve para valores unicos y para una sola coincidencia, SI SON MUCHOS RETORNA UN ARRAY, SI ES SOLO, RETORNA EL VALOR
+    //type_column sera el tipo del campo a comparar con WHERE, por eso el requerimiento para ver si va entre comillas o no
+    //type_column = NUMBER or STRING
+    $arr_export=[];
+    ($type_column=='NUMBER') ? $query="SELECT $nom_column_search from $nom_tabla where $nom_column=$val_column" : $query=$query="SELECT $nom_column_search from $nom_tabla where $nom_column='$val_column'";
+    if($this->_driver=="sqlsrv"){       
+      //
+    }elseif($this->_driver=="mysqli"){
+      $registros=$this->_connection->query($query);
+      if($registros===false) {
+        return false;
+      }else {
+        while($reg=$registros->fetch_array()) {
+          $arr_export[]=$reg[0];
+        }
+      }
+    }
+    if(count($arr_export)==0) // consulta vacia
+      return 0;
+    elseif(count($arr_export)>1)
+      return $arr_export;
+    else
+       return $arr_export[0];
+  }
 
 }
 

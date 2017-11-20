@@ -45,16 +45,18 @@ if($_POST['option']=="save_article"){
   $querys=[];
 
   $data['first_barcode']=$first_barcode;
+  
 
   ///--- YA SEA PARA UNA NUEVA LISTA O UNA LISTA EXISTENTE, ES NECESARIO QUE EL NUEVO ARTICULO QUE SE INTENTA AGREGAR A LA LISTA, NO SE ENCUENTRE EN LA MISMA LISTA NI EN OTRA LISTA NI EN SAP
-  if(existArticle($code_article,'SAP')===true){
-    $data['nothing']='ARTICULO YA REGISTRADO EN SAP, elija la OPCION MODIFICAR ARTICULO para cambiar algun detalle o AGREGAR + SKU';
-    echo json_encode($data); exit();
-  }
-  if(existArticle($code_article,'LISTA')===true){
-    $data['nothing']='ARTICULO AGREGADO A OTRA LISTA, Revise las Listas pendientes para Cargarlas a SAP o modificarlas';
-    echo json_encode($data); exit();
-  }
+  // if(existArticle($code_article,'SAP')===true){
+  //   $data['nothing']='ARTICULO YA REGISTRADO EN SAP, elija la OPCION MODIFICAR ARTICULO para cambiar algun detalle o AGREGAR + SKU';
+  //   echo json_encode($data); exit();
+  // }
+  // if(existArticle($code_article,'LISTA')===true){
+  //   $data['nothing']='ARTICULO AGREGADO A OTRA LISTA, Revise las Listas pendientes para Cargarlas a SAP o modificarlas';
+  //   echo json_encode($data); exit();
+  // }
+  ///--- CANCELAMOS ESTA OPCION, dado que puede ingresarse un mismo tipo de prenda con las mismas caracteristicas pero se trata de otro otro articulo con otros acabados y diseño
   #######################################################################################################################################################
   
   if($lista==0){
@@ -84,7 +86,8 @@ if($_POST['option']=="save_article"){
       echo json_encode($data); exit();
     }
   }
-  $data['lista']=$lista;  
+  $data['lista']=$lista; 
+  
   
   ///--- AHORA REGISTRAMOS EL ARTICULO
   $query_insert_article="INSERT INTO articulo VALUES (";
@@ -92,9 +95,10 @@ if($_POST['option']=="save_article"){
   $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";
   $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
   $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
-  $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."','".$_POST['caracteristica']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
-  $query_insert_article.="'".$_POST['talla_familia']."',".$_POST['peso'].",'')";
+  $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
+  $query_insert_article.="'".$_POST['talla_familia']."')";
   $data['all_querys'][]=$query_insert_article;
+  // echo json_encode($data); 
   
   if($mysqli->insert_easy($query_insert_article)!=1){
     $cant_registros_lista=quantityRecords("select codigo from articulo where lista_id=$lista");
@@ -171,6 +175,10 @@ if($_POST['option']=="save_article"){
   }
 }
 
+if($_POST['option']=="delete_list") {
+  $lista=$_POST['list'];
+  /// ACA NOS QUEDAMOS
+}
 function sendMail($arr_cont){
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";

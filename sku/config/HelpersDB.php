@@ -29,6 +29,7 @@ $tablas_sku = Array(
   'tempcatalogo'     => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'grupouso'         => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'composicion'      => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'caracteristica'   => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'relacionprefijo'  => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'')
 );
 
@@ -57,6 +58,20 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
       return -1;
   else{ 
       return $arr_id[0][$tablas_sku["$nom_tabla"]["id"]];
+  }
+}
+
+function getNameFromId($nom_tabla,$val_id){
+  global $tablas_sku,$mysqli,$sqlsrv;
+  ($tablas_sku["$nom_tabla"]["type_id"]=='INT') ? $query_id="SELECT ".$tablas_sku["$nom_tabla"]["campo"] ." as name FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["id"]."=$val_id" : $query_id="SELECT ".$tablas_sku["$nom_tabla"]["name"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["id"]."='".$val_id."'";
+  if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
+    $arr_id=$mysqli->select($query_id,"mysqli_a_o");
+  else{
+    $arr_id=$sqlsrv->select($query_id,"sqlsrv_a_p");
+  }if($arr_id===false)
+      return -1;
+  else{ 
+      return $arr_id[0]["name"];
   }
 }
 
