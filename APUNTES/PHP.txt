@@ -66,3 +66,10 @@ FECHAS
 ------
 getdate() //Devuelve la un array asociativo con los datos de fecha actual
 checkdate( $month , $day , $year )   //PARAMETROS ENTEROS -- Devuelve True o False si la fecha es correcta y existe
+
+
+###### OTRA NOTAS #######
+* Para referenciar al mismo archivo en el que estamos:
+	$_SERVER['PHP_SELF']
+
+

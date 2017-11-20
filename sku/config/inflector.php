@@ -5,6 +5,17 @@ function nombreMes($mes){
  return $nombre;
 }
 
+///--- FUNCION QUE RETORNA UNA SUBCADENA CON TODAS LAS LETRAS ENCONTRADAS DE IZQUIERA DA DERECHA (Ej. 109S, devolvera S)
+function getLetersCadena($cadena){
+  $cadena_length=strlen($cadena);
+  $result='';
+  for($i=0; $i<$cadena_length; $i++){
+    if(!is_numeric($i)){
+      $result.=$i;
+    }
+  } 
+}
+
 ///--- FUNCTION QUE INDICA SI UNA CADENA TIENE LETRAS
 /*function haveLeters($cadena){
   $have=0; //flag que seteado en 0 que indica que no tiene letras
@@ -17,15 +28,4 @@ function nombreMes($mes){
   }  
 }*/ ///--- ctype_digit($cadena) la reemplaza dado que devuelve true si son solo numeros o false si no
 
-///--- FUNCION QUE RETORNA UNA SUBCADENA CON TODAS LAS LETRAS ENCONTRADAS DE IZQUIERA DA DERECHA (Ej. 109S, devolvera S)
-function getLetersCadena($cadena){
-  $cadena_length=strlen($cadena);
-  $result='';
-  for($i=0; $i<$cadena_length; $i++){
-    if(!is_numeric($i)){
-      $result.=$i;
-    }
-  } 
-
-}
 ?>

@@ -1,4 +1,5 @@
 <?php
+$array_grand_child=[];
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MICSOSOFT SQL SERVER Y SUS CREDENCIALES
 $MSSQL = array(
   '13' => array( 'host' => '192.168.0.13', 'user' => 'sa', 'pass' => 'kayser@dm1n' ) ,
@@ -31,8 +32,6 @@ $tablas_sku = Array(
   'relacionprefijo'  => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'')
 );
 
-$array_grand_child=[];
-
 function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // solo para 2 motores de base de datos
   $cadena="";
   global $$nombre_tabla;//si o si para que el array se pueda usar en esta funcion
@@ -60,27 +59,6 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
       return $arr_id[0][$tablas_sku["$nom_tabla"]["id"]];
   }
 }
-
-### FUNCION QUE CARGA LAS FILAS CON ID y NAME o NAME solmente DE UNA TABLA EN UN ARRAY ASOCIATIVO
-// function getArrayIdName($nom_tabla){
-//   global $tablas_sku,$mysqli,$sqlsrv;
-//   $array_tabla=[];
-//   if(isset($tablas_sku[$nom_tabla]['id']))
-//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-//   else
-//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-//   echo $query_id_name."<br>";
-//   if($tablas_sku[$nom_tabla]['bd']=="mysql")
-//     $arr_tabla=$mysqli->select($query_id_name,"mysqli_a_o");
-//   else 
-//     $arr_tabla=$sqlsrv->select($query_id_name,"sqlsrv_a_p");
-//   if($arr_tabla===false)
-//     return -1;
-//   else  
-//     $arr_id_name[$arr_t]
-
-//   return $arr_tabla;
-// }
 
 
 

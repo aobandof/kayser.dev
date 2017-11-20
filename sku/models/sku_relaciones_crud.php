@@ -3,15 +3,9 @@ require_once("../shared/clases/config.php");
 require_once("sku_db.php");
 require_once("../shared/clases/inflector.php");
 ini_set('display_errors', '0');
-$data=[]; $existe_error_conexion=0;
-if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
-if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
-if($existe_error_conexion){
-  echo json_encode($data);
-  exit;
-}
+$data=[]; 
 #########################################  SELECT ITEM #############################################################
-if($_POST['option']=="cargar_seccion"){
+if($_POST['option']=="read_relations"){
   $filas=[];
   $cabecera=[];
   $ntabla=$_POST['nom_tabla'];
@@ -51,7 +45,7 @@ if($_POST['option']=="cargar_seccion"){
   echo json_encode($data);
 }
 #########################################  INSERT ITEM #############################################################
-if($_POST['option']=="create_item") {
+if($_POST['option']=="create_relation") {
   $repeated=0;
   $table=$_POST['table'];
   // var_dump($_POST);
@@ -87,7 +81,7 @@ if($_POST['option']=="create_item") {
   echo json_encode($data);
 }
 #########################################  UPDATE ITEM #############################################################
-if($_POST['option']=="update_item") {
+if($_POST['option']=="update_relation") {
   $repeated=0;
   $table=$_POST['table'];
   $id_name=$tablas_sku[$table]['id'];
@@ -130,7 +124,7 @@ if($_POST['option']=="update_item") {
   echo json_encode($data);
 }
 #########################################  DELETE ITEM #############################################################
-if ($_POST['option'] == "delete_item" ){
+if ($_POST['option'] == "delete_relation" ){
   $table=$_POST['table'];
   $id=$_POST['id'];
   if($tablas_sku[$table]['type_id']=='INT')
