@@ -1,22 +1,9 @@
 <?php
-require_once "../config/config.php";
-require_once "../config/DBConnection.php";
-require_once "../config/HelpersDB.php";
-require_once "../config/inflector.php";
-require_once "../config/sku_funciones.php";
-
+require_once "../config/require.php";
+require_once "../config/sku_db_mysqli.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
-// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
-$mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
-$data=[]; $existe_error_conexion=0;
-if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
-if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
-if($existe_error_conexion){
-  echo json_encode($data);
-  exit;
-}
 
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
@@ -177,7 +164,15 @@ if($_POST['option']=="save_article"){
 
 if($_POST['option']=="delete_list") {
   $lista=$_POST['list'];
-  /// ACA NOS QUEDAMOS
+  ///SUPONGO QUE SOLO BASTA CON ELIMINAR LA VISTA, Y POR CASCADA, SE ELIMINARAN LOS ARTICULOS Y LOS SKUS, ADEMAS DE LISTA_HAS_USER
+  ///--- OJO, SI SE ESTA INDICANDO QUE SE SUBIO A SAP, ANTES HAY QUE HACER EL LOG DE ESTA VISTA.
+  
+}
+
+function deleteList($listita){
+  global $mysqli;
+  ///NO SE SI ESTA FUNCION SEA NECESARIA YA QUE EL $MYSQLI->DELETE ESTA BIEN RESUMIDA
+
 }
 function sendMail($arr_cont){
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
