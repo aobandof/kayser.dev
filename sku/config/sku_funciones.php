@@ -1,11 +1,11 @@
 <?php
 function getFirstBarcode() {
-  global $sqlsrv;
+  global $sqlsrv_33;
   global $mysqli;
   $last_barcode_sap=780001000000;
   $last_barcode_lista=780001000000;
   $query_barcode="SELECT top 1 CodeBars from OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";
-  $arr_last_barcode=$sqlsrv->select($query_barcode,'sqlsrv_a_p');
+  $arr_last_barcode=$sqlsrv_33->select($query_barcode,'sqlsrv_a_p');
   if($arr_last_barcode!==false){
     if ($arr_last_barcode!=0)
       $last_barcode_sap=((double)$arr_last_barcode_sap[0]['CodeBars']);

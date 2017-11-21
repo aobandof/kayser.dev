@@ -49,7 +49,9 @@ IDEAS:
 
 PENDIENTE YA:
 ------------ 
-en sku_crear.php, al momento de obtener el correlativo, considerar tb los que estan en BDx Kayser Ariculos para que pueda seguir agregando con un correlativo adecuado
+--- AL SALIR DE LA LISTA, AUN NO SE RESETEAN LOS CONTROLES DEL COLOR, COMPOSICION Y TALLAS
+--- AL SALIR DE LA LISTA, CUANDO SE ESTA EDITANDO, FALTA ELIMINAR LA LISTA->ARTICULOS Y SKUS
+--- FALTA EL GUARDAR LA LISTA Y ENVIAR AL MAIL
 
 
 

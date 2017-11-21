@@ -1,26 +1,81 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
-let active_list=0;
+// let active_list=0;
 let el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
 let modal_preview_save, body_modal_preview_save;
 
 $(document).ready(function() {
+  getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
+ 
+  if(initial_option=='show_list'){
+    ///aca mostraremos el modal y renderizaremos la lista
+    modal_preview_save.style.visibility = 'visible';
+  }
+  if (initial_option == 'crear_article'){
+    document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
+  }
+
+  /************************  EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU con la nueva lista con ARTICULO(s) QUE SE CREARAR *************/
+  document.getElementById('btn_create_article_list').onclick = function () {
+    let empty = 0;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
+    document.querySelectorAll('.sku_control').forEach(function (control) {
+      if (control.parentNode.parentNode.style.display != 'none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+        if (control.value == '') empty = 1;
+    });
+    if (tallas == "") empty = 1;
+    //sacar esto despues /
+    empty = 0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
+    if (empty === 0) {
+      parameters = new Object();
+      parameters = getObjectArticle();
+      parameters['option'] = 'save_article';
+      parameters['list'] = active_list;
+      console.log(parameters);
+      $.ajax({
+        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function () { },
+        success: function (data) {
+          console.log('FROM API (option: ' + parameters.option + ') ', data);
+          if (!!data.nothing) {
+            alert("NO SE PUDO AGREGAR EL ARTICULO");
+            console.log(data.nothing);
+          } else {
+
+            if (!!data.filas && data.filas != '') {
+              active_list = data.lista;
+              renderArticleList(data.articulo, data.itemname, data.filas);
+            }
+            if (!!data.refused) {
+              mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
+              for (var item in data.refused) {
+                mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] + '\n';
+              }
+              alert(mensaje);
+            }
+          }
+        },
+        error: function () { console.log('error'); }
+      });
+    }
+    else
+      alert("TODOS LOS CAMPOS SON NECESARIOS");
+  }
   //inicialmente ocultamos la caja que contiene las copas
-  getElementsControls();
   document.getElementById('div_copa').style.display = 'none'; 
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
   $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
 
-  /**************** EVENTOS DENTRO DE LOS MODALES *****************/
+  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
   document.getElementById('select_item_crud').onchange= function() {
     item_crud_selected=this.value;
     $("#div_tabla_item>tbody_div").html('');
     $("#div_tabla_item").css('visibility', 'visible');
     cargarTablaSeccion($(this).val());
   }
-  /****************** EVENTOS PARA CERRAR LAS VENTANAS MODALES ****************/
-  $("#button_close_crud_prefix, #img_close_crud_prefix").click(function () {
+  /****************** EVENTOS PARA CERRAR EL MODAL CRUD_ITEMS ****************/
+  $("#button_close_crud_items, #img_close_crud_items").click(function () {
     if ( this.className == "close_modal")
       modal = this.parentNode.parentNode.parentNode; //obtenemos la referenca al modal para ocultarlo
     else 
@@ -33,15 +88,16 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").classList.remove("disabled"); // removemos esta clase si estuvier (aveces, cuando se esta editando y se sale del modal, por ejemplo, este boton nuevo mantiene la clase disabled, por eso la borramos)
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
-  });/********************* FIN CERRAR EVENTOS MODALES  ***********************/
+  });
 
+  /****************** EVENTOS PARA CERRAR EL MODAL ARTICULO_PREVIEW ****************/
   document.querySelectorAll('#button_clear_list, #img_close_article_creation').forEach(function(el_close){
     el_close.onclick=function(){
       if (confirm("ESTA A PUNTO DE SALIR Y VACIAR ESTA LISTA DE TRABAJO, Se borraran el/los Articulos Agregados en ella.\n\n¿ DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO")) {
         ///---ELIMINAR LISTADO Y ACTUALIZAR PAGINA
         ///ELIMINAR EL CONTENIDO DE LA LISTA
-        $parameters = { 'option': 'delete_list', 'list':active_list }
-        $.ajax({ url: 'url_of_api', type: 'post', dataType: 'json', data: parameters,
+        parameters = { 'option': 'delete_list', 'list':active_list }
+        $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
           beforeSend: function (){ },
           success: function(data){
             console.log(data);
@@ -50,21 +106,23 @@ $(document).ready(function() {
         });
         resetAllControls();
         modal_preview_save.style.visibility = 'hidden';
-
       }
     }
   })
 
-  document.getElementById('btn_show_modal_article_revision').onclick=function(el_show_list){    
+  /*******************  EVENTO PARA VER LA LISTA YA CREADA ************/
+  document.getElementById('btn_show_list').onclick=function(el_show_list){    
     if(active_list!=0)
+    ///--- PENDIENTE HAY QUE DESHABILITAR ESTA OPCION CUANDO active_list=0;
       modal_preview_save.style.visibility = 'visible';
   }
-  // $("#select_sku_composicion").change(function(){
-  //   console.log($("#select_sku_composicion").val());
-  // });
-  // $("#select_sku_color").change(function(){
-  //   console.log($("#select_sku_color").val());
-  // })
+
+  /*******************  EVENTO PARA CERRAR SESION ************/
+  document.getElementById('a_opcion_menu_logout').onclick=function(){
+    if (confirm("ESTA SEGURO DE CERRAR LA SESION (Si existen listas sin enviar, estas seran eliminadas")) {
+      location.href = "./config/session.php?option=session_end";
+    }
+  }
   
   ///--- ################  EVENTOS PARA SKU_CREAR.HTML ###########################
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
@@ -113,7 +171,7 @@ $(document).ready(function() {
         autoFillDescription();
     } else document.getElementById('txt_sku_descripcion').value = "";
   };
-  /********************* EVENTO PARA CARGAR LOS VALORES DE LOS ITEMS QUE SE RELACIONAN PARA OBTENER EL PREFIJO  *******/
+  /********************* EVENTO PARA OBTENER EL PREFIJO CORRELATIVO Y SUFIJO *******/
   document.querySelectorAll(".prefijo").forEach(function(el){
     el.onchange=function(){
       if(el.value!=""){ // el valor cambiado del control select debe ser diferente de vacio
@@ -159,96 +217,28 @@ $(document).ready(function() {
 /**************************   EVENTOS PARA GUARDAR Y ENVIAR ************************************/
 /***********************************************************************************************/
 
-  /////----- EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL 
-  // document.getElementById('button_cancel_save_sku').onclick=function(){  
-  //   modal_preview_save.style.visibility = 'hidden';
-  //   body_modal_preview_save.removeChild(body_modal_preview_save.firstChild);
-  // };
-
-  document.getElementById('button_save_new_list').onclick=function(){
-    ///--- ACA SIMPLEMENTE SE BUSCARA LA LISTA EN MYSQL Y SE ENVIARA EL MAIL CON LOS ARTICULOS CON SKU QUE PERTENESCAN A ESA LISTA
-    parameters = new Object();
-    parameters['option']='save_list';
-    parameters['list']=active_list;
-    $.ajax({ url: 'sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-      beforeSend: function (){ },
-      success: function(data){
-        console.log(data.resp);
-        alert('SKUS ENVIADOS CORRECTAMENTE');
-        location.reload();
-      },
-      error: function(){ console.log('error'); }
-    });
-
-  }
-  /////----- EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU con la nueva lista con ARTICULO(s) QUE SE CREARAR
-  document.getElementById('btn_create_article_list').onclick=function(){
-    let empty=0;
-    let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
-    document.querySelectorAll('.sku_control').forEach(function(control){
-       if(control.parentNode.parentNode.style.display!='none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-         if(control.value=='')  empty=1;
-    });
-    if (tallas=="") empty=1;
-    //sacar esto despues /
-    empty=0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
-    if(empty===0) { 
-      parameters=new Object();
-      parameters=getObjectArticle();                 
-      parameters['option']='save_article';
-      parameters['list']=active_list;
-      console.log(parameters);
-      $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function (){ },
-        success: function(data){          
-          console.log('FROM API (option: ' + parameters.option + ') ',data);
-          if (!!data.nothing){
-            alert("NO SE PUDO AGREGAR EL ARTICULO");
-            console.log(data.nothing);
-          }else{
-
-            if (!!data.filas && data.filas != '') {
-              active_list=data.lista;
-              renderArticleList(data.articulo,data.itemname,data.filas); 
-            }
-            if(!!data.refused){
-              mensaje='LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
-              for (var item in data.refused) {
-                mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] +'\n';                
-              }
-              alert(mensaje);
-            }
-          }
+ /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
+  el_but_save_new_list = document.getElementById('button_save_new_list');
+  if(!!el_but_save_new_list){
+    el_but_save_new_list.onclick = function () {
+      ///--- ACA SIMPLEMENTE SE BUSCARA LA LISTA EN MYSQL Y SE ENVIARA EL MAIL CON LOS ARTICULOS CON SKU QUE PERTENESCAN A ESA LISTA
+      parameters={ 'option':'save_list', 'list' : active_list, 'operation': 'create' };
+      $.ajax({
+        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function () { },
+        success: function (data) {
+          console.log(data.resp);
+          alert('SKUS ENVIADOS CORRECTAMENTE');
+          location.reload();
         },
-        error: function(){ console.log('error'); }
+        error: function () { console.log('error'); }
       });
     }
-    else
-      alert("TODOS LOS CAMPOS SON NECESARIOS");
   }
 
-  document.getElementById('button_save_new_list').onclick = function () {
-    console.log(params);
-    $.ajax({
-      url: './models/sku_lista.php',
-      type: 'post',
-      dataType: 'json',
-      data: params,
-      beforeSend: function () {},
-      success: function (data) {
-        console.log('FROM API (sku_lista.php)',data);
-        if(data.resp=='READY')
-          alert('DATOS GUARDADOS CON EXITO ( archivo con SKUs fueron enviados correctamente )');          
-        else  
-          alert(data.resp);
-      },
-      error: function () {
-        console.log('error');
-      }
-    });
-  }
 
-  loadToModifyArticleList('');
+
+  // loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  

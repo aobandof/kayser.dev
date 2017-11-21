@@ -1,11 +1,9 @@
 <?php
-
-
-
-
+session_start();
+if(isset($_SESSION['user'])){
+  header("Location: menu.php");
+}
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,5 +17,55 @@
   <title>SKU / Articulos</title>
 </head>
 <body>
+  <div id="div_sku_menu">
+    <div class="cont_titulo">
+      <span>GESTIÓN DE ARTÍCULOS Y SKUs</span>
+    </div>
+    <div class="cont_logo">
+      <img src="./src/img/logo_kayser_azul.png" alt="">
+    </div>
+    <div class="cont_login">
+      <input type="text" name="user" id="txt_user" class="form-control" placeholder="Usuario">
+      <input type="password" name="pass" id="txt_pass" class="form-control" placeholder="Contraseña">
+      <button class="btn btn-primary" id="button_login">INGRESAR</button>
+    </div>
+    <div class="cont_answer"></div>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>  
+  <script type="text/javascript">
+    $(document).ready(function () {
+      el_user= document.getElementById('txt_user');
+      el_pass= document.getElementById('txt_pass');
+      el_user.focus();
+      document.getElementById('button_login').onclick=function(){
+        if (el_user.value.trim() != '' && el_pass.value.trim() != '') {
+          parameters = { 'option': 'session_start', 'user': el_user.value, 'pass': el_pass.value };
+          $.ajax({
+            url: './config/session.php', type: 'post', dataType: 'json', data: parameters,
+            beforeSend: function () { },
+            success: function (data) {
+              console.log(data);
+              if(data.login===true){
+                location.href = "menu.php";
+              }else{
+                alert('DATOS INCORRECTOS, Intente Nuevamente');
+                el_user.value="";
+                el_pass.value="";
+                el_user.focus();
+              }
+
+            },
+            error: function () { console.log('error'); }
+          });
+        }else {
+          alert("TIENE QUE LLENAR LOS CAMPOS");
+        }
+      }
+    });
+  </script>
 </body>
 </html>

@@ -4,9 +4,23 @@ select * from sku;
 select * from lista;
 select * from lista_has_usuario
 
-describe presentacion;
+SELECT L.id, COUNT(S.codigo) from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
+SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
+SELECT L.id,COUNT(S.codigo) from lista as L
+INNER JOIN articulo as A on A.lista_id=L.id
+INNER JOIN sku as S on A.codigo=S.articulo_codigo
+GROUP BY L.id
 
-select* from presentacion;
+SELECT A.codigo, COUNT(S.codigo) FROM articulo as A
+INNER JOIN sku AS S ON A.codigo=S.articulo_codigo
+GROUP BY A.codigo;
+
+SELECT * FROM lista_has_usuario where lista_id=10
+update lista_has_usuario SET operacion='CREACION'
+
+describe lista;
+describe articulo;
+describe sku;
 
 
 SELECT nombre as name FROM subdpto WHERE id=3;

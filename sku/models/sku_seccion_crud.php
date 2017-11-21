@@ -21,10 +21,14 @@ if($_POST['option']=="cargar_seccion"){
   $cabecera=[];
   $ntabla=$_POST['nom_tabla'];
   if(isset($tablas_sku[$ntabla]['id'])) //SI LA TABLA TIENE ID
-    if($ntabla!='marca')//TABLA MARCA TIENE OTRO CAMPO "prefijo"
-      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo,".$tablas_sku[$ntabla]['campo']." AS Nombre from  $ntabla";
-    else
+    if($ntabla=='marca')//TABLA MARCA TIENE OTRO CAMPO "prefijo"
       $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo, ".$tablas_sku[$ntabla]['campo']." AS Nombre, simbolo, posicion, tipo from  $ntabla";
+    elseif($ntabla=='color')
+      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo, ".$tablas_sku[$ntabla]['campo']." AS Nombre, abreviatura from  $ntabla";
+    elseif($ntabla=='presentacion')
+      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo, ".$tablas_sku[$ntabla]['campo']." AS Nombre, abreviatura from  $ntabla";
+    else
+      $query="select ".$tablas_sku[$ntabla]['id']." AS Codigo,".$tablas_sku[$ntabla]['campo']." AS Nombre from  $ntabla";
   else {
     $query="select ".$tablas_sku[$ntabla]['campo']." AS Nombre from  $ntabla";
   }

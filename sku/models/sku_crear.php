@@ -6,11 +6,11 @@ require_once "../config/inflector.php";
 require_once "../config/sku_funciones.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
 set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
-// $sqlsrv=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
-$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
+// $sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
+$sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
-if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
+if(($sqlsrv_33->getConnection())===false) { $data['errors'][]=$sqlsrv_33->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
 if($existe_error_conexion){
   echo json_encode($data);
@@ -40,8 +40,8 @@ if($_POST['option']=="cargar_selects_independientes"){
           continue;
         }
       }else {
-        if(($arr_ops=$sqlsrv->select($query,"sqlsrv_a_p"))===false){
-          $data['errors'][]=$sqlsrv->getErrors();
+        if(($arr_ops=$sqlsrv_33->select($query,"sqlsrv_a_p"))===false){
+          $data['errors'][]=$sqlsrv_33->getErrors();
           continue;
         }
       }
@@ -51,7 +51,7 @@ if($_POST['option']=="cargar_selects_independientes"){
     }
   }// fin foreach
   $mysqli->closeConnection();
-  $sqlsrv->closeConnection();
+  $sqlsrv_33->closeConnection();
   $data['values']=$options;
   echo json_encode($data);
 }
@@ -110,7 +110,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
           if($tablas_sku[$tabla]['bd']=="mysql")
             $array_tabla_extraida=$mysqli->selectArrayUniAssocIdName($query_id_name);
           else 
-            $array_tabla_extraida=$sqlsrv->selectArrayUniAssocIdName($query_id_name);         
+            $array_tabla_extraida=$sqlsrv_33->selectArrayUniAssocIdName($query_id_name);         
           // var_dump($array_tabla_extraida);
           if($tablas_sku[$padre]['type_id']=="INT")
             $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
@@ -142,7 +142,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
   // $data['grand_childs']=$array_grand_child;
   // $data['querys']=$querys_export;
   $mysqli->closeConnection();
-  $sqlsrv->closeConnection();
+  $sqlsrv_33->closeConnection();
   echo json_encode($data);
 }
 

@@ -1,4 +1,18 @@
+<?php
+session_start();
+if(isset($_SESSION['user'])){
+  if(isset($_GET['option'])){
+    if($_GET['option']=='crear_articulo')
+      echo "<script>let initial_option='crear_article'; let active_list=0;</script>";
+    if($_GET['option']=='ver_lista')
+      echo "<script>let initial_option='show_list'; let active_list=".$_GET['lista'].";</script>";
+  }else
+    header("Location: ./menu.php");
+}else {
+  header("Location: ./index.php");
+}
 
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -31,19 +45,6 @@
             <div class="cont_img_categoria" id="div_cat_niño"><img src="../shared/img/img_niño.jpg" alt=""><span>Niño</span></div>
             <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/K.jpg" alt=""><span>Otro</span></div>
         </div>
-        <div class="cont_menu">
-          <div class="dropdown">
-            <img src="../shared/img/menu.png" alt="" class="dropdown-toggle" id="dropdownMenuButton_menu" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false">
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="opcion_menu dropdown-item" id="a_opcion_menu_items" href="index.html">Inicio</a>
-              <a class="opcion_menu dropdown-item" id="a_opcion_menu_relations" href="sku_consultar.html">Consulstar SKU</a>
-              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="#">Modificar SKU</a>
-              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="sku_proveedor.html">Envío a Proveedor</a>
-              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="#">Listas Pendientes</a>
-            </div>
-          </div>
-        </div>
         <div class="cont_config">
           <div class="dropdown">
           <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -53,6 +54,20 @@
             <a class="opcion_config dropdown-item" id="a_opcion_config_prefix" href="#">Prefijos</a>
           </div>
         </div>
+        </div>
+        <div class="cont_menu">
+          <div class="dropdown">
+            <img src="../shared/img/menu.png" alt="" class="dropdown-toggle" id="dropdownMenuButton_menu" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_items" href="menu.php">Inicio</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_relations" href="sku_consultar.html">Consulstar SKU</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_prefix" href="#">Modificar SKU</a>
+              <a class="opcion_menu dropdown-item" id="" href="sku_proveedor.html">Envío a Proveedor</a>
+              <a class="opcion_menu dropdown-item" id="" href="listas.php">Listas Pendientes</a>
+              <a class="opcion_menu dropdown-item" id="a_opcion_menu_logout" href="#">Cerrar Sesion</a>
+            </div>
+          </div>
         </div>
       </div>
         <div class="comp_crear_sku container_row">
@@ -118,8 +133,7 @@
         </div>
         <div class="cont_botonera_inf container_row">
           <button type="button" name="button" id="btn_create_article_list" class="btn btn-primary">GUARDAR EN LISTA</button>
-          <!-- <button type="button" name="button" id="btn_guardar_lista" class="btn btn-success">AGREGAR OTRO<br>ARTICULO</button> -->
-          <button type="button" name="button" id="btn_show_modal_article_revision" class="btn btn-warning">VER LISTA</button>
+          <button type="button" name="button" id="btn_show_list" class="btn btn-warning">VER LISTA</button>
         </div>
     </div>
 
@@ -138,7 +152,7 @@
       <div class="content_modal">
         <div class="header_modal">
           <span>EDICION DE ITEMS DE ARTICULOS</span>
-          <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_item" alt="">
+          <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_items" alt="">
         </div>
         <div class="body_modal">
           <div class="comp_filters container_row">
@@ -158,7 +172,7 @@
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2" id="#button_close_crud_items">Salir</button>
             </div>
           </div>
         </div>
@@ -183,7 +197,7 @@
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer close_modal2">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2" id="#button_close_crud_relations">Salir</button>
             </div>
           </div>
         </div>
@@ -230,11 +244,22 @@
         <div class="body_modal">
 
         </div>
-        <div class="footer_modal">
-          <button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR Y ENVIAR PLANTILLA</button>
-          <button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>
-          <button class="btn btn-danger btn_footer" id="button_clear_list">CANCELAR LISTA</button>
-          <!-- <button class="btn btn-warning btn_footer" id="button_cancel_save_sku">CONTINUAR</button> -->
+        <div class="footer_modal">          
+          <?php
+            if($_SESSION['perfil']='editor'){
+              echo '<button class="btn btn-primary btn_footer" id="button_finalize_new_list">FINALIZAR Y LIBERAR</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
+            }elseif($_SESSION['perfil']='revisor'){
+              echo '<button class="btn btn-primary btn_footer" id="button_revise_list">ENVIAR A INFORMATICA</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
+            }elseif($_SESSION['perfil']='editor'){
+              echo '<button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR Y ENVIAR PLANTILLA</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-danger btn_footer" id="button_clear_list">CANCELAR LISTA</button>';
+            }            
+          ?>
         </div>
       </div>
     </div>

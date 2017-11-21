@@ -4,10 +4,10 @@ require_once "../config/DBConnection.php";
 require_once "../config/HelpersDB.php";
 require_once "../config/inflector.php";
 require_once "../config/sku_funciones.php";
-$sqlsrv=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
+$sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
 $data=[]; $existe_error_conexion=0;
-if(($sqlsrv->getConnection())===false) { $data['errors'][]=$sqlsrv->getErrors(); $existe_error_conexion=1; }
+if(($sqlsrv_33->getConnection())===false) { $data['errors'][]=$sqlsrv_33->getErrors(); $existe_error_conexion=1; }
 if(($mysqli->getConnection())===false)  {$data['errors'][]=$mysqli->getErrors(); $existe_error_conexion=1; }
 if($existe_error_conexion){
   echo json_encode($data);
@@ -89,7 +89,7 @@ if($existe_error_conexion){
     ///--- CONSULTAMOS EL MAYOR CODIGO DE ARTICULO DE ESTAS PRENDAS EN SAP
     $query_ultimo_sap="SELECT SUBSTRING( itemCode ,LEN('$prefijo')+1,CHARINDEX('-',itemCode)-LEN('$prefijo')-1) FROM OITM WHERE ItemCode LIKE '$prefijo%' GROUP BY SUBSTRING( itemCode ,LEN('$prefijo')+1,CHARINDEX('-',itemCode)-LEN('$prefijo')-1);";
     $querys_export[]=$query_ultimo_sap;
-    $arr_ultimo=$sqlsrv->select($query_ultimo_sap,'sqlsrv_n_p');//Este array obtiene correlativos puros y con letras al final que corresponden a los sufijos de algunas marcas
+    $arr_ultimo=$sqlsrv_33->select($query_ultimo_sap,'sqlsrv_n_p');//Este array obtiene correlativos puros y con letras al final que corresponden a los sufijos de algunas marcas
     $mayor_sap=0;
     if($arr_ultimo!=0 && $arr_ultimo!=false){
       if($sufijo==''){ //para que cuando recorra el array buscando el mayor_sap correlativo, solo considere los que no tienen letras al final, 

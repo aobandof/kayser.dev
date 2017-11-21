@@ -48,12 +48,12 @@ function getCamposToQuery($nombre_tabla, $key_value, $as_tabla=""/*, ...*/){ // 
 ### FUNCION QUE RETORNA EL ID dado el nombre de la tabla y el valor del campo nombre
 ### el campo se obtendrá de la $tablas_sku y será aquel que detalle el nombre del registro de la tabla
 function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que tienen nombre UNIQUE
-  global $tablas_sku,$mysqli,$sqlsrv;
+  global $tablas_sku,$mysqli,$sqlsrv_33;
   $query_id="SELECT ".$tablas_sku["$nom_tabla"]["id"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["campo"]."='".$val_campo."';";
   if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
     $arr_id=$mysqli->select($query_id,"mysqli_a_o");
   else{
-    $arr_id=$sqlsrv->select($query_id,"sqlsrv_a_p");
+    $arr_id=$sqlsrv_33->select($query_id,"sqlsrv_a_p");
   }if($arr_id===false)
       return -1;
   else{ 
@@ -62,12 +62,12 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
 }
 
 function getNameFromId($nom_tabla,$val_id){
-  global $tablas_sku,$mysqli,$sqlsrv;
+  global $tablas_sku,$mysqli,$sqlsrv_33;
   ($tablas_sku["$nom_tabla"]["type_id"]=='INT') ? $query_id="SELECT ".$tablas_sku["$nom_tabla"]["campo"] ." as name FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["id"]."=$val_id" : $query_id="SELECT ".$tablas_sku["$nom_tabla"]["name"]." FROM $nom_tabla WHERE ".$tablas_sku["$nom_tabla"]["id"]."='".$val_id."'";
   if($tablas_sku["$nom_tabla"]["bd"]=="mysql")
     $arr_id=$mysqli->select($query_id,"mysqli_a_o");
   else{
-    $arr_id=$sqlsrv->select($query_id,"sqlsrv_a_p");
+    $arr_id=$sqlsrv_33->select($query_id,"sqlsrv_a_p");
   }if($arr_id===false)
       return -1;
   else{ 

@@ -1,9 +1,14 @@
 <?php
+session_start();
+if(isset($_SESSION['user'])){
+  $user=$_SESSION['user'];
+}else {
+  header("Location: ./index.php");
+}
+
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
 require_once "../config/sku_db_sqlsrv_33.php";
-error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
-set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
@@ -33,19 +38,6 @@ if($_POST['option']=="save_article"){
 
   $data['first_barcode']=$first_barcode;
   
-
-  ///--- YA SEA PARA UNA NUEVA LISTA O UNA LISTA EXISTENTE, ES NECESARIO QUE EL NUEVO ARTICULO QUE SE INTENTA AGREGAR A LA LISTA, NO SE ENCUENTRE EN LA MISMA LISTA NI EN OTRA LISTA NI EN SAP
-  // if(existArticle($code_article,'SAP')===true){
-  //   $data['nothing']='ARTICULO YA REGISTRADO EN SAP, elija la OPCION MODIFICAR ARTICULO para cambiar algun detalle o AGREGAR + SKU';
-  //   echo json_encode($data); exit();
-  // }
-  // if(existArticle($code_article,'LISTA')===true){
-  //   $data['nothing']='ARTICULO AGREGADO A OTRA LISTA, Revise las Listas pendientes para Cargarlas a SAP o modificarlas';
-  //   echo json_encode($data); exit();
-  // }
-  ///--- CANCELAMOS ESTA OPCION, dado que puede ingresarse un mismo tipo de prenda con las mismas caracteristicas pero se trata de otro otro articulo con otros acabados y diseño
-  #######################################################################################################################################################
-  
   if($lista==0){
     //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
     $query_insert_list="INSERT INTO lista values (NULL,'','EDITADA')";
@@ -55,8 +47,8 @@ if($_POST['option']=="save_article"){
       if($arr_last_list!=0 AND $arr_last_list!=false){
         $lista=$arr_last_list[0]['id'];
         ///---agregamos el usuario, la lista, la operacion cuando se crea la lista por primera vez, el campo operacion y fecha se dejan como vacios, indicanto que aun no se envian por correo
-        if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'EDITOR','','$hoy')") != 1 ){
-          $data['all_querys'][]="INSERT INTO lista_has_usuario values ($lista,'EDITOR','','$hoy')";
+        if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','CREACION','$hoy')") != 1 ){
+          $data['all_querys'][]="INSERT INTO lista_has_usuario values ($lista,'$user','CREACION','$hoy')";
           $data['errors']=$mysqli->getErrors();
           $data['nothing']='ERROR AL RELACIONAR LA LISTA CON EL USUARIO';        
           echo json_encode($data); exit();
@@ -165,8 +157,43 @@ if($_POST['option']=="save_article"){
 if($_POST['option']=="delete_list") {
   $lista=$_POST['list'];
   ///SUPONGO QUE SOLO BASTA CON ELIMINAR LA VISTA, Y POR CASCADA, SE ELIMINARAN LOS ARTICULOS Y LOS SKUS, ADEMAS DE LISTA_HAS_USER
-  ///--- OJO, SI SE ESTA INDICANDO QUE SE SUBIO A SAP, ANTES HAY QUE HACER EL LOG DE ESTA VISTA.
-  
+  ///--- OJO, SI SE ESTA INDICANDO QUE SE SUBIO A SAP, ANTES HAY QUE HACER EL LOG DE ESTA VISTA.  
+}
+
+if($_POST['option']=="save_list") {
+  ///---
+}
+
+if($_POST['option']=='show_lists'){
+  $creator='';
+  $revisor='';
+  $divs="";
+  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
+  $all_querys[]=$query_insert_list;
+  $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
+  for($i=0; $i<count($arr_lists); $i++){
+    $cod_list=$arr_lists[$i]['id'];
+    $cant_skus=$arr_lists[$i]['cant_skus'];
+    $icon_show="<img id='$cod_list' class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'>";
+    ///--- OBTENEMOS QUIEN LA CREO Y LA REVISO
+    $query_relation="SELECT * FROM lista_has_usuario where lista_id=$cod_list";
+    $all_querys[]=$query_relation;
+    $arr_relation=$mysqli->select($query_relation,"mysqli_a_o");
+    if($arr_relation!=0 && $arr_relation!=false){
+      for($j=0; $j<count($arr_relation); $j++){
+        if($arr_relation[$j]['operacion']=='CREACION'){
+          $creator=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+        }elseif($arr_relation[$j]['operacion']=='REVISION'){
+          $revisor=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+        }
+      }
+    }
+    $divs.="<div class='dtr'><div>$cod_list</div><div>".$creator."</div><div>".$revisor."</div><div>$cant_skus</div><div>$icon_show</div></div>";
+
+  }  
+  $data['rows']=$divs;
+  $data['querys_all']=$all_querys;
+  echo json_encode($data);
 }
 
 function deleteList($listita){
