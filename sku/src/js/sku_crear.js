@@ -1,14 +1,19 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
 // let active_list=0;
 let el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
-let modal_preview_save, body_modal_preview_save;
+let modal_preview_save, body_modal_preview_save; 
+let el_div_loader_full;
 
 $(document).ready(function() {
+
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
- 
+  // $('#sku_loader_full').ajaxStart(function () { $(this).classList.add('cont_hidden') });
+  // $('#sku_loader_full').ajaxComplete(function () { $(this).classList.remove('cont_hidden') });
+
   if(initial_option=='show_list'){
     ///aca mostraremos el modal y renderizaremos la lista
     modal_preview_save.style.visibility = 'visible';
+
   }
   if (initial_option == 'crear_article'){
     document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
@@ -20,30 +25,38 @@ $(document).ready(function() {
     let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
     document.querySelectorAll('.sku_control').forEach(function (control) {
       if (control.parentNode.parentNode.style.display != 'none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-        if (control.value == '') empty = 1;
+        if (control.value == '') { 
+          if (control.id != 'txt_sku_sufijo'){ //EXCEPCION ESTATICA, el sufijo puede o no ser necesario
+            empty = 1;
+            // console.log(control);
+          }
+        }
     });
     if (tallas == "") empty = 1;
     //sacar esto despues /
-    empty = 0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
+    // empty = 0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if (empty === 0) {
       parameters = new Object();
       parameters = getObjectArticle();
       parameters['option'] = 'save_article';
       parameters['list'] = active_list;
-      console.log(parameters);
+      // console.log(parameters);
       $.ajax({
         url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function () { },
+        beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
         success: function (data) {
+          // el_div_loader_full.classList.remove('cont_hidden');
           console.log('FROM API (option: ' + parameters.option + ') ', data);
           if (!!data.nothing) {
             alert("NO SE PUDO AGREGAR EL ARTICULO");
             console.log(data.nothing);
+
           } else {
 
             if (!!data.filas && data.filas != '') {
               active_list = data.lista;
-              renderArticleList(data.articulo, data.itemname, data.filas);
+              resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
+              renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED
             }
             if (!!data.refused) {
               mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
@@ -54,7 +67,7 @@ $(document).ready(function() {
             }
           }
         },
-        error: function () { console.log('error'); }
+        error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
       });
     }
     else
@@ -62,6 +75,7 @@ $(document).ready(function() {
   }
   //inicialmente ocultamos la caja que contiene las copas
   document.getElementById('div_copa').style.display = 'none'; 
+
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
@@ -89,26 +103,82 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });
-
-  /****************** EVENTOS PARA CERRAR EL MODAL ARTICULO_PREVIEW ****************/
-  document.querySelectorAll('#button_clear_list, #img_close_article_creation').forEach(function(el_close){
-    el_close.onclick=function(){
-      if (confirm("ESTA A PUNTO DE SALIR Y VACIAR ESTA LISTA DE TRABAJO, Se borraran el/los Articulos Agregados en ella.\n\n¿ DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO")) {
-        ///---ELIMINAR LISTADO Y ACTUALIZAR PAGINA
-        ///ELIMINAR EL CONTENIDO DE LA LISTA
-        parameters = { 'option': 'delete_list', 'list':active_list }
+  /****************** FUNCIONA PARA ELIMINAR LA LISTA ACTUAL, YA SEA UNA ANTIGUA O U NA NUEVA QUE SE ESTE REVISANDO O FINALIZANDO */
+  /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/
+  el_but_delete_list = document.getElementById('button_delete_list');
+  if(!!el_but_delete_list){
+    el_but_delete_list.onclick = function(){
+      // alert('entro a la opcion eliminar'); 
+      if (confirm("ESTA A PUNTO DE SALIR Y DESCARTAR ESTA LISTA DE TRABAJO, \n\n¿DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO?")) {        
+        if(initial_option="show_list" && perfil=='admin'){
+          parameters = { 'option': 'delete_list', 'list': active_list, 'operation': 'UPLOAD_SAP' }
+        }else
+          parameters = { 'option': 'delete_list', 'list': active_list }
         $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-          beforeSend: function (){ },
+          beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
           success: function(data){
+            // el_div_loader_full.classList.remove('cont_hidden');
             console.log(data);
+            if(data.delete==false)             
+              alert("NO SE PUDO ELIMINAR ESTE LISTADO DE LA BASES DE DATOS, INFORME A INFORMATICA POR FAVOR");
           },
-          error: function(){ console.log('error'); }
+          error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/}
         });
-        resetAllControls();
-        modal_preview_save.style.visibility = 'hidden';
+        //EN CUALQUIERA DE LOS CASOS, AUN SI NO SE PUDO ELIMINAR LA LISTA, ELIMINAMOS LE CONTENIDO DEL MODAL, LO OCULTAMOS Y RESETEAMOS LOS CONTROLES
+        if (initial_option =='show_list')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
+          location.href = "lista.php";
+        else
+          location.href = "menu.php";//OPTAMOS POR ESTO PARA QUE SE VUELVA LA OPCIOM DESEADA CON LOS PARAMETROS CORRECTOS
       }
     }
-  })
+  }
+  /****************** EVENTOS PARA AGREGAR OTRO ARTICULO CUANDO SE ESTA  EDITANDO ****************/
+  el_but_add_article = document.getElementById('button_add_article');
+  if(!!el_but_add_article){
+    el_but_add_article.onclick = function () {
+      resetAllControls();
+      document.getElementById('btn_show_list').disabled = false;
+      modal_preview_save.style.visibility = 'hidden';
+    }
+  }
+  /****************** EVENTOS PARA OCULTAR LA LISTA Y SEGUIR EDITANDO  ****************/
+  el_but_follow_editing = document.getElementById('button_follow_editing');
+  if (!!el_but_follow_editing) {
+    el_but_follow_editing.onclick = function () {
+      // alert('deberia ocultar este modal');
+      document.getElementById('btn_show_list').disabled = false;
+      modal_preview_save.style.visibility = 'hidden';
+    }
+  }
+
+  el_but_show_lists = document.getElementById('button_show_lists"');
+  if(!!el_but_show_lists){
+    el_but_show_lists.onclick=function(){
+      location.href = "lista.php";
+    }
+  }
+  /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
+  el_but_save_new_list = document.getElementById('button_save_new_list');
+  if (!!el_but_save_new_list) {
+    el_but_save_new_list.onclick = function () {
+      ///--- ACA SIMPLEMENTE SE BUSCARA LA LISTA EN MYSQL Y SE ENVIARA EL MAIL CON LOS ARTICULOS CON SKU QUE PERTENESCAN A ESA LISTA
+      parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'create' };
+      $.ajax({
+        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
+        success: function (data) {
+          el_div_loader_full.classList.remove('cont_hidden');
+          if(data.submit==true){
+            alert('SKUS ENVIADOS CORRECTAMENTE');
+            location.href = "menu.php";
+          }else
+            alert('ERROR. No se pudo enviar este mail\n\nCONTACTE A INFORMATICA POR FAVOR');
+        },
+        error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
+      });
+    }
+  }
+
 
   /*******************  EVENTO PARA VER LA LISTA YA CREADA ************/
   document.getElementById('btn_show_list').onclick=function(el_show_list){    
@@ -214,35 +284,13 @@ $(document).ready(function() {
       }
     }
   });
-/**************************   EVENTOS PARA GUARDAR Y ENVIAR ************************************/
-/***********************************************************************************************/
-
- /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
-  el_but_save_new_list = document.getElementById('button_save_new_list');
-  if(!!el_but_save_new_list){
-    el_but_save_new_list.onclick = function () {
-      ///--- ACA SIMPLEMENTE SE BUSCARA LA LISTA EN MYSQL Y SE ENVIARA EL MAIL CON LOS ARTICULOS CON SKU QUE PERTENESCAN A ESA LISTA
-      parameters={ 'option':'save_list', 'list' : active_list, 'operation': 'create' };
-      $.ajax({
-        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function () { },
-        success: function (data) {
-          console.log(data.resp);
-          alert('SKUS ENVIADOS CORRECTAMENTE');
-          location.reload();
-        },
-        error: function () { console.log('error'); }
-      });
-    }
-  }
-
-
 
   // loadToModifyArticleList('');
 /*********************************************************************************************************/
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
   function getElementsControls() {
+    el_div_loader_full = document.getElementById('sku_loader_full');
     el_sel_marca =  document.getElementById('select_sku_marca');
     el_sel_subdpto = document.getElementById('select_sku_subdpto'); 
 
@@ -264,15 +312,16 @@ $(document).ready(function() {
     el_txt_sufijo = document.getElementById('txt_sku_sufijo');
     el_txt_descripcion = document.getElementById('txt_sku_descripcion');
 
-    modal_preview_save = document.getElementById('div_modal_article_creaction');
+    modal_preview_save = document.getElementById('div_modal_article_creation');
     body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   }
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-function renderArticleList(art,itn,rows){
-  makeArticlePreview(art, itn);  
+function renderArticleList(art,itn,rows,estado_article){
+  if (estado_article=='NEW')
+    makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
   id_articulo=art;
   if(id_articulo.indexOf('.') != -1){
-    id_articulo="div_"+id_articulo.replace('.','_');    
+    id_articulo="div_"+id_articulo.replace('.','_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
   }     
   el_articulo=document.getElementById(id_articulo);//
   el_articulo.querySelector('.dbody_sku').innerHTML=rows;
@@ -383,10 +432,12 @@ function resetInputTextCodeArticle(){
 }
 //FUNCION PARA OBTENER EL PREFIJO
 function getPrefix(values){
-  console.log(values);
+  // console.log(values);
   $.ajax({ url : './models/sku_prefijo.php', type : 'post', dataType : 'json', data : values,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success : function(data) {
-      console.log('FROM API: (api: sku_prefijo.php ) ', data);
+      // console.log('FROM API: (api: sku_prefijo.php ) ', data);
+      // el_div_loader_full.classList.remove('cont_hidden');
       if(!!data['errors']){
         console.log("Error al consultar PREFIJO, en consulta o Conexion a BDx: ");
         console.log(data['errors']);
@@ -396,7 +447,10 @@ function getPrefix(values){
         document.getElementById('txt_sku_sufijo').value = data['sufijo'];
       }
     },
-    error : function() { console.log("error"); }
+    error: function () { 
+      console.log("error");
+      // el_div_loader_full.classList.remove('cont_hidden'); 
+    }
   });
 }
 //FUNCION QUE MUESTRA EL PANEL CREAR SEGUN EL DPTO (mujer, varon, lola, ...)
@@ -426,10 +480,12 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option' : 'cargar_selects_independientes'};
   else
     var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-  console.log(parametros);
+  // console.log(parametros);
   $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success : function(data) {
       console.log('FROM API: (option: '+ parametros.option +') ',data);
+      // el_div_loader_full.classList.remove('cont_hidden');
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       if(!!data.dpto) { code_dpto = data.dpto; }
       if(!!data.first_barcode) {first_barcode=data.first_barcode; }
@@ -437,7 +493,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
         if(item['tabla']=="talla"){          
           document.getElementById('span_tallas_chosen').innerHTML='';
           document.getElementById("div_sel_grupo_opciones").innerHTML = "";
-          console.log(item);
+          // console.log(item);
           fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
         } else {
           // console.log(item['options']);
@@ -469,8 +525,12 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
         }); 
       }     
     },
+    /*complete: function () {
+      el_div_loader_full.classList.remove('cont_hidden');
+    },*/
     error: function() {
       console.log("ERROR obtenido de la la opcion: " + parametros.option);
+      // el_div_loader_full.classList.remove('cont_hidden');
     }
   });
 }
@@ -483,7 +543,9 @@ function cargarTablaSeccion(tabla) {
   while (body.firstChild) { body.removeChild(body.firstChild); }
   var parametros = { 'option' : 'cargar_seccion', 'nom_tabla' :  tabla };
   $.ajax({ url: './models/sku_seccion_crud.php', type: 'post', dataType: 'json', data: parametros,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success : function(data) {
+      // el_div_loader_full.classList.remove('cont_hidden');
       if(!!data.errors){
         console.log(data.errors);
       }else {
@@ -673,6 +735,7 @@ function cargarTablaSeccion(tabla) {
     },
     error: function() {
       console.log("error");
+      // el_div_loader_full.classList.remove('cont_hidden');
     }
   });
 }
@@ -714,8 +777,10 @@ function updateRegistry(cod_registro, arr_contenido, callback) {
   }
   // console.log(parameters);
   $.ajax({ url: './models/sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden'); */ },
     success: function(data){
-      console.log("datos desde api: ",data);
+      // console.log("datos desde api: ",data);
+      // el_div_loader_full.classList.remove('cont_hidden');
       if (!!data.errors)
         console.log("Errores encontrados:"+data.errors);
       if (data.result === 1) {
@@ -732,14 +797,16 @@ function updateRegistry(cod_registro, arr_contenido, callback) {
         callback(resultado);
       // }, 5000);
     },
-    error: function(){ console.log('error'); }
+    error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
   });
 }
 //FUNCION PARA ELIMINAR REGISTRO
 function deleteRegistry(cod_registro){
   var parameters={'option': 'delete_item','table': item_crud_selected, 'id':cod_registro}
   $.ajax({ url: './models/sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success: function(data){
+      // el_div_loader_full.classList.remove('cont_hidden');
       if (!!data.errors)
         console.log("Errores encontrados:".data.errors);
       if (data.result === 1) {
@@ -750,7 +817,7 @@ function deleteRegistry(cod_registro){
         alert("NO SE PUDO ELIMINAR EL REGISTRO");
       }  
     },
-    error: function(){ console.log('error'); }
+    error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/}
   });
   return true;
 }
@@ -763,7 +830,9 @@ function createRegistry(arr_contenido) {
     parameters[key] = arr_contenido[key];
   }
   $.ajax({ url: './models/sku_seccion_crud.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success: function(data){
+      // el_div_loader_full.classList.remove('cont_hidden');
       //if(!!data['errors']) quiere decir que existen errores / data["result"]=1 => DATOS INSERTADOS CORRECTAMENTE / data["result"]=-1 => NO SE PUEDEN REGISTRAR VALORES EXISTENTES, Revise por favor.
       if(!!data.errors)
         console.log("Errores encontrados:".data.errors);
@@ -779,28 +848,12 @@ function createRegistry(arr_contenido) {
     },
     error: function() {
       console.log("error");
+      // el_div_loader_full.classList.remove('cont_hidden');
     }    
   });
   return true;
 }
-///--- FUNCION QUE INICIA ESTA VISTA ... AVERIGUAR DESPUES QUE HACE
-function loadToModifyArticleList(articulo){
-  tablas=[];
-  document.querySelectorAll('.sku_control').forEach(function (control) {
-    if (control.name != 'color' && control.name != 'talla' && control.name != 'copa' && control.name != 'caracteristica' && control.name != 'peso' && control.name != 'prefijo' && control.name != 'correlativo' && control.name != 'descripcion') {
-      tablas.push(control.name);  
-    } 
-  });  
-  // console.log(tablas);  
-  parameters = { 'option': 'load_article_list', 'tables' : tablas }; 
-  $.ajax({ url: './models/articulo_cargar.php', type: 'post', dataType: 'json', data: parameters,
-    beforeSend: function (){ },
-    success: function(data){
-      // console.log(data);
-    },
-    error: function(){ console.log('error'); }
-  });
-}
+
 ///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
 function resetAllControls(){
   document.querySelectorAll('.ind').forEach( el_ind => el_ind.value="" );
@@ -808,6 +861,13 @@ function resetAllControls(){
   cargarSelectsSku('OITB', name_dpto);
   resetInputTextCodeArticle();
   el_txt_descripcion.value='';
+  $("#select_sku_color").selectpicker("deselectAll");
+  $("#select_sku_color").selectpicker("refresh");
+  // $("#select_sku_composicion").selectpicker("deselect");
+  $("#select_sku_composicion").attr("selected", false);
+  $("#select_sku_composicion").selectpicker("refresh");
+  $("#div_sel_grupo_opciones").html("");
+  $("#span_tallas_chosen").text(' ');
 }
 
 });

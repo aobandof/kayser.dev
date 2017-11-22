@@ -5,7 +5,7 @@ require_once "../config/HelpersDB.php";
 require_once "../config/inflector.php";
 require_once "../config/sku_funciones.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
-set_time_limit(90); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
+set_time_limit(120); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS
 // $sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['13']['host'], $MSSQL['13']['user'], $MSSQL['13']['pass'],'Stock');
 $sqlsrv_33=new DBConnection('sqlsrv', $MSSQL['33']['host'], $MSSQL['33']['user'], $MSSQL['33']['pass'],'SBO_KAYSER');
 $mysqli=new DBConnection('mysqli', $MYSQL[$env]['host'], $MYSQL[$env]['user'], $MYSQL[$env]['pass'], 'kayser_articulos');
@@ -55,6 +55,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   $data['values']=$options;
   echo json_encode($data);
 }
+
 if($_POST['option']=="cargar_selects_dependientes") {
   $querys_export=[];
   // echo "hola";
@@ -145,8 +146,6 @@ if($_POST['option']=="cargar_selects_dependientes") {
   $sqlsrv_33->closeConnection();
   echo json_encode($data);
 }
-
-
 
 
 

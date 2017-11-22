@@ -78,7 +78,7 @@ if($existe_error_conexion){
     $querys_export[]=$query_marca;
     $arr_marca=$mysqli->select($query_marca,'mysqli_a_o');
     $kayser=0;
-    if($arr_marca[0]['posicion']=='inicio'){
+    if($arr_marca[0]['posicion']=='INICIO'){
       $prefijo=$arr_marca[0]['simbolo'].$prefijo;
     }else{
       $sufijo=$arr_marca[0]['simbolo'];
@@ -110,31 +110,32 @@ if($existe_error_conexion){
         }        
       }
     }
+    $data['MSAP']=$mayor_sap;
     ///--- CONSULTAMOS EL MAYOR CODIGO DE ARTICULO DE ESTAS PRENDAS EN LAS LISTAS
-    $query_ultimo_lista="SELECT RIGHT(codigo, LENGTH(codigo)-LENGTH($prefijo)) from articulo";
+    $query_ultimo_lista="SELECT RIGHT(codigo, LENGTH(codigo)-LENGTH('$prefijo')) as corre from articulo where codigo LIKE '$prefijo%$sufijo'";
     $querys_export[]=$query_ultimo_lista;
     $arr_ultimo=$mysqli->select($query_ultimo_lista,'mysqli_a_o');//Este array obtiene correlativos puros y con letras al final que corresponden a los sufijos de algunas marcas
     $mayor_lista=0;
     if($arr_ultimo!=0 && $arr_ultimo!=false){
-      if($sufijo==''){ //para que cuando recorra el array buscando el mayor_lista correlativo, solo considere los que no tienen letras al final, 
+      // if($sufijo==''){ //para que cuando recorra el array buscando el mayor_lista correlativo, solo considere los que no tienen letras al final, 
         for($i=0;$i<count($arr_ultimo);$i++){      
-          if(ctype_digit($arr_ultimo[$i][0])){
-            if (intval($arr_ultimo[$i][0])>=$mayor_lista)
-              $mayor_lista=intval($arr_ultimo[$i][0]);
+          if(ctype_digit($arr_ultimo[$i]['corre'])){
+            if (intval($arr_ultimo[$i]['corre'])>=$mayor_lista)
+              $mayor_lista=intval($arr_ultimo[$i]['corre']);
           }
         }
-      }else{        
+      /*}else{        
         for($i=0;$i<count($arr_ultimo);$i++){
           $simbolo=getLetersCadena($cadena);
           if($simbolo==$arr_marca[0]['simbolo']){
-            $correlito=substr($arr_ultimo[$i][0],0,strlen($arr_ultimo[$i][0])-strlen($simbolo)-1);
+            $correlito=substr($arr_ultimo[$i]['corre'],0,strlen($arr_ultimo[$i]['corre'])-strlen($simbolo)-1);
               if (intval($correlito)>=$mayor_lista)
                 $mayor_lista=intval($correlito);
           }  
         }        
-      }      
+      }    */  
     }
-
+    $data['MLISTA']=$mayor_lista;
     ($mayor_lista>=$mayor_sap) ? $first=$mayor_lista + 1 : $first=$mayor_sap + 1;
     if($first<1000) $first = 1000;
 

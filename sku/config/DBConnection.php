@@ -26,20 +26,7 @@ class DBConnection {
   public function query($query){
 
   }
-  //FUNCION QUE DETERMINA SI HAY REGISTROS SEGUN UNA $QUERY, de existir, devuelve la cantidad
-  function quantityRecords($query){
-    $arr_registry=[];
-    $cant_registros=0;
-    if($this->_driver=="mysqli"){  
-      if(($arr_registry=$this->_connection->query($query))!=false){
-        while($arr_registry->fetch_array())
-          $cant_registros++;
-      }else
-        return false;
-    }
-    // echo "cantidad de registros con esta consulta: ".$cant_registros;
-    return $cant_registros;
-  }
+
 ######################   FUNCION SELECT  ########################
 //$query:  cadena de insersion
 //$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
@@ -119,10 +106,10 @@ class DBConnection {
 //$table:  nombre de la tabla
 //$values: array asociativo donde las keys son los nombres de los campos de la tabla
 public function insert_easy($query){
-  if(($this->_connection->query($query))===true){
-    return $this->_connection->affected_rows;
+  if(!($this->_connection->query($query))){
+      return false;
   }else {
-    return false;
+    return $this->_connection->affected_rows;
   }
 }   
 public function insert($table,$values){ 
@@ -146,6 +133,7 @@ public function insert($table,$values){
       $vals = array_merge(array($types), $arr_values);//PARA PODER UNIRLOS, $types SE CONVIERTE EN UN ARRAY con: array($types)
       call_user_func_array(array($stmt, 'bind_param'), $vals); 
       $stmt->execute();
+
       if ($this->_connection->connect_errno) {
         // echo "errores existentes<br>";
         return false; //SI HUBIERON ERRORES, RETORNA FALSO
@@ -191,8 +179,7 @@ public function insert($table,$values){
   ######################   FUNCION DELETE   ########################
   public function delete($query){
     if ($this->_driver=="mysqli"){//POR AHORA SOLO MYSQLI
-      $deleteds=$this->_connection->query($query);
-      if($deleteds===false)
+      if(!$this->_connection->query($query))
         return false;
       else
         return $this->_connection->affected_rows;
@@ -213,11 +200,27 @@ public function insert($table,$values){
     }elseif ($this->_driver=="mysqli"){
       // if ($this->_connection->connect_error){
       if ($this->_connection->connect_errno){
-        $arr_errors[]=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
+        $arr_errors=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
       }else
-        $arr_errors[]=array('code'=>$this->_connection->errno, 'message'=> $this->_connection->error);
+        $arr_errors=array('code'=>$this->_connection->errno, 'message'=> $this->_connection->error);
     }
     return $arr_errors;
+  }
+
+//FUNCION QUE DETERMINA SI HAY REGISTROS SEGUN UNA $QUERY, de existir, devuelve la cantidad
+  public function quantityRecords($query){
+
+    $arr_registry=[];
+    $cant_registros=0;
+    if($this->_driver=="mysqli"){  
+      if(!($arr_registry=$this->_connection->query($query))){
+        return false;
+      }else        
+        while($arr_registry->fetch_array())
+          $cant_registros++;
+    }
+    // echo "cantidad de registros con esta consulta: ".$cant_registros;
+    return $cant_registros;
   }
 
   ######################################   METODO PARA OBTENER LA CABECERA DEL ULTIMO SELECT ###########################

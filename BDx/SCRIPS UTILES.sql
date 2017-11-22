@@ -2,7 +2,8 @@ USE kayser_articulos;
 select * from articulo;
 select * from sku;
 select * from lista;
-select * from lista_has_usuario
+select * from lista_has_usuario;
+select * from usuario;
 
 SELECT L.id, COUNT(S.codigo) from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
 SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
@@ -32,7 +33,11 @@ TRUNCATE TABLE lista;
 truncate table lista_has_usuario;
 truncate table articulo;
 truncate table sku;
+truncate table usuario;
 SET FOREIGN_KEY_CHECKS=1;
+
+DELETE from lista WHERE id=7
+insert into usuario values ('aobando','aobando','admin'),('diseno','diseno','editor');
 
 
 truncate table marca;
@@ -47,6 +52,14 @@ delete from lista where id=5;
 SELECT barcode from sku order by barcode DESC -- LIMIT 1
 SELECT @@identity AS id
 SELECT codigo FROM articulo WHERE lista_codigo=2
+
+describe articulo;
+SELECT codigo FROM articulo;
+SELECT RIGHT(codigo, LENGTH(codigo)-LENGTH('P2AC')) as corre from articulo where codigo LIKE 'P2AC%'
+SELECT codigo, RIGHT(codigo, LENGTH(codigo)-LENGTH('P2150')) from articulo where codigo LIKE 'P2150%D'
+INSERT INTO articulo VALUES ('P2141000',25,'P2141000-PANTALETA ALGODON', 1,'KAYSER',106,'dama',5,'CORSETERIA','09','CALZON','62','PANTALETA',2,'BIPACK',2,'ALGODON',1,'INVIERNO',23,'INV18',9,'ESCOLAR',,'',2,'100% ALGODON','T03')
+INSERT INTO articulo VALUES ('P2AC1000',28,'P2AC1000-AJUSTADOR TIRANTES ACRILICO', 1,'KAYSER',106,'dama',1,'ACCESORIOS','01','AJUSTADOR','74','TIRANTES',2,'BIPACK',1,'ACRILICO',1,'INVIERNO',1,'DESCONTINUADO',5,'ADULTO',1,'FULL PRINT',1,'100% ACRILICO','T07')
+
 
 INSERT INTO articulo VALUES ('D501001',2,'D501000-SOSTEN PETO CATALOGOI', 4,'DISNEY',106,'dama',5,'CORSETERIA','25','SOSTEN','63','PETO',1,'UNITARIO',5,'CATALOGO',2,'VERANO',21,'VER18',5,'ADULTO','full print',1,'100% ACRILICO','T03',100,'')
 INSERT INTO lista values (NULL,'');

@@ -10,8 +10,10 @@ require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
 require_once "../config/sku_db_sqlsrv_33.php";
 
+
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
+ 
   $code_article=$_POST['articulo'];
   $itemname=$_POST['itemname'];  
   $colores_name=$_POST['colores_name'];
@@ -20,24 +22,25 @@ if($_POST['option']=="save_article"){
   $tallas_orden=$_POST['tallas_orden'];
   $colores_length=count($colores_name);
   $tallas_length=count($tallas_name);
+
+
   if(isset($_POST['copa'])){
     $copa=$_POST['copa'];
     $fcopa=$_POST['fcopa'];
   }else {
     $copa='';
     $fcopa='';
-  }
-
+  }  
   $data=[];
   $sku_inserteds=[];
   $sku_refused=[];
   $first_barcode=getFirstBarcode();
-  $hoy=date('Y-m-d h:i:s');
+  $hoy=date('Y-m-d H:i:s');
   $filas='';
   $querys=[];
-
+  $data['lista']=$lista; 
   $data['first_barcode']=$first_barcode;
-  
+
   if($lista==0){
     //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
     $query_insert_list="INSERT INTO lista values (NULL,'','EDITADA')";
@@ -57,7 +60,6 @@ if($_POST['option']=="save_article"){
         $data['errors']=$mysqli->getErrors();
         $data['nothing']='no se pudo obtener el id de la ultima fila ingresada';           
         echo json_encode($data); exit();
-
       }
     }else{
       $data['errors']=$mysqli->getErrors();
@@ -65,9 +67,8 @@ if($_POST['option']=="save_article"){
       echo json_encode($data); exit();
     }
   }
-  $data['lista']=$lista; 
   
-  
+
   ///--- AHORA REGISTRAMOS EL ARTICULO
   $query_insert_article="INSERT INTO articulo VALUES (";
   $query_insert_article.="'$code_article',$lista,'".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
@@ -77,17 +78,28 @@ if($_POST['option']=="save_article"){
   $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
   $query_insert_article.="'".$_POST['talla_familia']."')";
   $data['all_querys'][]=$query_insert_article;
-  // echo json_encode($data); 
-  
-  if($mysqli->insert_easy($query_insert_article)!=1){
-    $cant_registros_lista=quantityRecords("select codigo from articulo where lista_id=$lista");
-    if($cant_registros_lista==0)
-      $mysqli->delete("DELETE FROM lista WHERE id=$lista");      
-    $data['errors']=$mysqli->getErrors();
+
+  $errors=[];///DE AQUI EN ADELANTE PUEDEN HABER ERRORES ACUMULATIVOS
+  $reg_inserted=$mysqli->insert_easy($query_insert_article);
+  if($reg_inserted!=1){
+    $errors[]=$mysqli->getErrors();  
+    $cant_registros_lista=$mysqli->quantityRecords("select codigo from articulo where lista_id=$lista");
+    if($cant_registros_lista=false){
+       $errors[]=$mysqli->getErrors();
+       $data['msj']='no se creo el articulo y hubo error al consultar la cantidad de articulos en esta lista';  
+    }elseif($cant_registros_lista==0){
+      if(($mysqli->delete("DELETE FROM lista WHERE id=$lista"))==false){
+        $errors[]=$mysqli->getErrors();
+        $data['msj']='no se creo el articulo, la lista estaba nueva y no se pudo eliminar'; 
+      }
+    }  
+    $data['errors']=$errors;
     $data['nothing']='NO SE PUDO CREAR EL ARTICULO';
     echo json_encode($data); exit();
+  }else{
+    $data['msj']='raro por que debio crear el articulo y no lo hizo'; //SACAR DESPUES
   }
-  
+
   ///--- AHORA REGISTRAMOS LOS SKUS
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
@@ -158,10 +170,31 @@ if($_POST['option']=="delete_list") {
   $lista=$_POST['list'];
   ///SUPONGO QUE SOLO BASTA CON ELIMINAR LA VISTA, Y POR CASCADA, SE ELIMINARAN LOS ARTICULOS Y LOS SKUS, ADEMAS DE LISTA_HAS_USER
   ///--- OJO, SI SE ESTA INDICANDO QUE SE SUBIO A SAP, ANTES HAY QUE HACER EL LOG DE ESTA VISTA.  
+  if(isset($_POST['operation']) && $_POST['operation']=='UPLOAD_SAP'){
+    //TENEMOS QUE HACER UN LOG CON LA LISTA, LOS ARCHIVOS Y LOS SKUS QUE SE ESTAN CARGANDO A SAP;
+
+  }
+  $query_delete_list="DELETE from lista WHERE id=$lista";
+  $querys_all[]=$query_delete_list;
+  $reg_deleted=$mysqli->delete($query_delete_list);
+  if($reg_deleted!=1){
+    $data['delete']=false;
+    $data['errors']=$mysqli->getErrors();
+  }else{
+    $data['delete']=true;
+  }
+  $data["query_all"]=$querys_all;
+  echo json_encode($data);
+
 }
 
 if($_POST['option']=="save_list") {
-  ///---
+  $send=sendMail($_POST);
+  if($send===true)
+    $data['submit']=true;
+  else
+    $data['submit']=false;
+  echo json_encode($data);
 }
 
 if($_POST['option']=='show_lists'){
@@ -196,11 +229,6 @@ if($_POST['option']=='show_lists'){
   echo json_encode($data);
 }
 
-function deleteList($listita){
-  global $mysqli;
-  ///NO SE SI ESTA FUNCION SEA NECESARIA YA QUE EL $MYSQLI->DELETE ESTA BIEN RESUMIDA
-
-}
 function sendMail($arr_cont){
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
@@ -254,7 +282,7 @@ function sendMail($arr_cont){
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
   $hoy=date("Y-m-d H.i.s");
-  $destinatario ="aobando@kayser.cl,mmora@kayser.cl";
+  $destinatario ="aobando@kayser.cl";
   $titulo = "PLANTILLA_CARGA_SKUS_(".$hoy.")";
   $headers = "From: DISENO <diseno@kayser.cl>\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
@@ -264,12 +292,12 @@ function sendMail($arr_cont){
   $headers .= utf8_decode($content_csv);
   $headers .= "\r\n";
 
-  // if(mail($destinatario, $titulo,"", $headers)){
-  //   return true;
-  // }
-  // else{
-  //   return false;
-  // }
+  if(mail($destinatario, $titulo,"", $headers)){
+    return true;
+  }
+  else{
+    return false;
+  }
   return($content_csv);   
 }
 function existArticle($cod_art,$serv){

@@ -96,6 +96,7 @@ body, html {
 .modal_panel {
   background-color: rgba(1, 26, 52, 0.61);
   top: 0;
+  z-index: 10 !important;
   display: flex;
   align-items: center;
   visibility: hidden;/*si son varios modales, ocultar para cada id del modal*/

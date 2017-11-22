@@ -1,11 +1,11 @@
-#div_modal_article_creaction {
+#div_modal_article_creation {
   height: 100% !important;
 }
-#div_modal_article_creaction .content_modal {
+#div_modal_article_creation .content_modal {
   width: 95%;
   height:  95% !important;
 }
-#div_modal_article_creaction .body_modal {
+#div_modal_article_creation .body_modal {
   background-color: rgba(3, 48, 66, 0.88);
   border: 1px solid white;
   overflow-y: auto !important;
@@ -14,7 +14,7 @@
 
 
 
-#div_modal_article_creaction .header_modal {
+#div_modal_article_creation .header_modal {
   background-color: white;
   color: rgba(3, 48, 66, 0.88);
 }
@@ -24,13 +24,13 @@
   border: 1px solid white;
 }
 
-#div_modal_article_creaction .dfooter_sku {
+#div_modal_article_creation .dfooter_sku {
     /* margin: 1rem; */
     display: flex;
     justify-content: center;
     background-color: white;
 }
-  #div_modal_article_creaction>.content_modal>.body_modal>.dfooter_sku>button {
+  #div_modal_article_creation>.content_modal>.body_modal>.dfooter_sku>button {
   margin : 1rem !important;
 }
 .article_preview {

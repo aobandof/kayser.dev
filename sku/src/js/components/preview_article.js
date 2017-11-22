@@ -28,7 +28,7 @@ function makeArticlePreview(arti,desc){
   code_article=arti;
   itemname=desc;
 
-  let body_modal = document.querySelector('#div_modal_article_creaction .body_modal'); //referenciamos al body del modal  
+  let body_modal = modal_preview_save.querySelector('.body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
     article_title.innerHTML = "<span>" + itemname + "</span>"
@@ -93,11 +93,11 @@ function makeArticlePreview(arti,desc){
   let dbody_sku = document.createElement('div');
       dbody_sku.className='dbody_sku';
   dtable_sku.appendChild(dbody_sku);
-  body_modal.insertAdjacentElement('afterbegin', article)
+  body_modal.insertAdjacentElement('beforeend', article)
 }
 // ####### NO USAR LA SIGUIENTE FUNCION ################
 //FUNCION QUE CREA EL COMPONENTE ARTCULO  que contiene LA TABLA CON LOS SKUs a GENERAR
-function makeFillArticlePreview(){ 
+/*function makeFillArticlePreview(){ 
   colores_code.length=0; colores_text.length=0;
   tallas_text.length=0; tallas_orden.length=0;
   skus.length=0; barcodes.length=0; duns.length=0;
@@ -105,7 +105,7 @@ function makeFillArticlePreview(){
   code_article = document.getElementById('txt_sku_prefijo').value + '.' + document.getElementById('txt_sku_correlativo').value;  
   itemname = code_article + '-' + document.getElementById('txt_sku_descripcion').value;
 
-  let body_modal = document.querySelector('#div_modal_article_creaction .body_modal'); //referenciamos al body del modal  
+  let body_modal = modal_preview_save.querySelector('.body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
     article_title.innerHTML = "<span>" + itemname + "</span>"
@@ -170,52 +170,4 @@ function makeFillArticlePreview(){
       dbody_sku.className='dbody_sku';
   dtable_sku.appendChild(dbody_sku);
   body_modal.insertAdjacentElement('afterbegin', article)
-
-  /*
-  ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente
-  el_sel_colors = document.getElementById('select_sku_color');
-  for (var i = 0; i < el_sel_colors.selectedOptions.length; i++)
-    colores_code.push(el_sel_colors.selectedOptions[i].value);
-  colores_text = document.querySelector('#div_row_colours .filter-option').innerHTML.split(',');  
-  colores_text = colores_text.map(item => item.trim());
-  ///--- SI LA PRENDA TIENE COPA, ENTONCES HAY QUE AGREGAR EL LA LETRA DE COPA DESPUES DE LA ABREVIATURA DEL COLOR
-  ///--- para esto creamos una variable que la contenga y que sera "" en caso de no haber copa
-  let copa;
-  el_copa = document.getElementById('select_sku_copa')
-  el_copa.value!== '' ? copa = el_copa.options[el_copa.selectedIndex].text : copa='';
-
-  ///--- OBTENEMOS VALOR DE LA FAMILIA, ARRAY_TALLAS Y $ARRAY_ORDENES RESPECTIVAMENTE
-  list_check_familias = document.querySelectorAll('.check_familia');
-  for (i = 0; i < list_check_familias.length; i++)
-    if (list_check_familias[i].checked == true) check_familia = list_check_familias[i];
-  familia = check_familia.parentNode.parentNode.id;
-
-  list_check_tallas = check_familia.parentNode.nextSibling.querySelectorAll('.check_talla');
-  for (i = 0; i < list_check_tallas.length; i++) {
-    if (list_check_tallas[i].checked) {
-      checked = list_check_tallas[i].name.split('|');
-      tallas_orden.push(checked[1]);
-      tallas_text.push(checked[0]);
-    }
-  }
-
-  ///--- AHORA OBTENEMOS EL ARRAY CON LOS CODES SKU
-  leng_colores = colores_text.length;
-  leng_tallas = tallas_text.length;
-  for (let i = 0; i < leng_colores; i++){
-    for (var j = 0; j < leng_tallas; j++){
-      skus.push(code_article + '-' + colores_text[i].substr(0, 3) + copa + '-' + tallas_text[j])
-      barcode = parseInt(first_barcode) + (i * leng_tallas) + j;
-      barcodes.push(String(barcode) + getControlDigit(String(barcode)));
-    }
-  }
-  ///---AHORA CREAMOS LAS FILAS Y DIBUJAMOS LOS SKU
-  leng_skus = skus.length;           
-  for (i=0; i<leng_skus; i++) {
-    img_delete_sku_list = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'+ skus[i] +'">'
-    let dtr_sku = "<div class='dtr_sku' id='" + skus[i] + "'><div>" + (i + 1) + "</div><div>" + skus[i] + "</div><div>" + barcodes[i] + "</div><div>" + colores_text[i] + "</div><div>" + tallas_text[i] + "</div><div>" + img_delete_sku_list + "</div></div>"
-    dbody_sku.insertAdjacentHTML('beforeend', dtr_sku);
-  }*/
-
-
-}
+}*/

@@ -1,11 +1,15 @@
 <?php
 session_start();
+
 if(isset($_SESSION['user'])){
-  if(isset($_GET['option'])){
-    if($_GET['option']=='crear_articulo')
-      echo "<script>let initial_option='crear_article'; let active_list=0;</script>";
-    if($_GET['option']=='ver_lista')
-      echo "<script>let initial_option='show_list'; let active_list=".$_GET['lista'].";</script>";
+  // echo $_SESSION['user']." --- ".$_SESSION['perfil'];
+  $perfil=$_SESSION['perfil'];
+  if(isset($_GET['option'])){    
+    if($_GET['option']=='crear_articulo'){      
+      echo "<script type='text/javascript'>let initial_option='crear_article'; let active_list=0; let perfil='$perfil';</script>";
+    }if($_GET['option']=='ver_lista'){
+      echo "<script type='text/javascript'>let initial_option='show_list'; let active_list=".$_GET['lista']."; let perfil='$perfil';</script>";
+    }
   }else
     header("Location: ./menu.php");
 }else {
@@ -34,6 +38,12 @@ if(isset($_SESSION['user'])){
   <title>SKU / Articulos</title>
 </head>
 <body>
+    <!-- COMPONENTE MODAL UPLOAD -->
+    <div class="modal_loading_full cont_hidden" id="sku_loader_full">
+      <img src="../shared/img/loader_azul.gif" alt="">
+    </div>
+
+
     <div class="container_column" id="div_sku_crear">
       <div class="container_row">
         <div class="cont_imgs_categorias">
@@ -86,7 +96,7 @@ if(isset($_SESSION['user'])){
             </div>
             <div class="full_fila" id="div_row_colours">
                 <span class="">COLOR&nbsp</span>
-                <select name="color" id="select_sku_color" class="form-control sku_control ind" data-live-search="true" title="" multiple></select>
+                <select name="color" id="select_sku_color" class="form-control sku_control" data-live-search="true" title="" multiple></select>
             </div>
             <div class="full_fila">
               <span class="">TALLA&nbsp</span>
@@ -137,7 +147,7 @@ if(isset($_SESSION['user'])){
         </div>
     </div>
 
-    <!-- COMPONENTE MODAL UPLOAD -->
+
     <div class="modal modal_panel modal_upload" id="div_modal_upload">
       <div class="cont_logo">
         <a href="#" id="link_update">
@@ -145,7 +155,7 @@ if(isset($_SESSION['user'])){
         </a>
       </div>
     </div>
-    <!-- FIN COMPONENTE MODAL UPLOAD -->
+
 
     <!-- COMPONENTE MODAL ITEM -->
     <div class="modal modal_panel" id="div_crud_item">
@@ -178,7 +188,7 @@ if(isset($_SESSION['user'])){
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE MODAL ITEM -->
+
 
     <!-- COMPONENTE MODAL RELACION -->
     <div class="modal modal_panel" id="div_crud_relations">
@@ -203,7 +213,7 @@ if(isset($_SESSION['user'])){
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE MODAL RELACION -->
+>
 
     <!-- COMPONENTE MODAL PREFIJOS -->
     <div class="modal modal_panel" id="div_crud_prefix">
@@ -232,38 +242,39 @@ if(isset($_SESSION['user'])){
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE MODAL PREFIJOS -->
+
 
     <!-- COMPONENTE MODAL PREVIEW GUARDAR SKU -->
-    <div class="modal modal_panel" id="div_modal_article_creaction">
+    <div class="modal modal_panel" id="div_modal_article_creation">
       <div class="content_modal">
         <div class="header_modal">
           <span id="span_title_article_creation_modal">Preview Guardar SKUs</span>
-          <img src="../shared/img/close.png" class="close_modal" id="img_close_article_creation" alt="">
+          <!-- <img src="../shared/img/close.png" class="close_modal" id="img_close_article_creation" alt=""> -->
         </div>
         <div class="body_modal">
 
         </div>
         <div class="footer_modal">          
           <?php
-            if($_SESSION['perfil']='editor'){
+            if($_SESSION['perfil']=='admin'){
               echo '<button class="btn btn-primary btn_footer" id="button_finalize_new_list">FINALIZAR Y LIBERAR</button>';
-              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-warning btn_footer" id="button_show_lists">SEGUIR EDITANDO</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
-            }elseif($_SESSION['perfil']='revisor'){
+            }elseif($_SESSION['perfil']=='reviser'){
               echo '<button class="btn btn-primary btn_footer" id="button_revise_list">ENVIAR A INFORMATICA</button>';
-              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              // echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
-            }elseif($_SESSION['perfil']='editor'){
-              echo '<button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR Y ENVIAR PLANTILLA</button>';
-              echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
-              echo '<button class="btn btn-danger btn_footer" id="button_clear_list">CANCELAR LISTA</button>';
+            }elseif($_SESSION['perfil']=='editor'){
+              echo '<button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR SKUs</button>';
+              echo '<button class="btn btn-warning btn_footer" id="button_follow_editing">SEGUIR EDITANDO</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-danger btn_footer" id="button_delete_list">CANCELAR LISTA</button>';
             }            
           ?>
         </div>
       </div>
     </div>
-    <!-- FIN COMPONENTE MODAL GUARDAR SKU -->
+
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

@@ -34,3 +34,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 ----------------------------
 * cuando se inserta o actualiza un valor UNIQUE, si el valor ya existe, NO GENERA ERROR, simplemte no realiza la accion y no hay filas afecatdas.
   Es una buena practica detectar esto con $mysqli->>affected_rows ( -1 indica que no realizó accion )
+
+
+EXPORTAR IMPORTAR
+----------------
