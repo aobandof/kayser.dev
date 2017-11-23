@@ -18,9 +18,6 @@ if($existe_error_conexion){
 }
 
 if($_POST['option']=="cargar_selects_independientes"){
-  ///--- INICIALMENTE MANDAMOS DE LLAPA EL PRIMER BARCODE PARA APLICAR ---
-  $data['first_barcode']=getFirstBarcode();
-  ///////////////////////////////////
   $options=[];
   $nombre_name="";
   $nombre_id="";

@@ -7,15 +7,31 @@ let el_div_loader_full;
 $(document).ready(function() {
 
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
+
   // $('#sku_loader_full').ajaxStart(function () { $(this).classList.add('cont_hidden') });
   // $('#sku_loader_full').ajaxComplete(function () { $(this).classList.remove('cont_hidden') });
 
-  if(initial_option=='show_list'){
-    ///aca mostraremos el modal y renderizaremos la lista
+  ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
+  if(initial_option=='show_list' && perfil!='editor'){
     modal_preview_save.style.visibility = 'visible';
-
+    ///--- CONSULTAREMOS A LA API, TODOS LOS SKUS AGRUPADOS POR ARTICULOS QUE ESTAN DENTRO DE ESTA LISTA
+    parameters={ 'option':'get_articles', 'list':active_list };
+    // console.log(parameters);
+    $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+      beforeSend: function (){ },
+      success: function(data){
+        // console.log(data);
+        if(!!data.articulos){
+          for (index in data.articulos ) {
+            console.log(data.articulos[index]);
+            renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus,'NEW');
+          }
+        }
+      },
+      error: function(){ console.log('error'); }
+    });
   }
-  if (initial_option == 'crear_article'){
+  if (initial_option == 'create_article'){
     document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
   }
 
@@ -50,13 +66,12 @@ $(document).ready(function() {
           if (!!data.nothing) {
             alert("NO SE PUDO AGREGAR EL ARTICULO");
             console.log(data.nothing);
-
           } else {
-
             if (!!data.filas && data.filas != '') {
               active_list = data.lista;
               resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
               renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED
+              modal_preview_save.style.visibility = 'visible';
             }
             if (!!data.refused) {
               mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
@@ -108,10 +123,10 @@ $(document).ready(function() {
   el_but_delete_list = document.getElementById('button_delete_list');
   if(!!el_but_delete_list){
     el_but_delete_list.onclick = function(){
-      if(initial_option=="save_article" && perfil=='editor')
-        let message = "ESTA A PUNTO DE SALIR Y DESCARTAR ESTA LISTA DE TRABAJO, \n\n¿DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO?";
+      if(initial_option=="create_article" && perfil=='editor')
+        message = "ESTA A PUNTO DE SALIR Y DESCARTAR ESTA LISTA DE TRABAJO, \n\n¿DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO?";
       else 
-        let message = "DESEA REALMENTE ELIMINAR ESTA LISTA Y DESCARTAR SU CARGA EN SAP";
+        message = "DESEA REALMENTE ELIMINAR ESTA LISTA Y DESCARTAR SU CARGA EN SAP";
       if (confirm(message)) {        
         parameters = { 'option': 'delete_list', 'list': active_list }
         $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
@@ -126,7 +141,7 @@ $(document).ready(function() {
         });
         //EN CUALQUIERA DE LOS CASOS, AUN SI NO SE PUDO ELIMINAR LA LISTA, ELIMINAMOS LE CONTENIDO DEL MODAL, LO OCULTAMOS Y RESETEAMOS LOS CONTROLES
         if (initial_option =='show_list')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
-          location.href = "lista.php";
+          location.href = "listas.php";
         else
           location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
       }
@@ -151,24 +166,32 @@ $(document).ready(function() {
     }
   }
 
-  el_but_show_lists = document.getElementById('button_show_lists"');
+  el_but_show_lists = document.getElementById('button_show_lists');
   if(!!el_but_show_lists){
     el_but_show_lists.onclick=function(){
-      location.href = "lista.php";
+      // alert("deberia verse esto ante el evento click");
+      location.href = "listas.php";
     }
   }
   /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
   el_but_save_list = document.getElementById('button_save_list');
   if (!!el_but_save_list) {
+    parameters = new Object();
     el_but_save_list.onclick = function () {
       if(initial_option=="show_list" && perfil=='reviser')
         parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
       else if(initial_option=="create_article" && perfil=='editor')
         parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
+      else if (initial_option == "create_article" && perfil == 'reviser')
+        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };   
+      else 
+        console.log("no deberia entrar aca");
+      console.log(parameters);             
       $.ajax({
         url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
         success: function (data) {
+          console.log(data);
           el_div_loader_full.classList.remove('cont_hidden');
           if(data.submit==true){
             alert('SKUS ENVIADOS CORRECTAMENTE');
@@ -178,6 +201,13 @@ $(document).ready(function() {
         },
         error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
       });
+    }
+  }
+  /************************   EVENTO PARA FINALIZAR LA LISTA, ELIMINARLA GUARDANDO EN EL LOG,LOS SKUS CARGADOS A SAP *****************/
+  el_but_fin_list=document.getElementById('button_finalize_list');
+  if(!!el_but_fin_list){
+    el_but_fin_list.onclick=function(){
+      alert('MODULO PENDIENTE...');
     }
   }
 
@@ -287,8 +317,9 @@ $(document).ready(function() {
     }
   });
 
-  // loadToModifyArticleList('');
+
 /*********************************************************************************************************/
+/****************************************     FUNCIONES    *********************************************/
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
   function getElementsControls() {
@@ -318,7 +349,7 @@ $(document).ready(function() {
     body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   }
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-function renderArticleList(art,itn,rows,estado_article){
+function renderArticleList(art,itn,rows,estado_article){ // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
   if (estado_article=='NEW')
     makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
   id_articulo=art;
@@ -326,9 +357,7 @@ function renderArticleList(art,itn,rows,estado_article){
     id_articulo="div_"+id_articulo.replace('.','_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
   }     
   el_articulo=document.getElementById(id_articulo);//
-  el_articulo.querySelector('.dbody_sku').innerHTML=rows;
-  modal_preview_save.style.visibility = 'visible';
-
+  el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
   ///CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
   el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function(icon){
     icon.onclick=function(){
@@ -486,7 +515,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
     success : function(data) {
-      console.log('FROM API: (option: '+ parametros.option +') ',data);
+      // console.log('FROM API: (option: '+ parametros.option +') ',data);
       // el_div_loader_full.classList.remove('cont_hidden');
       if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
       if(!!data.dpto) { code_dpto = data.dpto; }

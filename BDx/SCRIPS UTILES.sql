@@ -5,6 +5,10 @@ select * from lista;
 select * from lista_has_usuario;
 select * from usuario;
 
+SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, S.talla_orden, A.codigo as cod_articulo, A.itemname FROM sku as S
+INNER JOIN articulo as A ON S.articulo_codigo=A.codigo
+WHERE A.lista_id=3; 
+
 SELECT L.id, COUNT(S.codigo) from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
 SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id
 SELECT L.id,COUNT(S.codigo) from lista as L
@@ -33,12 +37,18 @@ TRUNCATE TABLE lista;
 truncate table lista_has_usuario;
 truncate table articulo;
 truncate table sku;
-truncate table usuario;
+-- truncate table usuario;
 SET FOREIGN_KEY_CHECKS=1;
 
 DELETE from lista WHERE id=7
-insert into usuario values ('aobando','aobando','admin'),('diseno','diseno','editor');
+insert into usuario values ('reviser','reviser','reviser');
+INSERT INTO usuario VALUES ('mmora','mmora','admin'),('aobando','aobando','admin'),('emonsalves','emonsalves','admin'),('mgiraldo','mgiraldo','admin'),('mvera','mvera','admin'),('cmarino','cmarino','reviser'),('fmunoz','fmunoz','reviser'),('gpassi','gpassi','reviser'),('ssalas','ssalas','reviser'),('comex','comex','editor'),('ldelteil','ldelteil','editor'),('mbustos             ','mbustos             ','editor'),('mpasten','mpasten','editor'),('smolina','smolina','editor'),('jbisquertt','jbisquertt','editor'),('rriquelme','rriquelme','editor'),('janais','janais','editor'),('admin','12345','admin'),('editor','12345','editor'),('reviser','12345','reviser'),('informatica','12345','admin');
 
+SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id;
+
+
+
+describe skucreated;
 
 truncate table marca;
 truncate table presentacion;

@@ -38,3 +38,21 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 EXPORTAR IMPORTAR
 ----------------
+
+EXPORTAR:
+
+en windows hay que colocarlse en la carpeta C:/xampp/mysql/bin. no es necesario en linux
+y ejecutar:
+	mysqldump -h ip_servidor -u usuario_bd -p base_de_datos > archivo.sql (o la ruta si quieres que se guarde en otra carpeta)
+
+
+IMPORTAR:
+	INICIAR MYSQL 	
+		$ mysql -h ip_servidor -u usuario -p
+	CREAR LA BASE DE DATOS
+		mysql> create database base_datos;
+		mysql> use base_datos;
+	IMPORTSAMOS
+		mysql> source /home/usuario/archivo.sql
+	
+	

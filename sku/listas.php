@@ -18,6 +18,10 @@ if(!isset($_SESSION['user'])){
 </head>
 <body>
   <div id="div_sku_listas">
+    <div class="">
+      <span>LISTAS PENDIENTES DE REVISION Y CARGA A SAP</span>
+      <a href="menu.php"><button class="btn btn-warning">VOLVER AL MENU</button></a>
+    </div>
     <div class="dtable">
       <div class="dhead">
         <div>Cod.</div><div>Creada por</div><div>Revisada por</div><div>cantidad SKUs</div><div>Ver</div>
@@ -43,7 +47,8 @@ if(!isset($_SESSION['user'])){
                 location.href = "crear.php?option=ver_lista&lista="+icon.id;
               }           
             });
-          }
+          }else
+            alert("NO EXISTEN LISTAS PENDIENTES");
         },
         error: function(){ console.log('error'); }
       });

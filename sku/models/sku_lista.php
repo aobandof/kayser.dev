@@ -10,7 +10,7 @@ require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
 require_once "../config/sku_db_sqlsrv_33.php";
 
-$hoy=date('Y-m-d H:i:s');
+$hoy=date('Y-m-d H.i.s');
 
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
@@ -94,14 +94,15 @@ if($_POST['option']=="save_article"){
     $data['errors']=$errors;
     $data['nothing']='NO SE PUDO CREAR EL ARTICULO';
     echo json_encode($data); exit();
-  }else{
-    $data['msj']='raro por que debio crear el articulo y no lo hizo'; //SACAR DESPUES
   }
 
   ///--- AHORA REGISTRAMOS LOS SKUS
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
-      $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
+      if($copa!='' && $copa!='S/P')
+        $sku=$code_article.'-'.substr($colores_name[$i],0,3).$copa.'-'.$tallas_name[$j];
+      else
+        $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
       if(existSku($sku,'SAP')==true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
       }elseif(existSku($sku,'LISTA')==true){
@@ -183,26 +184,46 @@ if($_POST['option']=="delete_list") {
 
 if($_POST['option']=="save_list") {
   $lista=$_POST['list'];
-  $send=sendMail($_POST);
-  if($send===true){
-    $data['submit']=true;
-    ($_POST['operation']=='creation') ? $estado_lista='CREADA' :  $estado_lista='REVISADA';
-    $query_state="UPDATE lista SET estado='$estado_lista' WHERE id=$lista";
-    $reg_updated=$mysqli->update_easy($query_state);
-    if($reg_updated==1){      
-      $data['list_updated']=true;
-      ///AHORA GUARDAREMOS LA ACCION DE REVISADO EN LA RELACION LISTA USUARIO
-      if($_POST['operation']=='review'){
-        if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','REVISION','$hoy')") != 1 ){
-          $data['errors']=$mysqli->getErrors();
+  ($_POST['operation']=='creation') ? $nomb_lista="PLANILLA_CREACION_SKUS_LISTA_N-$lista_($hoy)" :  $nomb_lista="PLANILLA_REVISION_SKUS_LISTA_N-$lista_($hoy)";
+
+  ///--- OBTENEMOS TODOS LOS SKU 
+  $query_skus_carga="SELECT S.codigo as cod_sku, S.barcode, A.caracteristica_name, A.itemname, A.dpto_code, A.prenda_name, A.codigo as cod_articulo, ";
+  $query_skus_carga.="S.color_name, S.talla_name, A.talla_familia, A.prenda_code, S.talla_orden, A.marca_name, A.tprenda_name, A.material_name, A.grupouso_name, ";
+  $query_skus_carga.="A.subdpto_name, A.composicion_name, A.categoria_code, S.copa, A.presentacion_name, A.tcatalogo_name, S.fcopa FROM sku as S ";
+  $query_skus_carga.="INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
+  
+  $data['querys_all'][]=$query_skus_carga;
+  $arr_skus_carga=$mysqli->select($query_skus_carga,"mysqli_a_o");
+  if($arr_skus_carga!=0 && $arr_skus_carga!=false){
+    $send=sendMail($arr_skus_carga);
+    if($send===true){
+      $data['submit']=true;
+      ($_POST['operation']=='creation') ? $estado_lista='CREADA' :  $estado_lista='REVISADA';
+      $query_state="UPDATE lista SET estado='$estado_lista' WHERE id=$lista";
+      $reg_updated=$mysqli->update_easy($query_state);
+      if($reg_updated==1){      
+        $data['list_updated']=true;
+        ///AHORA GUARDAREMOS LA ACCION DE REVISADO EN LA RELACION LISTA USUARIO
+        if($_POST['operation']=='review'){
+          if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','REVISION','$hoy')") != 1 ){
+            $data['errors']=$mysqli->getErrors();
+          }
         }
+      }else{
+        $data['list_updated']=false;
+        $data['errors']=$mysqli->getErrors();
       }
-    }else{
-      $data['list_updated']=false;
-      $data['errors']=$mysqli->getErrors();
-    }
-  }else
-    $data['submit']=false;
+    }else
+      $data['submit']=false;
+    // $data['skus_to_submit']=$arr_skus_carga;
+  }else{
+    $arr_skus_carga==false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
+  }
+
+
+  
+  
+
   echo json_encode($data);
 }
 
@@ -210,104 +231,128 @@ if($_POST['option']=='show_lists'){
   $creator='';
   $revisor='';
   $divs="";
-  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
+  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo WHERE L.estado!='EDITADA' GROUP BY L.id";
   $all_querys[]=$query_insert_list;
   $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
-  for($i=0; $i<count($arr_lists); $i++){
-    $cod_list=$arr_lists[$i]['id'];
-    $cant_skus=$arr_lists[$i]['cant_skus'];
-    $icon_show="<img id='$cod_list' class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'>";
-    ///--- OBTENEMOS QUIEN LA CREO Y LA REVISO
-    $query_relation="SELECT * FROM lista_has_usuario where lista_id=$cod_list";
-    $all_querys[]=$query_relation;
-    $arr_relation=$mysqli->select($query_relation,"mysqli_a_o");
-    if($arr_relation!=0 && $arr_relation!=false){
-      for($j=0; $j<count($arr_relation); $j++){
-        if($arr_relation[$j]['operacion']=='CREACION'){
-          $creator=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
-        }elseif($arr_relation[$j]['operacion']=='REVISION'){
-          $revisor=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+  $data['cant_primera_consulta']=$arr_lists;
+  if($arr_lists!=0 && $arr_lists!=false){
+    for($i=0; $i<count($arr_lists); $i++){
+      $cod_list=$arr_lists[$i]['id'];
+      $cant_skus=$arr_lists[$i]['cant_skus'];
+      $icon_show="<img id='$cod_list' class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'>";
+      ///--- OBTENEMOS QUIEN LA CREO Y LA REVISO
+      $query_relation="SELECT * FROM lista_has_usuario where lista_id=$cod_list";
+      $all_querys[]=$query_relation;
+      $arr_relation=$mysqli->select($query_relation,"mysqli_a_o");
+      if($arr_relation!=0 && $arr_relation!=false){
+        for($j=0; $j<count($arr_relation); $j++){
+          if($arr_relation[$j]['operacion']=='CREACION'){
+            $creator=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+          }elseif($arr_relation[$j]['operacion']=='REVISION'){
+            $revisor=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+          }
         }
-      }
+      }    
+      $divs.="<div class='dtr'><div>$cod_list</div><div>".$creator."</div><div>".$revisor."</div><div>$cant_skus</div><div>$icon_show</div></div>";
     }
-    $divs.="<div class='dtr'><div>$cod_list</div><div>".$creator."</div><div>".$revisor."</div><div>$cant_skus</div><div>$icon_show</div></div>";
-
-  }  
+  }
   $data['rows']=$divs;
   $data['querys_all']=$all_querys;
   echo json_encode($data);
 }
 
+if($_POST['option']=='get_articles'){
+  $lista=$_POST['list'];
+  $s=1;//para enumerar los skus por columnas
+  $a=0;//cantidad de articulos que usasremos para llenar el arr_export;
+  $arr_export=[];
+  $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
+  $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
+  if($arr_skus!=0 && $arr_skus!=false){
+    $cant_registros=count($arr_skus);
+    $art_temp=$arr_skus[0]['cod_articulo'];
+    for($i=0;$i<$cant_registros;$i++){
+      if ($arr_skus[$i]['cod_articulo']!=$art_temp){
+        $art_temp=$arr_skus[$i]['cod_articulo'];         
+        $i--;      // que cuando itere aumentara en 1 y volvera  al valor correcto de $i pero sin entrar a esta condicion 
+        $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
+        $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
+        $arr_export[$a]['skus']=$rows;
+        $a++;
+        $rows='';
+        $s=1;
+      }else {
+        $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$arr_skus[$i]['cod_sku'].'">';        
+        $rows.="<div><div>".$s."</div><div>".$arr_skus[$i]['cod_sku']."</div><div>".$arr_skus[$i]['barcode']."</div><div>".$arr_skus[$i]['color_name']."</div><div>".$arr_skus[$i]['talla_name']."</div><div>$img_delete</div></div>"; 
+        $s++;
+      }
+    }
+    $arr_export[$a]['articulo']=$arr_skus[$i-1]['cod_articulo'];
+    $arr_export[$a]['itemname']=$arr_skus[$i-1]['itemname'];
+    $arr_export[$a]['skus']=$rows;
+    $data['articulos']=$arr_export;
+  }else{
+    $arr_skus==false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
+  }
+  echo json_encode($data);
+
+}
 function sendMail($arr_cont){
+  global $nomb_lista;
+
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
-  $cant_colores=count($arr_cont['colores_name']);
-  $cant_tallas=count($arr_cont['tallas_name']);
-  if(isset($arr_cont['copa_name']))
-    $copa=$arr_cont['copa_name'];
-  $c=0;
-  $t=0;
-  for($i=0; $i<count($arr_cont['skus']); $i++){
-    if($t<$cant_tallas){
-      $colorito=$arr_cont['colores_name'][$c];
-      $tallita=$arr_cont['tallas_name'][$t];
-      $ordencito=$arr_cont['tallas_orden'][$t];
-      $t++;
-    }else {      
-      $colorito=$arr_cont['colores_name'][$c+1];
-      $tallita=$arr_cont['tallas_name'][0];
-      $ordencito=$arr_cont['tallas_orden'][0];
-      $t=1;
-      $c++;
-    }      
+
+
+  $cant_skus=count($arr_cont['skus']);
+  for($i=0; $i<$cant_skus; $i++){
     $fila_csv="";
     $fila_csv.= ($i+1).";";
-    $fila_csv.= $arr_cont['skus'][$i].";";
-    $fila_csv.= strval($arr_cont['barcodes'][$i]).";tNO;";                  ///---con columna default
-    $fila_csv.= $arr_cont['caracteristica'].";C;tYES;tNO;M;1;";             ///---con columnaS default
-    $fila_csv.= $arr_cont['itemname'].";"; 
-    $fila_csv.= $arr_cont['dpto_code'].";tYES;M;";                          ///---con columnaS default                   
-    $fila_csv.= $arr_cont['prenda_name'].";";
-    $fila_csv.= $arr_cont['articulo'].";"; 
-    $fila_csv.= $colorito.";";
-    $fila_csv.= $tallita.";";
-    $fila_csv.= $arr_cont['talla_familia'].";";
-    $fila_csv.= $arr_cont['prenda_code'].";1;";                             ///---con columnaS default
-    $fila_csv.= $ordencito.";Y;";                                           ///---con columnaS default
-    $fila_csv.= $arr_cont['marca_name'].";";
-    $fila_csv.= $arr_cont['tprenda_name'].";";
-    $fila_csv.= $arr_cont['material_name'].";";
-    $fila_csv.= $arr_cont['grupo_uso_name'].";";
-    $fila_csv.= $arr_cont['subdpto_name'].";";
-    $fila_csv.= $arr_cont['composicion_name'].";Y;;";                       ///---con columnaS default
-    $fila_csv.= $arr_cont['categoria_code'].";;";
-    $fila_csv.= $arr_cont['copa_name'].";";
-    $fila_csv.= $arr_cont['presentacion_name'].";";
-    $fila_csv.= $arr_cont['tcatalogo_name'].";";
-    $fila_csv.= $arr_cont['copa_name']."\r\n"; 
+    $fila_csv.= $arr_cont[$i]['cod_sku'][$i].";";
+    $fila_csv.= strval($arr_cont[$i]['barcode']).";tNO;";                  ///---con columna default
+    $fila_csv.= $arr_cont[$i]['caracteristica_name'].";C;tYES;tNO;M;1;";             ///---con columnaS default
+    $fila_csv.= $arr_cont[$i]['itemname'].";"; 
+    $fila_csv.= $arr_cont[$i]['dpto_code'].";tYES;M;";                          ///---con columnaS default                   
+    $fila_csv.= $arr_cont[$i]['prenda_name'].";";
+    $fila_csv.= $arr_cont[$i]['cod_articulo'].";"; 
+    $fila_csv.= $arr_cont[$i]['color_name'].";";
+    $fila_csv.= $arr_cont[$i]['talla_name'].";";
+    $fila_csv.= $arr_cont[$i]['talla_familia'].";";
+    $fila_csv.= $arr_cont[$i]['prenda_code'].";1;";                             ///---con columnaS default
+    $fila_csv.= $arr_cont[$i]['talla_orden'].";Y;";                                           ///---con columnaS default
+    $fila_csv.= $arr_cont[$i]['marca_name'].";";
+    $fila_csv.= $arr_cont[$i]['tprenda_name'].";";
+    $fila_csv.= $arr_cont[$i]['material_name'].";";
+    $fila_csv.= $arr_cont[$i]['grupouso_name'].";";
+    $fila_csv.= $arr_cont[$i]['subdpto_name'].";";
+    $fila_csv.= $arr_cont[$i]['composicion_name'].";Y;;";                       ///---con columnaS default
+    $fila_csv.= $arr_cont[$i]['categoria_code'].";;";
+    $fila_csv.= $arr_cont[$i]['copa'].";";
+    $fila_csv.= $arr_cont[$i]['presentacion_name'].";";
+    $fila_csv.= $arr_cont[$i]['tcatalogo_name'].";";
+    $fila_csv.= $arr_cont[$i]['fcopa']."\r\n"; 
     $content_csv.=$fila_csv;       
   }
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
-  $hoy=date("Y-m-d H.i.s");
   $destinatario ="aobando@kayser.cl";
-  $titulo = "PLANTILLA_CARGA_SKUS_(".$hoy.")";
-  $headers = "From: DISENO <diseno@kayser.cl>\r\n";
+  $headers = "From: Creacion de SKU <sku@kayser.cl>\r\n";
   $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-Type: application/octet-stream; name=".$titulo.".csv\r\n"; //envio directo de datos
-  $headers .= "Content-Disposition: attachment; filename=".$titulo.".csv\r\n";
+  $headers .= "Content-Type: application/octet-stream; name=".$nomb_lista.".csv\r\n"; //envio directo de datos
+  $headers .= "Content-Disposition: attachment; filename=".$nomb_lista.".csv\r\n";
   $headers .= "Content-Transfer-Encoding: binary\r\n";
   $headers .= utf8_decode($content_csv);
   $headers .= "\r\n";
 
-  if(mail($destinatario, $titulo,"", $headers)){
+  if(mail($destinatario, $nomb_lista,"", $headers)){
     return true;
   }
   else{
     return false;
   }
-  return($content_csv);   
+  return true;
+  // return($content_csv);   
 }
 function existArticle($cod_art,$serv){
   global $mysqli;

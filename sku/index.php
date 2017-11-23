@@ -43,7 +43,7 @@ if(isset($_SESSION['user'])){
       el_user.focus();
       document.getElementById('button_login').onclick=function(){
         if (el_user.value.trim() != '' && el_pass.value.trim() != '') {
-          parameters = { 'option': 'session_start', 'user': el_user.value, 'pass': el_pass.value };
+          parameters = { 'option': 'session_start', 'user': el_user.value.toLowerCase(), 'pass': el_pass.value };
           $.ajax({
             url: './config/session.php', type: 'post', dataType: 'json', data: parameters,
             beforeSend: function () { },
