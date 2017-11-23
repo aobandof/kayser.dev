@@ -10,10 +10,10 @@ require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
 require_once "../config/sku_db_sqlsrv_33.php";
 
+$hoy=date('Y-m-d H:i:s');
 
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
- 
   $code_article=$_POST['articulo'];
   $itemname=$_POST['itemname'];  
   $colores_name=$_POST['colores_name'];
@@ -22,7 +22,6 @@ if($_POST['option']=="save_article"){
   $tallas_orden=$_POST['tallas_orden'];
   $colores_length=count($colores_name);
   $tallas_length=count($tallas_name);
-
 
   if(isset($_POST['copa'])){
     $copa=$_POST['copa'];
@@ -35,7 +34,6 @@ if($_POST['option']=="save_article"){
   $sku_inserteds=[];
   $sku_refused=[];
   $first_barcode=getFirstBarcode();
-  $hoy=date('Y-m-d H:i:s');
   $filas='';
   $querys=[];
   $data['lista']=$lista; 
@@ -111,7 +109,7 @@ if($_POST['option']=="save_article"){
       }else{
         $barcode=$first_barcode + count($sku_inserteds);
         $barcode=(string)$barcode;
-        $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa','$hoy')"; 
+        $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa')"; 
         $data['all_querys'][]=$query_sku;       
         if($mysqli->insert_easy($query_sku)==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
           $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
@@ -169,11 +167,6 @@ if($_POST['option']=="save_article"){
 if($_POST['option']=="delete_list") {
   $lista=$_POST['list'];
   ///SUPONGO QUE SOLO BASTA CON ELIMINAR LA VISTA, Y POR CASCADA, SE ELIMINARAN LOS ARTICULOS Y LOS SKUS, ADEMAS DE LISTA_HAS_USER
-  ///--- OJO, SI SE ESTA INDICANDO QUE SE SUBIO A SAP, ANTES HAY QUE HACER EL LOG DE ESTA VISTA.  
-  if(isset($_POST['operation']) && $_POST['operation']=='UPLOAD_SAP'){
-    //TENEMOS QUE HACER UN LOG CON LA LISTA, LOS ARCHIVOS Y LOS SKUS QUE SE ESTAN CARGANDO A SAP;
-
-  }
   $query_delete_list="DELETE from lista WHERE id=$lista";
   $querys_all[]=$query_delete_list;
   $reg_deleted=$mysqli->delete($query_delete_list);
@@ -189,10 +182,26 @@ if($_POST['option']=="delete_list") {
 }
 
 if($_POST['option']=="save_list") {
+  $lista=$_POST['list'];
   $send=sendMail($_POST);
-  if($send===true)
+  if($send===true){
     $data['submit']=true;
-  else
+    ($_POST['operation']=='creation') ? $estado_lista='CREADA' :  $estado_lista='REVISADA';
+    $query_state="UPDATE lista SET estado='$estado_lista' WHERE id=$lista";
+    $reg_updated=$mysqli->update_easy($query_state);
+    if($reg_updated==1){      
+      $data['list_updated']=true;
+      ///AHORA GUARDAREMOS LA ACCION DE REVISADO EN LA RELACION LISTA USUARIO
+      if($_POST['operation']=='review'){
+        if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','REVISION','$hoy')") != 1 ){
+          $data['errors']=$mysqli->getErrors();
+        }
+      }
+    }else{
+      $data['list_updated']=false;
+      $data['errors']=$mysqli->getErrors();
+    }
+  }else
     $data['submit']=false;
   echo json_encode($data);
 }

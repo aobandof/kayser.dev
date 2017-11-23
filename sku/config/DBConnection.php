@@ -23,13 +23,10 @@ class DBConnection {
         return false;
       return $this->_connection;
   }
-  public function query($query){
 
-  }
-
-######################   FUNCION SELECT  ########################
-//$query:  cadena de insersion
-//$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
+  ######################   FUNCION SELECT  ########################
+  //$query:  cadena de insersion
+  //$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
   public function select($query,$tipo_array){
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
@@ -102,17 +99,17 @@ class DBConnection {
     else
       return 0;
   }
-######################   FUNCION PARA LAS INSERCIONES   ########################
-//$table:  nombre de la tabla
-//$values: array asociativo donde las keys son los nombres de los campos de la tabla
-public function insert_easy($query){
-  if(!($this->_connection->query($query))){
-      return false;
-  }else {
-    return $this->_connection->affected_rows;
-  }
-}   
-public function insert($table,$values){ 
+  ######################   FUNCION PARA LAS INSERCIONES   ########################
+  public function insert_easy($query){
+    if(!($this->_connection->query($query))){
+        return false;
+    }else {
+      return $this->_connection->affected_rows;
+    }
+  }   
+  //$table:  nombre de la tabla
+  //$values: array asociativo donde las keys son los nombres de los campos de la tabla
+  public function insert($table,$values){ 
     $types="";
     $questions="";
     $string_keys="";
@@ -143,6 +140,7 @@ public function insert($table,$values){
       }  
     }
   }
+
   ####################   FUNCION PARA ACTUALIZAR   ############################
   public function update($table,$id_nam,$id_val,$values){
     $types="";
@@ -174,6 +172,13 @@ public function insert($table,$values){
         return false;
       else
         return $this->_connection->affected_rows;
+    }
+  }
+  public function update_easy($query){
+    if(!($this->_connection->query($query))){
+      return false;      
+    }else {
+      return $this->_connection->affected_rows;
     }
   }
   ######################   FUNCION DELETE   ########################
@@ -222,7 +227,6 @@ public function insert($table,$values){
     // echo "cantidad de registros con esta consulta: ".$cant_registros;
     return $cant_registros;
   }
-
   ######################################   METODO PARA OBTENER LA CABECERA DEL ULTIMO SELECT ###########################
   function getColumnsLastSelect(){
     $arr_columns=[];

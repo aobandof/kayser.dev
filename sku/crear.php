@@ -182,7 +182,7 @@ if(isset($_SESSION['user'])){
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
               <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
-              <button class="btn btn-primary btn_footer close_modal2" id="#button_close_crud_items">Salir</button>
+              <button class="btn btn-primary btn_footer close_modal2" id="button_close_crud_items">Salir</button>
             </div>
           </div>
         </div>
@@ -261,11 +261,11 @@ if(isset($_SESSION['user'])){
               echo '<button class="btn btn-warning btn_footer" id="button_show_lists">SEGUIR EDITANDO</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
             }elseif($_SESSION['perfil']=='reviser'){
-              echo '<button class="btn btn-primary btn_footer" id="button_revise_list">ENVIAR A INFORMATICA</button>';
+              echo '<button class="btn btn-primary btn_footer" id="button_save_list">ENVIAR A INFORMATICA</button>';
               // echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
             }elseif($_SESSION['perfil']=='editor'){
-              echo '<button class="btn btn-primary btn_footer" id="button_save_new_list">CREAR SKUs</button>';
+              echo '<button class="btn btn-primary btn_footer" id="button_save_list">CREAR SKUs</button>';
               echo '<button class="btn btn-warning btn_footer" id="button_follow_editing">SEGUIR EDITANDO</button>';
               echo '<button class="btn btn-success btn_footer" id="button_add_article">NUEVO ARTICULO</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">CANCELAR LISTA</button>';

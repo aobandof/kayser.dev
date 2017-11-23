@@ -108,12 +108,12 @@ $(document).ready(function() {
   el_but_delete_list = document.getElementById('button_delete_list');
   if(!!el_but_delete_list){
     el_but_delete_list.onclick = function(){
-      // alert('entro a la opcion eliminar'); 
-      if (confirm("ESTA A PUNTO DE SALIR Y DESCARTAR ESTA LISTA DE TRABAJO, \n\n¿DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO?")) {        
-        if(initial_option="show_list" && perfil=='admin'){
-          parameters = { 'option': 'delete_list', 'list': active_list, 'operation': 'UPLOAD_SAP' }
-        }else
-          parameters = { 'option': 'delete_list', 'list': active_list }
+      if(initial_option=="save_article" && perfil=='editor')
+        let message = "ESTA A PUNTO DE SALIR Y DESCARTAR ESTA LISTA DE TRABAJO, \n\n¿DESEA REALMENTE SALIR Y ELIMINAR ESTE LISTADO?";
+      else 
+        let message = "DESEA REALMENTE ELIMINAR ESTA LISTA Y DESCARTAR SU CARGA EN SAP";
+      if (confirm(message)) {        
+        parameters = { 'option': 'delete_list', 'list': active_list }
         $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
           beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
           success: function(data){
@@ -128,7 +128,7 @@ $(document).ready(function() {
         if (initial_option =='show_list')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
           location.href = "lista.php";
         else
-          location.href = "menu.php";//OPTAMOS POR ESTO PARA QUE SE VUELVA LA OPCIOM DESEADA CON LOS PARAMETROS CORRECTOS
+          location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
       }
     }
   }
@@ -158,11 +158,13 @@ $(document).ready(function() {
     }
   }
   /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
-  el_but_save_new_list = document.getElementById('button_save_new_list');
-  if (!!el_but_save_new_list) {
-    el_but_save_new_list.onclick = function () {
-      ///--- ACA SIMPLEMENTE SE BUSCARA LA LISTA EN MYSQL Y SE ENVIARA EL MAIL CON LOS ARTICULOS CON SKU QUE PERTENESCAN A ESA LISTA
-      parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'create' };
+  el_but_save_list = document.getElementById('button_save_list');
+  if (!!el_but_save_list) {
+    el_but_save_list.onclick = function () {
+      if(initial_option=="show_list" && perfil=='reviser')
+        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
+      else if(initial_option=="create_article" && perfil=='editor')
+        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
       $.ajax({
         url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
