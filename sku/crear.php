@@ -110,8 +110,8 @@ if(isset($_SESSION['user'])){
               <div><span class="">FORMA COPA.&nbsp</span><select name="formacopa" id="select_sku_fcopa" class="form-control sku_control dep"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
-              <div><span class="">T.PRENDA&nbsp</span><select name="tempprenda" id="select_sku_tprenda" class="form-control sku_control ind"><option value=""></option></select></div>
-              <div><span class="">T.CATALOGO&nbsp</span><select name="tempcatalogo" id="select_sku_tcatalogo" class="form-control sku_control ind"><option value=""></option></select></div>
+              <div><span class="">T.PRENDA&nbsp</span><select name="tprenda" id="select_sku_tprenda" class="form-control sku_control ind"><option value=""></option></select></div>
+              <div><span class="">T.CATALOGO&nbsp</span><select name="tcatalogo" id="select_sku_tcatalogo" class="form-control sku_control ind"><option value=""></option></select></div>
             </div>
             <div class="cont_fila_crear_sku container_row  ">
               <div><span class="">GRUPO USO&nbsp</span><select name="grupouso" id="select_sku_grupouso" class="form-control sku_control ind"><option value=""></option></select></div>
@@ -172,8 +172,8 @@ if(isset($_SESSION['user'])){
               <option value="OITB">Departamentos</option><option value="marca">Marcas</option><option value="subdpto">Sub Departamentos</option>
               <option value="[@APOLLO_SEASON]">Prendas</option><option value="[@APOLLO_DIV]">Categ. Prenda</option><option value="presentacion">Presentación</option>
               <option value="color">Colores</option><option value="talla">Tallas</option><option value="copa">Copas</option>
-              <option value="formacopa">Formas Copa</option><option value="material">Materiales</option><option value="tempprenda">Temp. Prenda</option>
-              <option value="tempcatalogo">Temp. Catalogo</option><option value="grupouso">Grupos Uso</option>
+              <option value="formacopa">Formas Copa</option><option value="material">Materiales</option><option value="tprenda">Temp. Prenda</option>
+              <option value="tcatalogo">Temp. Catalogo</option><option value="grupouso">Grupos Uso</option><option value="composicion">Composicion</option>
             </select>
           </div>
           <div class="tabla_div" id="div_tabla_item">

@@ -29,7 +29,7 @@ describe sku;
 
 
 SELECT nombre as name FROM subdpto WHERE id=3;
-SELECT abreviatura from presentacion where id=2
+SELECT abreviatura from presentacion where id=2;
 
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -37,7 +37,7 @@ TRUNCATE TABLE lista;
 truncate table lista_has_usuario;
 truncate table articulo;
 truncate table sku;
--- truncate table usuario;
+truncate table usuario;
 SET FOREIGN_KEY_CHECKS=1;
 
 DELETE from lista WHERE id=7

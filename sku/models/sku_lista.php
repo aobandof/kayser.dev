@@ -209,21 +209,12 @@ if($_POST['option']=="save_list") {
             $data['errors']=$mysqli->getErrors();
           }
         }
-      }else{
-        $data['list_updated']=false;
-        $data['errors']=$mysqli->getErrors();
-      }
+      }else{ $reg_updated==1 ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_updated']=0; }
     }else
       $data['submit']=false;
-    // $data['skus_to_submit']=$arr_skus_carga;
   }else{
     $arr_skus_carga==false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
   }
-
-
-  
-  
-
   echo json_encode($data);
 }
 
@@ -297,18 +288,34 @@ if($_POST['option']=='get_articles'){
   echo json_encode($data);
 
 }
+
+if($_POST['option']=='finalize_list'){
+  $lista=$_POST['list']; $user_creator=''; $user_reviser='';
+  ///--- OBTENEOS LOS SKU, LOS USUARIOS QUE LO CREARON, REVISARON
+  $query_lista_usuario="SELECT usuario_user, operacion FROM lista_has_usuario WHERE lista_id=$lista";
+  $arr_lista_usuario = $mysqli->select($query_lista_usuario,"mysqli_a_o");
+  if($arr_lista_usuario!=0 && $arr_lista_usuario!=false){
+    for($i=0; $i<$count($arr_lista_usuario); $i++){
+      $arr_lista_usuario[$i]['operacion']=="CREACION" ? $user_creator=$arr_lista_usuario[$i]['usuario_user'] : $user_reviser=$arr_lista_usuario[$i]['usuario_user'];
+    }
+    $data['creator']=$user_creator;
+    $data['reviser']=$user_reviser;
+  }
+  //// FALTA MAS, PERO PROBEMOS ESTO POR MIENTRAS
+
+  echo json_encode($data);
+
+}
 function sendMail($arr_cont){
   global $nomb_lista;
-
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
 
-
-  $cant_skus=count($arr_cont['skus']);
+  $cant_skus=count($arr_cont);
   for($i=0; $i<$cant_skus; $i++){
     $fila_csv="";
     $fila_csv.= ($i+1).";";
-    $fila_csv.= $arr_cont[$i]['cod_sku'][$i].";";
+    $fila_csv.= $arr_cont[$i]['cod_sku'].";";
     $fila_csv.= strval($arr_cont[$i]['barcode']).";tNO;";                  ///---con columna default
     $fila_csv.= $arr_cont[$i]['caracteristica_name'].";C;tYES;tNO;M;1;";             ///---con columnaS default
     $fila_csv.= $arr_cont[$i]['itemname'].";"; 

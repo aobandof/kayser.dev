@@ -53,7 +53,7 @@ if(isset($_SESSION['user'])){
                 location.href = "menu.php";
               }else{
                 alert('DATOS INCORRECTOS, Intente Nuevamente');
-                el_user.value="";
+                // el_user.value="";
                 el_pass.value="";
                 el_user.focus();
               }

@@ -18,4 +18,5 @@ select * from usuario;
 describe usuario;
 
 select * from lista_has_usuario;
+SELECT user, perfil FROM usuario WHERE user='admin' AND password='admin';
 SELECT user, perfil FROM usuario WHERE user='admin' AND password='admin'

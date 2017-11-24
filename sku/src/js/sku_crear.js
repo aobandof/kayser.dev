@@ -207,7 +207,16 @@ $(document).ready(function() {
   el_but_fin_list=document.getElementById('button_finalize_list');
   if(!!el_but_fin_list){
     el_but_fin_list.onclick=function(){
-      alert('MODULO PENDIENTE...');
+      //variable operation indica si se guardara en la tabla skucreated o skuupdated
+      parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
+      $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function (){ },
+        success: function(data){
+          console.log(data);
+          
+        },
+        error: function(){ console.log('error'); }
+      });
     }
   }
 
