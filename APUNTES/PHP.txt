@@ -1,4 +1,4 @@
-CONVERTIR UNA FECHA A CADENA: date_format($valor, 'd/m/Y'); // BUSCASR OTRAS FORMAS DEL SEPARADOR U ORDEN DE MESES
+﻿CONVERTIR UNA FECHA A CADENA: date_format($valor, 'd/m/Y'); // BUSCASR OTRAS FORMAS DEL SEPARADOR U ORDEN DE MESES
 
 CONVERTIR A ENTERO:
 intval(variable)
@@ -73,3 +73,7 @@ checkdate( $month , $day , $year )   //PARAMETROS ENTEROS -- Devuelve True o Fal
 	$_SERVER['PHP_SELF']
 
 
+$CADENA A ARRAY: permite extraer caracteres de y pasarlos a un array
+---------------
+str_split("abel");  # // ['a','b','e','l']
+str_split("abel",2) # // ['ab','el']

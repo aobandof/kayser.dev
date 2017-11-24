@@ -16,6 +16,21 @@ function getLetersCadena($cadena){
   } 
 }
 
+///--- FUNCION QUE OBTIENE EL DIGITO VERIFICADOR DEVOLVIENDO EL BARCODE COMPLETO INCLUYENDO ESTE VERIFICADOR 
+
+function getControlDigit($bcde){
+  $arr_barcode=str_split($bcde);
+  $sum_dig_odd=0;
+  $sum_dig_even=0;
+  for($i=0; $i<count($arr_barcode); $i++)
+    $i % 2 == 0 ? $sum_dig_even += intval($arr_barcode[$i]) : $sum_dig_odd += intval($arr_barcode[$i]);
+  $sum_result=($sum_dig_odd*3)+$sum_dig_even;
+  $rest = $sum_result % 10;
+  $rest==0 ? $result=0 : $result=10-$rest;
+  return $result;
+}
+
+
 ///--- FUNCTION QUE INDICA SI UNA CADENA TIENE LETRAS
 /*function haveLeters($cadena){
   $have=0; //flag que seteado en 0 que indica que no tiene letras

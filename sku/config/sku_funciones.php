@@ -1,16 +1,18 @@
 <?php
+///--- FUNCION QUE BUSCA EL ULTIMO BARCODE DE SAP Y DE LAS LISTAS, LE SUMA + 1 Y DEVIUELV EL PRIMER BARCODE APTO A UTILIZAR
 function getFirstBarcode() {
   global $sqlsrv_33;
   global $mysqli;
   $last_barcode_sap=780001000000;
   $last_barcode_lista=780001000000;
-  $query_barcode="SELECT top 1 CodeBars from OITM WHERE CodeBars like '780001%' order by  CodeBars DESC";
+  ///obtenemos el ultimo sin considerar el digito verificador
+  $query_barcode="SELECT top 1 SUBSTRING(CodeBars,0,LEN(CodeBars)) from OITM WHERE CodeBars like '780001%' order by  SUBSTRING(CodeBars,0,LEN(CodeBars)) DESC";
   $arr_last_barcode=$sqlsrv_33->select($query_barcode,'sqlsrv_a_p');
   if($arr_last_barcode!==false){
     if ($arr_last_barcode!=0)
       $last_barcode_sap=((double)$arr_last_barcode_sap[0]['CodeBars']);
   }
-  $query_barcode="SELECT barcode from sku order by barcode DESC LIMIT 1";
+  $query_barcode="SELECT SUBSTRING(barcode,1,LENGTH(barcode)-1) as barcode from sku order by barcode DESC LIMIT 1";
   $arr_last_barcode=$mysqli->select($query_barcode,'mysqli_a_o');
   if($arr_last_barcode!=false){
     if($arr_last_barcode!=0)
@@ -29,6 +31,7 @@ function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
     return -1;
   return $arr_coincidencias;
 }
+
 ### FUNCION QUE BUSCA TODAS LAS TABLAS DEPENDIENTES DE LAS DEPENDIENTES
 ### de tal forma qe los dependientes se llenaran con datos relacionados con el padre
 ### y los select de tablas dependientes de los dependientes se vaciaran.

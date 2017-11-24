@@ -5,6 +5,13 @@ select * from lista;
 select * from lista_has_usuario;
 select * from usuario;
 
+select codigo,barcode from sku order by barcode DESC LIMIT 1;
+
+SELECT SUBSTRING(barcode,1,LENGTH(barcode)-1) from sku order by barcode DESC LIMIT 1
+SELECT SUBSTRING(barcode,1,2) from sku
+
+SELECT codigo,SUBSTRING(codigo,2), LENGTH(barcode) from sku;
+
 SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, S.talla_orden, A.codigo as cod_articulo, A.itemname FROM sku as S
 INNER JOIN articulo as A ON S.articulo_codigo=A.codigo
 WHERE A.lista_id=3; 
@@ -20,8 +27,8 @@ SELECT A.codigo, COUNT(S.codigo) FROM articulo as A
 INNER JOIN sku AS S ON A.codigo=S.articulo_codigo
 GROUP BY A.codigo;
 
-SELECT * FROM lista_has_usuario where lista_id=10
-update lista_has_usuario SET operacion='CREACION'
+SELECT * FROM lista_has_usuario where lista_id=10;
+update lista_has_usuario SET operacion='CREACION';
 
 describe lista;
 describe articulo;
@@ -39,6 +46,8 @@ truncate table articulo;
 truncate table sku;
 truncate table usuario;
 SET FOREIGN_KEY_CHECKS=1;
+
+
 
 DELETE from lista WHERE id=7
 insert into usuario values ('reviser','reviser','reviser');

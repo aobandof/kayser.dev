@@ -22,13 +22,10 @@ if($_POST['option']=="save_article"){
   $tallas_orden=$_POST['tallas_orden'];
   $colores_length=count($colores_name);
   $tallas_length=count($tallas_name);
-
   if(isset($_POST['copa'])){
-    $copa=$_POST['copa'];
-    $fcopa=$_POST['fcopa'];
+    $copa=$_POST['copa']; $fcopa=$_POST['fcopa'];
   }else {
-    $copa='';
-    $fcopa='';
+    $copa=''; $fcopa='';
   }  
   $data=[];
   $sku_inserteds=[];
@@ -110,6 +107,7 @@ if($_POST['option']=="save_article"){
       }else{
         $barcode=$first_barcode + count($sku_inserteds);
         $barcode=(string)$barcode;
+        $barcode=$barcode.getControlDigit($barcode);
         $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa')"; 
         $data['all_querys'][]=$query_sku;       
         if($mysqli->insert_easy($query_sku)==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
@@ -222,7 +220,7 @@ if($_POST['option']=='show_lists'){
   $creator='';
   $revisor='';
   $divs="";
-  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo WHERE L.estado!='EDITADA' GROUP BY L.id";
+  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
   $all_querys[]=$query_insert_list;
   $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
   $data['cant_primera_consulta']=$arr_lists;

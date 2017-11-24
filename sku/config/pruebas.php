@@ -10,8 +10,11 @@ require_once "sku_db_mysqli.php";
 // echo "<br>\n";
 // echo gettype($first);
 
-echo $mysqli->quantityRecords("select codigo from articulo where lista_id=41");
+// echo $mysqli->quantityRecords("select codigo from articulo where lista_id=41");
 // echo getNameFromId('subdpto',3);
 
 // echo $mysqli->getColumnFromColumn('presentacion','abreviatura','id','NUMBER',2);
 
+echo getControlDigit("780000023572");
+echo "<br>";
+echo getControlDigit("780000023571");

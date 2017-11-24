@@ -93,20 +93,20 @@ body, html {
   border-radius: 8rem;
 }
 #div_sku_index>div {
-  flex: 1 1 40%;
+  flex: 0 0 40%;
   align-items: center;
   justify-content: center;
 }
-#div_sku_index>div>button {
+#div_sku_index>div button {
+  /* flex: 0 1 90% !important; */
   margin: 0.4em;
   font-size: 1em;
   font-weight: bold;
-  width: 60% !important;
+  width: 18rem !important;
+    color: white;
+    text-decoration: none;
 }
-#div_sku_index div button a {
-  color: white;
-  text-decoration: none;
-}
+
 #div_sku_index div button:hover {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);

@@ -25,8 +25,8 @@ $tablas_sku = Array(
   'copa'             => Array( 'bd'=>'mysql', 'dep'=>'[@APOLLO_SEASON]',    'campo_sku'=>'U_IDCopa',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'prenda_copa', 'nom_cod_rel'=>'Copa_id', 'nom_cod_padre_rel'=>'Prenda_codigo'),
   'formacopa'        => Array( 'bd'=>'mysql', 'dep'=>'[@APOLLO_SEASON]',    'campo_sku'=>'U_GSP_SECTION',   'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre', 'tabla_rel'=>'prenda_formacopa', 'nom_cod_rel'=>'FormaCopa_id', 'nom_cod_padre_rel'=>'Prenda_codigo'),
   'material'         => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_MATERIAL',      'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'tempprenda'       => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_EVD',           'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'tempcatalogo'     => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'tprenda'          => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_EVD',           'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'tcatalogo'        => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'grupouso'         => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'composicion'      => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'caracteristica'   => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
@@ -74,8 +74,5 @@ function getNameFromId($nom_tabla,$val_id){
       return $arr_id[0]["name"];
   }
 }
-
-
-
 
 ?>

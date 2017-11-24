@@ -8,15 +8,11 @@ $(document).ready(function() {
 
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
 
-  // $('#sku_loader_full').ajaxStart(function () { $(this).classList.add('cont_hidden') });
-  // $('#sku_loader_full').ajaxComplete(function () { $(this).classList.remove('cont_hidden') });
-
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
-  if(initial_option=='show_list' && perfil!='editor'){
+  if(initial_option=='show_list'){
     modal_preview_save.style.visibility = 'visible';
     ///--- CONSULTAREMOS A LA API, TODOS LOS SKUS AGRUPADOS POR ARTICULOS QUE ESTAN DENTRO DE ESTA LISTA
     parameters={ 'option':'get_articles', 'list':active_list };
-    // console.log(parameters);
     $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
       beforeSend: function (){ },
       success: function(data){

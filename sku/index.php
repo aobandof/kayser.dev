@@ -38,34 +38,37 @@ if(isset($_SESSION['user'])){
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>  
   <script type="text/javascript">
     $(document).ready(function () {
-      el_user= document.getElementById('txt_user');
-      el_pass= document.getElementById('txt_pass');
-      el_user.focus();
+      el_txt_user= document.getElementById('txt_user');
+      el_txt_pass= document.getElementById('txt_pass');
+      el_txt_user.focus();
       document.getElementById('button_login').onclick=function(){
-        if (el_user.value.trim() != '' && el_pass.value.trim() != '') {
-          parameters = { 'option': 'session_start', 'user': el_user.value.toLowerCase(), 'pass': el_pass.value };
-          $.ajax({
-            url: './config/session.php', type: 'post', dataType: 'json', data: parameters,
-            beforeSend: function () { },
-            success: function (data) {
-              console.log(data);
-              if(data.login===true){
-                location.href = "menu.php";
-              }else{
-                alert('DATOS INCORRECTOS, Intente Nuevamente');
-                // el_user.value="";
-                el_pass.value="";
-                el_user.focus();
-              }
-
-            },
-            error: function () { console.log('error'); }
-          });
-        }else {
-          alert("TIENE QUE LLENAR LOS CAMPOS");
-        }
+        (el_txt_user.value.trim() != '' && el_txt_pass.value.trim() != '') ? login() : alert("TIENE QUE LLENAR LOS CAMPOS");
+      }
+      el_txt_user.onkeydown = function(event) {
+        if (event.key === 'Enter'){ (el_txt_user.value.trim() != '' && el_txt_pass.value.trim() != '') ? login() : alert("TIENE QUE LLENAR LOS CAMPOS"); }
+      }
+      el_txt_pass.onkeydown = function(event) {
+        if (event.key === 'Enter'){ (el_txt_user.value.trim() != '' && el_txt_pass.value.trim() != '') ? login() : alert("TIENE QUE LLENAR LOS CAMPOS"); }
       }
     });
+    
+    function login() {
+      parameters = { 'option': 'session_start', 'user': el_txt_user.value.toLowerCase(), 'pass': el_txt_pass.value };
+      $.ajax({
+        url: './config/session.php', type: 'post', dataType: 'json', data: parameters,
+        beforeSend: function () { },
+        success: function (data) {
+          console.log(data);
+          if(data.login===true )
+            location.href = "menu.php" 
+          else { 
+            alert('DATOS INCORRECTOS, Intente Nuevamente');
+            el_txt_pass.value=""; el_txt_user.focus(); 
+          }          
+        },
+        error: function () { console.log('error'); }
+      });
+    }
   </script>
 </body>
 </html>
