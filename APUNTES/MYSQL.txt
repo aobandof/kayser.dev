@@ -13,7 +13,7 @@ INSERT
 Ultimo ID insertado:	$ultimo_id = mysql_insert_id($connec); //donde connect es la conexion obtneida con mysql->conect
 
 $mysqli->affected_rows:	Retorna el numero de filas afectadas despues de la transaccion ( 1 si es correcto y -1 si no resulto)
-Existen excepciones para los valores devueltos por este metodo, muy importantes ( http://php.net/manual/es/function.mysql-affected-rows.php )
+Existen excepciones para los valores devueltos por este metodo, muy importantes ( http://php.net/manual/es/mysqli.affected-rows.php )
 
 
 

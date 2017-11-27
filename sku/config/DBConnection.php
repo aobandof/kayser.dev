@@ -157,15 +157,14 @@ class DBConnection {
     }
     $query=substr($query,0,strlen($query1)-1);//sacamos la ultima coma del final de la cadena
     $query=$query." WHERE $id_nam=?";
-    if(is_numeric($id_val))
-      is_int($id_val) ? $types.='i' : $types.='d';
-    else
-      $types.='s';
+    echo "<br>".$query."<br>";
+    if(is_numeric($id_val)) { $types.='i'; $id_val=intval($id_val);  }
+    else $types.='s';
     $arr_values[]=$id_val;
     if($this->_driver=='mysqli'){//por ahora solo actualizaremos tablas Mysql
       $stmt=$this->_connection->prepare($query);
       $vals = array_merge(array($types),$arr_values);
-      // var_dump($vals);
+      var_dump($vals);
       call_user_func_array(array($stmt,"bind_param"),$vals);
       $stmt->execute();
       if($this->_connection->connect_errno)

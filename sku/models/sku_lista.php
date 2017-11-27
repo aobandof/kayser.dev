@@ -38,7 +38,7 @@ if($_POST['option']=="save_article"){
 
   if($lista==0){
     //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
-    $query_insert_list="INSERT INTO lista values (NULL,'','EDITADA')";
+    $query_insert_list="INSERT INTO lista values (NULL,'','INICIADA')";
     $data['all_querys'][]=$query_insert_list;
     if($mysqli->insert_easy($query_insert_list)==1){
       $arr_last_list=$mysqli->select("SELECT @@identity AS id",'mysqli_a_o');
@@ -220,7 +220,13 @@ if($_POST['option']=='show_lists'){
   $creator='';
   $revisor='';
   $divs="";
-  $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
+  
+  if($_SESSION['perfil']=='editor'){//SI UN USARIO ES EDITOR, SOLO PODRA VER LAS LISTAS QUE ESTA EDITANDO
+    echo "pendiente";
+  }elseif($_SESSION['perfil']=='reviser' && $_SESSION['perfil']=='admin'){ //ver las que esta editando mas todas las que estan pendientes de revision o finalizacion
+    // $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
+    echo "pendiente, hay que hacerlo las pruebas de esta consulta";
+  }
   $all_querys[]=$query_insert_list;
   $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
   $data['cant_primera_consulta']=$arr_lists;

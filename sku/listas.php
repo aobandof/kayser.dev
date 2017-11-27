@@ -24,7 +24,7 @@ if(!isset($_SESSION['user'])){
     </div>
     <div class="dtable">
       <div class="dhead">
-        <div>Cod.</div><div>Creada por</div><div>Revisada por</div><div>cantidad SKUs</div><div>Ver</div>
+        <div>Cod.</div><div>Iniciada por</div><div>Creada por</div><div>Revisada por</div><div>cantidad SKUs</div><div>Ver</div>
       </div>
       <div class="dbody"></div>      
     </div>
