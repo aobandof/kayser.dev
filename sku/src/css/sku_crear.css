@@ -268,6 +268,11 @@ input[type="number"] {
 .cont_menu .dropdown-menu>a { color: rgb(255, 255, 255); }
 .cont_menu .dropdown-menu>a:hover { color: rgb(4, 70, 75); }
 
+
+.cont_hidden {
+  display: none !important;
+}
+
 /*************** MEDIAS QUERYS SKU_CREAR ******/
 @media (max-width: 750px) {
 

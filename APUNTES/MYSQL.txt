@@ -44,6 +44,7 @@ EXPORTAR:
 en windows hay que colocarlse en la carpeta C:/xampp/mysql/bin. no es necesario en linux
 y ejecutar:
 	mysqldump -h ip_servidor -u usuario_bd -p base_de_datos > archivo.sql (o la ruta si quieres que se guarde en otra carpeta)
+	mysqldump -u root -p kayser_articulos > kayser_articulos.sql (o la ruta si quieres que se guarde en otra carpeta)
 
 
 IMPORTAR:

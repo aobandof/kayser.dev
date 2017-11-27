@@ -9,10 +9,11 @@ $(document).ready(function() {
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
 
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
-  if(initial_option=='show_list'){
+  if(initial_option == 'show'){
     modal_preview_save.style.visibility = 'visible';
     ///--- CONSULTAREMOS A LA API, TODOS LOS SKUS AGRUPADOS POR ARTICULOS QUE ESTAN DENTRO DE ESTA LISTA
     parameters={ 'option':'get_articles', 'list':active_list };
+    console.log(parameters);
     $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
       beforeSend: function (){ },
       success: function(data){
@@ -26,8 +27,39 @@ $(document).ready(function() {
       },
       error: function(){ console.log('error'); }
     });
+    if(status_list=='INICIADA'){//SI LA LISTA ESTA SOLO INICIADA HAY QUE MOSTRAR TAMBIEN A REVISER Y A ADMIN LOS BOTONES PARA CREAR LOS EXCEL
+      if(perfil == 'admin') {
+        el_but_fin_list.classList.add('cont_hidden')
+        el_but_save_list.classList.remove('cont_hidden')
+        el_but_save_list.innerHTML="CREAR EXCEL";
+      }else if (perfil == 'reviser')
+        el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
+      else
+        el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
+    }else{ //SI NO ESTA INICIADA
+      if (perfil == 'admin') {
+        el_but_fin_list.classList.remove('cont_hidden')
+        el_but_save_list.classList.remove('cont_hidden')
+        el_but_save_list.innerHTML = "CREAR EXCEL";
+      } else if (perfil == 'reviser')
+        el_but_save_list.innerHTML = "REENVIAR EXCEL CON REVISIONES";
+      else
+        el_but_save_list.innerHTML = "REENVIAR EXCEL CON CORRECCIONES";
+    }
+
   }
-  if (initial_option == 'create_article'){
+  if(initial_option == 'create'){
+    el_but_show_lists.classList.add('cont_hidden')
+    if (perfil == 'admin') {
+      el_but_fin_list.classList.add('cont_hidden')
+      el_but_save_list.classList.remove('cont_hidden')
+      el_but_save_list.innerHTML = "CREAR EXCEL";
+    }else if (perfil == 'reviser')
+      el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
+    else
+      el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
+
+
     document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
   }
 
@@ -116,9 +148,7 @@ $(document).ready(function() {
   });
   /****************** FUNCIONA PARA ELIMINAR LA LISTA ACTUAL, YA SEA UNA ANTIGUA O U NA NUEVA QUE SE ESTE REVISANDO O FINALIZANDO */
 
-
-  /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/
-  el_but_delete_list = document.getElementById('button_delete_list');
+  /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/  
   if(!!el_but_delete_list){
     el_but_delete_list.onclick = function(){
       if(initial_option=="create_article" && perfil=='editor')
@@ -138,7 +168,7 @@ $(document).ready(function() {
           error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/}
         });
         //EN CUALQUIERA DE LOS CASOS, AUN SI NO SE PUDO ELIMINAR LA LISTA, ELIMINAMOS LE CONTENIDO DEL MODAL, LO OCULTAMOS Y RESETEAMOS LOS CONTROLES
-        if (initial_option =='show_list')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
+        if (initial_option =='show')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
           location.href = "listas.php";
         else
           location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
@@ -146,7 +176,6 @@ $(document).ready(function() {
     }
   }
   /****************** EVENTOS PARA AGREGAR OTRO ARTICULO CUANDO SE ESTA  EDITANDO ****************/
-  el_but_add_article = document.getElementById('button_add_article');
   if(!!el_but_add_article){
     el_but_add_article.onclick = function () {
       resetAllControls();
@@ -155,7 +184,6 @@ $(document).ready(function() {
     }
   }
   ///--- EVENTOS PARA OCULTAR LA LISTA Y SEGUIR EDITANDO  **************
-  el_but_follow_editing = document.getElementById('button_follow_editing');
   if (!!el_but_follow_editing) {
     el_but_follow_editing.onclick = function () {
       // alert('deberia ocultar este modal');
@@ -164,7 +192,6 @@ $(document).ready(function() {
     }
   }
   ///--- EVENTO PARA VER REGRESAR AL ARCHIVO lista.php DESDE LOS BOTONES EN EL ARICULO_PREVIEW 
-  el_but_show_lists = document.getElementById('button_show_lists');
   if(!!el_but_show_lists){
     el_but_show_lists.onclick=function(){
       // alert("deberia verse esto ante el evento click");
@@ -172,18 +199,23 @@ $(document).ready(function() {
     }
   }
   /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
-  el_but_save_list = document.getElementById('button_save_list');
   if (!!el_but_save_list) {
     parameters = new Object();
     el_but_save_list.onclick = function () {
-      if(initial_option=="show_list" && perfil=='reviser')
-        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
-      else if(initial_option=="create_article" && perfil=='editor')
+      // if(initial_option=="show" && perfil=='reviser')
+      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
+      // else if(initial_option=="create_article" && perfil=='editor')
+      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
+      // else if (initial_option == "create_article" && perfil == 'reviser')
+      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };   
+      // else 
+      //   console.log("no deberia entrar aca");
+      if(status_list=='INICIADA'){
         parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
-      else if (initial_option == "create_article" && perfil == 'reviser')
-        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };   
-      else 
-        console.log("no deberia entrar aca");
+      }else{
+        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
+      }
+
       console.log(parameters);             
       $.ajax({
         url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
@@ -202,9 +234,8 @@ $(document).ready(function() {
     }
   }
   /************************   EVENTO PARA FINALIZAR LA LISTA, ELIMINARLA GUARDANDO EN EL LOG,LOS SKUS CARGADOS A SAP *****************/
-  el_but_fin_list=document.getElementById('button_finalize_list');
   if(!!el_but_fin_list){
-    el_but_fin_list.onclick=function(){
+  el_but_fin_list.onclick=function(){
       //variable operation indica si se guardara en la tabla skucreated o skuupdated
       parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
       $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
@@ -217,7 +248,6 @@ $(document).ready(function() {
       });
     }
   }
-
 
   /*******************  EVENTO PARA VER LA LISTA YA CREADA ************/
   document.getElementById('btn_show_list').onclick=function(el_show_list){    
@@ -330,16 +360,24 @@ $(document).ready(function() {
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
   function getElementsControls() {
+    ///--- INICIALIZAMOS BOTONES DEL ARTICLE_PREVIEW
+    el_but_delete_list = document.getElementById('button_delete_list');
+    el_but_add_article = document.getElementById('button_add_article');
+    el_but_follow_editing = document.getElementById('button_follow_editing');
+    el_but_show_lists = document.getElementById('button_show_lists');
+    el_but_save_list = document.getElementById('button_save_list');
+    el_but_fin_list = document.getElementById('button_finalize_list');
+    
     el_div_loader_full = document.getElementById('sku_loader_full');
+
+    ////--- INICIALIZAMOS CONTROLES SKUS
     el_sel_marca =  document.getElementById('select_sku_marca');
     el_sel_subdpto = document.getElementById('select_sku_subdpto'); 
-
     el_sel_prenda = document.getElementById('select_sku_prenda');
     el_sel_categoria = document.getElementById('select_sku_categoria');
     el_sel_presentacion = document.getElementById('select_sku_presentacion');
     el_sel_material = document.getElementById('select_sku_material');
     el_sel_color = document.getElementById('select_sku_color');
-    ///tallas
     el_sel_copa = document.getElementById('select_sku_copa');
     el_sel_fcopa = document.getElementById('select_sku_fcopa');
     el_sel_tprenda = document.getElementById('select_sku_tprenda');

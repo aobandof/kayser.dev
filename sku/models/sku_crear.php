@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-// require_once "../config/sku_db_sqlsrv_33.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 
 
 if($_POST['option']=="cargar_selects_independientes"){

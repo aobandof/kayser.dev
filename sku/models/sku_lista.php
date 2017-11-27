@@ -217,40 +217,46 @@ if($_POST['option']=="save_list") {
 }
 
 if($_POST['option']=='show_lists'){
-  $creator='';
-  $revisor='';
   $divs="";
-  
+  // echo $_SESSION['user']."<br>".$_SESSION['perfil'];
   if($_SESSION['perfil']=='editor'){//SI UN USARIO ES EDITOR, SOLO PODRA VER LAS LISTAS QUE ESTA EDITANDO
-    echo "pendiente";
-  }elseif($_SESSION['perfil']=='reviser' && $_SESSION['perfil']=='admin'){ //ver las que esta editando mas todas las que estan pendientes de revision o finalizacion
-    // $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
-    echo "pendiente, hay que hacerlo las pruebas de esta consulta";
+    $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus, estado from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo INNER JOIN lista_has_usuario as LU on L.id=LU.lista_id WHERE LU.usuario_user='$user' AND L.estado='INICIADA' GROUP BY L.id";
+  }elseif($_SESSION['perfil']=='reviser' || $_SESSION['perfil']=='admin'){ //ver las que esta editando mas todas las que estan pendientes de revision o finalizacion
+    $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus, estado from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
   }
-  $all_querys[]=$query_insert_list;
+  $all_querys[]=$query_list;
   $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
   $data['cant_primera_consulta']=$arr_lists;
-  if($arr_lists!=0 && $arr_lists!=false){
+  if($arr_lists!=0 && $arr_lists!==false){    
     for($i=0; $i<count($arr_lists); $i++){
-      $cod_list=$arr_lists[$i]['id'];
+      $initiador="";
+      $creator='';
+      $revisor='';
+      $code_list=$arr_lists[$i]['id'];
       $cant_skus=$arr_lists[$i]['cant_skus'];
-      $icon_show="<img id='$cod_list' class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'>";
+      $stat_list=$arr_lists[$i]['estado'];
+      // $icon_show="<img id='$code_list' class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'>";
+      $link_list="<a href='crear.php?list=$code_list&status=$stat_list&option=show'><img class='icon_dtable' src='./src/img/lupa.png' alt='Ver contenido Lista'></a>";
       ///--- OBTENEMOS QUIEN LA CREO Y LA REVISO
-      $query_relation="SELECT * FROM lista_has_usuario where lista_id=$cod_list";
+      $query_relation="SELECT * FROM lista_has_usuario where lista_id=$code_list";
       $all_querys[]=$query_relation;
       $arr_relation=$mysqli->select($query_relation,"mysqli_a_o");
       if($arr_relation!=0 && $arr_relation!=false){
-        for($j=0; $j<count($arr_relation); $j++){
-          if($arr_relation[$j]['operacion']=='CREACION'){
-            $creator=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
-          }elseif($arr_relation[$j]['operacion']=='REVISION'){
-            $revisor=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+        if($stat_list!='REVISADA'){
+          $stat_list=='INICIADA' ? $initiador=$arr_relation[0]['usuario_user']." ( ".$arr_relation[0]['fecha']." )" : $creator=$arr_relation[0]['usuario_user']." ( ".$arr_relation[0]['fecha']." )";
+        }else{
+          for($j=0; $j<count($arr_relation); $j++){
+            if($arr_relation[$j]['operacion']=='CREACION'){
+              $creator=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+            }elseif($arr_relation[$j]['operacion']=='REVISION'){
+              $revisor=$arr_relation[$j]['usuario_user']." ( ".$arr_relation[$j]['fecha']." )";
+            }
           }
         }
       }    
-      $divs.="<div class='dtr'><div>$cod_list</div><div>".$creator."</div><div>".$revisor."</div><div>$cant_skus</div><div>$icon_show</div></div>";
+      $divs.="<div class='dtr'><div>$code_list</div><div>".$initiador."</div><div>".$creator."</div><div>".$revisor."</div><div>$cant_skus</div><div>$link_list</div></div>";
     }
-  }
+  } else { $arr_lists===false ? $data['errors']=$mysqli->getErrors() : $data['cant_listas']=$arr_lists; }
   $data['rows']=$divs;
   $data['querys_all']=$all_querys;
   echo json_encode($data);
@@ -356,14 +362,14 @@ function sendMail($arr_cont){
   $headers .= utf8_decode($content_csv);
   $headers .= "\r\n";
 
-  if(mail($destinatario, $nomb_lista,"", $headers)){
+  /*if(mail($destinatario, $nomb_lista,"", $headers)){
     return true;
   }
   else{
     return false;
-  }
+  }*/
   return true;
-  // return($content_csv);   
+  return($content_csv);   
 }
 function existArticle($cod_art,$serv){
   global $mysqli;

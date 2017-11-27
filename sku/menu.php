@@ -20,7 +20,7 @@ if(!isset($_SESSION['user'])){
     <div class="container_row" id="div_sku_index">
       <img src="src/img/fondo_sku.png" alt="kayser" id="img_kayser_familia" class="">
       <div class="container_column">
-          <a href="crear.php?option=crear_articulo"><button type="button" name="btn_crear" class="btn btn-lg btn-primary " id="button_crear_sku">CREAR SKU</button></a>
+          <a href="crear.php?option=create"><button type="button" name="btn_crear" class="btn btn-lg btn-primary " id="button_crear_sku">CREAR SKU</button></a>
           <a href="#"><button type="button" name="btn_modificar" class="btn btn-lg btn-info" id="button_modificar_sku">MODIFICAR SKU</button></a>
           <a href="./listas.php"><button type="button" name="btn_ver_listas" class="btn btn-lg btn-warning" id="button_show_list">VER LISTAS</button></a>
           <a href="./sku_consultar.html"><button type="button" name="btn_consultar" class="btn btn-lg btn-success" id="button_consultar_sku">CONSULTAR SKU</button></a>

@@ -24,7 +24,7 @@ if(!isset($_SESSION['user'])){
     </div>
     <div class="dtable">
       <div class="dhead">
-        <div>Cod.</div><div>Iniciada por</div><div>Creada por</div><div>Revisada por</div><div>cantidad SKUs</div><div>Ver</div>
+        <div>Cod.</div><div>Iniciada por</div><div>Creada por</div><div>Revisada por</div><div>cant. SKUs</div><div>Ver</div>
       </div>
       <div class="dbody"></div>      
     </div>
@@ -42,11 +42,11 @@ if(!isset($_SESSION['user'])){
           console.log(data);
           if(!!data.rows) {
             document.querySelector('#div_sku_listas .dbody').innerHTML=data.rows;
-            document.querySelectorAll('.icon_dtable').forEach(function(icon){
-              icon.onclick = function(){
-                location.href = "crear.php?option=ver_lista&lista="+icon.id;
-              }           
-            });
+            // document.querySelectorAll('.icon_dtable').forEach(function(icon){
+            //   icon.onclick = function(){
+            //     location.href = "crear.php?option=ver_lista&lista="+icon.id;
+            //   }           
+            // });
           }else
             alert("NO EXISTEN LISTAS PENDIENTES");
         },

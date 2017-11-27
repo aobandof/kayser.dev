@@ -5,10 +5,10 @@ if(isset($_SESSION['user'])){
   // echo $_SESSION['user']." --- ".$_SESSION['perfil'];
   $perfil=$_SESSION['perfil'];
   if(isset($_GET['option'])){    
-    if($_GET['option']=='crear_articulo'){      
-      echo "<script type='text/javascript'>let initial_option='create_article'; let active_list=0; let perfil='$perfil';</script>";
-    }if($_GET['option']=='ver_lista'){
-      echo "<script type='text/javascript'>let initial_option='show_list'; let active_list=".$_GET['lista']."; let perfil='$perfil';</script>";
+    if($_GET['option']=='create'){      
+      echo "<script type='text/javascript'>let initial_option='create'; let active_list=0; let perfil='$perfil';</script>";
+    }if($_GET['option']=='show'){
+      echo "<script type='text/javascript'>let initial_option='show'; let active_list=".$_GET['list']."; let perfil='$perfil'; let status_list='".$_GET['status']."';</script>";
     }
   }else
     header("Location: ./menu.php");
@@ -257,18 +257,22 @@ if(isset($_SESSION['user'])){
         <div class="footer_modal">          
           <?php
             if($_SESSION['perfil']=='admin'){
+              echo '<button class="btn btn-primary btn_footer" id="button_save_list"></button>';
               echo '<button class="btn btn-primary btn_footer" id="button_finalize_list">FINALIZAR Y LIBERAR</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">+ ARTICULO</button>';
               echo '<button class="btn btn-warning btn_footer" id="button_show_lists">VOLVER A LISTAS</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
             }elseif($_SESSION['perfil']=='reviser'){
+              echo '<button class="btn btn-primary btn_footer" id="button_save_list"></button>';
               echo '<button class="btn btn-primary btn_footer" id="button_save_list">ENVIAR A INFORMATICA</button>';
-              // echo '<button class="btn btn-success btn_footer" id="button_add_article">ADD NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">+ ARTICULO</button>';
               echo '<button class="btn btn-warning btn_footer" id="button_show_lists">VOLVER A LISTAS</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">ELIMINAR LISTA</button>';
             }elseif($_SESSION['perfil']=='editor'){
-              echo '<button class="btn btn-primary btn_footer" id="button_save_list">CREAR SKUs</button>';
+              echo '<button class="btn btn-primary btn_footer" id="button_save_list">CREAR PLANILLA EXCEL</button>';
               echo '<button class="btn btn-warning btn_footer" id="button_follow_editing">SEGUIR EDITANDO</button>';
-              echo '<button class="btn btn-success btn_footer" id="button_add_article">NUEVO ARTICULO</button>';
+              echo '<button class="btn btn-success btn_footer" id="button_add_article">+ ARTICULO</button>';
+              echo '<button class="btn btn-warning btn_footer" id="button_show_lists">VOLVER A LISTAS</button>';
               echo '<button class="btn btn-danger btn_footer" id="button_delete_list">CANCELAR LISTA</button>';
             }            
           ?>

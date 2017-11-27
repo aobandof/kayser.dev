@@ -336,13 +336,14 @@ body, html {
   padding: .2rem;
   text-align: center;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
-#div_sku_listas .dhead>div:nth-child(1) { width: 7%; }
-#div_sku_listas .dhead>div:nth-child(2) { width: 34%; }
-#div_sku_listas .dhead>div:nth-child(3) { width: 34%; }
-#div_sku_listas .dhead>div:nth-child(4) { width: 20%; }
-#div_sku_listas .dhead>div:nth-child(5) { width: 5%; }
+#div_sku_listas .dhead>div:nth-child(1) { width: 5%; }
+#div_sku_listas .dhead>div:nth-child(2) { width: 33%; }
+#div_sku_listas .dhead>div:nth-child(3) { width: 33%; }
+#div_sku_listas .dhead>div:nth-child(4) { width: 33%; }
+#div_sku_listas .dhead>div:nth-child(5) { width: 11%; }
+#div_sku_listas .dhead>div:nth-child(6) { width: 5%; }
 
 #div_sku_listas .dbody>.dtr {
   display: flex;
@@ -356,11 +357,12 @@ body, html {
   text-align: center;
 
 }
-#div_sku_listas .dbody>.dtr>div:nth-child(1) { width: 7%; }
-#div_sku_listas .dbody>.dtr>div:nth-child(2) { width: 34%; }
-#div_sku_listas .dbody>.dtr>div:nth-child(3) { width: 34%; }
-#div_sku_listas .dbody>.dtr>div:nth-child(4) { width: 20%; }
-#div_sku_listas .dbody>.dtr>div:nth-child(5) { width: 5%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(1) { width: 5%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(2) { width: 33%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(3) { width: 33%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(4) { width: 33%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(5) { width: 11%; }
+#div_sku_listas .dbody>.dtr>div:nth-child(6) { width: 5%; }
 
 .icon_dtable {
   max-height: 1rem;
