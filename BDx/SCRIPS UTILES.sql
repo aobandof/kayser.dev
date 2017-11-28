@@ -5,6 +5,8 @@ select * from lista;
 select * from lista_has_usuario;
 select * from usuario;
 
+select * from relacionprefijo;
+
 select codigo,barcode from sku order by barcode DESC LIMIT 1;
 
 SELECT SUBSTRING(barcode,1,LENGTH(barcode)-1) from sku order by barcode DESC LIMIT 1
