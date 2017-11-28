@@ -19,7 +19,7 @@ if(!isset($_SESSION['user'])){
 <body>
   <div id="div_sku_listas">
     <div class="">
-      <span>LISTAS PENDIENTES DE REVISION Y CARGA A SAP</span>
+      <span>LISTAS PENDIENTES DE CREACION Y REVISION</span>
       <a href="menu.php"><button class="btn btn-warning">VOLVER AL MENU</button></a>
     </div>
     <div class="dtable">

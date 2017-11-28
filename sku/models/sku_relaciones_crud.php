@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-// require_once "../config/sku_db_sqlsrv_33.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 $cant_items_rel=5; //SETEO ESTATICO -- indica la cantidad de columnas que tienen la tabla a recorrer
 if($_POST['option']=='show_relations'){
   $query_rel="SELECT * FROM relacionprefijo";
@@ -18,7 +18,7 @@ if($_POST['option']=='show_relations'){
     $cant_rel=count($arr_rel);
     for($i=0;$i<$cant_rel;$i++){
       for($j=0; $j<$cant_items_rel; $j++){
-       
+       echo json_encode('pendiente');
         
       }
     }

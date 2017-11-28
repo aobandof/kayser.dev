@@ -213,7 +213,6 @@ class DBConnection {
 
 //FUNCION QUE DETERMINA SI HAY REGISTROS SEGUN UNA $QUERY, de existir, devuelve la cantidad
   public function quantityRecords($query){
-
     $arr_registry=[];
     $cant_registros=0;
     if($this->_driver=="mysqli"){  

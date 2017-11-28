@@ -10,7 +10,8 @@ $(document).ready(function() {
 
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
   if(initial_option == 'show'){
-    modal_preview_save.style.visibility = 'visible';
+    modal_preview_save.style.visibility = 'visible'; 
+    el_span_title_list.innerHTML='LISTA N° ' + active_list;
     ///--- CONSULTAREMOS A LA API, TODOS LOS SKUS AGRUPADOS POR ARTICULOS QUE ESTAN DENTRO DE ESTA LISTA
     parameters={ 'option':'get_articles', 'list':active_list };
     console.log(parameters);
@@ -28,38 +29,49 @@ $(document).ready(function() {
       error: function(){ console.log('error'); }
     });
     if(status_list=='INICIADA'){//SI LA LISTA ESTA SOLO INICIADA HAY QUE MOSTRAR TAMBIEN A REVISER Y A ADMIN LOS BOTONES PARA CREAR LOS EXCEL
-      if(perfil == 'admin') {
-        el_but_fin_list.classList.add('cont_hidden')
-        el_but_save_list.classList.remove('cont_hidden')
-        el_but_save_list.innerHTML="CREAR EXCEL";
-      }else if (perfil == 'reviser')
-        el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
-      else
-        el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
+      el_span_state_list.innerHTML='SKUs pendientes de Creación. Click en GUARDAR SKUs para enviar Notificación';
+      el_span_state_list.style.color = 'rgb(241, 60, 132)';
+      // el_span_state_list.style.backgroundColor='yellow';
+      if(!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
+      if(!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden');
+      el_but_save_list.classList.remove('cont_hidden')
+      // el_but_save_list.innerHTML="GUARDAR SKUs";
+
     }else{ //SI NO ESTA INICIADA
       if (perfil == 'admin') {
-        el_but_fin_list.classList.remove('cont_hidden')
-        el_but_save_list.classList.remove('cont_hidden')
-        el_but_save_list.innerHTML = "CREAR EXCEL";
-      } else if (perfil == 'reviser')
-        el_but_save_list.innerHTML = "REENVIAR EXCEL CON REVISIONES";
-      else
-        el_but_save_list.innerHTML = "REENVIAR EXCEL CON CORRECCIONES";
-    }
+        el_but_save_list.classList.add('cont_hidden');
+        // el_but_follow_editing.classList.add('cont_hidden');
+        el_but_add_article.classList.add('cont_hidden');
+        if (status_list == 'REVISADA') {
+          el_but_fin_list.classList.remove('cont_hidden');
+        }else{
+          el_but_fin_list.classList.add('cont_hidden')
+          el_span_state_list.innerHTML = 'SKUs pendientes de REVISION';
+          el_span_state_list.style.color = 'blue';
+          ///--- PENDIENTE, ACA DEBEMOS DESHABILITAR LOS BOTONES DE EDICION DE LOS ARTIUCLOS EN EL MODAL
+        }
+      } else {
+        el_but_save_list.classList.add('cont_hidden');
+        el_but_submit_excel.classList.remove('cont_hidden');
+        if (status_list == 'REVISADA') {
+          el_span_state_list.innerHTML = 'SKUs REVISADOS anteriormente, SI REALIZA CAMBIOS Click en REENVIAR PLANILLA EXCEL para actualizar modificaciones';
+          el_but_submit_excel.innerHTML='REENVIAR EXCEL';
+          el_span_state_list.style.color = 'green';
+        }else {
+          el_span_state_list.innerHTML = 'SKUs pendientes de REVISION, Click en ENVIAR PLANILLA EXCEL a Informática';
+          el_span_state_list.style.color = 'green';
+         }
 
+      }
+    }
   }
   if(initial_option == 'create'){
     el_but_show_lists.classList.add('cont_hidden')
-    if (perfil == 'admin') {
-      el_but_fin_list.classList.add('cont_hidden')
+    el_but_save_list.classList.remove('cont_hidden')
+    if (perfil == 'admin')
       el_but_save_list.classList.remove('cont_hidden')
-      el_but_save_list.innerHTML = "CREAR EXCEL";
-    }else if (perfil == 'reviser')
-      el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
-    else
-      el_but_save_list.innerHTML = "CREAR Y ENVIAR EXCEL";
-
-
+    else if (perfil == 'reviser')
+      el_but_submit_excel.classList.add('cont_hidden')
     document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
   }
 
@@ -100,6 +112,9 @@ $(document).ready(function() {
               resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
               renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED
               modal_preview_save.style.visibility = 'visible';
+              el_span_title_list.innerHTML="LISTA N° " + active_list;
+              el_span_state_list.innerHTML="EDITANDO LISTA, al finalizar, click en ENVIAR SKUs para NOTIFICAR su proxima REVISION";
+              el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
             }
             if (!!data.refused) {
               mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
@@ -178,19 +193,12 @@ $(document).ready(function() {
   /****************** EVENTOS PARA AGREGAR OTRO ARTICULO CUANDO SE ESTA  EDITANDO ****************/
   if(!!el_but_add_article){
     el_but_add_article.onclick = function () {
-      resetAllControls();
+      // resetAllControls();
       document.getElementById('btn_show_list').disabled = false;
       modal_preview_save.style.visibility = 'hidden';
     }
   }
-  ///--- EVENTOS PARA OCULTAR LA LISTA Y SEGUIR EDITANDO  **************
-  if (!!el_but_follow_editing) {
-    el_but_follow_editing.onclick = function () {
-      // alert('deberia ocultar este modal');
-      document.getElementById('btn_show_list').disabled = false;
-      modal_preview_save.style.visibility = 'hidden';
-    }
-  }
+
   ///--- EVENTO PARA VER REGRESAR AL ARCHIVO lista.php DESDE LOS BOTONES EN EL ARICULO_PREVIEW 
   if(!!el_but_show_lists){
     el_but_show_lists.onclick=function(){
@@ -198,36 +206,50 @@ $(document).ready(function() {
       location.href = "listas.php";
     }
   }
-  /************************   EVENTO PARA GUARDAR LOS SKU Y ENVIAR EL EXCEL   *********************/
+  /************************   EVENTO PARA GUARDAR LOS SKU   *********************/
   if (!!el_but_save_list) {
     parameters = new Object();
     el_but_save_list.onclick = function () {
-      // if(initial_option=="show" && perfil=='reviser')
-      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
-      // else if(initial_option=="create_article" && perfil=='editor')
-      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
-      // else if (initial_option == "create_article" && perfil == 'reviser')
-      //   parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };   
-      // else 
-      //   console.log("no deberia entrar aca");
-      if(status_list=='INICIADA'){
-        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'creation' };
-      }else{
-        parameters = { 'option': 'save_list', 'list': active_list, 'operation': 'review' };
-      }
-
+      parameters = { 'option': 'save_list', 'list': active_list };
       console.log(parameters);             
+      $.ajax({
+        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,        
+        beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
+        success: function (data) {
+          console.log(data);
+          el_div_loader_full.classList.remove('cont_hidden');
+          if(data.creation==true){
+            if(data.submit==true){
+              alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON NOTIFICACION PARA SU PROXIMA REVISION');
+              location.href = "menu.php";
+            }else{
+              alert('SKUS GUARDADOS CORRECTAMENTE PERO NO SE ENVIO LA NOTIFICACION\n\nINFORME POR SU CUENTA SOBRE LA LISTA CREADA PARA SU PROXIMA REVISION ');
+              location.href = "menu.php";
+            }            
+          }else
+            alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
+        },
+        error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
+      });
+    }
+  }
+  /************************   EVENTO PARA ENVIAR EL EXCEL   *********************/
+  if (!!el_but_submit_excel) {
+    parameters = new Object();
+    el_but_submit_excel.onclick = function () {
+      parameters = { 'option': 'submit_excel', 'list': active_list };
+      console.log(parameters);
       $.ajax({
         url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
         beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
         success: function (data) {
           console.log(data);
           el_div_loader_full.classList.remove('cont_hidden');
-          if(data.submit==true){
-            alert('SKUS ENVIADOS CORRECTAMENTE');
+          if (data.submit == true) {
+            alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON PLANILLA EXCEL A INFORMATICA');
             location.href = "menu.php";
-          }else
-            alert('ERROR. No se pudo enviar este mail\n\nCONTACTE A INFORMATICA POR FAVOR');
+          } else
+            alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
         },
         error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
       });
@@ -360,13 +382,16 @@ $(document).ready(function() {
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
   function getElementsControls() {
+    el_span_state_list = document.getElementById('span_state_list');
+    el_span_title_list = document.getElementById('span_title_list');
     ///--- INICIALIZAMOS BOTONES DEL ARTICLE_PREVIEW
     el_but_delete_list = document.getElementById('button_delete_list');
     el_but_add_article = document.getElementById('button_add_article');
-    el_but_follow_editing = document.getElementById('button_follow_editing');
+    // el_but_follow_editing = document.getElementById('button_follow_editing');
     el_but_show_lists = document.getElementById('button_show_lists');
     el_but_save_list = document.getElementById('button_save_list');
     el_but_fin_list = document.getElementById('button_finalize_list');
+    el_but_submit_excel = document.getElementById('button_submit_excel');
     
     el_div_loader_full = document.getElementById('sku_loader_full');
 

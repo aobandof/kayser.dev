@@ -17,8 +17,16 @@
 #div_modal_article_creation .header_modal {
   background-color: white;
   color: rgba(3, 48, 66, 0.88);
+  display: flex;
 }
-
+  #div_modal_article_creation .header_modal>span:nth-child(1) {
+    flex: 0 1 20%;
+  }
+  #div_modal_article_creation .header_modal>span:nth-child(2) {
+    flex: 1 1 auto;
+    text-align: right;
+    /* background-color: rgb(235, 253, 199) */
+  }
 .preview_article {
   background-color: #00FF6A;
   border: 1px solid white;

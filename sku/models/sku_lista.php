@@ -83,7 +83,7 @@ if($_POST['option']=="save_article"){
        $errors[]=$mysqli->getErrors();
        $data['msj']='no se creo el articulo y hubo error al consultar la cantidad de articulos en esta lista';  
     }elseif($cant_registros_lista==0){
-      if(($mysqli->delete("DELETE FROM lista WHERE id=$lista"))==false){
+      if(($mysqli->delete("DELETE FROM lista WHERE id=$lista"))===false){
         $errors[]=$mysqli->getErrors();
         $data['msj']='no se creo el articulo, la lista estaba nueva y no se pudo eliminar'; 
       }
@@ -182,9 +182,33 @@ if($_POST['option']=="delete_list") {
 
 if($_POST['option']=="save_list") {
   $lista=$_POST['list'];
-  ($_POST['operation']=='creation') ? $nomb_lista="PLANILLA_CREACION_SKUS_LISTA_N-$lista_($hoy)" :  $nomb_lista="PLANILLA_REVISION_SKUS_LISTA_N-$lista_($hoy)";
+  $query_save_list="UPDATE lista SET estado='CREADA' WHERE id=$lista";
+  $reg_updated=$mysqli->update_easy($query_save_list);
+  if($reg_updated==1){
+    $data['creation']=true;
+    ///--- ############################### ---
+    ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
+    $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
+    $link="http://192.168.0.19/crear.php?list=$lista&status=CREADA&option=show";
+    $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
+    $destinatario ="aobando@kayser.cl";
+    $headers = "MIME-Version: 1.0\r\n"; 
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
+    $headers .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
+    if(mail($destinatario, $subject, $message, $headers)){
+      $data['submit']=true;
+    }
+    else{
+      $data['submit']=false;
+    }     
+  }else 
+    $reg_updated===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_saved']=$reg_updated;
+  echo json_encode($data);
+}
+if($_POST['option']=="submit_excel") {
+  $lista=$_POST['list'];
+  $nomb_lista="CREACION_SKUS_LISTA_N-".$lista."_($hoy)";
 
-  ///--- OBTENEMOS TODOS LOS SKU 
   $query_skus_carga="SELECT S.codigo as cod_sku, S.barcode, A.caracteristica_name, A.itemname, A.dpto_code, A.prenda_name, A.codigo as cod_articulo, ";
   $query_skus_carga.="S.color_name, S.talla_name, A.talla_familia, A.prenda_code, S.talla_orden, A.marca_name, A.tprenda_name, A.material_name, A.grupouso_name, ";
   $query_skus_carga.="A.subdpto_name, A.composicion_name, A.categoria_code, S.copa, A.presentacion_name, A.tcatalogo_name, S.fcopa FROM sku as S ";
@@ -196,22 +220,36 @@ if($_POST['option']=="save_list") {
     $send=sendMail($arr_skus_carga);
     if($send===true){
       $data['submit']=true;
-      ($_POST['operation']=='creation') ? $estado_lista='CREADA' :  $estado_lista='REVISADA';
+      $estado_lista='REVISADA';
       $query_state="UPDATE lista SET estado='$estado_lista' WHERE id=$lista";
       $reg_updated=$mysqli->update_easy($query_state);
-      if($reg_updated==1){      
-        $data['list_updated']=true;
-        ///AHORA GUARDAREMOS LA ACCION DE REVISADO EN LA RELACION LISTA USUARIO
-        if($_POST['operation']=='review'){
-          if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','REVISION','$hoy')") != 1 ){
+      if($reg_updated==1){
+        $data['state_updated']=true;     
+        ///--- ACA DEBERIAMOS VALIDAR SI YA EXISTE LA LISTA Y LA OPRERACION REVISION, SOLO ACTUALIZAR LA FECHA, SI NO, INGRESAR EL DATO
+        $query_exists_rel="SELECT lista_id from lista_has_usuario WHERE lista_id=$lista AND operacion='REVISION'";
+        $cant_exist_rel=$mysqli->quantityRecords($query_exists_rel);
+        if($cant_exist_rel==1){
+          $query_update_rel="UPDATE lista_has_usuario SET usuario_user=$user, fecha=$hoy WHERE lista_id=$lista AND operacion='REVISION'";
+          $reg_rel_updated=$mysqli->update_easy($query_update_rel);
+          if($reg_rel_updated==1){
+            $data['relation_updated']==true;
+          }else $reg_rel_updated===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_rel_updated']=$reg_rel_updated; 
+        }else {
+          if($cant_exist_rel===false )
             $data['errors']=$mysqli->getErrors();
+          else{
+            $query_insert_rel="INSERT INTO lista_has_usuario values ($lista,'$user','REVISION','$hoy')";
+            $reg_rel_inserted=$mysqli->insert_easy($query_insert_rel);
+            if($reg_rel_inserted==1){
+              $data['relation_inserted']==true;
+            }else $reg_rel_inserted===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_rel_inserted']=$reg_rel_inserted; 
           }
         }
-      }else{ $reg_updated==1 ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_updated']=0; }
+      } else $reg_rel_inserted===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_rel_inserted']=$reg_rel_inserted;
     }else
       $data['submit']=false;
   }else{
-    $arr_skus_carga==false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
+    $arr_skus_carga===false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
   }
   echo json_encode($data);
 }
@@ -224,7 +262,8 @@ if($_POST['option']=='show_lists'){
   }elseif($_SESSION['perfil']=='reviser' || $_SESSION['perfil']=='admin'){ //ver las que esta editando mas todas las que estan pendientes de revision o finalizacion
     $query_lists = "SELECT L.id, COUNT(S.codigo) as cant_skus, estado from lista as L INNER JOIN articulo as A on A.lista_id=L.id INNER JOIN sku as S on A.codigo=S.articulo_codigo GROUP BY L.id";
   }
-  $all_querys[]=$query_list;
+  $data['perfil']=$_SESSION['perfil'];
+  $all_querys[]=$query_lists;
   $arr_lists=$mysqli->select($query_lists,'mysqli_a_o');
   $data['cant_primera_consulta']=$arr_lists;
   if($arr_lists!=0 && $arr_lists!==false){    
@@ -353,23 +392,36 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
+  $subject="NOTIFICACION DE REVISION DE SKUS (Lista N° $lista)";
+  $link="http://192.168.0.19/crear.php?list=$lista&status=REVISADA&option=show";
   $destinatario ="aobando@kayser.cl";
-  $headers = "From: Creacion de SKU <sku@kayser.cl>\r\n";
-  $headers .= "MIME-Version: 1.0\r\n";
-  $headers .= "Content-Type: application/octet-stream; name=".$nomb_lista.".csv\r\n"; //envio directo de datos
-  $headers .= "Content-Disposition: attachment; filename=".$nomb_lista.".csv\r\n";
-  $headers .= "Content-Transfer-Encoding: binary\r\n";
-  $headers .= utf8_decode($content_csv);
-  $headers .= "\r\n";
+  
+  $header = "From: Creacion de SKU <sku@kayser.cl>\r\n";
+  $header .= "MIME-Version: 1.0\r\n";
+  $header .= "Content-type: multipart/mixed;"; 
+  $header .= "boundary=\"--_Separador-de-mensajes_--\"\n";
+  
+  $message = "----_Separador-de-mensajes_--\n";
+  $message .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
+  $message .= "lista N° $lista FUE REVISADA.<br><br>Después de Cargar la Información a SAP, es necesario FINALIZAR esta lista.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
+  
+  $attached = "\n\n----_Separador-de-mensajes_--\n";
+  $attached .= "Content-Type: application/octet-stream; name=".$nomb_lista.".csv\r\n"; //envio directo de datos
+  $attached .= "Content-Disposition: attachment; filename=".$nomb_lista.".csv\r\n";
+  $attached .= "Content-Transfer-Encoding: binary\r\n";
+  $attached .= utf8_decode($content_csv);
+  $attached .= "\r\n";
+  
+  $content = $message.$attached;
 
-  /*if(mail($destinatario, $nomb_lista,"", $headers)){
+  if(mail($destinatario, $subject, $content, $header)){
     return true;
   }
   else{
     return false;
-  }*/
-  return true;
-  return($content_csv);   
+  }
+  // return true;
+  // return($content_csv);   
 }
 function existArticle($cod_art,$serv){
   global $mysqli;
