@@ -28,7 +28,7 @@ $(document).ready(function() {
       },
       error: function(){ console.log('error'); }
     });
-    if(status_list=='INICIADA'){//SI LA LISTA ESTA SOLO INICIADA HAY QUE MOSTRAR TAMBIEN A REVISER Y A ADMIN LOS BOTONES PARA CREAR LOS EXCEL
+    if(state_list=='INICIADA'){//SI LA LISTA ESTA SOLO INICIADA HAY QUE MOSTRAR TAMBIEN A REVISER Y A ADMIN LOS BOTONES PARA CREAR LOS EXCEL
       el_span_state_list.innerHTML='SKUs pendientes de Creación. Click en GUARDAR SKUs para enviar Notificación';
       el_span_state_list.style.color = 'rgb(241, 60, 132)';
       // el_span_state_list.style.backgroundColor='yellow';
@@ -42,7 +42,7 @@ $(document).ready(function() {
         el_but_save_list.classList.add('cont_hidden');
         // el_but_follow_editing.classList.add('cont_hidden');
         el_but_add_article.classList.add('cont_hidden');
-        if (status_list == 'REVISADA') {
+        if (state_list == 'REVISADA') {
           el_but_fin_list.classList.remove('cont_hidden');
         }else{
           el_but_fin_list.classList.add('cont_hidden')
@@ -53,7 +53,7 @@ $(document).ready(function() {
       } else {
         el_but_save_list.classList.add('cont_hidden');
         el_but_submit_excel.classList.remove('cont_hidden');
-        if (status_list == 'REVISADA') {
+        if (state_list == 'REVISADA') {
           el_span_state_list.innerHTML = 'SKUs REVISADOS anteriormente, SI REALIZA CAMBIOS Click en REENVIAR PLANILLA EXCEL para actualizar modificaciones';
           el_but_submit_excel.innerHTML='REENVIAR EXCEL';
           el_span_state_list.style.color = 'green';
@@ -110,10 +110,17 @@ $(document).ready(function() {
             if (!!data.filas && data.filas != '') {
               active_list = data.lista;
               resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-              renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED
+              renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
+              if (initial_option=="create"){
+                if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
+                if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
+              }
               modal_preview_save.style.visibility = 'visible';
               el_span_title_list.innerHTML="LISTA N° " + active_list;
-              el_span_state_list.innerHTML="EDITANDO LISTA, al finalizar, click en ENVIAR SKUs para NOTIFICAR su proxima REVISION";
+              if(typeof state_list === 'undefined')// SOLO EL REVISER TENDRA ESTA OPCION
+                el_span_state_list.innerHTML = "EDITANDO LISTA, después click en ENVIAR SKUs para NOTIFICAR ESTA CREACION ";                
+              else
+                el_span_state_list.innerHTML = "EDITANDO LISTA YA CREADA, después click en ENVIAR PLANILLA EXCEL para NOTIFICAR ESTA REVISION";                
               el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
             }
             if (!!data.refused) {
@@ -210,49 +217,22 @@ $(document).ready(function() {
   if (!!el_but_save_list) {
     parameters = new Object();
     el_but_save_list.onclick = function () {
-      parameters = { 'option': 'save_list', 'list': active_list };
-      console.log(parameters);             
-      $.ajax({
-        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,        
-        beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
-        success: function (data) {
-          console.log(data);
-          el_div_loader_full.classList.remove('cont_hidden');
-          if(data.creation==true){
-            if(data.submit==true){
-              alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON NOTIFICACION PARA SU PROXIMA REVISION');
-              location.href = "menu.php";
-            }else{
-              alert('SKUS GUARDADOS CORRECTAMENTE PERO NO SE ENVIO LA NOTIFICACION\n\nINFORME POR SU CUENTA SOBRE LA LISTA CREADA PARA SU PROXIMA REVISION ');
-              location.href = "menu.php";
-            }            
-          }else
-            alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
-        },
-        error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
-      });
+      if(confirm("SEGURO DE CREAR LOS SKUS")){
+        parameters = { 'option': 'save_list', 'list': active_list };
+        console.log(parameters);             
+        ajax_save_list(parameters);
+      }
     }
   }
   /************************   EVENTO PARA ENVIAR EL EXCEL   *********************/
   if (!!el_but_submit_excel) {
     parameters = new Object();
     el_but_submit_excel.onclick = function () {
-      parameters = { 'option': 'submit_excel', 'list': active_list };
-      console.log(parameters);
-      $.ajax({
-        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function () { el_div_loader_full.classList.add('cont_hidden'); },
-        success: function (data) {
-          console.log(data);
-          el_div_loader_full.classList.remove('cont_hidden');
-          if (data.submit == true) {
-            alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON PLANILLA EXCEL A INFORMATICA');
-            location.href = "menu.php";
-          } else
-            alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
-        },
-        error: function () { console.log('error'); el_div_loader_full.classList.remove('cont_hidden'); }
-      });
+      if (confirm("SEGURO DE CREAR Y ENVIAR PLANILLA EXCEL")) {
+        parameters = { 'option': 'submit_excel', 'list': active_list };
+        console.log(parameters);
+        ajax_submit_excel(parameters) 
+      }
     }
   }
   /************************   EVENTO PARA FINALIZAR LA LISTA, ELIMINARLA GUARDANDO EN EL LOG,LOS SKUS CARGADOS A SAP *****************/
@@ -653,3 +633,40 @@ function resetAllControls(){
 }
 
 });
+function ajax_save_list(param){
+  $.ajax({
+    url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
+    beforeSend: function () { el_div_loader_full.classList.remove('cont_hidden'); },
+    success: function (data) {
+      console.log(data);
+      el_div_loader_full.classList.add('cont_hidden');
+      if (data.creation == true) {
+        if (data.submit == true) {
+          alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON NOTIFICACION PARA SU PROXIMA REVISION');
+          location.href = "menu.php";
+        } else {
+          alert('SKUS GUARDADOS CORRECTAMENTE PERO NO SE ENVIO LA NOTIFICACION\n\nINFORME POR SU CUENTA SOBRE LA LISTA CREADA PARA SU PROXIMA REVISION ');
+          location.href = "menu.php";
+        }
+      } else
+        alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
+    },
+    error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
+  });
+}
+function ajax_submit_excel(param) {
+  $.ajax({
+    url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
+    beforeSend: function () { el_div_loader_full.classList.remove('cont_hidden'); },
+    success: function (data) {
+      console.log(data);
+      el_div_loader_full.classList.add('cont_hidden');
+      if (data.submit===true){
+        alert('SKUS GUARDADOS CORRECTAMENTE\n\nSE ENVIO MAIL CON PLANILLA EXCEL A INFORMATICA');
+        location.href = "menu.php";
+      } else
+          alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
+    },
+    error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
+  });
+}

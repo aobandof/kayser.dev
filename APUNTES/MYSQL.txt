@@ -54,6 +54,6 @@ IMPORTAR:
 		mysql> create database base_datos;
 		mysql> use base_datos;
 	IMPORTSAMOS
-		mysql> source /home/usuario/archivo.sql
+		mysql> source /var/www/html/kayser.dev/sku/kayser_articulos.sql
 	
 	

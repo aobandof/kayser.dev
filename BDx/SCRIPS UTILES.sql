@@ -49,6 +49,11 @@ truncate table sku;
 truncate table usuario;
 SET FOREIGN_KEY_CHECKS=1;
 
+SELECT * FROM USUARIO;
+SELECT * FROM composicion;
+
+show tables;
+
 
 
 DELETE from lista WHERE id=7

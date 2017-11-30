@@ -2,7 +2,8 @@ var el = document.body.querySelector("input[type='text']");  // se obtiene el ht
 
 para comparar null en un condicional  se compara de la siguiente manera: if(var_x !== null) ...
 
-para comparar undefined en un condicional se compara de la siguiente manera: if(!!var_x) ...
+para comparar undefined en un condicional se compara de la siguiente manera: if(!!x)  or  if(x!==undefined) pero  si y solo si tienes que haber declarado la variable con var x o let x
+SI NO DECLARASTE LA VARIABLE y quieres saber si esta o no definada, tienes que pregunta si el typeof de la variable esta definido, de la siguiente forma: if(typeof x === 'undefined')
 
 Para hacer un explode en javascript, usamos: nombre_cadena.split(" ") // lo que va dentro de commillas es el delimitador, en este caso el espacio en blanco
 

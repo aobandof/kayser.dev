@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
     if($_GET['option']=='create'){      
       echo "<script type='text/javascript'>let initial_option='create'; let active_list=0; let perfil='$perfil';</script>";
     }if($_GET['option']=='show'){
-      echo "<script type='text/javascript'>let initial_option='show'; let active_list=".$_GET['list']."; let perfil='$perfil'; let status_list='".$_GET['status']."';</script>";
+      echo "<script type='text/javascript'>let initial_option='show'; let active_list=".$_GET['list']."; let perfil='$perfil'; let state_list='".$_GET['status']."';</script>";
     }
   }else
     header("Location: ./menu.php");
@@ -129,8 +129,8 @@ if(isset($_SESSION['user'])){
             <div class="cont_fila_crear_sku container_row" >
               <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">
-                <input name='prefijo' type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" readonly>  
-                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" readonly min="1000" max="9999">
+                <input name='prefijo' type="text" id="txt_sku_prefijo" class="form-control sku_control" value="" >  
+                <input name='correlativo' type="number" id="txt_sku_correlativo" class="form-control sku_control" value="" min="1000" max="9999">
                 <input name='sufijo' id="txt_sku_sufijo" class="form-control sku_control" value="" readonly>
               </div>
             </div>

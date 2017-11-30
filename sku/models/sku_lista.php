@@ -33,7 +33,7 @@ if($_POST['option']=="save_article"){
   $first_barcode=getFirstBarcode();
   $filas='';
   $querys=[];
-  $data['lista']=$lista; 
+   
   $data['first_barcode']=$first_barcode;
 
   if($lista==0){
@@ -95,17 +95,22 @@ if($_POST['option']=="save_article"){
   }
 
   ///--- AHORA REGISTRAMOS LOS SKUS
+  
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
-      if($copa!='' && $copa!='S/P')
+      if($copa!='' && $copa!='S/C')
         $sku=$code_article.'-'.substr($colores_name[$i],0,3).$copa.'-'.$tallas_name[$j];
       else
         $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
       if(existSku($sku,'SAP')===true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
+        $data['exist_in_SAP']=true;
       }elseif(existSku($sku,'LISTA')===true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
+        $data['exist_in_LIST']=true;
       }else{
+        //$data['stop_before_insert_sku']=true;                
+        $data['exist_not_exist']=true;
         $barcode=$first_barcode + count($sku_inserteds);
         $barcode=(string)$barcode;
         $barcode=$barcode.getControlDigit($barcode);
@@ -118,12 +123,18 @@ if($_POST['option']=="save_article"){
           $sku_inserteds[]=$sku;     
         }else{
           $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR AL GUARDAR SKU"); 
-          $reg_sku_inserted===false ? $data['errors']=$mysqli->getErrors() : $data['sku_inserteds'][$sku]=$reg_sku_inserted;             
+          $reg_sku_inserted===false ? $data['errors'][]=$mysqli->getErrors() : $data['errors'][]="SIMPLEMENTE NO SE REGISTRO $sku";             
         }
-      }
+      }      
     }
   }
-  
+  // $data['lista']=$lista;
+  // $data['cant_colors']=$colores_length;
+  // $data['cant_tallas']=$tallas_length;
+  // $data['skus_insertados']=$sku_inserteds;
+  // $data['refused']=$sku_refused;
+  // echo json_encode($data);
+
   #######################################################################################################################################################
   ///--- como llegamos hasta aca, ya registramos el articulo y/o la lista (si fuera nueva) y los sku siempre y cuando count($sku_inserteds) sea distinto 
   if(count($sku_inserteds)==0){ 
@@ -191,9 +202,9 @@ if($_POST['option']=="save_list") {
     ///--- ############################### ---
     ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
-    $link="http://192.168.0.19/crear.php?list=$lista&status=CREADA&option=show";
+    $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl";
+    $destinatario ="sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
     $headers .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
@@ -359,6 +370,9 @@ if($_POST['option']=='finalize_list'){
 }
 function sendMail($arr_cont){
   global $nomb_lista;
+  global $lista;
+  // $boundary=uniqid('np');
+  $multipartSep = '-----'.md5(time()).'-----';
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
   $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
 
@@ -394,26 +408,27 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
-  $subject="NOTIFICACION DE REVISION DE SKUS (Lista N° $lista)";
-  $link="http://192.168.0.19/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl";
+  $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
+  $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
+  $destinatario ="sku@kayser.cl";
+
+  $header  = "MIME-Version: 1.0\r\n"; 
+  $header .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
+  $header .= "Content-type: multipart/mixed; charset=UTF-8; boundary=\"$multipartSep\"";
   
-  $header = "From: Creacion de SKU <sku@kayser.cl>\r\n";
-  $header .= "MIME-Version: 1.0\r\n";
-  $header .= "Content-type: multipart/mixed;"; 
-  $header .= "boundary=\"--_Separador-de-mensajes_--\"\n";
-  
-  $message = "----_Separador-de-mensajes_--\n";
+  $message = "--$multipartSep\r\n";
   $message .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-  $message .= "lista N° $lista FUE REVISADA.<br><br>Después de Cargar la Información a SAP, es necesario FINALIZAR esta lista.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
+  $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+  $message .= "lista N° $lista FUE REVISADA.<br><br>Después de Cargar la Información a SAP, es necesario FINALIZAR esta lista.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a>\r\n";
   
-  $attached = "\n\n----_Separador-de-mensajes_--\n";
-  $attached .= "Content-Type: application/octet-stream; name=".$nomb_lista.".csv\r\n"; //envio directo de datos
-  $attached .= "Content-Disposition: attachment; filename=".$nomb_lista.".csv\r\n";
+  $attached = "--$multipartSep\r\n";
+  $attached .= "Content-Type: application/octet-stream; name=\"".$nomb_lista.".csv\"\r\n"; //envio directo de datos
   $attached .= "Content-Transfer-Encoding: binary\r\n";
+  $attached .= "Content-Disposition: attachment; filename=\"".$nomb_lista.".csv\"\r\n";
   $attached .= utf8_decode($content_csv);
   $attached .= "\r\n";
-  
+  $attached .= "--$multipartSep--";
+
   $content = $message.$attached;
 
   if(mail($destinatario, $subject, $content, $header)){
@@ -444,14 +459,15 @@ function existArticle($cod_art,$serv){
 }
 function existSku($cod_sku, $serv){
   global $mysqli;
-  if($serv='SAP'){
+  if($serv==='SAP'){
     $query_exist_sku="SELECT TOP 1 ItemCode FROM OITM WHERE ItemCode='$cod_sku'";
     $arr_exist_sku=$mysqli->select($query_exist_sku,'mysqli_a_o');
-  }else {
-    $query_exist_sku="SELECT codigo FROM sku WHERE codigo='$cod_sku'";
-    $arr_exist_article=$mysqli->select($query_exist_sku,'mysqli_a_o');
   }
-  if($arr_exist_sku!==0 && $arr_exist_sku!==false)
+  if($serv==='LISTA'){
+    $query_exist_sku="SELECT codigo FROM sku WHERE codigo='$cod_sku'";
+    $arr_exist_sku=$mysqli->select($query_exist_sku,'mysqli_a_o');
+  }
+  if(isset($arr_exist_sku) AND ($arr_exist_sku!==0 && $arr_exist_sku!==false))
     return true;
   else
     return false;         
