@@ -298,6 +298,19 @@ class DBConnection {
        return $arr_export[0];
   }
 
+  public function getColumnFromId($name_table){
+    global $tablas_sku;
+    ($tablas_sku["$name_table"]["type_id"]=='INT') ? $query_id="SELECT ".$tablas_sku["$name_table"]["campo"] ." as name FROM $name_table WHERE ".$tablas_sku["$name_table"]["id"]."=$val_id" : $query_id="SELECT ".$tablas_sku["$name_table"]["name"]." FROM $name_table WHERE ".$tablas_sku["$name_table"]["id"]."='".$val_id."'";
+    if($tablas_sku["$name_table"]["bd"]=="mysql")
+      $arr_id=$this->_connection->query($query_id,"mysqli_a_o");
+    else{
+      $arr_id=$sqlsrv_33->select($query_id,"sqlsrv_a_p");
+    }if($arr_id===false)
+        return -1;
+    else{ 
+        return $arr_id[0]["name"];
+    }
+  }
 }
 
 ?>

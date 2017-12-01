@@ -141,18 +141,16 @@ $(document).ready(function() {
   //inicialmente ocultamos la caja que contiene las copas
   document.getElementById('div_copa').style.display = 'none'; 
 
+
+  
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
-  $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
+  $("#a_opcion_config_prefix").click(function () { 
+    $("#div_crud_prefix").css('visibility', 'visible'); 
+    cargarTablaRelations(); 
+  }); //MOSTRAMOS MODAL PREFIJOS
 
-  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
-  document.getElementById('select_item_crud').onchange= function() {
-    item_crud_selected=this.value;
-    $("#div_tabla_item>tbody_div").html('');
-    $("#div_tabla_item").css('visibility', 'visible');
-    cargarTablaSeccion($(this).val());
-  }
   /****************** EVENTOS PARA CERRAR EL MODAL CRUD_ITEMS ****************/
   $("#button_close_crud_items, #img_close_crud_items").click(function () {
     if ( this.className == "close_modal")
@@ -168,6 +166,21 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });
+
+  document.getElementById('img_close_crud_relations').onclick = function(){
+  document.getElementById('div_crud_relations').style.visibility='hidden';
+  document.getElementById('div_tabla_relations').innerHTML="";
+
+
+  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
+  document.getElementById('select_item_crud').onchange= function() {
+    item_crud_selected=this.value;
+    $("#div_tabla_item>tbody_div").html('');
+    $("#div_tabla_item").css('visibility', 'visible');
+    cargarTablaSeccion($(this).val());
+  }
+
+  }
   /****************** FUNCIONA PARA ELIMINAR LA LISTA ACTUAL, YA SEA UNA ANTIGUA O U NA NUEVA QUE SE ESTE REVISANDO O FINALIZANDO */
 
   /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/  

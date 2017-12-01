@@ -214,6 +214,12 @@ body, html {
   height: 100%;
 }
 
+
+/****** ESTILOS PARA EL MODAL RELATION ****/
+
+
+
+
  /*** MEDIAS QUERYS ***/
  @media (max-width: 750px) /*and (max-heigth: 160px) */ {
   .tabla_div .th { font-size: .8rem; }
