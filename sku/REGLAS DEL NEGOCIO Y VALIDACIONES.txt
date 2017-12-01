@@ -43,7 +43,6 @@ IDEAS:
 * cuando un REVISER elija la lista, se le debe mostrar el sku_crear.html PERO CON LA VENTANA MODAL preview ACTIVA Y PODER EDITARLA O ENVIAR EXCEL.
 	hay que considerar como pasamos el estado al archivo para que sepa cuando mostrar el modal.
 	hay que considerar tb la sesion, dado que los botones se mostraran segun perifles (un EDITOR no podr� revisar ni cargar a sap).
-
 * cuando alguien edita (agrega o elimina los skus, antes de enviarlos o subirlos a sap) seria ideal que en el modal preview (al lado del titulo del header) se indiquen la cantidad de Articulos y SKus como ayuda, sobre todo para los que cargaron a sap.. para que el excel  cargar sea lo mismo que el log que se guardara en mysql
 
 

@@ -1,4 +1,0 @@
-* EVENTO CHANGE A txt_sku_correlativo, de tal forma que cuando pierda el foco, revise que el valor no sea menor que 1000
-
-* Agregar columna "abreviatura" a la tabla Colores que guarda la abreviatura usada para los colores (deben ser valores unicos).
-

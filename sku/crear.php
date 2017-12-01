@@ -194,7 +194,7 @@ if(isset($_SESSION['user'])){
     <div class="modal modal_panel" id="div_crud_relations">
       <div class="content_modal">
         <div class="header_modal">
-          <span>CONFIGURACION PREFIJOS DE CODIGO DE ARTCULOS</span>
+          <span>EDICION DE RELACIONES ENTRE ITEMS DE ARTICULOS</span>
           <img src="../shared/img/close.png" class="close_modal" id="img_close_crud_relations" alt="">
         </div>
         <div class="body_modal">
@@ -202,12 +202,11 @@ if(isset($_SESSION['user'])){
             <span>Sección a Editar: </span>&nbsp&nbsp&nbsp
           </div>
           <div class="tabla_div" id="div_tabla_relations">
-            <div class="thead_div"><div class="row tr" id="div_head_tr_relations"></div>
-              <div>N°</div><div>Dpto</div><div>Subdpto</div><div>Prenda</div><div>Categoria</div><div>Temporada</div><div>Prefijo</div><div>Edit</div><div>Delete</div>
-            </div>
-            <div class="tbody_div" id="div_tbody_relations"><div class="row tr"></div></div>
+            <div class="thead_div"><div class="row tr" id="div_head_tr_relations"></div></div>
+            <div class="tbody_div" id="div_tbody"><div class="row tr"></div></div>
             <div class="tfooter_div">
-              <button class="btn btn-primary btn_footer" id="button_nuevo_relation">Nuevo</button>
+              <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
+              <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
               <button class="btn btn-primary btn_footer close_modal2" id="#button_close_crud_relations">Salir</button>
             </div>
           </div>
@@ -217,7 +216,7 @@ if(isset($_SESSION['user'])){
 >
 
     <!-- COMPONENTE MODAL PREFIJOS -->
-    <!-- <div class="modal modal_panel" id="div_crud_prefix">
+    <div class="modal modal_panel" id="div_crud_prefix">
       <div class="content_modal">
         <div class="header_modal">
           <span>EDICION DE PREFIJOS PARA CODIGO DE ARTICULO</span>
@@ -236,12 +235,13 @@ if(isset($_SESSION['user'])){
             </div>
             <div class="tfooter_div">
               <button class="btn btn-primary btn_footer" id="button_nuevo_seccion">Nuevo</button>
+              <!-- <button class="btn btn-primary btn_footer">Limpiar</button> -->
               <button class="btn btn-primary btn_footer close_modal2" id="button_close_crud_prefix">Salir</button>
             </div>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
 
 
     <!-- COMPONENTE MODAL PREVIEW GUARDAR SKU -->

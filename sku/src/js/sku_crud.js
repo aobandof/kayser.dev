@@ -311,14 +311,3 @@ function createRegistry(arr_contenido) {
   });
   return true;
 }
-
-function cargarTablaRelations(){
-  parameters= { 'option': 'get_prefix_relations'};
-  $.ajax({ url: 'sku_relations_crud.php', type: 'post', dataType: 'json', data: parameters,
-    beforeSend: function (){ },
-    success: function(data){
-      console.log(data);      
-    },
-    error: function(){ console.log('error'); }
-  });
-}

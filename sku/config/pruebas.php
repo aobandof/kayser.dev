@@ -1,7 +1,10 @@
 <?php
+
 require_once "require.php";
 require_once "sku_db_mysqli.php";
-
+require_once "sku_db_sqlsrv_33.php";
+require_once "../models/sku_lista.php";
+// echo "holota";
 // echo "cantidad de registros";
 // echo $mysqli->quantityRecords('SELECT codigo FROM articulo WHERE lista_id=2');
 
@@ -15,6 +18,11 @@ require_once "sku_db_mysqli.php";
 
 // echo $mysqli->getColumnFromColumn('presentacion','abreviatura','id','NUMBER',2);
 
-echo getControlDigit("780000023572");
-echo "<br>";
-echo getControlDigit("780000023571");
+// echo getControlDigit("780000023572");
+// echo "<br>";
+// echo getControlDigit("780000023571");
+
+if(existArticle('14.8015','SAP'))
+  echo 'existe';
+else
+  echo 'NO EXISTE';

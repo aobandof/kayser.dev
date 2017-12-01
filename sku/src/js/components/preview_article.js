@@ -51,9 +51,9 @@ function makeArticlePreview(arti,desc){
   let but_edit_detalle = document.createElement('button');
   let but_edit_color_talla = document.createElement('button');
   let but_article_delete = document.createElement('button');
-  but_edit_detalle.className='btn btn-primary';
-  but_edit_color_talla.className = 'btn btn-success';
-  but_article_delete.className = 'btn btn-danger';
+  but_edit_detalle.className='btn btn-primary btn_edit_detalle';
+  but_edit_color_talla.className = 'btn btn-success btn_add_color_talla';
+  but_article_delete.className = 'btn btn-danger btn_delete_article';
   but_edit_detalle.innerHTML="EDITAR<br>DETALLE"
   but_edit_color_talla.innerHTML="AGREGAR<br>COLOR/TALLA";
   but_article_delete.innerHTML="QUITAR<br>ARTICULO";

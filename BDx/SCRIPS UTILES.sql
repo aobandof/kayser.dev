@@ -5,7 +5,7 @@ select * from lista;
 select * from lista_has_usuario;
 select * from usuario;
 
-select * from relacionprefijo;
+select * from tprenda;
 
 select codigo,barcode from sku order by barcode DESC LIMIT 1;
 

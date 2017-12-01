@@ -89,51 +89,51 @@ $(document).ready(function() {
         }
     });
     if (tallas == "") empty = 1;
-    //sacar esto despues /
-    // empty = 0; // LO PONEMOS PARA VER EL MODAL. el cual no debe mostrarse si no se seleccionaro todas las opciones del sku_crear
     if (empty === 0) {
-      parameters = new Object();
-      parameters = getObjectArticle();
-      parameters['option'] = 'save_article';
-      parameters['list'] = active_list;
-      // console.log(parameters);
-      $.ajax({
-        url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
-        success: function (data) {
-          // el_div_loader_full.classList.remove('cont_hidden');
-          console.log('FROM API (option: ' + parameters.option + ') ', data);
-          if (!!data.nothing) {
-            alert("NO SE PUDO AGREGAR EL ARTICULO");
-            console.log(data.nothing);
-          } else {
-            if (!!data.filas && data.filas != '') {
-              active_list = data.lista;
-              resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-              renderArticleList(data.articulo, data.itemname, data.filas,'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
-              if (initial_option=="create"){
-                if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
-                if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
+      if(confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")){
+        parameters = new Object();
+        parameters = getObjectArticle();
+        parameters['option'] = 'save_article';
+        parameters['list'] = active_list;
+        // console.log(parameters);
+        $.ajax({
+          url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+          beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
+          success: function (data) {
+            // el_div_loader_full.classList.remove('cont_hidden');
+            console.log('FROM API (option: ' + parameters.option + ') ', data);
+            if (!!data.nothing) {
+              alert("NO SE PUDO AGREGAR EL ARTICULO");
+              console.log(data.nothing);
+            } else {
+              if (!!data.filas && data.filas != '') {
+                active_list = data.lista;
+                resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
+                renderArticleList(data.articulo, data.itemname, data.filas, 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
+                if (initial_option == "create") {
+                  if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
+                  if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
+                }
+                modal_preview_save.style.visibility = 'visible';
+                el_span_title_list.innerHTML = "LISTA N° " + active_list;
+                if (typeof state_list === 'undefined')// SOLO EL REVISER TENDRA ESTA OPCION
+                  el_span_state_list.innerHTML = "EDITANDO LISTA, después click en ENVIAR SKUs para NOTIFICAR ESTA CREACION ";
+                else
+                  el_span_state_list.innerHTML = "EDITANDO LISTA YA CREADA, después click en ENVIAR PLANILLA EXCEL para NOTIFICAR ESTA REVISION";
+                el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
               }
-              modal_preview_save.style.visibility = 'visible';
-              el_span_title_list.innerHTML="LISTA N° " + active_list;
-              if(typeof state_list === 'undefined')// SOLO EL REVISER TENDRA ESTA OPCION
-                el_span_state_list.innerHTML = "EDITANDO LISTA, después click en ENVIAR SKUs para NOTIFICAR ESTA CREACION ";                
-              else
-                el_span_state_list.innerHTML = "EDITANDO LISTA YA CREADA, después click en ENVIAR PLANILLA EXCEL para NOTIFICAR ESTA REVISION";                
-              el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
-            }
-            if (!!data.refused) {
-              mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
-              for (var item in data.refused) {
-                mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] + '\n';
+              if (!!data.refused) {
+                mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
+                for (var item in data.refused) {
+                  mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] + '\n';
+                }
+                alert(mensaje);
               }
-              alert(mensaje);
             }
-          }
-        },
-        error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
-      });
+          },
+          error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
+        });
+      }
     }
     else
       alert("TODOS LOS CAMPOS SON NECESARIOS");
@@ -141,16 +141,18 @@ $(document).ready(function() {
   //inicialmente ocultamos la caja que contiene las copas
   document.getElementById('div_copa').style.display = 'none'; 
 
-
-  
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
   $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
-  $("#a_opcion_config_prefix").click(function () { 
-    $("#div_crud_prefix").css('visibility', 'visible'); 
-    cargarTablaRelations(); 
-  }); //MOSTRAMOS MODAL PREFIJOS
+  $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
 
+  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
+  document.getElementById('select_item_crud').onchange= function() {
+    item_crud_selected=this.value;
+    $("#div_tabla_item>tbody_div").html('');
+    $("#div_tabla_item").css('visibility', 'visible');
+    cargarTablaSeccion($(this).val());
+  }
   /****************** EVENTOS PARA CERRAR EL MODAL CRUD_ITEMS ****************/
   $("#button_close_crud_items, #img_close_crud_items").click(function () {
     if ( this.className == "close_modal")
@@ -166,21 +168,6 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });
-
-  document.getElementById('img_close_crud_relations').onclick = function(){
-  document.getElementById('div_crud_relations').style.visibility='hidden';
-  document.getElementById('div_tabla_relations').innerHTML="";
-
-
-  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
-  document.getElementById('select_item_crud').onchange= function() {
-    item_crud_selected=this.value;
-    $("#div_tabla_item>tbody_div").html('');
-    $("#div_tabla_item").css('visibility', 'visible');
-    cargarTablaSeccion($(this).val());
-  }
-
-  }
   /****************** FUNCIONA PARA ELIMINAR LA LISTA ACTUAL, YA SEA UNA ANTIGUA O U NA NUEVA QUE SE ESTE REVISANDO O FINALIZANDO */
 
   /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/  
@@ -422,6 +409,48 @@ function renderArticleList(art,itn,rows,estado_article){ // el estado_article = 
   el_articulo=document.getElementById(id_articulo);//
   el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
   ///CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
+  document.querySelectorAll('.btn_delete_article').forEach( function(but_del) {
+    but_del.onclick=function(){
+      if (confirm('¿DESEA QUITAR ESTE ARTICULO DE LA LISTA?')) {
+        el_arti = but_del.parentNode.parentNode.parentNode;
+        id_el_arti = el_arti.id;
+        cod_arti = id_el_arti;
+        if (cod_arti.indexOf('_') != -1) {
+          cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+          cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+        }
+        ///--- AHORA PROCEDEMOS A ELIMINAR EL ARTICULO DE LA LISTA, OBTENDREMOS UN TRUE DE LA API (SE ELIMINO CORRECTAMENTE LOS SKUS, EL ARTICULO Y LA LISTA SI SOLO TENIA ESTE ARTICULO ),
+        ///--- ADEMAS DE UN data.vacio=true que confirmará que tb se elimino la lista, por lo que hay que ocultar el modal
+        parameters = { 'option': 'delete_article', 'article': cod_arti, 'list': active_list };
+        console.log('parametros: '+ parameters);
+        $.ajax({
+          url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+          beforeSend: function () { },
+          success: function (data) {
+            console.log('from api: ' + data);
+            if (data.del_art === true) { // sacamos el div article de la lista
+              el_arti.id = '';
+              el_arti.innerHTML = '';
+              el_arti.style.display = 'none';
+              if (!!data.del_list && data.del_list === true) { // ocultamos el panle modal dado que no contiene articulos
+                // modal_preview_save.style.visibility = 'hidden';
+                if (initial_option == 'show')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
+                  location.href = "listas.php";
+                else
+                  location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
+
+              }
+            }
+            else
+              alert('NO SE PUDO ELIMINAR');
+          },
+          error: function () { console.log('error ajax ' + parameters['option']); }
+        });
+      } 
+    }
+  });
+
+
   el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function(icon){
     icon.onclick=function(){
       console.log(this.id);
