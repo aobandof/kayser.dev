@@ -202,10 +202,10 @@ if($_POST['option']=="save_list") {
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
     $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="sku@kayser.cl,aobando@kayser.cl";
+    $destinatario ="sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-    $headers .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
+    $headers .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
     if(mail($destinatario, $subject, $message, $headers)){
       $data['submit']=true;
     }
@@ -350,49 +350,21 @@ if($_POST['option']=='get_articles'){
 }
 
 if($_POST['option']=='finalize_list'){
-  $lista=$_POST['list']; 
-  $user_creator=''; $user_reviser='';
-  ///--- OBTENEMOS LOS SKU, LOS USUARIOS QUE LO CREARON, REVISARON
+  $lista=$_POST['list']; $user_creator=''; $user_reviser='';
+  ///--- OBTENEOS LOS SKU, LOS USUARIOS QUE LO CREARON, REVISARON
   $query_lista_usuario="SELECT usuario_user, operacion FROM lista_has_usuario WHERE lista_id=$lista";
   $arr_lista_usuario = $mysqli->select($query_lista_usuario,"mysqli_a_o");
-  $data['query_all'][]=$query_lista_usuario;
-  $data['arr_select']=$arr_lista_usuario;
   if($arr_lista_usuario!==0 && $arr_lista_usuario!==false){
-    for($i=0; $i<count($arr_lista_usuario); $i++){
+    for($i=0; $i<$count($arr_lista_usuario); $i++){
       $arr_lista_usuario[$i]['operacion']=="CREACION" ? $user_creator=$arr_lista_usuario[$i]['usuario_user'] : $user_reviser=$arr_lista_usuario[$i]['usuario_user'];
     }
     $data['creator']=$user_creator;
     $data['reviser']=$user_reviser;
-    ///---AHORA OBTENEMOS EL ARRAY CON TODOS LOS SKUS QUE PERTENECEN A ESTA LISTA QUE SE VA A ELIMINAR
-    $query_skus="SELECT S.codigo FROM sku AS S INNER JOIN articulo as A ON A.codigo=S.articulo_codigo WHERE A.lista_id=$lista";
-    $data['query_all'][]=$query_skus;
-    $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
-    if($arr_skus!==false && $arr_skus!==0){
-      ///---AHORA RECORREMOS EL ARRAY OBTENIDO E INSERTAMOS EN SKUCREATED
-      $sku_not_backed=[];
-      $cant_skus_backeds=0;
-      $cant_skus=count($arr_skus);
-      for($i=0; $i<$cant_skus; $i++){        
-        $sku=$arr_skus[$i]['codigo'];
-        $query_backed_sku="INSERT INTO skucreated values('$sku', '$hoy', '$user_creator', '$user_reviser', '$user')";
-        $data['query_backs'][]=$query_backed_sku;
-        $sku_backed=$mysqli->insert_easy($query_backed_sku);
-        if($sku_backed!==false && $sku_backed!==0){
-           $cant_skus_backeds++;
-        } else $sku_backed===false ?  $data['errors'][]=$mysqli->getErrors() : $data['sku_refused_back'][]=$sku;
-      }
-      ///LO NORMAL ES QUE HAYA CREADO EK BACK DE CADA SKU, SINO HABRIA QUE PENSAR EN DEJAR UN LOG EN UN CSV O JSON O TXT
-      ///PERO TENEMOS QUE ELIMINAR YA LA LISTA
-      $query_delete_list="DELETE from lista WHERE id=$lista"; /// Y POR CASCADA, SE ELIMINARA EL ARTICULO Y LOS SKUS
-      $list_delete=$mysqli->delete($query_delete_list);
-      if($list_delete!==false && $list_delete!==0){
-        $data['back']=true;
-      }else $list_delete===false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE PUDO ELIMINAR LISTA N° $lista, ELIMINAR MANUALMENTE...";
-    } else $arr_skus === false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE ENCONTRARON SKUS EN ESTA LISTA";
-    
-  } else $arr_lista_usuario === false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE ENCONTRO INFORMACION DE LISTA N° $lista";
-  $cant_skus_backeds===$cant_skus ? $data['back_incomplete']=true : $data['messaje']="SOLO SE RESPALDARON $cant_skus_backeds skus";
+  }
+  //// FALTA MAS, PERO PROBEMOS ESTO POR MIENTRAS
+
   echo json_encode($data);
+
 }
 
 if($_POST['option']=='delete_article'){
@@ -423,6 +395,7 @@ if($_POST['option']=='delete_article'){
   }
   echo json_encode($data);
 }
+
 
 function sendMail($arr_cont){
   global $nomb_lista;
@@ -466,10 +439,10 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
   $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="sku@kayser.cl,aobando@kayser.cl";
+  $destinatario ="sku@kayser.cl";
 
   $header  = "MIME-Version: 1.0\r\n"; 
-  $header .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
+  $header .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
   $header .= "Content-type: multipart/mixed; charset=UTF-8; boundary=\"$multipartSep\"";
   
   $message = "--$multipartSep\r\n";

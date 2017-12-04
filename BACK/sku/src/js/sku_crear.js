@@ -244,10 +244,7 @@ $(document).ready(function() {
         beforeSend: function (){ },
         success: function(data){
           console.log(data);
-          if(!!data.back && data.back===true){
-            (!!data.back_imcomplete && data.back_imcomplete===true) ? alert('LISTA LIBERADA, algunos SKUs no se guardaron en el log') : alert('LISTA LIBERADA, Todos los se guardaron en un LOG como respaldo')
-            location.href = "menu.php";
-          }else alert('NO SE PUDO LIBERAR LA LISTA')          
+          
         },
         error: function(){ console.log('error'); }
       });
