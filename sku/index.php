@@ -1,9 +1,11 @@
 <?php
 session_start();
 if(isset($_SESSION['user'])){
+  // echo "<h1>Sitio en Mantención... </h1>";
   header("Location: menu.php");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,7 +14,6 @@ if(isset($_SESSION['user'])){
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="./src/css/normalize.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <!-- <link rel="stylesheet" href="./src/css/styles.css"> -->
   <link rel="stylesheet" href="./src/css/sku.css">
   <title>SKU / Articulos</title>
 </head>
@@ -71,4 +72,4 @@ if(isset($_SESSION['user'])){
     }
   </script>
 </body>
-</html>
+</html>-->

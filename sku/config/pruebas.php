@@ -7,7 +7,7 @@ require_once "../models/sku_lista.php";
 // echo "holota";
 // echo "cantidad de registros";
 // echo $mysqli->quantityRecords('SELECT codigo FROM articulo WHERE lista_id=2');
-
+// ini_set('max_execution_time', 300);
 // $first=getFirstBarcode();
 // echo json_encode($first);
 // echo "<br>\n";
@@ -22,7 +22,7 @@ require_once "../models/sku_lista.php";
 // echo "<br>";
 // echo getControlDigit("780000023571");
 
-if(existArticle('14.8015','SAP'))
+if(existArticle('63.1170','SAP'))
   echo 'existe';
 else
   echo 'NO EXISTE';

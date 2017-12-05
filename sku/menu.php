@@ -1,9 +1,11 @@
 <?php
 session_start();
 if(!isset($_SESSION['user'])){
+  // echo "<h1>Sitio en Mantención... </h1>";
   header("Location: ./index.php");
 }
 ?>
+<!
 <!DOCTYPE html>
 <html lang="es">
 <head>

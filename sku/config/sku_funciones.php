@@ -6,19 +6,23 @@ function getFirstBarcode() {
   $last_barcode_sap=780001000000;
   $last_barcode_lista=780001000000;
   ///obtenemos el ultimo sin considerar el digito verificador
-  $query_barcode="SELECT top 1 SUBSTRING(CodeBars,0,LEN(CodeBars)) from OITM WHERE CodeBars like '780001%' order by  SUBSTRING(CodeBars,0,LEN(CodeBars)) DESC";
+  $query_barcode="SELECT top 1 SUBSTRING(CodeBars,0,LEN(CodeBars)) as barcode from OITM WHERE CodeBars like '780001%' order by  SUBSTRING(CodeBars,0,LEN(CodeBars)) DESC";
   $arr_last_barcode=$sqlsrv_33->select($query_barcode,'sqlsrv_a_p');
+  // var_dump($arr_last_barcode);
   if($arr_last_barcode!==false){
-    if ($arr_last_barcode!=0)
-      $last_barcode_sap=((double)$arr_last_barcode_sap[0]['CodeBars']);
+    if ($arr_last_barcode!==0){
+      $last_barcode_sap=((double)$arr_last_barcode[0]['barcode']);
+    }
   }
+  // echo "lasta barcode despues de buscar en sap:  ".$last_barcode_sap."<br>";
   $query_barcode="SELECT SUBSTRING(barcode,1,LENGTH(barcode)-1) as barcode from sku order by barcode DESC LIMIT 1";
   $arr_last_barcode=$mysqli->select($query_barcode,'mysqli_a_o');
   if($arr_last_barcode!=false){
     if($arr_last_barcode!=0)
       $last_barcode_lista=((double)$arr_last_barcode[0]['barcode']);
   }
-  $last_barcode_lista>=$last_barcode_sap ? $first_barcode=$last_barcode_lista + 1 : $first_barcode=$last_barcode_sap + 1 ;
+  // echo "lasta barcode despues de buscar en list:  ".$last_barcode_lista."<br>";  
+  $last_barcode_lista>=$last_barcode_sap ? $first_barcode=$last_barcode_lista + 1 : $first_barcode=$last_barcode_sap + 1 ; 
   return $first_barcode;
 }
 

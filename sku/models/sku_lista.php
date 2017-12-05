@@ -500,7 +500,9 @@ function existArticle($cod_art,$serv){
   global $mysqli;
   global $sqlsrv_33;
   if($serv==='SAP'){
-    $query_exist_article="SELECT TOP 1 U_APOLLO_SEG1 FROM OITM WHERE U_APOLLO_SEG1='$cod_art'"; 
+    ///---COMO EN SAP NO ES MUY SEGURO QUE LA SUBCADENA DEL CODIGO SKU QUE REPRESENTA AL ARTICULO, SEA IGUAL AL CODIGO DEL ARTICULO
+    ///---ENTONCES BUSCAREMOS EN EL CODIGO SKU
+    $query_exist_article="SELECT TOP 1 itemCode FROM OITM WHERE itemCode LIKE '$cod_art-%'"; 
     // echo "<br>".$query_exist_article; 
     $arr_exist_article=$sqlsrv_33->select($query_exist_article,'sqlsrv_n_p');
     // echo $query_exist_article."<br>";
