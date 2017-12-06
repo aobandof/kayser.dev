@@ -67,6 +67,16 @@ FECHAS
 getdate() //Devuelve la un array asociativo con los datos de fecha actual
 checkdate( $month , $day , $year )   //PARAMETROS ENTEROS -- Devuelve True o False si la fecha es correcta y existe
 
+-------------------------------------------------------------------------------------------------------------------------
+consultar el dia anterior:
+-------------------------
+$hoy=date('Y-m-d H:i:s')."\n";
+$ayer = date('Y-m-d', strtotime('-1 day'));
+
+$hoy=date('Y-m-d')."\n"; //OBTENEMOS LA FECHA
+$ayer = date('Y-m-d', strtotime($hoy) - 3600); //ESTA OPCION NO FUNCIONA CUANDO LA FECHA ACTUAL ES: date('Y-m-d H:i:s')
+-------------------------------------------------------------------------------------------------------------------------
+
 
 ###### OTRA NOTAS #######
 * Para referenciar al mismo archivo en el que estamos:

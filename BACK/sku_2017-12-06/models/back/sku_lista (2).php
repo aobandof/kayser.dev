@@ -33,23 +33,16 @@ if($_POST['option']=="save_article"){
   $first_barcode=getFirstBarcode();
   $filas='';
   $querys=[];
+  $data['lista']=$lista; 
   $data['first_barcode']=$first_barcode;
-  $data['code_article']=$code_article;
-  ///debido a que permitieron que los txt correlativo y prefijo sean editables, inicialmente preguntamos si el articulo existe o no
-  ///en base a ello debemos antes qe nada preguntar si existe el articulo, sea en sap o en las listas, si sí entonces salimos de inmediato y si la lista no es nueva, entonces no se agrega, pero si no, simplemente no se agrega el articulo
-  if(existArticle($code_article,'SAP') || existArticle($code_article,'LISTA')){
-    $data['nothing']='ARTICULO EXISTE EN SAP O EN LISTA, no es posible crearlo';        
-    echo json_encode($data); exit();
-  }/// SI NO SIGUE TRABAJANDO COMO ANTES
-  
+
   if($lista==0){
     //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
     $query_insert_list="INSERT INTO lista values (NULL,'','INICIADA')";
     $data['all_querys'][]=$query_insert_list;
-    $reg_list_inserted=$mysqli->insert_easy($query_insert_list);
-    if($reg_list_inserted===1){
+    if($mysqli->insert_easy($query_insert_list)==1){
       $arr_last_list=$mysqli->select("SELECT @@identity AS id",'mysqli_a_o');
-      if($arr_last_list!==0 && $arr_last_list!==false){
+      if($arr_last_list!=0 AND $arr_last_list!=false){
         $lista=$arr_last_list[0]['id'];
         ///---agregamos el usuario, la lista, la operacion cuando se crea la lista por primera vez, el campo operacion y fecha se dejan como vacios, indicanto que aun no se envian por correo
         if($mysqli->insert_easy("INSERT INTO lista_has_usuario values ($lista,'$user','CREACION','$hoy')") != 1 ){
@@ -64,12 +57,13 @@ if($_POST['option']=="save_article"){
         echo json_encode($data); exit();
       }
     }else{
+      $data['errors']=$mysqli->getErrors();
       $data['nothing']='NO SE PUDO CREAR LA LISTA';
-      $reg_list_inserted===false ? $data['errors']=$mysqli->getErrors() : $data['cant_list_inserted']=$reg_list_inserted;
-      echo json_encode($data); exit();   
+      echo json_encode($data); exit();
     }
   }
   
+
   ///--- AHORA REGISTRAMOS EL ARTICULO
   $query_insert_article="INSERT INTO articulo VALUES (";
   $query_insert_article.="'$code_article',$lista,'".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
@@ -81,14 +75,14 @@ if($_POST['option']=="save_article"){
   $data['all_querys'][]=$query_insert_article;
 
   $errors=[];///DE AQUI EN ADELANTE PUEDEN HABER ERRORES ACUMULATIVOS
-  $reg_art_inserted=$mysqli->insert_easy($query_insert_article);
-  if($reg_art_inserted!=1){
-    $reg_art_inserted===false ? $errors[]=$mysqli->getErrors() : $data['cant_art_inserted']=$reg_art_inserted; 
+  $reg_inserted=$mysqli->insert_easy($query_insert_article);
+  if($reg_inserted!=1){
+    $errors[]=$mysqli->getErrors();  
     $cant_registros_lista=$mysqli->quantityRecords("select codigo from articulo where lista_id=$lista");
-    if($cant_registros_lista===false){
+    if($cant_registros_lista=false){
        $errors[]=$mysqli->getErrors();
        $data['msj']='no se creo el articulo y hubo error al consultar la cantidad de articulos en esta lista';  
-    }elseif($cant_registros_lista===0){
+    }elseif($cant_registros_lista==0){
       if(($mysqli->delete("DELETE FROM lista WHERE id=$lista"))===false){
         $errors[]=$mysqli->getErrors();
         $data['msj']='no se creo el articulo, la lista estaba nueva y no se pudo eliminar'; 
@@ -99,40 +93,35 @@ if($_POST['option']=="save_article"){
     echo json_encode($data); exit();
   }
 
-  ///--- AHORA REGISTRAMOS LOS SKUS 
+  ///--- AHORA REGISTRAMOS LOS SKUS
   for ($i = 0; $i < $colores_length; $i++){
     for ($j = 0; $j < $tallas_length; $j++){
-      if($copa!='' && $copa!='S/C')
+      if($copa!='' && $copa!='S/P')
         $sku=$code_article.'-'.substr($colores_name[$i],0,3).$copa.'-'.$tallas_name[$j];
       else
         $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
-      if(existSku($sku,'SAP')===true){
+      if(existSku($sku,'SAP')==true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
-        $data['exist_in_SAP']=true;
-      }elseif(existSku($sku,'LISTA')===true){
+      }elseif(existSku($sku,'LISTA')==true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
-        $data['exist_in_LIST']=true;
       }else{
-        //$data['stop_before_insert_sku']=true;                
-        $data['exist_not_exist']=true;
         $barcode=$first_barcode + count($sku_inserteds);
         $barcode=(string)$barcode;
         $barcode=$barcode.getControlDigit($barcode);
         $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa')"; 
-        $data['all_querys'][]=$query_sku;
-        $reg_sku_inserted= $mysqli->insert_easy($query_sku);    
-        if($reg_sku_inserted==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
+        $data['all_querys'][]=$query_sku;       
+        if($mysqli->insert_easy($query_sku)==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
           $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
           $filas.="<div><div>".(($i*$tallas_length)+$j+1)."</div><div>$sku</div><div>$barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$j]</div><div>$img_delete</div></div>"; 
           $sku_inserteds[]=$sku;     
         }else{
-          $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR AL GUARDAR SKU"); 
-          $reg_sku_inserted===false ? $data['errors'][]=$mysqli->getErrors() : $data['errors'][]="SIMPLEMENTE NO SE REGISTRO $sku";             
+          $data['errors']=$mysqli->getErrors();
+          $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR EN INSERSION");    
         }
-      }      
+      }
     }
   }
-
+  
   #######################################################################################################################################################
   ///--- como llegamos hasta aca, ya registramos el articulo y/o la lista (si fuera nueva) y los sku siempre y cuando count($sku_inserteds) sea distinto 
   if(count($sku_inserteds)==0){ 
@@ -149,7 +138,7 @@ if($_POST['option']=="save_article"){
         echo json_encode($data); exit();
       }
     }else{
-      if($cant_registros_lista!==false){//quiere decir que exiten otros articulos en esta lista, por lo que solamente eliminamos este articulo
+      if($cant_registros_lista!=false){//quiere decir que exiten otros articulos en esta lista, por lo que solamente eliminamos este articulo
         if($mysql->delete("delete from articulo where codigo='$code_article'")==1){
           $data['nothing']="NO SE PUDO AGREGAR EL ARTICULO DADO QUE TODOS LOS SKUS ELEGIDOS ESTAN EN LISTA O EN SAP";          
         }
@@ -200,12 +189,12 @@ if($_POST['option']=="save_list") {
     ///--- ############################### ---
     ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
-    $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
+    $link="http://192.168.0.19/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+    $destinatario ="sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-    $headers .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
+    $headers .= "From: Creacion de SKU <sku@kayser.cl>\r\n";
     if(mail($destinatario, $subject, $message, $headers)){
       $data['submit']=true;
     }
@@ -227,7 +216,7 @@ if($_POST['option']=="submit_excel") {
   
   $data['querys_all'][]=$query_skus_carga;
   $arr_skus_carga=$mysqli->select($query_skus_carga,"mysqli_a_o");
-  if($arr_skus_carga!==0 && $arr_skus_carga!==false){
+  if($arr_skus_carga!=0 && $arr_skus_carga!=false){
     $send=sendMail($arr_skus_carga);
     if($send===true){
       $data['submit']=true;
@@ -291,7 +280,7 @@ if($_POST['option']=='show_lists'){
       $query_relation="SELECT * FROM lista_has_usuario where lista_id=$code_list";
       $all_querys[]=$query_relation;
       $arr_relation=$mysqli->select($query_relation,"mysqli_a_o");
-      if($arr_relation!==0 && $arr_relation!==false){
+      if($arr_relation!=0 && $arr_relation!=false){
         if($stat_list!='REVISADA'){
           $stat_list=='INICIADA' ? $initiador=$arr_relation[0]['usuario_user']." ( ".$arr_relation[0]['fecha']." )" : $creator=$arr_relation[0]['usuario_user']." ( ".$arr_relation[0]['fecha']." )";
         }else{
@@ -319,7 +308,7 @@ if($_POST['option']=='get_articles'){
   $arr_export=[];
   $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
   $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
-  if($arr_skus!==0 && $arr_skus!==false){
+  if($arr_skus!=0 && $arr_skus!=false){
     $cant_registros=count($arr_skus);
     $art_temp=$arr_skus[0]['cod_articulo'];
     for($i=0;$i<$cant_registros;$i++){
@@ -350,88 +339,26 @@ if($_POST['option']=='get_articles'){
 }
 
 if($_POST['option']=='finalize_list'){
-  $lista=$_POST['list']; 
-  $user_creator=''; $user_reviser='';
-  ///--- OBTENEMOS LOS SKU, LOS USUARIOS QUE LO CREARON, REVISARON
+  $lista=$_POST['list']; $user_creator=''; $user_reviser='';
+  ///--- OBTENEOS LOS SKU, LOS USUARIOS QUE LO CREARON, REVISARON
   $query_lista_usuario="SELECT usuario_user, operacion FROM lista_has_usuario WHERE lista_id=$lista";
   $arr_lista_usuario = $mysqli->select($query_lista_usuario,"mysqli_a_o");
-  $data['query_all'][]=$query_lista_usuario;
-  $data['arr_select']=$arr_lista_usuario;
-  if($arr_lista_usuario!==0 && $arr_lista_usuario!==false){
-    for($i=0; $i<count($arr_lista_usuario); $i++){
+  if($arr_lista_usuario!=0 && $arr_lista_usuario!=false){
+    for($i=0; $i<$count($arr_lista_usuario); $i++){
       $arr_lista_usuario[$i]['operacion']=="CREACION" ? $user_creator=$arr_lista_usuario[$i]['usuario_user'] : $user_reviser=$arr_lista_usuario[$i]['usuario_user'];
     }
     $data['creator']=$user_creator;
     $data['reviser']=$user_reviser;
-    ///---AHORA OBTENEMOS EL ARRAY CON TODOS LOS SKUS QUE PERTENECEN A ESTA LISTA QUE SE VA A ELIMINAR
-    $query_skus="SELECT S.codigo FROM sku AS S INNER JOIN articulo as A ON A.codigo=S.articulo_codigo WHERE A.lista_id=$lista";
-    $data['query_all'][]=$query_skus;
-    $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
-    if($arr_skus!==false && $arr_skus!==0){
-      ///---AHORA RECORREMOS EL ARRAY OBTENIDO E INSERTAMOS EN SKUCREATED
-      $sku_not_backed=[];
-      $cant_skus_backeds=0;
-      $cant_skus=count($arr_skus);
-      for($i=0; $i<$cant_skus; $i++){        
-        $sku=$arr_skus[$i]['codigo'];
-        $query_backed_sku="INSERT INTO skucreated values('$sku', '$hoy', '$user_creator', '$user_reviser', '$user')";
-        $data['query_backs'][]=$query_backed_sku;
-        $sku_backed=$mysqli->insert_easy($query_backed_sku);
-        if($sku_backed!==false && $sku_backed!==0){
-           $cant_skus_backeds++;
-        } else $sku_backed===false ?  $data['errors'][]=$mysqli->getErrors() : $data['sku_refused_back'][]=$sku;
-      }
-      ///LO NORMAL ES QUE HAYA CREADO EK BACK DE CADA SKU, SINO HABRIA QUE PENSAR EN DEJAR UN LOG EN UN CSV O JSON O TXT
-      ///PERO TENEMOS QUE ELIMINAR YA LA LISTA
-      $query_delete_list="DELETE from lista WHERE id=$lista"; /// Y POR CASCADA, SE ELIMINARA EL ARTICULO Y LOS SKUS
-      $list_delete=$mysqli->delete($query_delete_list);
-      if($list_delete!==false && $list_delete!==0){
-        $data['back']=true;
-      }else $list_delete===false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE PUDO ELIMINAR LISTA N° $lista, ELIMINAR MANUALMENTE...";
-    } else $arr_skus === false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE ENCONTRARON SKUS EN ESTA LISTA";
-    
-  } else $arr_lista_usuario === false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']="NO SE ENCONTRO INFORMACION DE LISTA N° $lista";
-  $cant_skus_backeds===$cant_skus ? $data['back_incomplete']=true : $data['messaje']="SOLO SE RESPALDARON $cant_skus_backeds skus";
-  echo json_encode($data);
-}
-
-if($_POST['option']=='delete_article'){
-  $code_article=$_POST['article'];
-  $list=$_POST['list'];
-
-  ///--- PROCEDEMOS A ELIMINAR EL ARTICULO, Y POR CASCADA TB SE ELIMINAN LOS SKUS
-  $query_delete_article="DELETE FROM articulo WHERE codigo='$code_article'";
-  $data['query_all'][]=$query_delete_article;
-  $reg_del=$mysqli->delete($query_delete_article);
-  if($reg_del===1){
-    $data['del_art']=true;
-    $query_quan_art="SELECT codigo from articulo WHERE lista_id=$list";
-    $data['query_all'][]=$query_quan_art;
-    $reg_quan_art=$mysqli->quantityRecords($query_quan_art);
-    if($reg_quan_art===0){///QUIERE DECIR QUE LA LISTA QUEDO VACIA
-      $query_del_list="DELETE FROM lista where id=$list";
-      $data['query_all'][]=$query_del_list;
-      $reg_del_list=$mysqli->delete($query_del_list);
-      if($reg_del_list===1)
-        $data['del_list']=true;
-      else
-        $reg_del_list===false ? $data['errors']=$mysqli->getErrors() : $data['NOTHING']='NO SE PUDO ELIMINAR LA LISTA QUE QUEDO VACIA';     
-    }else
-      $reg_quan_art===false ? $data['errors']=$mysqli->getErrors() : $data['cant_art_list']=$reg_quan_art;
-  }else{
-    if($reg_del===false ? $data['errors']=$mysqli->getErrosr() : $data['NOTHING']='NO SE PUDO ELIMINAR EL ARTICULO');
   }
-  echo json_encode($data);
-}
+  //// FALTA MAS, PERO PROBEMOS ESTO POR MIENTRAS
 
+  echo json_encode($data);
+
+}
 function sendMail($arr_cont){
   global $nomb_lista;
-  global $lista;
-  // $boundary=uniqid('np');
-  $multipartSep = '-----'.md5(time()).'-----';
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
-  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
-  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";  
+  $content_csv.="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalUnitMsr;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
 
   $cant_skus=count($arr_cont);
   for($i=0; $i<$cant_skus; $i++){
@@ -465,27 +392,26 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
-  $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
-  $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl,sku@kayser.cl";
-
-  $header  = "MIME-Version: 1.0\r\n"; 
-  $header .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
-  $header .= "Content-type: multipart/mixed; charset=UTF-8; boundary=\"$multipartSep\"";
+  $subject="NOTIFICACION DE REVISION DE SKUS (Lista N° $lista)";
+  $link="http://192.168.0.19/crear.php?list=$lista&status=REVISADA&option=show";
+  $destinatario ="sku@kayser.cl";
   
-  $message = "--$multipartSep\r\n";
+  $header = "From: Creacion de SKU <sku@kayser.cl>\r\n";
+  $header .= "MIME-Version: 1.0\r\n";
+  $header .= "Content-type: multipart/mixed;"; 
+  $header .= "boundary=\"--_Separador-de-mensajes_--\"\n";
+  
+  $message = "----_Separador-de-mensajes_--\n";
   $message .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-  $message .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-  $message .= "lista N° $lista FUE REVISADA.<br><br>Después de Cargar la Información a SAP, es necesario FINALIZAR esta lista.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a>\r\n";
+  $message .= "lista N° $lista FUE REVISADA.<br><br>Después de Cargar la Información a SAP, es necesario FINALIZAR esta lista.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
   
-  $attached = "--$multipartSep\r\n";
-  $attached .= "Content-Type: application/octet-stream; name=\"".$nomb_lista.".csv\"\r\n"; //envio directo de datos
+  $attached = "\n\n----_Separador-de-mensajes_--\n";
+  $attached .= "Content-Type: application/octet-stream; name=".$nomb_lista.".csv\r\n"; //envio directo de datos
+  $attached .= "Content-Disposition: attachment; filename=".$nomb_lista.".csv\r\n";
   $attached .= "Content-Transfer-Encoding: binary\r\n";
-  $attached .= "Content-Disposition: attachment; filename=\"".$nomb_lista.".csv\"\r\n";
   $attached .= utf8_decode($content_csv);
   $attached .= "\r\n";
-  $attached .= "--$multipartSep--";
-
+  
   $content = $message.$attached;
 
   if(mail($destinatario, $subject, $content, $header)){
@@ -499,36 +425,31 @@ function sendMail($arr_cont){
 }
 function existArticle($cod_art,$serv){
   global $mysqli;
-  global $sqlsrv_33;
-  if($serv==='SAP'){
-    ///---COMO EN SAP NO ES MUY SEGURO QUE LA SUBCADENA DEL CODIGO SKU QUE REPRESENTA AL ARTICULO, SEA IGUAL AL CODIGO DEL ARTICULO
-    ///---ENTONCES BUSCAREMOS EN EL CODIGO SKU
-    $query_exist_article="SELECT TOP 1 itemCode FROM OITM WHERE itemCode LIKE '$cod_art-%'"; 
-    // echo "<br>".$query_exist_article; 
-    $arr_exist_article=$sqlsrv_33->select($query_exist_article,'sqlsrv_n_p');
+  if($serv=='SAP'){
+    $query_exist_article="SELECT TOP 1 U_APOLLO_SEG1 FROM OITM WHERE U_APOLLO_SEG1='$cod_art'";    
+    $arr_exist_article=$mysqli->select($query_exist_article,'mysqli_a_o');
     // echo $query_exist_article."<br>";
-  }elseif($serv==='LISTA'){ 
+  }elseif($serv=='LISTA'){ 
     $query_exist_article="SELECT codigo FROM articulo WHERE codigo='$cod_art'";
     $arr_exist_article=$mysqli->select($query_exist_article,'mysqli_a_o');
     // echo $query_exist_article."<br>";
   }
-  if ( isset($arr_exist_article) && $arr_exist_article!==0 && $arr_exist_article!==false)
+  
+  if($arr_exist_article!=0 AND $arr_exist_article!=false)
     return true;
   else
     return false;
 }
 function existSku($cod_sku, $serv){
   global $mysqli;
-  global $sqlsrv_33;
-  if($serv==='SAP'){
+  if($serv='SAP'){
     $query_exist_sku="SELECT TOP 1 ItemCode FROM OITM WHERE ItemCode='$cod_sku'";
-    $arr_exist_sku=$sqlsrv_33->select($query_exist_sku,'sqlsrv_n_p');
-  }
-  if($serv==='LISTA'){
-    $query_exist_sku="SELECT codigo FROM sku WHERE codigo='$cod_sku'";
     $arr_exist_sku=$mysqli->select($query_exist_sku,'mysqli_a_o');
+  }else {
+    $query_exist_sku="SELECT codigo FROM sku WHERE codigo='$cod_sku'";
+    $arr_exist_article=$mysqli->select($query_exist_sku,'mysqli_a_o');
   }
-  if(isset($arr_exist_sku) && $arr_exist_sku!==0 && $arr_exist_sku!==false)
+  if($arr_exist_sku!=0 AND $arr_exist_sku!=false)
     return true;
   else
     return false;         

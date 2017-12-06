@@ -1,0 +1,220 @@
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}
+.btn:hover {
+  cursor: pointer;
+}
+.modal {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.content_modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.header_modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+.header_modal>span {
+  font-size: 1rem;
+  font-weight: bold;
+  width: 100%;
+}
+.body_modal {
+  flex: 1 1 auto;
+  background-color: rgb(222, 234, 241);
+  /* border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem; */
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+  width: 100%;
+  /* overflow-y: auto; */
+}
+.footer_modal {
+  flex: 0 0 auto;
+  background-color: rgb(222, 234, 241);
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: .5rem;
+}
+.footer_modal>button {
+  margin-left: .5rem;
+  margin-right: .5rem;
+}
+.botonera_modal {
+  display: flex;
+  justify-content: flex-end;
+}
+.close_modal {
+  max-width: 1.5rem;
+}
+.close_modal:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+  -webkit-filter: invert(.2);
+  filter: invert(.2);
+}
+/***** ESTILOS PARA EL MODAL ALERT ************/
+.modal_alert {
+  background-color: rgba(2, 33, 65, 0.81);
+  top: 0;
+  padding: 1rem;
+}
+.modal_alert .content_modal {
+  width: 30rem;
+  height: 10rem;
+  margin-top: 10rem;
+  box-shadow: 0.2rem 0.2rem 0.3rem rgba(2, 33, 65, 0.81), 0.2rem 0.2rem 0.3rem rgb(187, 238, 228);
+}
+.modal_alert .header_modal {
+  background-color: rgb(111, 236, 162);
+  color: rgb(1, 38, 11);
+}
+.modal_alert .body_modal {
+  padding: 1rem;
+}
+
+/****** ESTILOS PARA EL MODAL PANEL *****/
+.modal_panel {
+  background-color: rgba(1, 26, 52, 0.61);
+  top: 0;
+  z-index: 10 !important;
+  display: flex;
+  align-items: center;
+  visibility: hidden;/*si son varios modales, ocultar para cada id del modal*/
+}
+.modal_panel>.content_modal {
+  width: 85%;
+  height: 95%;
+  /*box-shadow: 0.1rem 0.1rem 0.05rem rgba(1, 26, 52, 0.61), 0.2rem 0.2rem 0.3rem rgb(187, 238, 228);*/
+}
+.modal_panel .header_modal {
+  background-color: rgba(12, 33, 65, 0.67);
+  color: rgb(254, 249, 249);
+  padding: 1rem !important;
+  flex: 0 1 5%;
+}
+.modal_panel .body_modal {
+  align-items: center;
+}
+
+#select_item_crud {
+  width: 50%;
+}
+.comp_filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /*padding: 1rem !important;*/
+  margin: 1.5rem !important;
+}
+
+/**** ESTILOS PARA TABLA DIV ****/
+.tabla_div {
+  width: 90%;
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.tabla_div>.thead_div>.row {
+  color: white;
+}
+.tabla_div>.tbody_div {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  flex: 1 1 auto;
+}
+.tabla_div .th {
+  background-color: rgba(4, 59, 105, 0.92);
+  padding: .2rem .1rem;
+  border: 1px solid white;
+  text-align: center;
+  font-size: .9rem;
+  font-weight: bold;
+}
+.tabla_div .td {
+  padding: .3rem .2rem;
+  border: .01rem solid gray;
+  text-align: center;
+  font-size: .8rem;
+  font-weight: bold;
+}
+.tabla_div .tr.editing {
+  background-color: white;
+}
+.tabla_div .td>input {
+  width: 90%;
+  text-align: center;
+  background-color: rgba(172, 242, 230, 0.91);
+
+}
+.tabla_div>.tfooter_div {
+  /*background-color: rgba(4, 59, 105, 0.92);*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1 1 auto;
+  padding: 1.5rem;
+}
+.tabla_div>.tfooter_div>button {
+  margin: 1rem .7rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+/*.tabla_div .th:nth-child(1) { border-top-left-radius: 0.4rem; }*/
+/*.tabla_div .th:last-child { border-top-right-radius: 0.4rem; }*/
+.icon_fila {
+  max-width: 1.3rem;
+}
+.icon_fila:hover {
+  cursor: pointer;
+  -webkit-transform: scale(1.2);
+  transform: scale(1.2);
+}
+.icon_fila.invisible {
+  display: none;
+}
+.icon_fila.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.icon_fila.disabled:hover {
+  -webkit-transform: none;
+  transform: none;
+}
+.modal_upload {
+  z-index: 2;  
+  background-color: rgba(225, 227, 230, 0.699);
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+ /*** MEDIAS QUERYS ***/
+ @media (max-width: 750px) /*and (max-heigth: 160px) */ {
+  .tabla_div .th { font-size: .8rem; }
+}

@@ -277,7 +277,7 @@ $(document).ready(function() {
       $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
         if($(this).val()!="" /* $(this).val()!=null*/) {
           campos_llenos=1;
-          console.log('elemento: ',$(this));         
+          // console.log('elemento: ',$(this));         
           return; // igual recorre todo el bucle
         }
       });
@@ -289,10 +289,9 @@ $(document).ready(function() {
           campos_llenos=0;
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
-          $("#select_sku_composicion").selectpicker("deselectAll");
-          // $("#select_sku_composicion").attr("selected", false); // NO FUNCA
-          // $("#select_sku_composicion").selectpicker("refresh"); // NO FUNCA
-          // $("#select_sku_composicion").selectpicker('render'); // NO FUNCA
+          // $("#select_sku_composicion").selectpicker("deselect");
+          $("#select_sku_composicion").attr("selected", false);
+          $("#select_sku_composicion").selectpicker("refresh");
           $("#div_sel_grupo_opciones").html("");
           $("#span_tallas_chosen").text(' ');
           document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
@@ -665,17 +664,17 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
 ///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
 function resetAllControls(){
   document.querySelectorAll('.ind').forEach( el_ind => el_ind.value="" );
-  document.querySelectorAll('.dep').forEach( el_dep => el_dep.innerHTML="" );  
+  document.querySelectorAll('.dep').forEach( el_dep => el_dep.innerHTML="" );
+  cargarSelectsSku('OITB', name_dpto);
   resetInputTextCodeArticle();
   el_txt_descripcion.value='';
   $("#select_sku_color").selectpicker("deselectAll");
-  // $("#select_sku_color").selectpicker("refresh");
+  $("#select_sku_color").selectpicker("refresh");
   // $("#select_sku_composicion").selectpicker("deselect");
   $("#select_sku_composicion").attr("selected", false);
   $("#select_sku_composicion").selectpicker("refresh");
   $("#div_sel_grupo_opciones").html("");
   $("#span_tallas_chosen").text(' ');
-  cargarSelectsSku('OITB', name_dpto);
 }
 
 });
