@@ -298,6 +298,28 @@ class DBConnection {
        return $arr_export[0];
   }
 
+  public function selectOptions($query){
+    $opt="";
+    if($this->_driver=="sqlsrv"){       
+      $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
+      if($registros===false) { return false;
+      }else {
+        while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC)) 
+          $opt.="<option value=".$reg[0].">".$reg[1]."</option>";
+      }
+    }elseif($this->_driver=="mysqli"){
+      $registros=$this->_connection->query($query);
+      if($registros===false) return false;
+      else {
+        while($reg=$registros->fetch_array()) 
+          $opt.="<option value=".$reg[0].">".$reg[1]."</option>";
+      }
+    }
+    return $opt;
+  }
+
 }
+
+
 
 ?>

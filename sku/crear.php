@@ -172,7 +172,7 @@ if(isset($_SESSION['user'])){
               <option value="[@APOLLO_SEASON]">Prendas</option><option value="[@APOLLO_DIV]">Categ. Prenda</option><option value="presentacion">Presentación</option>
               <option value="color">Colores</option><option value="talla">Tallas</option><option value="copa">Copas</option>
               <option value="formacopa">Formas Copa</option><option value="material">Materiales</option><option value="tprenda">Temp. Prenda</option>
-              <option value="tcatalogo">Temp. Catalogo</option><option value="grupouso">Grupos Uso</option><option value="composicion">Composicion</option>
+              <option value="tcatalogo">Temp. Catalogo</option><option value="grupouso">Grupos Uso</option><option value="caracteristica">Caracteristica</option><option value="composicion">Composicion</option>
             </select>
           </div>
           <div class="tabla_div" id="div_tabla_item">

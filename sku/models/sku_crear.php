@@ -138,6 +138,18 @@ if($_POST['option']=="cargar_selects_dependientes") {
   echo json_encode($data);
 }
 
-
-
+if($_POST['option']=="render_select") {
+  $table=$_POST['table'];
+  $options='';
+  ///--- POR AHORA SOLO TRABAJARAMOS CON TABLAS MYSQL
+  $query_select="SELECT ".$tablas_sku[$table]['id'].",".$tablas_sku[$table]['campo']." from $table";
+  $data['query']=$query_select;
+  $options=$mysqli->selectArrayUniAssocIdName($query_select);
+  if($options!==false)
+    $data['options']=$options;
+  else 
+    if ($options===false )
+      $data['errors']= $mysqli->getErrors();
+  echo json_encode($data);
+}
 ?>

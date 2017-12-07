@@ -242,17 +242,8 @@ $(document).ready(function() {
   el_but_fin_list.onclick=function(){
       //variable operation indica si se guardara en la tabla skucreated o skuupdated
       parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
-      $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-        beforeSend: function (){ },
-        success: function(data){
-          console.log(data);
-          if(!!data.back && data.back===true){
-            (!!data.back_imcomplete && data.back_imcomplete===true) ? alert('LISTA LIBERADA, algunos SKUs no se guardaron en el log') : alert('LISTA LIBERADA, Todos los se guardaron en un LOG como respaldo')
-            location.href = "menu.php";
-          }else alert('NO SE PUDO LIBERAR LA LISTA')          
-        },
-        error: function(){ console.log('error'); }
-      });
+      console.log(parameters);
+      ajax_finalize_list(parameters);
     }
   }
 
@@ -747,5 +738,36 @@ function ajax_submit_excel(param) {
           alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
+  });
+}
+function ajax_finalize_list(param){
+  $.ajax({
+    url: './models/sku_lista.php',
+    type: 'post',
+    dataType: 'json',
+    data: param,
+    beforeSend: function () { el_div_loader_full.classList.remove('cont_hidden');},
+    success: function (data) {
+      console.log(data);
+      el_div_loader_full.classList.add('cont_hidden');
+      message='';
+      (!!data.back && data.back === true) ? message += 'SKUS GUARDADOS EN EL LOG\n\n' : message += 'SE GUARDARON SOLO ' + data.cant_sku_backed + ' skus';
+      (!!data.submit && data.submit === false) ? message += 'NO SE PUDO ENVIAR EL MAIL, LA LISTA NO FUE BORRADA\n\n' : message += 'MAIL CON SKUs y BARCODES ENVIADOS A DISEÑO CORRECTAMENTE';
+      alert(message);
+    },
+    error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden');  }
+  });
+}
+
+function render_select(table){
+  ///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API
+  el_sel_table=document.getElementById('select_sku_' + table);
+  parameters = { 'option' : 'render_select'};
+  $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function (){ },
+    success: function(data){
+      (!!data.options && data.options!='') ? el_sel_table.innerHTML="<option value=''></option>"+data.options : console.log(data.errors);
+    },
+    error: function(){ console.log('error'); }
   });
 }
