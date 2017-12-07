@@ -90,49 +90,51 @@ $(document).ready(function() {
     });
     if (tallas == "") empty = 1;
     if (empty === 0) {
-      if(confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")){
-        parameters = new Object();
-        parameters = getObjectArticle();
-        parameters['option'] = 'save_article';
-        parameters['list'] = active_list;
-        // console.log(parameters);
-        $.ajax({
-          url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-          beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
-          success: function (data) {
-            // el_div_loader_full.classList.remove('cont_hidden');
-            console.log('FROM API (option: ' + parameters.option + ') ', data);
-            if (!!data.nothing) {
-              alert("NO SE PUDO AGREGAR EL ARTICULO");
-              console.log(data.nothing);
-            } else {
-              if (!!data.filas && data.filas != '') {
-                active_list = data.lista;
-                resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-                renderArticleList(data.articulo, data.itemname, data.filas, 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
-                if (initial_option == "create") {
-                  if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
-                  if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
+      if(confirm("POR FAVOR REVISE BIEN LOS DATOS INGRESADOS\n\nOK si todo esta correcto y continuar...")){
+        if(confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")){
+          parameters = new Object();
+          parameters = getObjectArticle();
+          parameters['option'] = 'save_article';
+          parameters['list'] = active_list;
+          // console.log(parameters);
+          $.ajax({
+            url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+            beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
+            success: function (data) {
+              // el_div_loader_full.classList.remove('cont_hidden');
+              console.log('FROM API (option: ' + parameters.option + ') ', data);
+              if (!!data.nothing) {
+                alert("NO SE PUDO AGREGAR EL ARTICULO");
+                console.log(data.nothing);
+              } else {
+                if (!!data.filas && data.filas != '') {
+                  active_list = data.lista;
+                  resetAllControls();//agregaremos el articulo, veremos el modal pero antes limpiamos los controles
+                  renderArticleList(data.articulo, data.itemname, data.filas, 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
+                  if (initial_option == "create") {
+                    if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
+                    if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
+                  }
+                  modal_preview_save.style.visibility = 'visible';
+                  el_span_title_list.innerHTML = "LISTA N° " + active_list;
+                  if (typeof state_list === 'undefined')// SOLO EL REVISER TENDRA ESTA OPCION
+                    el_span_state_list.innerHTML = "EDITANDO LISTA, después click en ENVIAR SKUs para NOTIFICAR ESTA CREACION ";
+                  else
+                    el_span_state_list.innerHTML = "EDITANDO LISTA YA CREADA, después click en ENVIAR PLANILLA EXCEL para NOTIFICAR ESTA REVISION";
+                  el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
                 }
-                modal_preview_save.style.visibility = 'visible';
-                el_span_title_list.innerHTML = "LISTA N° " + active_list;
-                if (typeof state_list === 'undefined')// SOLO EL REVISER TENDRA ESTA OPCION
-                  el_span_state_list.innerHTML = "EDITANDO LISTA, después click en ENVIAR SKUs para NOTIFICAR ESTA CREACION ";
-                else
-                  el_span_state_list.innerHTML = "EDITANDO LISTA YA CREADA, después click en ENVIAR PLANILLA EXCEL para NOTIFICAR ESTA REVISION";
-                el_span_state_list.style.color = 'rgba(29, 185, 100, 0.88)';
-              }
-              if (!!data.refused) {
-                mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
-                for (var item in data.refused) {
-                  mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] + '\n';
+                if (!!data.refused) {
+                  mensaje = 'LOS SIGUIENTES SKUS NO FUERON AGREGADOS\n\n';
+                  for (var item in data.refused) {
+                    mensaje += 'SKU: ' + data.refused[item]['sku'] + ' --- MOTIVO: ' + data.refused[item]['detalle'] + '\n';
+                  }
+                  alert(mensaje);
                 }
-                alert(mensaje);
               }
-            }
-          },
-          error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
-        });
+            },
+            error: function () { console.log('error'); /*el_div_loader_full.classList.remove('cont_hidden');*/ }
+          });
+        }
       }
     }
     else
@@ -412,7 +414,9 @@ function renderArticleList(art,itn,rows,estado_article){ // el estado_article = 
   }     
   el_articulo=document.getElementById(id_articulo);//
   el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
-  ///CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
+  
+  ///--- CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
+  ///--- ELIMINAR ARTICULO DE LA VISTA  
   document.querySelectorAll('.btn_delete_article').forEach( function(but_del) {
     but_del.onclick=function(){
       if (confirm('¿DESEA QUITAR ESTE ARTICULO DE LA LISTA?')) {
@@ -454,6 +458,35 @@ function renderArticleList(art,itn,rows,estado_article){ // el estado_article = 
     }
   });
 
+  ///--- AGREGAR COLOR TALLA
+  document.querySelectorAll('.btn_add_color_talla').forEach( function(but_add) {
+    but_add.onclick=function(){
+      // alert("entro");
+      el_arti = but_add.parentNode.parentNode.parentNode;
+      id_el_arti = el_arti.id;
+      cod_arti = id_el_arti;
+      if (cod_arti.indexOf('_') != -1) {
+        cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+        cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+      }
+      console.log(cod_arti);      
+    }
+  });
+
+  ///--- VER EDITAR DETALLE
+  document.querySelectorAll('.btn_edit_detalle').forEach( function(but_view_edit) {
+    but_view_edit.onclick=function(){
+      // alert("entro");
+      el_arti = but_view_edit.parentNode.parentNode.parentNode;
+      id_el_arti = el_arti.id;
+      cod_arti = id_el_arti;
+      if (cod_arti.indexOf('_') != -1) {
+        cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+        cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+      }
+      console.log(cod_arti);      
+    }
+  });
 
   el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function(icon){
     icon.onclick=function(){
