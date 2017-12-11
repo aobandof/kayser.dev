@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-require_once "../config/sku_db_sqlsrv_33.php";
+// require_once "../config/sku_db_sqlsrv_33.php";
 
 $hoy=date('Y-m-d H.i.s');
 
@@ -216,6 +216,7 @@ if($_POST['option']=="save_list") {
     $reg_updated===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_saved']=$reg_updated;
   echo json_encode($data);
 }
+
 if($_POST['option']=="submit_excel") {
   $lista=$_POST['list'];
   $nomb_lista="CREACION_SKUS_LISTA_N-".$lista."_($hoy)";

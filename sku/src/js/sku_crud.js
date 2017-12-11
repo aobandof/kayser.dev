@@ -57,7 +57,8 @@ function cargarTablaSeccion(tabla) {
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.style.pointerEvents = "none");//desactivamos el evento click
         // ###################   EVENTO CLICK PARA LOS ICON_SAVE ##############################
         document.querySelectorAll(".icon_save").forEach(elemento => elemento.onclick = function() {
-          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
+          this.parentNode.parentNode.querySelectorAll('.editable').forEach(function(el){ 
+            //RECORREMOS TODAS LAS CELDAS QUE SON EDITABLES
             keycita=(el.id).slice((el.id).indexOf("_")+1).toLocaleLowerCase();
             contenido_actualizar[keycita] = el.firstChild.value.toLocaleUpperCase();
           });
@@ -86,7 +87,9 @@ function cargarTablaSeccion(tabla) {
                   img_save.parentNode.parentNode.classList.toggle("editing"); // quitamos esta clase a la fila para devolverle el fondo normal
                   document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
                   document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
-                  alert("REGISTRO ACTUALIZADO");
+                  // alert(item_crud_selected);
+                  alert("REGISTRO ACTUALIZADO");                  
+                  render_select(item_crud_selected);
                 }else 
                   alert("NO SE PUDO ACTUALIZAR");   
                 //referenciamos a el elemento img_save que produde este evento guardar
@@ -270,6 +273,7 @@ function deleteRegistry(cod_registro){
         console.log("Errores encontrados:".data.errors);
       if (data.result === 1) {
         cargarTablaSeccion(item_crud_selected);//funcion recursiva que vuelve a cargar la tabla  
+        render_select(item_crud_selected);
         alert("REGISTRO ELIMINADO SATISFACTORIAMENTE")
       } else {
         console.log(data.result);
@@ -298,7 +302,8 @@ function createRegistry(arr_contenido) {
           document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
           document.getElementById("button_nuevo_seccion").classList.toggle("disabled"); // deshabilitamos el boton nuevo
           cargarTablaSeccion(item_crud_selected);//funcion recursiva que vuelve a cargar la tabla  
-          alert("REGISTRO CREADO SATISFACTORIAMENTE");               
+          alert("REGISTRO CREADO SATISFACTORIAMENTE");  
+          render_select(item_crud_selected);//para volver a llenar el select en el sku_crear.js             
       }else {
         console.log(data.repeated);
         alert("UNO DE DE LOS VALORES INGRESADOS YA EXISTE Y NO PUEDE REPETIRSE");   

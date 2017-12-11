@@ -761,12 +761,23 @@ function ajax_finalize_list(param){
 
 function render_select(table){
   ///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API
+  ///--- PENDIENTE, RENDER PARA LAS TALLAS, CUANDO ESTÉ EL CRUD PARA LAS TALLAS
   el_sel_table=document.getElementById('select_sku_' + table);
-  parameters = { 'option' : 'render_select'};
+  parameters = { 'option' : 'render_select', 'table': table };
+  console.log('parametros',parameters);
   $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parameters,
     beforeSend: function (){ },
     success: function(data){
-      (!!data.options && data.options!='') ? el_sel_table.innerHTML="<option value=''></option>"+data.options : console.log(data.errors);
+      if (!!data.options && data.options!='') {
+        if (table=='color') {
+          el_sel_table.innerHTML=data.options;
+          // $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+         }else {
+          el_sel_table.innerHTML="<option value=''></option>" + data.options
+          //if (table=='composicion')
+            //$('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker          
+         }
+      } else console.log(data.errors);
     },
     error: function(){ console.log('error'); }
   });

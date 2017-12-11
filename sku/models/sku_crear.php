@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-require_once "../config/sku_db_sqlsrv_33.php";
+// require_once "../config/sku_db_sqlsrv_33.php";
 
 
 if($_POST['option']=="cargar_selects_independientes"){
@@ -144,7 +144,7 @@ if($_POST['option']=="render_select") {
   ///--- POR AHORA SOLO TRABAJARAMOS CON TABLAS MYSQL
   $query_select="SELECT ".$tablas_sku[$table]['id'].",".$tablas_sku[$table]['campo']." from $table";
   $data['query']=$query_select;
-  $options=$mysqli->selectArrayUniAssocIdName($query_select);
+  $options=$mysqli->selectOptions($query_select);
   if($options!==false)
     $data['options']=$options;
   else 
