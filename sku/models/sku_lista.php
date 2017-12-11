@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-// require_once "../config/sku_db_sqlsrv_33.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 
 $hoy=date('Y-m-d H.i.s');
 
@@ -318,6 +318,7 @@ if($_POST['option']=='get_articles'){
   $s=1;//para enumerar los skus por columnas
   $a=0;//cantidad de articulos que usasremos para llenar el arr_export;
   $arr_export=[];
+  $articles=[];
   $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
   $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
   if($arr_skus!==0 && $arr_skus!==false){
@@ -329,6 +330,15 @@ if($_POST['option']=='get_articles'){
         $i--;      // que cuando itere aumentara en 1 y volvera  al valor correcto de $i pero sin entrar a esta condicion 
         $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
         $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
+        $arr_export[$a]['dpto_name']=$arr_skus[$i]['dpto_name'];
+        $arr_export[$a]['subdpto_name']=$arr_skus[$i]['subdpto_name'];
+        $arr_export[$a]['prenda_name']=$arr_skus[$i]['prenda_name'];
+        $arr_export[$a]['categoria_name']=$arr_skus[$i]['categoria_name'];
+        $arr_export[$a]['tprenda_name']=$arr_skus[$i]['tprenda_name'];
+        $arr_export[$a]['tcatalogo_name']=$arr_skus[$i]['tcatalogo_name'];
+        $arr_export[$a]['grupouso_name']=$arr_skus[$i]['grupouso_name'];
+        $arr_export[$a]['caracteristica_name']=$arr_skus[$i]['caracteristica_name'];
+        $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];        
         $arr_export[$a]['skus']=$rows;
         $a++;
         $rows='';
@@ -341,6 +351,15 @@ if($_POST['option']=='get_articles'){
     }
     $arr_export[$a]['articulo']=$arr_skus[$i-1]['cod_articulo'];
     $arr_export[$a]['itemname']=$arr_skus[$i-1]['itemname'];
+    $arr_export[$a]['dpto_name']=$arr_skus[$i]['dpto_name'];
+    $arr_export[$a]['subdpto_name']=$arr_skus[$i]['subdpto_name'];
+    $arr_export[$a]['prenda_name']=$arr_skus[$i]['prenda_name'];
+    $arr_export[$a]['categoria_name']=$arr_skus[$i]['categoria_name'];
+    $arr_export[$a]['tprenda_name']=$arr_skus[$i]['tprenda_name'];
+    $arr_export[$a]['tcatalogo_name']=$arr_skus[$i]['tcatalogo_name'];
+    $arr_export[$a]['grupouso_name']=$arr_skus[$i]['grupouso_name'];
+    $arr_export[$a]['caracteristica_name']=$arr_skus[$i]['caracteristica_name'];
+    $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];
     $arr_export[$a]['skus']=$rows;
     $data['articulos']=$arr_export;
   }else{

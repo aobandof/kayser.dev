@@ -1,7 +1,7 @@
 <?php
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-// require_once "../config/sku_db_sqlsrv_33.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 
 #########################################  SELECT ITEM #############################################################
 if($_POST['option']=="cargar_seccion"){

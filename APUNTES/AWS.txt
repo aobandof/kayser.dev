@@ -1,0 +1,10 @@
+IOPS:
+- unidad de medida que representa  las operaciones de entrada y salida que se producen por segundo	
+- las operaciones se miden en KiB y el tamaño de I/O se limita a 256 KiB para SSD Y 1024 KiB para HDD (recuerde que los volumnes SSD controlan las I/O pequeñas o aleatorias con mucha mas eficacia que los volumnes HDD)
+- para los volumnes SSD las operaciones son contiguas o aleatorias.
+- las operaciones contiguas tienden en combinarse o desagruparse al tamaño máximo (256 KiB), por ejemplo con los volúmenes SSD, una única operación de I/O de 1.024 KiB cuenta como 4 operaciones (1.024÷256=4), mientras que 8 operaciones de I/O contigua a 32 KiB cuenta como una operación (8×32=256)
+- En las operaciones aleatorias, sim embargo, ocho operaciones de I/O a 32 KiB cada una cuentan como ocho operaciones. Cada operación de I/O por debajo de 32 KiB cuenta como una operación.
+- De igual manera, para los volúmenes con respaldo en HDD, tanto una única operación de I/O de 1.024 KiB como ocho operaciones secuenciales de 128 KiB cuentan como una operación. Sin embargo, ocho operaciones de I/O aleatorias de 128 KiB cuentan como ocho operaciones.
+
+	* En consecuencia, cuando crea un volumen con respaldo en SSD que admite 3.000 IOPS (bien aprovisionando un volumen de io1 de 3.000 IOPS o bien reduciendo el tamaño de un volumen de gp2 de 1.000 GiB) y lo adjunta a una instancia optimizada para EBS que ofrece suficiente ancho de banda, puede transferir hasta 3.000 operaciones de I/O de datos por segundo, con un rendimiento que determina el tamaño de I/O. 
+
