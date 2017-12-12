@@ -218,8 +218,8 @@ SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE 'S6331%'
 SELECT
 	S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name,
 	S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo,
-	S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, U_EVD as tprenda_name, U_APOLLO_S_GROUP as tcatalogo_name,
-	U_ESTILO as grupouso_name, U_APOLLO_COO as composicion_name, FrgnName as caracteristica_name
+	S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name,
+	S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name
 FROM OITM AS S
 /*JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod
 LEFT JOIN [@APOLLO_SEASON] AS SSG ON S.U_APOLLO_SEASON=SSG.Code
@@ -227,6 +227,7 @@ LEFT JOIN [@APOLLO_DIV] C ON S.U_APOLLO_DIV=C.Code*/
 WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '96.01-%'
 ORDER BY nombre
 
+SELECT S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo, S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '96.01-%'
 
 SELECT TOP 100 FrgnName FROM OITM group by FrgnName 
 
