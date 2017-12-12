@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-require_once "../config/sku_db_sqlsrv_33.php";
+// require_once "../config/sku_db_sqlsrv_33.php";
 
 $hoy=date('Y-m-d H.i.s');
 
@@ -325,11 +325,18 @@ if($_POST['option']=='get_articles'){
     $cant_registros=count($arr_skus);
     $art_temp=$arr_skus[0]['cod_articulo'];
     for($i=0;$i<$cant_registros;$i++){
+      $detail='';
       if ($arr_skus[$i]['cod_articulo']!=$art_temp){
         $art_temp=$arr_skus[$i]['cod_articulo'];         
         $i--;      // que cuando itere aumentara en 1 y volvera  al valor correcto de $i pero sin entrar a esta condicion 
         $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
         $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
+        $detail.="<div>";
+        $detail.="<div><span class='span_title'>dpto</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
+        $detail.="<div><span class='span_title'>subdpto</span><span class='span_item'>".$arr_skus[$i]['subdpto_name']."</span></div>";
+        $detail.="<div><span class='span_title'>dpto</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
+        
+
         $arr_export[$a]['dpto_name']=$arr_skus[$i]['dpto_name'];
         $arr_export[$a]['subdpto_name']=$arr_skus[$i]['subdpto_name'];
         $arr_export[$a]['prenda_name']=$arr_skus[$i]['prenda_name'];
@@ -338,8 +345,11 @@ if($_POST['option']=='get_articles'){
         $arr_export[$a]['tcatalogo_name']=$arr_skus[$i]['tcatalogo_name'];
         $arr_export[$a]['grupouso_name']=$arr_skus[$i]['grupouso_name'];
         $arr_export[$a]['caracteristica_name']=$arr_skus[$i]['caracteristica_name'];
-        $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];        
+        $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];   
+        
+        
         $arr_export[$a]['skus']=$rows;
+        $arr_export[$a]['skus']=$detail;
         $a++;
         $rows='';
         $s=1;
