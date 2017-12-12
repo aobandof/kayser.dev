@@ -1,0 +1,12 @@
+CREATE DATABASE prueba
+GO
+USE prueba
+CREATE TABLE tablita (
+	id INT PRIMARY KEY IDENTITY,
+	nombre VARCHAR(50),
+	detalle VARCHAR(50)
+)
+GO
+INSERT INTO tablita VALUES ('NOMBRE1','DETALLE1')
+
+SELECT * FROM tablita

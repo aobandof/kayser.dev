@@ -29,7 +29,7 @@ $tablas_sku = Array(
   'tcatalogo'        => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_S_GROUP','id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'grupouso'         => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_ESTILO',        'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'composicion'      => Array( 'bd'=>'mysql',                               'campo_sku'=>'U_APOLLO_COO',    'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
-  'caracteristica'   => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
+  'caracteristica'   => Array( 'bd'=>'mysql',                               'campo_sku'=>'FrgnName',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'nombre'),
   'relacionprefijo'  => Array( 'bd'=>'mysql',                               'campo_sku'=>'',                'id'=>'id',         'type_id'=>'INT',     'campo'=>'')
 );
 

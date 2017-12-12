@@ -8,7 +8,7 @@ if(isset($_SESSION['user'])){
 
 require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
-// require_once "../config/sku_db_sqlsrv_33.php";
+require_once "../config/sku_db_sqlsrv_33.php";
 
 
 if($_POST['option']=="cargar_selects_independientes"){
@@ -138,6 +138,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
   echo json_encode($data);
 }
 
+/// OPTION QUE SOLO ENVIA LOS OPTIONS DE UN SELECT
 if($_POST['option']=="render_select") {
   $table=$_POST['table'];
   $options='';
@@ -151,5 +152,54 @@ if($_POST['option']=="render_select") {
     if ($options===false )
       $data['errors']= $mysqli->getErrors();
   echo json_encode($data);
+}
+
+///--- OPTION DE DEVUELVE TODOS LOS OPTIONS CON EL ITEM SELECCIONADO DEL ARTICULO ENCONTRADO
+if($_POST['option']=="fill_selects") {
+  ///--- INICIALMENTE OBTENEMOS TODOS LOS SKUs que tengan el codigo de articulo
+  $arr_arti=[];
+  $articulo=$_POST['articulo'];
+  $query_articulo="SELECT S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo, S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$articulo-%'";
+  $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
+  if($arr_articulo!==false && $arr_articulo!==0){
+    // $data['articulo']=$arr_articulo;
+    $data['dpto_codigo']=$arr_articulo[0]['dpto_codigo'];
+
+    $arr_arti['prenda_codigo']=getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_codigo']);
+    $arr_arti['categoria_codigo']=getOptionsSelected('[@APOLLO_DIV]',$arr_articulo[0]['categoria_codigo']);
+
+
+
+  }else ($arr_articulo===false) ? $data['errors']=$sqlsrv_33->getErrors() : $data['cant_skus']=$arr_articulo;
+  $data['articulo']=$arr_arti;
+  echo json_encode($data);
+}
+// echo "entra aca<br>";
+// echo getOptionsSelected('[@APOLLO_SEASON]','50');
+
+function getOptionsSelected($table,$valor){
+  global $tablas_sku; global $mysqli; global $sqlsrv_33;
+  $nombre_id=$tablas_sku[$table]['id'];
+  // var_dump($tablas_sku);
+  $nombre_campo=$tablas_sku[$table]['campo'];
+  $option="<option value=''></option>";
+  $query_table="SELECT $nombre_id, $nombre_campo FROM $table";  
+  // echo $query_table."<br>";
+  if ($tablas_sku[$table]['bd']=='mssql') {    
+    $arr_table=$sqlsrv_33->select($query_table,"sqlsrv_a_p");    
+    if($arr_table!==false && $arr_table!==0){
+      $cant_options=count($arr_table);      
+      for($i=0; $i<$cant_options;$i++)
+        ($arr_table[$i][$nombre_id]==$valor) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_id]."</option>";
+    }else ($arr_articulo===false) ? $data['errors']=$sqlsrv_33->getErrors() : $data['cant_skus']=$arr_articulo;
+  }else{
+    $arr_table=$mysqli->select($query_table,"mysqli_a_o");
+    if($arr_table!==false && $arr_table!==0){
+      $cant_options=count($arr_table);      
+      for($i=0; $i<$cant_options;$i++)
+        ($arr_table[$i][$nombre_campo]==$valor) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_id]."</option>";
+    }else ($arr_articulo===false) ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=$arr_articulo;    
+  }
+  return($option);        
 }
 ?>

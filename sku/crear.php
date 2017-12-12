@@ -125,6 +125,23 @@ if(isset($_SESSION['user'])){
             </div>
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
+
+
+
+
+            <div class="cont_titulo_ingreso"><span>TIPO DE INGRESO&nbsp</span></div>
+            <div class="cont_tipo_ingreso">              
+              <select id="select_tipo_ingreso" class="form-control">
+                <option value="nuevo">ARTICULO NUEVO</option>
+                <option value="existente">ARTICULO EXISTENTE</option>
+              </select>
+              <input type="text" name="articulo_existente" id="txt_art_existente" class="form-control control_hidden">
+              <button class="btn btn-primary control_hidden" id="button_art_cargar" >CARGAR</button>
+            </div>
+
+
+
+
             <div class="cont_fila_crear_sku container_row" >
               <span>ARTICULO&nbsp</span>
               <div id="div_codigo_articulo">

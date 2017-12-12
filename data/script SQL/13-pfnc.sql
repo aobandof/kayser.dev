@@ -1,0 +1,8 @@
+SELECT * FROM PFNC WHERE /*ObjType='17' AND */P_Orden!='NULL' AND P_Orden!='' AND P_Orden LIKE '%319213%'  ORDER BY P_Orden
+SELECT * FROM PFNC WHERE ObjType='13' AND P_Orden!='NULL' AND P_Orden!='' AND Mes='8' AND Anio LIKE '%2017%' ORDER BY P_Orden
+SELECT * FROM PFNC WHERE ObjType='13' AND P_Orden!='NULL' AND P_Orden!='' AND Mes='8' AND Anio LIKE '%2017%'  ORDER BY P_Orden
+
+SELECT * FROM PFNC WHERE P_Orden='1234' AND Mes='8' AND Anio LIKE '%2017%'  ORDER BY ObjType
+SELECT * FROM PFNC WHERE P_Orden='16623' AND Mes='8' AND Anio LIKE '%2017%'  ORDER BY ObjType
+
+SELECT * FROM PFNC WHERE ObjType='13' AND P_Orden!='NULL' AND P_Orden!='' AND Mes='8' AND Anio LIKE '%2017%' ORDER BY P_Orden
