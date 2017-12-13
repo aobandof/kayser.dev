@@ -1,0 +1,55 @@
+
+
+
+PROYECTO JS CON WEBPACK, LOADERS Y BROWSER-SYNC
+-----------------------------------------------
+
+* Inicializamos el proyecto:
+	npm init -y
+* Instalamos Webpack y dependencias:
+	npm install webpack -g
+	npm install webpack webpack-dev-server -D
+* En la carpeta raiz del proyecto, creamos el siguiente archivo : webpack.config.js  y le agreamos el siguiente contenido
+
+	module.exports = {
+    		entry: './index.js', //lo recomendable es hacerlo en otra ruta /src/index.js, o /src/js/index.js
+    		output: {
+        		filename: 'bundle.js',
+        		path: __dirname
+    		}
+	};
+
+GENERANDO EL BUNDLE:
+.....................
+	- PRODUCCION :	webpack // solo con ese comando
+	- DESARROLLO : 
+		* webpack --watch // para que Webpack actualice el bundle cada vez que haces cambios de código
+			o
+		* node_modules/.bin/webpack-dev-server  // Esto genera un bundle.js en memoria y lo sirve a la app desde el servidor de desarrollo que utiliza para que veas los resultados en el navegador. Además también escucha tus cambios de código y actualiza el bundle en consecuencia.
+	- Despues hay que enlazar el bundle.js en nuestro index.html	
+
+
+INSTALANDO LOADERS:
+...................
+	- npm install babel-loader babel-core babel-preset-es2015 -D
+	- npm install sass-loader css-loader style-loader -D
+	- npm install node-sass --save-dev // si usamos sass-loader, es necesario tener este compilador sass, supongo que lo mismo para style-loader
+
+
+PLUGINS:
+........
+	- UglifyJsPlugin : Optimiza y minimiza el codigo para que ocupe menos espacio y cargue mas rápido (sobre todo en produccion)
+
+USANDO SCRIPT NPM PARA MODULOS O PAQUETES DEV.
+.............................................
+Para esto hay que agregar variables a la etiqueta scripts del packaje.json 
+	"dev": "node_modules/.bin/webpack",
+	"start": "node_modules/.bin/webpack-dev-server"  // esta opcion ya incluye la anterior
+Después hay que ejecutar npm run start ó npm start
+Ademas podemos agregar un automatizador de tareas para realizar esto automaticamente
+
+
+MODULOS UTILES GLOBALES:
+-----------------------
+* npm install simplehttpserver -g
+	Es un servidor local simple para proyectos pequeños, una ves instalado, vamos a la carpeta inicial del proyecto y ejecutamos : simplehttpserver ./
