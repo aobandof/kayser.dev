@@ -118,7 +118,7 @@ if(isset($_SESSION['user'])){
               <!-- <div class="cont_fila_textarea"><span class="">CARACT.&nbsp</span><textarea id="txa_sku_caracteristicas" name="caracteristicas" rows="1" cols="10" class="form-control sku_control"></textarea></div> -->
             </div>
             <!-- <div class="cont_fila_crear_sku container_row d75-25"> -->
-            <div class="full_fila">
+            <div class="full_fila" id="div_row_composicion">
               <span class="">COMPOSIC.&nbsp</span>
               <select name="composicion" id="select_sku_composicion" class="form-control sku_control" data-live-search="true" title=""></select>
               <!-- <div><span class="">PESO(gr)&nbsp</span><input type="number" id="txt_sku_peso" name="peso" value="" class="form-control sku_control"></div> -->

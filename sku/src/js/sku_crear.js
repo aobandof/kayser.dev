@@ -335,37 +335,31 @@ $(document).ready(function() {
     el.onchange=function(){
       if(el.value!=""){ // el valor cambiado del control select debe ser diferente de vacio
         resetInputTextCodeArticle();
-        if (el.id === "select_sku_subdpto"){ //para inicializar y llenar los selects depedientes de Subdpto
-          // resetInputTextCodeArticle()  
+        el_txt_descripcion.value = ""; // RESETEAOS DADO QUE VOLVEREMOS A SELECCIONAR  
+        el_sel_material.value = "";
+        if (el.id === "select_sku_subdpto"){
           cargarSelectsSku('subdpto', el.value);
-          document.getElementById('txt_sku_descripcion').value = ""; // RESETEAOS DADO QUE VOLVEREMOS A SELECCIONAR
-          document.getElementById('div_copa').style.display = 'none';   //SETEO ESTATICO  -- OCULTAMOS EL DIV Con los controles para copa
-        }else if (el.id === "select_sku_prenda") { //para inicializar y llenar los selects depedientes de Prenda
-          el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';     //SETEO ESTATICO                      
-          // resetInputTextCodeArticle();
-          document.getElementById('txt_sku_descripcion').value = "";
-          cargarSelectsSku('[@APOLLO_SEASON]', el.value);
-        } else {
-          if (el.id === "select_sku_categoria"){
-            el_prenda=document.getElementById('select_sku_prenda');
-            (el_prenda.options[el_prenda.selectedIndex].text=="SOSTEN" || el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA" ) ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none';      //SETEO ESTATICO        
-          }//verificaremos que todos esten llenos, si es asi, poner el prefijo
+          document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO  -- OCULTAMOS EL DIV Con los controles para copa
+        }else if(el.id === "select_sku_prenda") {
+          el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+          cargarSelectsSku('[@APOLLO_SEASON]', el.value);            
+        }else if (el.id === "select_sku_categoria") {
+          (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN" || el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA") ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO          
+          el_sel_presentacion.value="";
+        }else {
           let is_empty = 0;
-          var valores = new Object();//valores necesarios para consultar la BDx y obtener el prefijo
+          var valores = new Object(); //valores necesarios para consultar la BDx y obtener el prefijo
           valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
           document.querySelectorAll(".prefijo").forEach(function (ele) {
-            if (ele.name == '[@APOLLO_SEASON]' || ele.name == '[@APOLLO_DIV]'){
-              ele.name == '[@APOLLO_SEASON]' ? valores['prenda'] = ele.value: valores['categoria'] = ele.value;
-            }else
+            if (ele.name == '[@APOLLO_SEASON]' || ele.name == '[@APOLLO_DIV]') {
+              ele.name == '[@APOLLO_SEASON]' ? valores['prenda'] = ele.value : valores['categoria'] = ele.value;
+            } else
               valores[ele.name] = ele.value;
             if (ele.value == "")
               is_empty = 1;
           });
           if (is_empty == 0) {
             getPrefix(valores);
-            //ademas verificamos si select_sku_material tiene valors, si es asi, autorellenar la descripcion
-            if(document.getElementById('select_sku_material').value!="")
-              autoFillDescription();
           }
         }
       } else {
@@ -519,7 +513,7 @@ $(document).ready(function() {
     colores_code.length = 0; colores_text.length = 0;
     tallas_text.length = 0; tallas_orden.length = 0;
     code_article = el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value;
-    itemname = code_article + '-' + el_txt_descripcion.value;
+    itemname = el_txt_descripcion.value;
     colores_code=[];colores_text=[];
     ///--- OBTENEMOS 2 ARRAYS CON COLORES_CODE y COLORES_TEX que guardan los codigos y nombres respectivamente  
     for (var i = 0; i < el_sel_color.selectedOptions.length; i++){
@@ -589,15 +583,14 @@ $(document).ready(function() {
   }
   //FUNCION PARA AUTORELLENAR LA DESCRIPCION
   function autoFillDescription(){
-    let descripcion = "";//inivar
-    let prenda = document.getElementById('select_sku_prenda');
-    let categoria = document.getElementById('select_sku_categoria');
-    let material = document.getElementById('select_sku_material');
-    if ((prenda.options[prenda.selectedIndex].text == "CALZON") || (prenda.options[prenda.selectedIndex].text == categoria.options[categoria.selectedIndex].text))
-      descripcion += categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
+    let descripcion = el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value + '-'; //inivar
+    // let prenda = document.getElementById('select_sku_prenda');
+    // let categoria = document.getElementById('select_sku_categoria');
+    // let material = document.getElementById('select_sku_material');
+    if ((el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "CALZON") || (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == el_sel_categoria.options[el_sel_categoria.selectedIndex].text))
+      descripcion += el_sel_categoria.options[el_sel_categoria.selectedIndex].text + ' ' + el_sel_material.options[el_sel_material.selectedIndex].text;
     else
-      descripcion += prenda.options[prenda.selectedIndex].text + ' ' + categoria.options[categoria.selectedIndex].text + ' ' + material.options[material.selectedIndex].text;
-    // console.log(descripcion);
+      descripcion += el_sel_prenda.options[el_sel_prenda.selectedIndex].text + ' ' + el_sel_categoria.options[el_sel_categoria.selectedIndex].text + ' ' + el_sel_material.options[el_sel_material.selectedIndex].text;
     document.getElementById('txt_sku_descripcion').value=descripcion;
   }
   //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
@@ -633,20 +626,7 @@ $(document).ready(function() {
   function cargarCategoriaCrear(id_cat) {
     $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
     id_cat_actual=id_cat;
-    color=$("#"+id_cat).css('background-color');
-    $(".cont_img_categoria").css('-webkit-transform', 'none');//quitamos a todos el efecto scale
-    $(".cont_img_categoria").css('transform', 'none');//quitamos a todos el efecto scale
-    $(".cont_img_categoria").css('-webkit-filer', 'opacity(.4)');//quitamos a todos el efecto scale
-    $(".cont_img_categoria").css('filter', 'opacity(.4)');//quitamos a todos el efecto scale
-    $("#"+id_cat).css('-webkit-filter', 'none)');//escalamos solo el cliqueado
-    $("#"+id_cat).css('filter', 'none');//escalamos solo el cliqueado
-    $("#"+id_cat).css('-webkit-transform', 'scale(1.1)');//escalamos solo el cliqueado
-    $("#"+id_cat).css('transform', 'scale(1.1)');//escalamos solo el cliqueado
-    $(".cont_img_categoria:hover").css('-webkit-filer', 'none !important');
-    $(".cont_img_categoria:hover").css('filer', 'none !important');
-    $(".comp_crear_sku").css('background-color', color);
-    $('.borrar_contacto').attr('name');
-    name_dpto = id_cat.substr(8, id_cat.length);
+    paintContCategory(id_cat_actual)
     cargarSelectsSku('OITB', name_dpto);
   }
   //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
@@ -792,19 +772,51 @@ function ajaxFillSelects(param){
       if(!!data.cant_skus)
         alert('ARTICULO NO ENCONTRADO')
       else{
+        console.log(data);
         if (!!data.errors) console.log('Error en Peticion API op: fill_selects', data.errors);
         ///obtenemos el departamento y hacemos el cambio al que corresponde
+        if(data.dpto_codigo!=code_dpto){//CAMBIAMOS VISUALMENTE AL DEPARTAMENTO QUE CORRESPONDE
+          code_dpto=data.dpto_codigo;
+          name_dpto = data.dpto_nombre;
+          id_cat_actual='div_cat_'+data.dpto_nombre;
+          paintContCategory(id_cat_actual);
+          cant_selects=data.selects.length;
+          // console.log(cant_selects);
+          for(let i=0; i<cant_selects;i++){
+            // document.getElementsByTagName(data.selects[i].select).innerHTML = data.selects[i].options;
+            document.getElementById('select_sku_'+data.selects[i].select).innerHTML=data.selects[i].options;
+            // console.log(data.selects[i]);
+            // console.log(data.selects[i].select);
+          }
+          document.querySelector('#div_row_composicion .filter-option').innerHTML = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
+
+        }
         ///obtenemos los option con cada nombre de tabla=select
 
      
       }
-      console.log(data);
+      
 
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
   });
 }
-
+function paintContCategory(id_cat){
+  color = $("#" + id_cat).css('background-color');
+  $(".cont_img_categoria").css('-webkit-transform', 'none'); //quitamos a todos el efecto scale
+  $(".cont_img_categoria").css('transform', 'none'); //quitamos a todos el efecto scale
+  $(".cont_img_categoria").css('-webkit-filer', 'opacity(.4)'); //quitamos a todos el efecto scale
+  $(".cont_img_categoria").css('filter', 'opacity(.4)'); //quitamos a todos el efecto scale
+  $("#" + id_cat).css('-webkit-filter', 'none)'); //escalamos solo el cliqueado
+  $("#" + id_cat).css('filter', 'none'); //escalamos solo el cliqueado
+  $("#" + id_cat).css('-webkit-transform', 'scale(1.1)'); //escalamos solo el cliqueado
+  $("#" + id_cat).css('transform', 'scale(1.1)'); //escalamos solo el cliqueado
+  $(".cont_img_categoria:hover").css('-webkit-filer', 'none !important');
+  $(".cont_img_categoria:hover").css('filer', 'none !important');
+  $(".comp_crear_sku").css('background-color', color);
+  $('.borrar_contacto').attr('name');
+  name_dpto = id_cat.substr(8, id_cat.length);
+}
 function render_select(table) {
   ///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API
   ///--- PENDIENTE, RENDER PARA LAS TALLAS, CUANDO ESTÉ EL CRUD PARA LAS TALLAS

@@ -69,8 +69,6 @@ if($_POST['option']=="cargar_selects_dependientes") {
     if(isset($array_tabla['dep'])){//si la tabla recorrida tiene padre
       if($padre==$array_tabla['dep']){//si la tabla padre de la tabla recorrida es padre que vino de la vista
         addGrandChild($tabla); // buscamos descendientes dependientes de esta tabla y la agregamos al array $array_grand_child
-        // $data['all_with_childs'][]=$tabla;
-        // $data['descendientes']=$array_grand_child;
         $nombre_id=$array_tabla['id'];
         $nombre_name=$array_tabla['campo'];
         if($array_tabla['bd']=="mysql") { // la tabla y la relacion estan en MOTOR MYSQL
@@ -159,15 +157,39 @@ if($_POST['option']=="fill_selects") {
   ///--- INICIALMENTE OBTENEMOS TODOS LOS SKUs que tengan el codigo de articulo
   $arr_arti=[];
   $articulo=$_POST['articulo'];
-  $query_articulo="SELECT S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo, S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$articulo-%'";
+  $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$articulo-%'";
   $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
   if($arr_articulo!==false && $arr_articulo!==0){
-    // $data['articulo']=$arr_articulo;
-    $data['dpto_codigo']=$arr_articulo[0]['dpto_codigo'];
+    $data['select']=$arr_articulo;
+    $data['dpto_codigo']=$arr_articulo[0]['dpto_code'];
+    $data['dpto_nombre']=strtolower($arr_articulo[0]['dpto_name']);
+    $data['articulo_codigo']=$arr_articulo[0]['articulo_code'];
+    $data['marca_nombre']=strtolower($arr_articulo[0]['marca_name']);
+    
+    // $data['itemname'];    
+    $data['selects'][]=array('select'=> 'prenda', 'options' => getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_code']) );
+    $data['selects'][]=array('select'=> 'categoria', 'options' => getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['categoria_code']) );
+    $data['selects'][]=array('select'=> 'marca', 'options' => getOptionsSelected('marca',$arr_articulo[0]['marca_name']) );
+    $data['selects'][]=array('select'=> 'subdpto', 'options' => getOptionsSelected('subdpto',$arr_articulo[0]['subdpto_name']) );
+    $data['selects'][]=array('select'=> 'presentacion', 'options' => getOptionsSelected('presentacion',$arr_articulo[0]['presentacion_name']) );
+    $data['selects'][]=array('select'=> 'material', 'options' => getOptionsSelected('material',$arr_articulo[0]['material_name']) );    
+    $data['selects'][]=array('select'=> 'color', 'options' => getOptionsSelected('color','') );
+    $data['selects'][]=array('select'=> 'tprenda', 'options' => getOptionsSelected('tprenda',$arr_articulo[0]['tprenda_name']) );
+    $data['selects'][]=array('select'=> 'tcatalogo', 'options' => getOptionsSelected('tcatalogo',$arr_articulo[0]['tcatalogo_name']) );
+    $data['selects'][]=array('select'=> 'grupouso', 'options' => getOptionsSelected('grupouso',$arr_articulo[0]['grupouso_name']) );
+    $data['selects'][]=array('select'=> 'caracteristica', 'options' => getOptionsSelected('caracteristica',$arr_articulo[0]['caracteristica_name']) );
+    $data['selects'][]=array('select'=> 'composicion', 'options' => getOptionsSelected('composicion',$arr_articulo[0]['composicion_name']) );
 
-    $arr_arti['prenda_codigo']=getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_codigo']);
-    $arr_arti['categoria_codigo']=getOptionsSelected('[@APOLLO_DIV]',$arr_articulo[0]['categoria_codigo']);
-
+    $query_tallas="SELECT * FROM talla";
+    $arr_tallas=$mysqli->select($query_tallas,"mysqli_a_o");
+    $cont_tallas=count($arr_tallas);
+    for($i=0;$i<$cont_tallas;$i++){
+      // $data['tallas'][]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
+    }
+    // $arr_tallas=[];
+    // foreach ($arr_ops as $value)
+    //   $arr_tallas[]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
+    // $data['values'][]=array('tabla'=>$tabla, 'options'=>$arr_tallas);
 
 
   }else ($arr_articulo===false) ? $data['errors']=$sqlsrv_33->getErrors() : $data['cant_skus']=$arr_articulo;
@@ -180,26 +202,36 @@ if($_POST['option']=="fill_selects") {
 function getOptionsSelected($table,$valor){
   global $tablas_sku; global $mysqli; global $sqlsrv_33;
   $nombre_id=$tablas_sku[$table]['id'];
-  // var_dump($tablas_sku);
   $nombre_campo=$tablas_sku[$table]['campo'];
-  $option="<option value=''></option>";
+  if ($table == 'color')
+    $option="";
+  else
+    $option="<option value=''></option>";
   $query_table="SELECT $nombre_id, $nombre_campo FROM $table";  
-  // echo $query_table."<br>";
   if ($tablas_sku[$table]['bd']=='mssql') {    
     $arr_table=$sqlsrv_33->select($query_table,"sqlsrv_a_p");    
     if($arr_table!==false && $arr_table!==0){
       $cant_options=count($arr_table);      
       for($i=0; $i<$cant_options;$i++)
-        ($arr_table[$i][$nombre_id]==$valor) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_id]."</option>";
+        ($arr_table[$i][$nombre_id]==$valor) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_campo]."</option>";
     }else ($arr_articulo===false) ? $data['errors']=$sqlsrv_33->getErrors() : $data['cant_skus']=$arr_articulo;
-  }else{
+  }else{    
     $arr_table=$mysqli->select($query_table,"mysqli_a_o");
-    if($arr_table!==false && $arr_table!==0){
-      $cant_options=count($arr_table);      
-      for($i=0; $i<$cant_options;$i++)
-        ($arr_table[$i][$nombre_campo]==$valor) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_id]."</option>";
+    if($arr_table!==false && $arr_table!==0){      
+      $val=@iconv('UTF-8','ASCII//TRANSLIT',$valor);
+      $val=strtoupper($val);
+      // echo "<br>val despues de iconv: ".$val;  
+      $val=str_replace('~N','Ñ',$val);
+      // echo "<br>val despues de str_replace: ".$val; 
+      $val=preg_replace('/[\'`^]/',null,$val);      
+      // echo "<br>val despues de preg_replace: ".$val; 
+      $cant_options=count($arr_table);          
+      for($i=0; $i<$cant_options;$i++){
+        ($arr_table[$i][$nombre_campo]==$val) ? $option.="<option value='".$arr_table[$i][$nombre_id]."' selected>".$arr_table[$i][$nombre_campo]."</option>" : $option.="<option value='".$arr_table[$i][$nombre_id]."'>".$arr_table[$i][$nombre_campo]."</option>";
+      }
     }else ($arr_articulo===false) ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=$arr_articulo;    
   }
+  // echo "\n".$option;
   return($option);        
 }
 ?>

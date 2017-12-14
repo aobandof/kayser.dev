@@ -187,6 +187,9 @@ input[type="number"] {
   font-weight: bold;
   font-size: .9rem;
 }
+#txt_sku_descripcion {
+  text-align: center;
+}
 .full_fila {
   display: flex;
   align-items: center;

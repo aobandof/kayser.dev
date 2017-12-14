@@ -80,3 +80,7 @@ SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[
 
 
 SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].[Gsp_SboKayserResumen] where YEAR(Fecha) = '2016' AND MONTH(Fecha) = '11'  AND [Lista de Precios]='PROMOTORA CKL' group by bodega
+
+select top 200 * from [GSP].[dbo].[Gsp_SboKayserResumen] WHERE Almacen='RENCA CASA MATRIZ' AND Dia=13-- AND Horas>'16:00:00'
+
+SELECT name, collation_name FROM sys.databases;

@@ -227,9 +227,7 @@ LEFT JOIN [@APOLLO_DIV] C ON S.U_APOLLO_DIV=C.Code*/
 WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '96.01-%'
 ORDER BY nombre
 
-SELECT S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo, S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '96.01-%'
-
-SELECT TOP 100 FrgnName FROM OITM group by FrgnName 
+SELECT TOP 100 ItemCoFROM OITM
 
 CONSULTAS A MYSQL
 ----------------
@@ -237,3 +235,14 @@ SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as c
 FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo
 WHERE A.lista_id=2 ORDER BY S.barcode ASC
 
+
+
+select CONVERT(U_Material, SERVERPROPERTY('Latin1_General_CS_AI')) from OITM WHERE U_Material like 'ALGODÓN'
+
+SELECT CONVERT (varchar, SERVERPROPERTY('collation'));
+
+SELECT U_Material from OITM where U_Material collate SQL_Latin1_General_CP1_CI_AS = 'ALGODÓN'
+
+SELECT U_Material FROM OITM WHERE U_Material Like '%ALGODÓN%' COLLATE SQL_Latin1_General_CP850_CI_Ai
+
+SELECT name, collation_name FROM sys.databases;  -- SQL_Latin1_General_CP850_CI_AS
