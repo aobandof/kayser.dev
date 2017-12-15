@@ -162,9 +162,10 @@ if($_POST['option']=="fill_selects") {
   if($arr_articulo!==false && $arr_articulo!==0){
     $data['select']=$arr_articulo;
     $data['dpto_codigo']=$arr_articulo[0]['dpto_code'];
-    $data['dpto_nombre']=strtolower($arr_articulo[0]['dpto_name']);
+    $data['dpto_nombre']=strtoupper($arr_articulo[0]['dpto_name']);
     $data['articulo_codigo']=$arr_articulo[0]['articulo_code'];
-    $data['marca_nombre']=strtolower($arr_articulo[0]['marca_name']);
+    $data['marca_nombre']=strtoupper($arr_articulo[0]['marca_name']);
+    $data['itemname']=strtoupper($arr_articulo[0]['itemname']);
     
     // $data['itemname'];    
     $data['selects'][]=array('select'=> 'prenda', 'options' => getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_code']) );
@@ -174,6 +175,8 @@ if($_POST['option']=="fill_selects") {
     $data['selects'][]=array('select'=> 'presentacion', 'options' => getOptionsSelected('presentacion',$arr_articulo[0]['presentacion_name']) );
     $data['selects'][]=array('select'=> 'material', 'options' => getOptionsSelected('material',$arr_articulo[0]['material_name']) );    
     $data['selects'][]=array('select'=> 'color', 'options' => getOptionsSelected('color','') );
+    $data['selects'][]=array('select'=> 'copa', 'options' => getOptionsSelected('copa','') );
+    $data['selects'][]=array('select'=> 'formacopa', 'options' => getOptionsSelected('formacopa','') ); 
     $data['selects'][]=array('select'=> 'tprenda', 'options' => getOptionsSelected('tprenda',$arr_articulo[0]['tprenda_name']) );
     $data['selects'][]=array('select'=> 'tcatalogo', 'options' => getOptionsSelected('tcatalogo',$arr_articulo[0]['tcatalogo_name']) );
     $data['selects'][]=array('select'=> 'grupouso', 'options' => getOptionsSelected('grupouso',$arr_articulo[0]['grupouso_name']) );
@@ -184,7 +187,7 @@ if($_POST['option']=="fill_selects") {
     $arr_tallas=$mysqli->select($query_tallas,"mysqli_a_o");
     $cont_tallas=count($arr_tallas);
     for($i=0;$i<$cont_tallas;$i++){
-      // $data['tallas'][]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
+      $data['tallas'][]=array('familia'=>$arr_tallas[$i]['codigo'], 'tallas'=>cargarTallasToFamilia($arr_tallas[$i]['codigo']));
     }
     // $arr_tallas=[];
     // foreach ($arr_ops as $value)

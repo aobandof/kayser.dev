@@ -48,6 +48,18 @@ IDEAS:
 
 PENDIENTE YA:
 -------------
+--- MODIFICAR BD AGREGANDO UN CAMPO A LA TABLA articulo que indidque si es existente o no sincronizado
+--- terminar la funcion para resetear todos los controles y aplicarlos cuando se cambia de tipo_ingreso
+--- llamar a la funcion ajaxAddArticleLista en donde corresponde
+--- ver tema pendiente para que revision pueda ver los detalles de los articulos de la lista
+--- ver el tema del excel final que le llega a diseño con los skus y BARCODES
+
+
+
+
+
+
+
 --- LOADING PARA AGREGAR ARTICULO A LISTA
 
 --- EVENTOS PARA EDITAR DETALLE DE ARTICULO O AGREGAR COLOR/TALLA/COPA PARA UN ARTICULO
