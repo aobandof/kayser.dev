@@ -11,6 +11,7 @@ $(document).ready(function() {
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
   opcion_ingreso='nuevo'
   art_existente='nuevo';
+
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
   if(initial_option == 'show'){
     modal_preview_save.style.visibility = 'visible'; 
@@ -21,11 +22,10 @@ $(document).ready(function() {
     $.ajax({ url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
       beforeSend: function (){ },
       success: function(data){
-        // console.log(data);
+        console.log(data);
         if(!!data.articulos){
           for (index in data.articulos ) {
-            console.log(data.articulos[index]);
-            renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus,'NEW');
+            (!!data.articulos[index].detail) ? renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, data.articulos[index].detail, 'NEW') : renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, '', 'NEW')
           }
         }
       },
@@ -64,10 +64,11 @@ $(document).ready(function() {
           el_span_state_list.innerHTML = 'SKUs pendientes de REVISION, Click en ENVIAR PLANILLA EXCEL a Informática';
           el_span_state_list.style.color = 'green';
          }
-
       }
     }
-  }
+  }// fin initial_option=show
+
+
   if(initial_option == 'create'){
     el_but_show_lists.classList.add('cont_hidden')
     el_but_save_list.classList.remove('cont_hidden')
@@ -324,7 +325,7 @@ $(document).ready(function() {
           el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
           cargarSelectsSku('[@APOLLO_SEASON]', el.value);            
         }else if (el.id === "select_sku_categoria") {
-          (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN" || el.options[el.selectedIndex].text == "CON SOSTEN" || el.options[el.selectedIndex].text === "CON COPA") ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO          
+          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex] && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text == "CON SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
           el_sel_presentacion.value="";
         }else {
           let is_empty = 0;
@@ -391,7 +392,6 @@ $(document).ready(function() {
     el_txt_correlativo = document.getElementById('txt_sku_correlativo');
     el_txt_sufijo = document.getElementById('txt_sku_sufijo');
     el_txt_descripcion = document.getElementById('txt_sku_descripcion');
-
     modal_preview_save = document.getElementById('div_modal_article_creation');
     body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   }
@@ -399,6 +399,7 @@ $(document).ready(function() {
   function getObjectArticle(tipo_arti){
     colores_code.length = 0; colores_text.length = 0;
     tallas_text.length = 0; tallas_orden.length = 0;
+    console.log('cuando obtiene el ObjectArticle, la variable tipo_arti = ',tipo_arti);
     if(tipo_arti=='existente'){
       code_article=art_existente;
     }else{
@@ -586,35 +587,35 @@ function ajaxFillSelects(param){
         if (!!data.errors) console.log('Error en Peticion API op: fill_selects', data.errors);
         ///obtenemos el departamento y hacemos el cambio al que corresponde
         if(data.dpto_codigo!=code_dpto){//CAMBIAMOS VISUALMENTE AL DEPARTAMENTO QUE CORRESPONDE
-          ///--- CAMBIAMOS EL ESTADO DE INGRESO:
-          opcion_ingreso='existente_sap';
-          art_existente=param.articulo;
-          code_dpto=data.dpto_codigo;
-          name_dpto = data.dpto_nombre;
-          id_cat_actual='div_cat_'+data.dpto_nombre;
+          id_cat_actual = 'div_cat_' + data.dpto_nombre.toLowerCase();
           paintContCategory(id_cat_actual);
-          (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN" || el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN" || el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA") ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
-          el_txt_descripcion.value=data.itemname;          
-          if(!!data.selects){
-            cant_selects=data.selects.length;
-            for(let i=0; i<cant_selects;i++){
-              if (!!document.getElementById('select_sku_' + data.selects[i].select))
-                document.getElementById('select_sku_'+data.selects[i].select).innerHTML=data.selects[i].options;
-            }
-            if (!!data.tallas) {
-              // console.log(data.tallas);
-              document.getElementById('span_tallas_chosen').innerHTML = '';
-              document.getElementById("div_sel_grupo_opciones").innerHTML = "";
-              fillSelectMultiplesGruposFromArray(data.tallas, "div_sel_grupo_opciones", false);
-            }
-            document.querySelector('#div_row_composicion .filter-option').innerHTML = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
-            document.querySelectorAll('.sku_control').forEach( function(ctrl){
-              ctrl.disabled=true;
-            });
-            el_sel_color.disabled=false;
-            el_sel_copa.disabled=false;
-            el_sel_fcopa.disabled=false;
+        }
+        ///--- CAMBIAMOS EL ESTADO DE INGRESO:
+        opcion_ingreso='existente_sap';
+        art_existente=param.articulo;
+        code_dpto=data.dpto_codigo;
+        name_dpto = data.dpto_nombre;
+        ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+        el_txt_descripcion.value=data.itemname;          
+        if(!!data.selects){
+          cant_selects=data.selects.length;
+          for(let i=0; i<cant_selects;i++){
+            if (!!document.getElementById('select_sku_' + data.selects[i].select))
+              document.getElementById('select_sku_'+data.selects[i].select).innerHTML=data.selects[i].options;
           }
+          if (!!data.tallas) {
+            // console.log(data.tallas);
+            document.getElementById('span_tallas_chosen').innerHTML = '';
+            document.getElementById("div_sel_grupo_opciones").innerHTML = "";
+            fillSelectMultiplesGruposFromArray(data.tallas, "div_sel_grupo_opciones", false);
+          }
+          document.querySelector('#div_row_composicion .filter-option').innerHTML = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
+          document.querySelectorAll('.sku_control').forEach( function(ctrl){
+            ctrl.disabled=true;
+          });
+          el_sel_color.disabled=false;
+          el_sel_copa.disabled=false;
+          el_sel_fcopa.disabled=false;
         }
         ///obtenemos los option con cada nombre de tabla=select
       }
@@ -636,7 +637,7 @@ function ajaxAddArticleList(param){
         if (!!data.filas && data.filas != '') {
           active_list = data.lista;
           resetAllControls(); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-          renderArticleList(data.articulo, data.itemname, data.filas, 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
+          (!!data.detail) ? renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW') : renderArticleList(data.articulo, data.itemname, data.filas, '' , 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
           if (initial_option == "create") {
             if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
             if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
@@ -705,7 +706,8 @@ function render_select(table) {
 }
 
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-function renderArticleList(art, itn, rows, estado_article) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
+function renderArticleList(art, itn, rows, detail, estado_article) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
+  // console.log(art,estado_article);
   if (estado_article == 'NEW')
     makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
   id_articulo = art;
@@ -713,7 +715,8 @@ function renderArticleList(art, itn, rows, estado_article) { // el estado_articl
     id_articulo = "div_" + id_articulo.replace('.', '_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
   }
   el_articulo = document.getElementById(id_articulo);//
-  el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
+  el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN) 
+  el_articulo.querySelector('.dfoot_sku').innerHTML=detail; 
 
   ///--- CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
   ///--- ELIMINAR ARTICULO DE LA VISTA  
@@ -817,6 +820,7 @@ function resetAllControls() {
   $("#div_sel_grupo_opciones").html("");
   $("#span_tallas_chosen").text(' ');
   cargarSelectsSku('OITB', name_dpto);
+  paintContCategory(id_cat_actual);
 }
 //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
 function resetInputTextCodeArticle() {

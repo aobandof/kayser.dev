@@ -205,6 +205,8 @@ SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE '65.1170%'
 
 SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE '50.851%'
 
+SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE '99MP283%'
+
 SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE '63.1165%'
 
 SELECT top 1 SUBSTRING(CodeBars,0,LEN(CodeBars)) from OITM WHERE CodeBars like '780001%' order by  SUBSTRING(CodeBars,0,LEN(CodeBars)) DESC
@@ -233,7 +235,7 @@ CONSULTAS A MYSQL
 ----------------
 SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name, A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name
 FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo
-WHERE A.lista_id=2 ORDER BY S.barcode ASC
+WHERE A.lista_id=3 ORDER BY S.barcode ASC
 
 
 

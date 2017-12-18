@@ -91,7 +91,21 @@ if($_POST['option']=="save_article"){
     $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
     $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
     $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
-    $query_insert_article.="'".$_POST['talla_familia']."')";    
+    $query_insert_article.="'".$_POST['talla_familia']."')"; 
+    ///--- APROVECHAMOS PARA HACER EL DETAIL
+    $detail.="<div>";
+    $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$_POST['marca_name']."</span></div>";
+    $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$_POST['dpto_name']."</span></div>";
+    $detail.="<div><span class='span_title'>SUBDPTO</span><span class='span_item'>".$_POST['subdpto_name']."</span></div>";
+    $detail.="<div><span class='span_title'>PRENDA</span><span class='span_item'>".$_POST['prenda_name']."</span></div>";   
+    $detail.="<div><span class='span_title'>CATEG.</span><span class='span_item'>".$_POST['categoria_name']."</span></div></div>"; 
+    $detail.="<div>";
+    $detail.="<div><span class='span_title'>T.PRENDA</span><span class='span_item'>".$_POST['tprenda_name']."</span></div>";
+    $detail.="<div><span class='span_title'>T.CATALOG</span><span class='span_item'>".$_POST['tcatalogo_name']."</span></div>"; 
+    $detail.="<div><span class='span_title'>GRUPO.USO</span><span class='span_item'>".$_POST['grupouso_name']."</span></div>";
+    // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$_POST['caracteristica_name']."</span></div>"; 
+    $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$_POST['composicion_name']."</span></div></div>";
+    $data['detail']=$detail;
   }
 
   $data['all_querys'][]=$query_insert_article;
@@ -117,7 +131,8 @@ if($_POST['option']=="save_article"){
 
   ///--- AHORA REGISTRAMOS LOS SKUS 
   for ($i = 0; $i < $colores_length; $i++){
-    for ($j = 0; $j < $tallas_length; $j++){
+    $abrev=
+    for ($j = 0; $j < $tallas_length; $j++){      
       if($copa!='' && $copa!='S/C')
         $sku=$code_article.'-'.substr($colores_name[$i],0,3).$copa.'-'.$tallas_name[$j];
       else
@@ -335,11 +350,13 @@ if($_POST['option']=='get_articles'){
   $a=0;//cantidad de articulos que usasremos para llenar el arr_export;
   $arr_export=[];
   $articles=[];
-  $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
+  $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.marca_name, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name, A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
+  $data['querys_all'][]=$query_skus;
   $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
   if($arr_skus!==0 && $arr_skus!==false){
     $cant_registros=count($arr_skus);
     $art_temp=$arr_skus[0]['cod_articulo'];
+    $rows='';
     for($i=0;$i<$cant_registros;$i++){
       $detail='';
       if ($arr_skus[$i]['cod_articulo']!=$art_temp){
@@ -347,25 +364,23 @@ if($_POST['option']=='get_articles'){
         $i--;      // que cuando itere aumentara en 1 y volvera  al valor correcto de $i pero sin entrar a esta condicion 
         $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
         $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
-        $detail.="<div>";
-        $detail.="<div><span class='span_title'>dpto</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
-        $detail.="<div><span class='span_title'>subdpto</span><span class='span_item'>".$arr_skus[$i]['subdpto_name']."</span></div>";
-        $detail.="<div><span class='span_title'>dpto</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
-        
 
-        $arr_export[$a]['dpto_name']=$arr_skus[$i]['dpto_name'];
-        $arr_export[$a]['subdpto_name']=$arr_skus[$i]['subdpto_name'];
-        $arr_export[$a]['prenda_name']=$arr_skus[$i]['prenda_name'];
-        $arr_export[$a]['categoria_name']=$arr_skus[$i]['categoria_name'];
-        $arr_export[$a]['tprenda_name']=$arr_skus[$i]['tprenda_name'];
-        $arr_export[$a]['tcatalogo_name']=$arr_skus[$i]['tcatalogo_name'];
-        $arr_export[$a]['grupouso_name']=$arr_skus[$i]['grupouso_name'];
-        $arr_export[$a]['caracteristica_name']=$arr_skus[$i]['caracteristica_name'];
-        $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];   
-        
-        
-        $arr_export[$a]['skus']=$rows;
-        $arr_export[$a]['skus']=$detail;
+        if($arr_skus[$i]['marca_name']!='' && $arr_skus[$i]['dpto_name']!=''){ //si estan vacios quiere decir que es un articulo existente
+          $detail.="<div>";
+          $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$arr_skus[$i]['marca_name']."</span></div>";
+          $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
+          $detail.="<div><span class='span_title'>SUBDPTO</span><span class='span_item'>".$arr_skus[$i]['subdpto_name']."</span></div>";
+          $detail.="<div><span class='span_title'>PRENDA</span><span class='span_item'>".$arr_skus[$i]['prenda_name']."</span></div>";   
+          $detail.="<div><span class='span_title'>CATEG.</span><span class='span_item'>".$arr_skus[$i]['categoria_name']."</span></div></div>"; 
+          $detail.="<div>";
+          $detail.="<div><span class='span_title'>T.PRENDA</span><span class='span_item'>".$arr_skus[$i]['tprenda_name']."</span></div>";
+          $detail.="<div><span class='span_title'>T.CATALOG</span><span class='span_item'>".$arr_skus[$i]['tcatalogo_name']."</span></div>"; 
+          $detail.="<div><span class='span_title'>GRUPO.USO</span><span class='span_item'>".$arr_skus[$i]['grupouso_name']."</span></div>";
+          // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$arr_skus[$i]['caracteristica_name']."</span></div>"; 
+          $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$arr_skus[$i]['composicion_name']."</span></div></div>";
+          $arr_export[$a]['detail']=$detail; 
+        }
+        $arr_export[$a]['skus']=$rows;        
         $a++;
         $rows='';
         $s=1;
@@ -375,17 +390,24 @@ if($_POST['option']=='get_articles'){
         $s++;
       }
     }
-    $arr_export[$a]['articulo']=$arr_skus[$i-1]['cod_articulo'];
-    $arr_export[$a]['itemname']=$arr_skus[$i-1]['itemname'];
-    $arr_export[$a]['dpto_name']=$arr_skus[$i]['dpto_name'];
-    $arr_export[$a]['subdpto_name']=$arr_skus[$i]['subdpto_name'];
-    $arr_export[$a]['prenda_name']=$arr_skus[$i]['prenda_name'];
-    $arr_export[$a]['categoria_name']=$arr_skus[$i]['categoria_name'];
-    $arr_export[$a]['tprenda_name']=$arr_skus[$i]['tprenda_name'];
-    $arr_export[$a]['tcatalogo_name']=$arr_skus[$i]['tcatalogo_name'];
-    $arr_export[$a]['grupouso_name']=$arr_skus[$i]['grupouso_name'];
-    $arr_export[$a]['caracteristica_name']=$arr_skus[$i]['caracteristica_name'];
-    $arr_export[$a]['composicion_name']=$arr_skus[$i]['composicion_name'];
+    $i--;
+    $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
+    $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
+    if($arr_skus[$i]['marca_name']!='' && $arr_skus[$i]['dpto_name']!=''){ //si estan vacios quiere decir que es un articulo existente
+      $detail="<div>";
+      $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$arr_skus[$i]['marca_name']."</span></div>";
+      $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
+      $detail.="<div><span class='span_title'>SUBDPTO</span><span class='span_item'>".$arr_skus[$i]['subdpto_name']."</span></div>";
+      $detail.="<div><span class='span_title'>PRENDA</span><span class='span_item'>".$arr_skus[$i]['prenda_name']."</span></div>";   
+      $detail.="<div><span class='span_title'>CATEG.</span><span class='span_item'>".$arr_skus[$i]['categoria_name']."</span></div></div>"; 
+      $detail.="<div>";
+      $detail.="<div><span class='span_title'>T.PRENDA</span><span class='span_item'>".$arr_skus[$i]['tprenda_name']."</span></div>";
+      $detail.="<div><span class='span_title'>T.CATALOG</span><span class='span_item'>".$arr_skus[$i]['tcatalogo_name']."</span></div>"; 
+      $detail.="<div><span class='span_title'>GRUPO.USO</span><span class='span_item'>".$arr_skus[$i]['grupouso_name']."</span></div>";
+      // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$arr_skus[$i]['caracteristica_name']."</span></div>"; 
+      $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$arr_skus[$i]['composicion_name']."</span></div></div>";
+      $arr_export[$a]['detail']=$detail;
+    }
     $arr_export[$a]['skus']=$rows;
     $data['articulos']=$arr_export;
   }else{

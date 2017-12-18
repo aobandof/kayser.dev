@@ -317,7 +317,6 @@ class DBConnection {
     }
     return $opt;
   }
-
 }
 
 
