@@ -1,5 +1,5 @@
 <?php
-
+echo "hola\n";
 require_once "require.php";
 require_once "sku_db_mysqli.php";
 require_once "sku_db_sqlsrv_33.php";
@@ -9,11 +9,11 @@ require_once "../models/sku_crear.php";
 header("Content-Type: text/html;charset=utf-8");
 // header('Content-type: application/json'); 
 
-getOptionsSelected('grupouso','Niñós');
+// getOptionsSelected('grupouso','Niñós');
 // getOptionsSelected('material','ALGODÓN');
 
 
-// echo "holota";
+echo "holota";
 // echo "cantidad de registros";
 // echo $mysqli->quantityRecords('SELECT codigo FROM articulo WHERE lista_id=2');
 // ini_set('max_execution_time', 300);

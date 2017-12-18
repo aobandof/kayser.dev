@@ -96,7 +96,7 @@ function makeArticlePreview(arti,desc){
 
   /////----- PIE DE TABLA CON DETALLE DE ARTICULO
   let dfoot_sku = document.createElement('div');
-      det_art.className='dfoot_sku';
+    dfoot_sku.className='dfoot_sku';
   dtable_sku.appendChild(dfoot_sku);
 
   body_modal.insertAdjacentElement('beforeend', article)  

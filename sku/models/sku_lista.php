@@ -22,6 +22,7 @@ if($_POST['option']=="save_article"){
   $tallas_orden=$_POST['tallas_orden'];
   $colores_length=count($colores_name);
   $tallas_length=count($tallas_name);
+  $existente=$_POST['existente'];
   if(isset($_POST['copa'])){
     $copa=$_POST['copa']; $fcopa=$_POST['fcopa'];
   }else {
@@ -35,12 +36,19 @@ if($_POST['option']=="save_article"){
   $querys=[];
   $data['first_barcode']=$first_barcode;
   $data['code_article']=$code_article;
+  $data['existente']=$existente;
   ///debido a que permitieron que los txt correlativo y prefijo sean editables, inicialmente preguntamos si el articulo existe o no
   ///en base a ello debemos antes qe nada preguntar si existe el articulo, sea en sap o en las listas, si sí entonces salimos de inmediato y si la lista no es nueva, entonces no se agrega, pero si no, simplemente no se agrega el articulo
-  if(existArticle($code_article,'SAP') || existArticle($code_article,'LISTA')){
-    $data['nothing']='ARTICULO EXISTE EN SAP O EN LISTA, no es posible crearlo';        
-    echo json_encode($data); exit();
-  }/// SI NO SIGUE TRABAJANDO COMO ANTES
+  if($existente!='si'){
+    if(existArticle($code_article,'SAP')){
+      $data['nothing']='ARTICULO EXISTE EN SAP, no es posible crearlo';        
+      echo json_encode($data); exit();
+    }/// SI NO SIGUE TRABAJANDO COMO ANTES
+  }
+  if(existArticle($code_article,'LISTA')){
+      $data['nothing']='ARTICULO ya existe en alguna Lista, Verificarla para su próxima Revisión, Carga a SAP y Liberación';        
+      echo json_encode($data); exit();
+  }
   
   if($lista==0){
     //SIMPLEMENTE CREAREMOS LA NUEVA LISTA CON LOS DATOS DE LA PERSONA QUE TIENE LA SESION + LA FECHA DE LA CREACION
@@ -71,13 +79,21 @@ if($_POST['option']=="save_article"){
   }
   
   ///--- AHORA REGISTRAMOS EL ARTICULO
-  $query_insert_article="INSERT INTO articulo VALUES (";
-  $query_insert_article.="'$code_article',$lista,'".$_POST['itemname']."', ".$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
-  $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";
-  $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
-  $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
-  $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
-  $query_insert_article.="'".$_POST['talla_familia']."')";
+   
+  if($existente=='si'){
+    $query_insert_article="INSERT INTO articulo ( codigo, lista_id, itemname, marca_code, marca_name, dpto_code, dpto_name, subdpto_code, subdpto_name, talla_familia ) ";
+    $query_insert_article.="VALUES ('$code_article',$lista,'".$_POST['itemname']."',0,'',0,'',0,'','".$_POST['talla_familia']."')";     
+  }else{  
+    $query_insert_article="INSERT INTO articulo VALUES ('$code_article',$lista,'".$_POST['itemname']."', "; 
+    $query_insert_article="INSERT INTO articulo VALUES ('$code_article',$lista,'".$_POST['itemname']."', "; 
+    $query_insert_article.=$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
+    $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";
+    $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
+    $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
+    $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
+    $query_insert_article.="'".$_POST['talla_familia']."')";    
+  }
+
   $data['all_querys'][]=$query_insert_article;
 
   $errors=[];///DE AQUI EN ADELANTE PUEDEN HABER ERRORES ACUMULATIVOS

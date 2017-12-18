@@ -9,6 +9,7 @@ let opcion_ingreso, art_existente;
 $(document).ready(function() {
 
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
+  opcion_ingreso='nuevo'
   art_existente='nuevo';
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
   if(initial_option == 'show'){
@@ -136,6 +137,7 @@ $(document).ready(function() {
           parameters['option'] = 'save_article';
           parameters['list'] = active_list;
           console.log(parameters);
+          ajaxAddArticleList(parameters);
         }
       }
     }
@@ -204,7 +206,6 @@ $(document).ready(function() {
   /****************** EVENTOS PARA AGREGAR OTRO ARTICULO CUANDO SE ESTA  EDITANDO ****************/
   if(!!el_but_add_article){
     el_but_add_article.onclick = function () {
-      // resetAllControls();
       document.getElementById('btn_show_list').disabled = false;
       modal_preview_save.style.visibility = 'hidden';
     }
@@ -241,7 +242,7 @@ $(document).ready(function() {
   }
   /************************   EVENTO PARA FINALIZAR LA LISTA, ELIMINARLA GUARDANDO EN EL LOG,LOS SKUS CARGADOS A SAP *****************/
   if(!!el_but_fin_list){
-  el_but_fin_list.onclick=function(){
+    el_but_fin_list.onclick=function(){
       //variable operation indica si se guardara en la tabla skucreated o skuupdated
       parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
       console.log(parameters);
@@ -394,97 +395,6 @@ $(document).ready(function() {
     modal_preview_save = document.getElementById('div_modal_article_creation');
     body_modal_preview_save = modal_preview_save.querySelector('.body_modal')
   }
-  ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-  function renderArticleList(art,itn,rows,estado_article){ // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
-    if (estado_article=='NEW')
-      makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
-    id_articulo=art;
-    if(id_articulo.indexOf('.') != -1){
-      id_articulo="div_"+id_articulo.replace('.','_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-    }     
-    el_articulo=document.getElementById(id_articulo);//
-    el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
-    
-    ///--- CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
-    ///--- ELIMINAR ARTICULO DE LA VISTA  
-    document.querySelectorAll('.btn_delete_article').forEach( function(but_del) {
-      but_del.onclick=function(){
-        if (confirm('¿DESEA QUITAR ESTE ARTICULO DE LA LISTA?')) {
-          el_arti = but_del.parentNode.parentNode.parentNode;
-          id_el_arti = el_arti.id;
-          cod_arti = id_el_arti;
-          if (cod_arti.indexOf('_') != -1) {
-            cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
-            cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-          }
-          ///--- AHORA PROCEDEMOS A ELIMINAR EL ARTICULO DE LA LISTA, OBTENDREMOS UN TRUE DE LA API (SE ELIMINO CORRECTAMENTE LOS SKUS, EL ARTICULO Y LA LISTA SI SOLO TENIA ESTE ARTICULO ),
-          ///--- ADEMAS DE UN data.vacio=true que confirmará que tb se elimino la lista, por lo que hay que ocultar el modal
-          parameters = { 'option': 'delete_article', 'article': cod_arti, 'list': active_list };
-          console.log('parametros: '+ parameters);
-          $.ajax({
-            url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
-            beforeSend: function () { },
-            success: function (data) {
-              console.log('from api: ' + data);
-              if (data.del_art === true) { // sacamos el div article de la lista
-                el_arti.id = '';
-                el_arti.innerHTML = '';
-                el_arti.style.display = 'none';
-                if (!!data.del_list && data.del_list === true) { // ocultamos el panle modal dado que no contiene articulos
-                  // modal_preview_save.style.visibility = 'hidden';
-                  if (initial_option == 'show')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
-                    location.href = "listas.php";
-                  else
-                    location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
-
-                }
-              }
-              else
-                alert('NO SE PUDO ELIMINAR');
-            },
-            error: function () { console.log('error ajax ' + parameters['option']); }
-          });
-        } 
-      }
-    });
-
-    ///--- AGREGAR COLOR TALLA
-    document.querySelectorAll('.btn_add_color_talla').forEach( function(but_add) {
-      but_add.onclick=function(){
-        // alert("entro");
-        el_arti = but_add.parentNode.parentNode.parentNode;
-        id_el_arti = el_arti.id;
-        cod_arti = id_el_arti;
-        if (cod_arti.indexOf('_') != -1) {
-          cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
-          cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-        }
-        console.log(cod_arti);      
-      }
-    });
-
-    ///--- VER EDITAR DETALLE
-    document.querySelectorAll('.btn_edit_detalle').forEach( function(but_view_edit) {
-      but_view_edit.onclick=function(){
-        // alert("entro");
-        el_arti = but_view_edit.parentNode.parentNode.parentNode;
-        id_el_arti = el_arti.id;
-        cod_arti = id_el_arti;
-        if (cod_arti.indexOf('_') != -1) {
-          cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
-          cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-        }
-        console.log(cod_arti);      
-      }
-    });
-
-    el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function(icon){
-      icon.onclick=function(){
-        console.log(this.id);
-        ///ACA LLAMARESMOS A LA API ELIMINANDO        
-      }
-    })
-  }
   ///--- FUNCION QUE OBTIENE UN OBJETO CON TODOS LOS CAMPOS LLENOS DE LA VITA SKU_CREAR.HTML
   function getObjectArticle(tipo_arti){
     colores_code.length = 0; colores_text.length = 0;
@@ -534,7 +444,6 @@ $(document).ready(function() {
       obj_article['copa'] = el_sel_copa.options[el_sel_copa.selectedIndex].text;
       obj_article['fcopa'] = el_sel_fcopa.options[el_sel_fcopa.selectedIndex].text;
     }
-    console.log(tipo_arti);
     if(tipo_arti=='nuevo'){
       obj_article['dpto_code'] = code_dpto;
       obj_article['dpto_name'] = name_dpto;
@@ -576,12 +485,6 @@ $(document).ready(function() {
       descripcion += el_sel_prenda.options[el_sel_prenda.selectedIndex].text + ' ' + el_sel_categoria.options[el_sel_categoria.selectedIndex].text + ' ' + el_sel_material.options[el_sel_material.selectedIndex].text;
     document.getElementById('txt_sku_descripcion').value=descripcion;
   }
-  //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
-  function resetInputTextCodeArticle(){
-    document.getElementById('txt_sku_prefijo').value = "";
-    document.getElementById('txt_sku_correlativo').value = "";
-    document.getElementById('txt_sku_sufijo').value = ""
-  }
   //FUNCION PARA OBTENER EL PREFIJO
   function getPrefix(values){
     // console.log(values);
@@ -610,82 +513,6 @@ $(document).ready(function() {
     $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
     id_cat_actual=id_cat;
     paintContCategory(id_cat_actual)
-    cargarSelectsSku('OITB', name_dpto);
-  }
-  //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
-  function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
-    var recorrido=0;
-    if(nombre_tabla_padre=="")
-      var parametros = { 'option' : 'cargar_selects_independientes'};
-    else
-      var parametros = { 'option' : 'cargar_selects_dependientes', 'nom_tabla_padre' :  nombre_tabla_padre, 'val_tabla_padre' : valor_tabla_padre };
-    // console.log(parametros);
-    $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
-      beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
-      success : function(data) {
-        // console.log('FROM API: (option: '+ parametros.option +') ',data);
-        // el_div_loader_full.classList.remove('cont_hidden');
-        if(!!data.errors){ console.log(data.errors.length+" errores al obtener los options para los selects:");console.log(data.errors); }
-        if(!!data.dpto) { code_dpto = data.dpto; }
-        if(!!data.first_barcode) {first_barcode=data.first_barcode; }
-        data.values.forEach(function(item,index){
-          if(item['tabla']=="talla"){          
-            document.getElementById('span_tallas_chosen').innerHTML='';
-            document.getElementById("div_sel_grupo_opciones").innerHTML = "";
-            // console.log(item);
-            fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);   
-          } else {
-            // console.log(item['options']);
-            if(item['options']!="SIN RESULTADOS"){
-              // console.log(item['tabla']);
-              optito="";
-              if(item['tabla'] == 'color') {              
-                item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-                $("select[name='" + item['tabla'] + "']").html(optito);
-                $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-              } else if (item['tabla'] == 'composicion') {
-                optito += '<option value=""></option>';
-                item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-                $("select[name='" + item['tabla'] + "']").html(optito);
-                $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
-              }else {
-                item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
-                $("select[name='" + item['tabla'] + "']").html('<option value=""></option>'+ optito);
-              }
-            } //FIN if(item['options']!="SIN RESULTADOS")
-            else { 
-              //console.log("SIN RESULTADOS, Si cantidad de este log=2, posiblemente sean las copas y formacopa");
-            }
-          }
-        });
-        if (!!data.grand_childs) {
-          data.grand_childs.forEach(function (item, index) {
-            $("select[name='" + item + "']").html("<option value=''></option>"); //reseteamos las opciones a vacio
-          }); 
-        }
-      },
-      /*complete: function () {
-        el_div_loader_full.classList.remove('cont_hidden');
-      },*/
-      error: function() {
-        console.log("ERROR obtenido de la la opcion: " + parametros.option);
-        // el_div_loader_full.classList.remove('cont_hidden');
-      }
-    });
-  }
-  ///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
-  function resetAllControls(){
-    document.querySelectorAll('.ind').forEach( el_ind => el_ind.value="" );
-    document.querySelectorAll('.dep').forEach( el_dep => el_dep.innerHTML="" );  
-    resetInputTextCodeArticle();
-    el_txt_descripcion.value='';
-    $("#select_sku_color").selectpicker("deselectAll");
-    // $("#select_sku_color").selectpicker("refresh");
-    // $("#select_sku_composicion").selectpicker("deselect");
-    $("#select_sku_composicion").attr("selected", false);
-    $("#select_sku_composicion").selectpicker("refresh");
-    $("#div_sel_grupo_opciones").html("");
-    $("#span_tallas_chosen").text(' ');
     cargarSelectsSku('OITB', name_dpto);
   }
 });///FIN DOCUMENT READY
@@ -766,7 +593,7 @@ function ajaxFillSelects(param){
           name_dpto = data.dpto_nombre;
           id_cat_actual='div_cat_'+data.dpto_nombre;
           paintContCategory(id_cat_actual);
-          (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN" || el_sel_caracteristica.options[el_sel_caracteristica.selectedIndex].text == "CON SOSTEN" || el_sel_caracteristica.options[el_sel_caracteristica.selectedIndex].text === "CON COPA") ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+          (el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN" || el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN" || el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA") ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
           el_txt_descripcion.value=data.itemname;          
           if(!!data.selects){
             cant_selects=data.selects.length;
@@ -790,27 +617,20 @@ function ajaxFillSelects(param){
           }
         }
         ///obtenemos los option con cada nombre de tabla=select
-
-     
       }
-      
-
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
   });
 }
 function ajaxAddArticleList(param){
   $.ajax({
-    url: './models/sku_lista.php',
-    type: 'post',
-    dataType: 'json',
-    data: param,
+    url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
     beforeSend: function () { el_div_loader_full.classList.remove('cont_hidden'); },
     success: function (data) {
       el_div_loader_full.classList.add('cont_hidden');
       console.log('FROM API (option: ' + param.option + ') ', data);
       if (!!data.nothing) {
-        alert("NO SE PUDO AGREGAR EL ARTICULO");
+        alert(data.nothing);
         console.log(data.nothing);
       } else {
         if (!!data.filas && data.filas != '') {
@@ -883,7 +703,187 @@ function render_select(table) {
     error: function () { console.log('error'); }
   });
 }
-///--- FUNCION QUE RESETEA TODOS LOS CONTROLES Y REALIZA EL PRIMERA CARGA PARA select_sku_subdpto, dependiendo del dpto que se indicara con el id_cat
-function resetAllControls(id_cat){
 
+///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
+function renderArticleList(art, itn, rows, estado_article) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
+  if (estado_article == 'NEW')
+    makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
+  id_articulo = art;
+  if (id_articulo.indexOf('.') != -1) {
+    id_articulo = "div_" + id_articulo.replace('.', '_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+  }
+  el_articulo = document.getElementById(id_articulo);//
+  el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN)  
+
+  ///--- CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
+  ///--- ELIMINAR ARTICULO DE LA VISTA  
+  document.querySelectorAll('.btn_delete_article').forEach(function (but_del) {
+    but_del.onclick = function () {
+      if (confirm('¿DESEA QUITAR ESTE ARTICULO DE LA LISTA?')) {
+        el_arti = but_del.parentNode.parentNode.parentNode;
+        id_el_arti = el_arti.id;
+        cod_arti = id_el_arti;
+        if (cod_arti.indexOf('_') != -1) {
+          cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+          cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+        }
+        ///--- AHORA PROCEDEMOS A ELIMINAR EL ARTICULO DE LA LISTA, OBTENDREMOS UN TRUE DE LA API (SE ELIMINO CORRECTAMENTE LOS SKUS, EL ARTICULO Y LA LISTA SI SOLO TENIA ESTE ARTICULO ),
+        ///--- ADEMAS DE UN data.vacio=true que confirmará que tb se elimino la lista, por lo que hay que ocultar el modal
+        parameters = { 'option': 'delete_article', 'article': cod_arti, 'list': active_list };
+        console.log('parametros: ' + parameters);
+        $.ajax({
+          url: './models/sku_lista.php', type: 'post', dataType: 'json', data: parameters,
+          beforeSend: function () { },
+          success: function (data) {
+            console.log('from api: ' + data);
+            if (data.del_art === true) { // sacamos el div article de la lista
+              el_arti.id = '';
+              el_arti.innerHTML = '';
+              el_arti.style.display = 'none';
+              if (!!data.del_list && data.del_list === true) { // ocultamos el panle modal dado que no contiene articulos
+                // modal_preview_save.style.visibility = 'hidden';
+                if (initial_option == 'show')//ACCEDIO A  LA LISTA DESDE EL MODULO DE LISAS PENDIENTES, POR ENDE REGRESAMOS A ELLA
+                  location.href = "listas.php";
+                else
+                  location.href = "menu.php";//OPTAMOS POR VOLER AL MENU PARA ELEGIR LA OPCION DESEADA
+
+              }
+            }
+            else
+              alert('NO SE PUDO ELIMINAR');
+          },
+          error: function () { console.log('error ajax ' + parameters['option']); }
+        });
+      }
+    }
+  });
+
+  ///--- AGREGAR COLOR TALLA
+  document.querySelectorAll('.btn_add_color_talla').forEach(function (but_add) {
+    but_add.onclick = function () {
+      // alert("entro");
+      el_arti = but_add.parentNode.parentNode.parentNode;
+      id_el_arti = el_arti.id;
+      cod_arti = id_el_arti;
+      if (cod_arti.indexOf('_') != -1) {
+        cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+        cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+      }
+      console.log(cod_arti);
+    }
+  });
+
+  ///--- VER EDITAR DETALLE
+  document.querySelectorAll('.btn_edit_detalle').forEach(function (but_view_edit) {
+    but_view_edit.onclick = function () {
+      // alert("entro");
+      el_arti = but_view_edit.parentNode.parentNode.parentNode;
+      id_el_arti = el_arti.id;
+      cod_arti = id_el_arti;
+      if (cod_arti.indexOf('_') != -1) {
+        cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+        cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+      }
+      console.log(cod_arti);
+    }
+  });
+
+  el_articulo.querySelectorAll('.icon_fila_tabla_modal').forEach(function (icon) {
+    icon.onclick = function () {
+      console.log(this.id);
+      ///ACA LLAMARESMOS A LA API ELIMINANDO        
+    }
+  })
+}
+///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
+function resetAllControls() {
+  document.querySelectorAll('.ind').forEach(el_ind => el_ind.value = "");
+  document.querySelectorAll('.dep').forEach(el_dep => el_dep.innerHTML = "");
+  resetInputTextCodeArticle();
+  el_txt_descripcion.value = '';
+  document.querySelectorAll('.sku_control').forEach(function (ctrl) {
+    ctrl.disabled = false;
+  });
+  el_sel_tipo_ingreso.value="nuevo";
+  opcion_ingreso='nuevo';
+  art_existente='nuevo';
+  el_txt_art_existente.classList.add('control_hidden');
+  el_btn_art_cagar.classList.add('control_hidden');
+  $("#select_sku_color").selectpicker("deselectAll");
+  // $("#select_sku_color").selectpicker("refresh");
+  // $("#select_sku_composicion").selectpicker("deselect");
+  $("#select_sku_composicion").attr("selected", false);
+  $("#select_sku_composicion").selectpicker("refresh");
+  $("#div_sel_grupo_opciones").html("");
+  $("#span_tallas_chosen").text(' ');
+  cargarSelectsSku('OITB', name_dpto);
+}
+//FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
+function resetInputTextCodeArticle() {
+  document.getElementById('txt_sku_prefijo').value = "";
+  document.getElementById('txt_sku_correlativo').value = "";
+  document.getElementById('txt_sku_sufijo').value = ""
+}
+
+//FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
+function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
+  var recorrido = 0;
+  if (nombre_tabla_padre == "")
+    var parametros = { 'option': 'cargar_selects_independientes' };
+  else
+    var parametros = { 'option': 'cargar_selects_dependientes', 'nom_tabla_padre': nombre_tabla_padre, 'val_tabla_padre': valor_tabla_padre };
+  // console.log(parametros);
+  $.ajax({
+    url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
+    beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
+    success: function (data) {
+      // console.log('FROM API: (option: '+ parametros.option +') ',data);
+      // el_div_loader_full.classList.remove('cont_hidden');
+      if (!!data.errors) { console.log(data.errors.length + " errores al obtener los options para los selects:"); console.log(data.errors); }
+      if (!!data.dpto) { code_dpto = data.dpto; }
+      if (!!data.first_barcode) { first_barcode = data.first_barcode; }
+      data.values.forEach(function (item, index) {
+        if (item['tabla'] == "talla") {
+          document.getElementById('span_tallas_chosen').innerHTML = '';
+          document.getElementById("div_sel_grupo_opciones").innerHTML = "";
+          // console.log(item);
+          fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);
+        } else {
+          // console.log(item['options']);
+          if (item['options'] != "SIN RESULTADOS") {
+            // console.log(item['tabla']);
+            optito = "";
+            if (item['tabla'] == 'color') {
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html(optito);
+              $('#select_sku_color').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            } else if (item['tabla'] == 'composicion') {
+              optito += '<option value=""></option>';
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html(optito);
+              $('#select_sku_composicion').selectpicker({ style: 'btn-default fla' }); // ESTABLECEMOS EL FUNCIONAMIENTO DEL selectpicker
+            } else {
+              item['options'].forEach(function (itm, idx) { optito += "<option value='" + itm['id'] + "'>" + itm['name'] + "</option>"; });
+              $("select[name='" + item['tabla'] + "']").html('<option value=""></option>' + optito);
+            }
+          } //FIN if(item['options']!="SIN RESULTADOS")
+          else {
+            //console.log("SIN RESULTADOS, Si cantidad de este log=2, posiblemente sean las copas y formacopa");
+          }
+        }
+      });
+      if (!!data.grand_childs) {
+        data.grand_childs.forEach(function (item, index) {
+          $("select[name='" + item + "']").html("<option value=''></option>"); //reseteamos las opciones a vacio
+        });
+      }
+    },
+    /*complete: function () {
+      el_div_loader_full.classList.remove('cont_hidden');
+    },*/
+    error: function () {
+      console.log("ERROR obtenido de la la opcion: " + parametros.option);
+      // el_div_loader_full.classList.remove('cont_hidden');
+    }
+  });
 }

@@ -48,7 +48,10 @@ IDEAS:
 
 PENDIENTE YA:
 -------------
---- MODIFICAR BD AGREGANDO UN CAMPO A LA TABLA articulo que indidque si es existente o no sincronizado
+
+me quede en que cuando agrega un articulo existente, y despes limpia y al querer agregar otro muestra el cde_article del anterior que era existente
+
+--- MODIFICAR BD AGREGANDO UN CAMPO A LA TABLA articulo que indidque si es existente o no  ...
 --- terminar la funcion para resetear todos los controles y aplicarlos cuando se cambia de tipo_ingreso
 --- llamar a la funcion ajaxAddArticleLista en donde corresponde
 --- ver tema pendiente para que revision pueda ver los detalles de los articulos de la lista
