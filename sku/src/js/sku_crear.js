@@ -81,9 +81,11 @@ $(document).ready(function() {
 
   ///--- EVENTO PARA EL CHANGE SELECT TIPO DE INGRESO y PARA EL BOTTON CARGAR ARTICULO EXISTENTE ---///
   el_sel_tipo_ingreso.onchange = function(){
+    // resetAllControls(id_cat_actual);
     opcion_ingreso = this.value;    
     if (this.value == "existente") {
       el_txt_art_existente.classList.remove('control_hidden');
+      el_txt_art_existente.value='';
       el_txt_art_existente.focus();
       el_btn_art_cagar.classList.remove('control_hidden');
     }else {
@@ -595,7 +597,10 @@ function ajaxFillSelects(param){
         art_existente=param.articulo;
         code_dpto=data.dpto_codigo;
         name_dpto = data.dpto_nombre;
-        ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+        console.log(el_sel_prenda.selectedIndex, el_sel_categoria.selectedIndex);
+        if(el_sel_prenda.selectedIndex!=-1 && el_sel_categoria.selectedIndex!=-1)
+          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+
         el_txt_descripcion.value=data.itemname;          
         if(!!data.selects){
           cant_selects=data.selects.length;
@@ -636,7 +641,7 @@ function ajaxAddArticleList(param){
       } else {
         if (!!data.filas && data.filas != '') {
           active_list = data.lista;
-          resetAllControls(); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
+          resetAllControls(id_cat_actual); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
           (!!data.detail) ? renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW') : renderArticleList(data.articulo, data.itemname, data.filas, '' , 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
           if (initial_option == "create") {
             if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
@@ -799,7 +804,7 @@ function renderArticleList(art, itn, rows, detail, estado_article) { // el estad
   })
 }
 ///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
-function resetAllControls() {
+function resetAllControls(id_categ) {
   document.querySelectorAll('.ind').forEach(el_ind => el_ind.value = "");
   document.querySelectorAll('.dep').forEach(el_dep => el_dep.innerHTML = "");
   resetInputTextCodeArticle();
@@ -820,7 +825,7 @@ function resetAllControls() {
   $("#div_sel_grupo_opciones").html("");
   $("#span_tallas_chosen").text(' ');
   cargarSelectsSku('OITB', name_dpto);
-  paintContCategory(id_cat_actual);
+  paintContCategory(id_categ);
 }
 //FUNCION PARA RESETEAR LOS INPUT DE CODIGO DE ARTICULO
 function resetInputTextCodeArticle() {

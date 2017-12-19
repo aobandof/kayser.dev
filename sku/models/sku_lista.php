@@ -131,12 +131,9 @@ if($_POST['option']=="save_article"){
 
   ///--- AHORA REGISTRAMOS LOS SKUS 
   for ($i = 0; $i < $colores_length; $i++){
-    $abrev=
+    $abrev=$mysqli->getColumnFromColumn('color','abreviatura','nombre','STRING',$colores_name[$i]);
     for ($j = 0; $j < $tallas_length; $j++){      
-      if($copa!='' && $copa!='S/C')
-        $sku=$code_article.'-'.substr($colores_name[$i],0,3).$copa.'-'.$tallas_name[$j];
-      else
-        $sku=$code_article.'-'.substr($colores_name[$i],0,3).'-'.$tallas_name[$j];
+      ($copa!='' && $copa!='S/C') ? $sku=$code_article.'-'.$abrev.$copa.'-'.$tallas_name[$j] : $sku=$code_article.'-'.$abrev.'-'.$tallas_name[$j];
       if(existSku($sku,'SAP')===true){
         $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
         $data['exist_in_SAP']=true;
