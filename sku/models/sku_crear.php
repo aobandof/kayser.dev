@@ -157,7 +157,7 @@ if($_POST['option']=="fill_selects") {
   ///--- INICIALMENTE OBTENEMOS TODOS LOS SKUs que tengan el codigo de articulo
   $arr_arti=[];
   $articulo=$_POST['articulo'];
-  $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$articulo-%'";
+  $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$articulo-%'";
   $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
   if($arr_articulo!==false && $arr_articulo!==0){
     $data['select']=$arr_articulo;
@@ -189,11 +189,13 @@ if($_POST['option']=="fill_selects") {
     for($i=0;$i<$cont_tallas;$i++){
       $data['tallas'][]=array('familia'=>$arr_tallas[$i]['codigo'], 'tallas'=>cargarTallasToFamilia($arr_tallas[$i]['codigo']));
     }
-    // $arr_tallas=[];
-    // foreach ($arr_ops as $value)
-    //   $arr_tallas[]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
-    // $data['values'][]=array('tabla'=>$tabla, 'options'=>$arr_tallas);
-
+    ///OBTENEMOS LOS SKUS Y LOS DEVOLVEMOS COMO UN CONJUNTO DE FILAS DIV
+    $cant_skus=count($arr_articulo);
+    $divs='';
+    for($i=0;$i<$cant_skus;$i++){
+      $divs.="<div><div>".$arr_articulo[$i]['sku_code']."</div><div>".$arr_articulo[$i]['color']."</div><div>".$arr_articulo[$i]['barcode']."</div></div>";
+    }
+    $data['skus']=$divs;
 
   }else ($arr_articulo===false) ? $data['errors']=$sqlsrv_33->getErrors() : $data['cant_skus']=$arr_articulo;
   $data['articulo']=$arr_arti;

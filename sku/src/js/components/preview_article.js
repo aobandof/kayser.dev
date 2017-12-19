@@ -18,7 +18,7 @@ function getControlDigit(barcode){
 }
 
 ///--- FUNCION QUE SOLO CREA EL ARTICULO PREVIEW Y LO AGREGA AL MODAL
-function makeArticlePreview(arti,desc){ 
+function makeArticlePreview(arti,desc,exist){ 
   id_articulo=arti;
   if(id_articulo.indexOf('.') != -1)
     id_articulo='div_'+id_articulo.replace('.','_');

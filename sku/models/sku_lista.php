@@ -36,10 +36,11 @@ if($_POST['option']=="save_article"){
   $querys=[];
   $data['first_barcode']=$first_barcode;
   $data['code_article']=$code_article;
-  $data['existente']=$existente;
+  
   ///debido a que permitieron que los txt correlativo y prefijo sean editables, inicialmente preguntamos si el articulo existe o no
   ///en base a ello debemos antes qe nada preguntar si existe el articulo, sea en sap o en las listas, si sí entonces salimos de inmediato y si la lista no es nueva, entonces no se agrega, pero si no, simplemente no se agrega el articulo
   if($existente!='si'){
+    $data['existencia']='sap';
     if(existArticle($code_article,'SAP')){
       $data['nothing']='ARTICULO EXISTE EN SAP, no es posible crearlo';        
       echo json_encode($data); exit();
@@ -81,17 +82,44 @@ if($_POST['option']=="save_article"){
   ///--- AHORA REGISTRAMOS EL ARTICULO
    
   if($existente=='si'){
-    $query_insert_article="INSERT INTO articulo ( codigo, lista_id, itemname, marca_code, marca_name, dpto_code, dpto_name, subdpto_code, subdpto_name, talla_familia ) ";
-    $query_insert_article.="VALUES ('$code_article',$lista,'".$_POST['itemname']."',0,'',0,'',0,'','".$_POST['talla_familia']."')";     
+    ///TENEMOS QUE OBTENER INFORMACION DE SAP
+    $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, ";
+    $query_articulo.="S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, ";
+    $query_articulo.="S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, ";
+    $query_articulo.="S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$code_article-%'";
+    $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
+    if($arr_articulo!==false && $arr_articulo!==0){
+      $query_insert_article="INSERT INTO articulo ";
+      $query_insert_article.="VALUES ('$code_article',$lista,'".$arr_articulo[0]['itemname']."', ";  
+      $query_insert_article.="null,'".$arr_articulo[0]['marca_name']."',".$arr_articulo[0]['dpto_code'].",'".$arr_articulo[0]['dpto_name']."',";
+      $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$arr_articulo[0]['prenda_code']."','','".$arr_articulo[0]['categoria_code']."','',";
+      $query_insert_article.="null,'".$arr_articulo[0]['presentacion_name']."',null,'".$arr_articulo[0]['material_name']."',";
+      $query_insert_article.="null,'".$arr_articulo[0]['tprenda_name']."',null,'".$arr_articulo[0]['tcatalogo_name']."',";
+      $query_insert_article.="null,'".$arr_articulo[0]['grupouso_name']."',null,'".$arr_articulo[0]['caracteristica_name']."',null,'".$arr_articulo[0]['composicion_name']."',";
+      $query_insert_article.="'".$arr_articulo[0]['talla_familia']."','sap')"; 
+    }else {      
+      $cant_registros_lista=$mysqli->quantityRecords("select codigo from articulo where lista_id=$lista");
+      if($cant_registros_lista===false){
+        $errors[]=$mysqli->getErrors();
+        $data['msj']='no se creo el articulo y hubo error al consultar la cantidad de articulos en esta lista';  
+      }elseif($cant_registros_lista===0){
+        if(($mysqli->delete("DELETE FROM lista WHERE id=$lista"))===false){
+          $errors[]=$mysqli->getErrors();
+          $data['msj']='no se creo el articulo, la lista estaba nueva y no se pudo eliminar'; 
+        }
+      }  
+      $data['errors']=$errors;
+      $data['nothing']='NO SE PUDIERON AGREGAR SKUS NUEVOS DE ARTICULO EXISTENTE EN SAP';
+      echo json_encode($data); exit();
+    }
   }else{  
-    $query_insert_article="INSERT INTO articulo VALUES ('$code_article',$lista,'".$_POST['itemname']."', "; 
     $query_insert_article="INSERT INTO articulo VALUES ('$code_article',$lista,'".$_POST['itemname']."', "; 
     $query_insert_article.=$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
     $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";
     $query_insert_article.=$_POST['presentacion_code'].",'".$_POST['presentacion_name']."',".$_POST['material_code'].",'".$_POST['material_name']."',";
     $query_insert_article.=$_POST['tprenda_code'].",'".$_POST['tprenda_name']."',".$_POST['tcatalogo_code'].",'".$_POST['tcatalogo_name']."',";
     $query_insert_article.=$_POST['grupouso_code'].",'".$_POST['grupouso_name']."',".$_POST['caracteristica_code'].",'".$_POST['caracteristica_name']."',".$_POST['composicion_code'].",'".$_POST['composicion_name']."',";
-    $query_insert_article.="'".$_POST['talla_familia']."')"; 
+    $query_insert_article.="'".$_POST['talla_familia']."','nuevo')"; 
     ///--- APROVECHAMOS PARA HACER EL DETAIL
     $detail.="<div>";
     $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$_POST['marca_name']."</span></div>";
@@ -230,7 +258,7 @@ if($_POST['option']=="save_list") {
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
     $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
     $headers .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
@@ -244,7 +272,7 @@ if($_POST['option']=="save_list") {
     $reg_updated===false ? $data['errors']=$mysqli->getErrors() : $data['cant_lists_saved']=$reg_updated;
   echo json_encode($data);
 }
-
+/// para crear la planilla carga sap
 if($_POST['option']=="submit_excel") {
   $lista=$_POST['list'];
   $nomb_lista="CREACION_SKUS_LISTA_N-".$lista."_($hoy)";
@@ -347,7 +375,7 @@ if($_POST['option']=='get_articles'){
   $a=0;//cantidad de articulos que usasremos para llenar el arr_export;
   $arr_export=[];
   $articles=[];
-  $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.marca_name, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name, A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
+  $query_skus="SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.marca_name, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name, A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name, A.existencia FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo WHERE A.lista_id=$lista ORDER BY S.barcode ASC";
   $data['querys_all'][]=$query_skus;
   $arr_skus=$mysqli->select($query_skus,"mysqli_a_o");
   if($arr_skus!==0 && $arr_skus!==false){
@@ -362,7 +390,7 @@ if($_POST['option']=='get_articles'){
         $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
         $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
 
-        if($arr_skus[$i]['marca_name']!='' && $arr_skus[$i]['dpto_name']!=''){ //si estan vacios quiere decir que es un articulo existente
+        // if($arr_skus[$i]['existencia']=='nuevo'){ //si estan vacios quiere decir que es un articulo existente
           $detail.="<div>";
           $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$arr_skus[$i]['marca_name']."</span></div>";
           $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
@@ -376,7 +404,8 @@ if($_POST['option']=='get_articles'){
           // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$arr_skus[$i]['caracteristica_name']."</span></div>"; 
           $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$arr_skus[$i]['composicion_name']."</span></div></div>";
           $arr_export[$a]['detail']=$detail; 
-        }
+          $arr_export[$a]['existencia']=$arr_skus[$i]['existencia'];
+        // }
         $arr_export[$a]['skus']=$rows;        
         $a++;
         $rows='';
@@ -390,7 +419,7 @@ if($_POST['option']=='get_articles'){
     $i--;
     $arr_export[$a]['articulo']=$arr_skus[$i]['cod_articulo'];
     $arr_export[$a]['itemname']=$arr_skus[$i]['itemname'];
-    if($arr_skus[$i]['marca_name']!='' && $arr_skus[$i]['dpto_name']!=''){ //si estan vacios quiere decir que es un articulo existente
+    // if($arr_skus[$i]['existencia']=='nuevo'){ //si estan vacios quiere decir que es un articulo existente
       $detail="<div>";
       $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$arr_skus[$i]['marca_name']."</span></div>";
       $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$arr_skus[$i]['dpto_name']."</span></div>";
@@ -404,12 +433,14 @@ if($_POST['option']=='get_articles'){
       // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$arr_skus[$i]['caracteristica_name']."</span></div>"; 
       $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$arr_skus[$i]['composicion_name']."</span></div></div>";
       $arr_export[$a]['detail']=$detail;
-    }
+      $arr_export[$a]['existencia']=$arr_skus[$i]['existencia'];
+    // }
     $arr_export[$a]['skus']=$rows;
     $data['articulos']=$arr_export;
   }else{
     $arr_skus==false ? $data['errors']=$mysqli->getErrors() : $data['cant_skus']=0;
   }
+  
   echo json_encode($data);
 
 }
@@ -458,7 +489,7 @@ if($_POST['option']=='finalize_list'){
     ///--- ############################### ---
     ///--- AHORA ENVIAMOS EL MAIL:
     $subject="SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
-    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
     $headers = "From: Creación de SKUs <sku@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: application/octet-stream; name=SKUS CARAGADOS A SAP\r\n"; //envio directo de datos
@@ -556,7 +587,7 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
   $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+  $destinatario ="aobando@kayser.cl,sku@kayser.cl";
 
   $header  = "MIME-Version: 1.0\r\n"; 
   $header .= "From: Creación de SKUs <sku@kayser.cl>\r\n";

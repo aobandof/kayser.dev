@@ -226,6 +226,45 @@ input[type="number"] {
   color: white;
 }
 
+#div_skus_existentes {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 3rem .5rem .5rem .5rem;
+  padding: .3rem;
+  border: 1px solid white;
+  border-radius: .3rem;
+  background-color: rgba(99, 167, 245, 0.836);
+
+}
+#div_skus_existentes>div{  width: 100%; }
+#div_skus_existentes>div:nth-child(1){
+  width: 100%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #DFF898;
+  text-align: center;
+  padding: .4rem;
+}
+#dtable_skus_existentes {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto !important;
+}
+#dtable_skus_existentes>div {
+  width: 100%;
+  display: flex; 
+  flex: 0 0 auto; 
+}
+#dtable_skus_existentes>div>div {
+  flex: 0 1 33%;
+  font-size: .7rem;
+  text-align: center;
+  margin: .1rem;
+  padding: .2rem;
+  background-color: rgba(180, 210, 245, 0.836);
+}
+
 .cont_botonera_inf {
   display: flex;
   justify-content: center;

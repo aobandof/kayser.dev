@@ -126,9 +126,6 @@ if(isset($_SESSION['user'])){
           </div>
           <div class="container_column col-md-4 col-lg-4 col-xl-4">
 
-
-
-
             <div class="cont_titulo_ingreso"><span>TIPO DE INGRESO&nbsp</span></div>
             <div class="cont_tipo_ingreso">              
               <select id="select_tipo_ingreso" class="form-control">
@@ -138,9 +135,6 @@ if(isset($_SESSION['user'])){
               <input type="text" name="articulo_existente" id="txt_art_existente" class="form-control control_hidden">
               <button class="btn btn-primary control_hidden" id="button_art_cargar" >CARGAR</button>
             </div>
-
-
-
 
             <div class="cont_fila_crear_sku container_row" >
               <span>ARTICULO&nbsp</span>
@@ -155,6 +149,11 @@ if(isset($_SESSION['user'])){
             <!-- <div class="cont_fila_crear_sku container_row" ><span>DUN&nbsp</span><input type="text" id="txt_sku_dun" name="" value="" class="form-control"></div>&nbsp -->
             <!-- <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br> -->
             <!-- <div id="div_rel_skus">Relación de códigos SKUs aquí..</div> -->
+            <div id="div_skus_existentes" class="cont_hidden">
+              <div>SKU EXISTENTES EN SAP</div>
+              <div id="dtable_skus_existentes"></div>
+              
+            </div>
           </div>
         </div>
         <div class="cont_botonera_inf container_row">

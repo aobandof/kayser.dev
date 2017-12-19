@@ -220,7 +220,7 @@ SELECT itemCode, U_APOLLO_SEG1 from OITM where ItemCode LIKE 'S6331%'
 SELECT
 	S.ItemCode as sku_codigo, S.U_APOLLO_SEG1 as articulo_codigo,S.ItemName as itemname, S.ItmsGrpCod as dpto_codigo, S.U_SubGrupo1  as subdpto_name,
 	S.U_APOLLO_SEASON as prenda_codigo, S.U_APOLLO_DIV as categoria_codigo,
-	S.FrgnName AS marca_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name,
+	S.FrgnName AS marca_name, S.U_Material as material_name, S.U_APOLLO_SEG2 as color, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_S_GROUP as tcatalogo_name,
 	S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name
 FROM OITM AS S
 /*JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod
@@ -233,7 +233,7 @@ SELECT TOP 100 ItemCoFROM OITM
 
 CONSULTAS A MYSQL
 ----------------
-SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name, A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name
+SELECT S.codigo as cod_sku, S.barcode, S.color_name, S.talla_name, A.codigo as cod_articulo, A.itemname, A.dpto_name, A.subdpto_name, A.prenda_name, A.categoria_name,  A.tprenda_name,  A.tcatalogo_name, A.grupouso_name, A.caracteristica_name, A.composicion_name
 FROM sku as S INNER JOIN articulo as A ON S.articulo_codigo=A.codigo
 WHERE A.lista_id=3 ORDER BY S.barcode ASC
 

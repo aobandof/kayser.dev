@@ -25,7 +25,7 @@ $(document).ready(function() {
         console.log(data);
         if(!!data.articulos){
           for (index in data.articulos ) {
-            (!!data.articulos[index].detail) ? renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, data.articulos[index].detail, 'NEW') : renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, '', 'NEW')
+            (!!data.articulos[index].detail) ? renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, data.articulos[index].detail, 'NEW', data.articulos[index].existencia) : renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, '', 'NEW', data.articulos[index].existencia)
           }
         }
       },
@@ -67,8 +67,6 @@ $(document).ready(function() {
       }
     }
   }// fin initial_option=show
-
-
   if(initial_option == 'create'){
     el_but_show_lists.classList.add('cont_hidden')
     el_but_save_list.classList.remove('cont_hidden')
@@ -81,6 +79,7 @@ $(document).ready(function() {
 
   ///--- EVENTO PARA EL CHANGE SELECT TIPO DE INGRESO y PARA EL BOTTON CARGAR ARTICULO EXISTENTE ---///
   el_sel_tipo_ingreso.onchange = function(){
+    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes
     // resetAllControls(id_cat_actual);
     opcion_ingreso = this.value;    
     if (this.value == "existente") {
@@ -269,6 +268,15 @@ $(document).ready(function() {
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
+    /**************************************************************************************************************************** */
+    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes    
+    el_sel_tipo_ingreso.value = "nuevo";
+    opcion_ingreso = 'nuevo';
+    art_existente = 'nuevo';
+    el_txt_art_existente.classList.add('control_hidden');
+    el_btn_art_cagar.classList.add('control_hidden');
+    /**************************************************************************************************************************** */
+
     id_cat_after_click=$(this).attr('id');
     if(id_cat_actual!==id_cat_after_click){
       $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
@@ -590,18 +598,24 @@ function ajaxFillSelects(param){
         ///obtenemos el departamento y hacemos el cambio al que corresponde
         if(data.dpto_codigo!=code_dpto){//CAMBIAMOS VISUALMENTE AL DEPARTAMENTO QUE CORRESPONDE
           id_cat_actual = 'div_cat_' + data.dpto_nombre.toLowerCase();
-          paintContCategory(id_cat_actual);
-        }
+          paintContCategory(id_cat_actual);          
+        }        
         ///--- CAMBIAMOS EL ESTADO DE INGRESO:
         opcion_ingreso='existente_sap';
         art_existente=param.articulo;
         code_dpto=data.dpto_codigo;
         name_dpto = data.dpto_nombre;
         console.log(el_sel_prenda.selectedIndex, el_sel_categoria.selectedIndex);
-        if(el_sel_prenda.selectedIndex!=-1 && el_sel_categoria.selectedIndex!=-1)
-          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
-
-        el_txt_descripcion.value=data.itemname;          
+        // if(el_sel_prenda.selectedIndex!=-1 && el_sel_categoria.selectedIndex!=-1)
+        ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+        el_txt_descripcion.value=data.itemname;
+        ///--- llenamos los skus existentes
+        if(!!data.skus){
+          document.getElementById('div_skus_existentes').classList.remove('cont_hidden');
+          document.getElementById('dtable_skus_existentes').innerHTML=data.skus;
+        }
+        
+        ///--- llenamos los select          
         if(!!data.selects){
           cant_selects=data.selects.length;
           for(let i=0; i<cant_selects;i++){
@@ -642,7 +656,7 @@ function ajaxAddArticleList(param){
         if (!!data.filas && data.filas != '') {
           active_list = data.lista;
           resetAllControls(id_cat_actual); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-          (!!data.detail) ? renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW') : renderArticleList(data.articulo, data.itemname, data.filas, '' , 'NEW'); // si es un articulo nuevo NEW, si es existente CREATED              
+          (!!data.detail) ? renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW',data.existencia) : renderArticleList(data.articulo, data.itemname, data.filas, '' , 'NEW',data.existencia); // si es un articulo nuevo NEW, si es existente CREATED              
           if (initial_option == "create") {
             if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
             if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
@@ -711,8 +725,8 @@ function render_select(table) {
 }
 
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-function renderArticleList(art, itn, rows, detail, estado_article) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
-  // console.log(art,estado_article);
+function renderArticleList(art, itn, rows, detail, estado_article,existencia) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
+  console.log(art,estado_article,existencia);
   if (estado_article == 'NEW')
     makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
   id_articulo = art;
@@ -805,6 +819,7 @@ function renderArticleList(art, itn, rows, detail, estado_article) { // el estad
 }
 ///--- FUNCION QUE RESETEA LOS CONTROLES COMO INICIO, DEJANDO EN EL DEPARTAMENTO QUE ANTES SE TRABAJO
 function resetAllControls(id_categ) {
+  document.getElementById('div_skus_existentes').classList.add('cont_hidden');
   document.querySelectorAll('.ind').forEach(el_ind => el_ind.value = "");
   document.querySelectorAll('.dep').forEach(el_dep => el_dep.innerHTML = "");
   resetInputTextCodeArticle();
