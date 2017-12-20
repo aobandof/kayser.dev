@@ -25,7 +25,7 @@ $(document).ready(function() {
         console.log(data);
         if(!!data.articulos){
           for (index in data.articulos ) {
-            (!!data.articulos[index].detail) ? renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, data.articulos[index].detail, 'NEW', data.articulos[index].existencia) : renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, '', 'NEW', data.articulos[index].existencia)
+            renderArticleList(data.articulos[index].articulo, data.articulos[index].itemname, data.articulos[index].skus, data.articulos[index].detail, 'NEW', data.articulos[index].existencia);
           }
         }
       },
@@ -105,9 +105,9 @@ $(document).ready(function() {
   document.getElementById('btn_create_article_list').onclick = function () {
     let empty = 0;
     let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
-    if(art_existente!='nuevo' && (opcion_ingreso=='existente_sap' || opcion_ingreso=='existente_lista' )){
+    if(art_existente!='nuevo' && (opcion_ingreso=='existente_sap' || opcion_ingreso=='existente_lista' )){//existente_lista aun no esta implementado
       if (opcion_ingreso == 'existente_sap'){
-        if (art_existente == el_txt_art_existente.value){
+        if (art_existente === el_txt_art_existente.value){
           if (el_sel_color.value == '' || (el_sel_fcopa.parentNode.parentNode.style.display != 'none' && el_sel_fcopa.value == '') || (el_sel_copa.parentNode.parentNode.style.display != 'none' && el_sel_copa.value == '')) {
             console.log(el_sel_color.value, el_sel_copa.value, el_sel_fcopa.value);
             empty=1
@@ -132,7 +132,7 @@ $(document).ready(function() {
           parameters = new Object();
           if(art_existente!='nuevo'){            
             parameters = getObjectArticle('existente');
-            parameters['existente']='si';
+            parameters['existencia']='sap';
           }else{
             parameters = getObjectArticle('nuevo');            
           } 
@@ -590,9 +590,9 @@ function ajaxFillSelects(param){
     beforeSend: function () { el_div_loader_full.classList.remove('cont_hidden'); },
     success: function (data) {
       el_div_loader_full.classList.add('cont_hidden');
-      if(data.cant_skus==0)
+      if(data.cant_skus==0){
         alert('ARTICULO NO ENCONTRADO')
-      else{
+      }else{
         console.log(data);
         if (!!data.errors) console.log('Error en Peticion API op: fill_selects', data.errors);
         ///obtenemos el departamento y hacemos el cambio al que corresponde
@@ -656,7 +656,7 @@ function ajaxAddArticleList(param){
         if (!!data.filas && data.filas != '') {
           active_list = data.lista;
           resetAllControls(id_cat_actual); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
-          (!!data.detail) ? renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW',data.existencia) : renderArticleList(data.articulo, data.itemname, data.filas, '' , 'NEW',data.existencia); // si es un articulo nuevo NEW, si es existente CREATED              
+          renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW',data.existencia);
           if (initial_option == "create") {
             if (!!el_but_fin_list) el_but_fin_list.classList.add('cont_hidden')
             if (!!el_but_submit_excel) el_but_submit_excel.classList.add('cont_hidden')
@@ -725,10 +725,10 @@ function render_select(table) {
 }
 
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
-function renderArticleList(art, itn, rows, detail, estado_article,existencia) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
+function renderArticleList(art, itn, rows, detail, estado_article, existencia) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
   console.log(art,estado_article,existencia);
   if (estado_article == 'NEW')
-    makeArticlePreview(art, itn);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
+    makeArticlePreview(art, itn, existencia);  //si es nuevo el articulo, entonces lo creamos y dibujamos en el modal
   id_articulo = art;
   if (id_articulo.indexOf('.') != -1) {
     id_articulo = "div_" + id_articulo.replace('.', '_');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO

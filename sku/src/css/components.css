@@ -65,6 +65,8 @@
   margin-bottom: .5rem;
   background-color: rgb(2, 34, 92);
   color: white;
+  display: flex;
+  justify-content: space-around;
 }
 
 .dtable_sku_preview {

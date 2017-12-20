@@ -14,7 +14,7 @@ $hoy=date('Y-m-d H.i.s');
 
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
-  $code_article=$_POST['articulo'];
+  $code_article=strtoupper($_POST['articulo']);
   $itemname=$_POST['itemname'];  
   $colores_name=$_POST['colores_name'];
   $colores_code=$_POST['colores_code'];
@@ -22,9 +22,10 @@ if($_POST['option']=="save_article"){
   $tallas_orden=$_POST['tallas_orden'];
   $colores_length=count($colores_name);
   $tallas_length=count($tallas_name);
-  $existente=$_POST['existente'];
+  (isset($_POST['existencia'])) ? $existencia=$_POST['existencia'] : $existencia='nuevo';  
   if(isset($_POST['copa'])){
-    $copa=$_POST['copa']; $fcopa=$_POST['fcopa'];
+    $copa=$_POST['copa'];
+    $fcopa=$_POST['fcopa'];
   }else {
     $copa=''; $fcopa='';
   }  
@@ -36,16 +37,13 @@ if($_POST['option']=="save_article"){
   $querys=[];
   $data['first_barcode']=$first_barcode;
   $data['code_article']=$code_article;
-  
+  $data['existencia'] = $existencia;
   ///debido a que permitieron que los txt correlativo y prefijo sean editables, inicialmente preguntamos si el articulo existe o no
   ///en base a ello debemos antes qe nada preguntar si existe el articulo, sea en sap o en las listas, si sí entonces salimos de inmediato y si la lista no es nueva, entonces no se agrega, pero si no, simplemente no se agrega el articulo
-  if($existente!='si'){
-    $data['existencia']='sap';
-    if(existArticle($code_article,'SAP')){
-      $data['nothing']='ARTICULO EXISTE EN SAP, no es posible crearlo';        
-      echo json_encode($data); exit();
-    }/// SI NO SIGUE TRABAJANDO COMO ANTES
-  }
+  if(existArticle($code_article,'SAP') && $existencia!='sap'){
+    $data['nothing']='ARTICULO EXISTE EN SAP, no es posible crearlo';        
+    echo json_encode($data); exit();
+  }/// SI NO SIGUE TRABAJANDO COMO ANTES
   if(existArticle($code_article,'LISTA')){
       $data['nothing']='ARTICULO ya existe en alguna Lista, Verificarla para su próxima Revisión, Carga a SAP y Liberación';        
       echo json_encode($data); exit();
@@ -81,22 +79,47 @@ if($_POST['option']=="save_article"){
   
   ///--- AHORA REGISTRAMOS EL ARTICULO
    
-  if($existente=='si'){
+  if($existencia=='sap'){
     ///TENEMOS QUE OBTENER INFORMACION DE SAP
-    $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, ";
-    $query_articulo.="S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, ";
-    $query_articulo.="S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, ";
-    $query_articulo.="S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$code_article-%'";
+    // $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, G.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, ";
+    // $query_articulo.="S.U_APOLLO_SEASON as prenda_code, S.U_APOLLO_DIV as categoria_code, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, ";
+    // $query_articulo.="S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name, S.U_ESTILO as grupouso_name, ";
+    // $query_articulo.="S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS G ON S.ItmsGrpCod=G.ItmsGrpCod WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$code_article-%' "
+
+    $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, D.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, P.Name as prenda_name , S.U_APOLLO_DIV as categoria_code,";
+    $query_articulo.="C.Name as categoria_name, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name,";
+    $query_articulo.="S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S ";
+    $query_articulo.="JOIN OITB AS D ON S.ItmsGrpCod=D.ItmsGrpCod ";
+    $query_articulo.="LEFT JOIN [@APOLLO_SEASON] AS P ON S.U_APOLLO_SEASON=P.Code ";
+    $query_articulo.="LEFT JOIN [@APOLLO_DIV] AS C ON S.U_APOLLO_DIV=C.Code ";
+    $query_articulo.="WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '$code_article-%'";
+
+    $data['all_querys'][]=$query_articulo;
     $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
     if($arr_articulo!==false && $arr_articulo!==0){
       $query_insert_article="INSERT INTO articulo ";
       $query_insert_article.="VALUES ('$code_article',$lista,'".$arr_articulo[0]['itemname']."', ";  
       $query_insert_article.="null,'".$arr_articulo[0]['marca_name']."',".$arr_articulo[0]['dpto_code'].",'".$arr_articulo[0]['dpto_name']."',";
-      $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$arr_articulo[0]['prenda_code']."','','".$arr_articulo[0]['categoria_code']."','',";
+      $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$arr_articulo[0]['prenda_code']."','".$arr_articulo[0]['prenda_name']."','".$arr_articulo[0]['categoria_code']."','".$arr_articulo[0]['categoria_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['presentacion_name']."',null,'".$arr_articulo[0]['material_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['tprenda_name']."',null,'".$arr_articulo[0]['tcatalogo_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['grupouso_name']."',null,'".$arr_articulo[0]['caracteristica_name']."',null,'".$arr_articulo[0]['composicion_name']."',";
       $query_insert_article.="'".$arr_articulo[0]['talla_familia']."','sap')"; 
+
+      $detail.="<div>";
+      $detail.="<div><span class='span_title'>MARCA</span><span class='span_item'>".$arr_articulo[0]['marca_name']."</span></div>";
+      $detail.="<div><span class='span_title'>DPTO</span><span class='span_item'>".$arr_articulo[0]['dpto_name']."</span></div>";
+      $detail.="<div><span class='span_title'>SUBDPTO</span><span class='span_item'>".$arr_articulo[0]['subdpto_name']."</span></div>";
+      $detail.="<div><span class='span_title'>PRENDA</span><span class='span_item'>".$arr_articulo[0]['prenda_name']."</span></div>";   
+      $detail.="<div><span class='span_title'>CATEG.</span><span class='span_item'>".$arr_articulo[0]['categoria_name']."</span></div></div>"; 
+      $detail.="<div>";
+      $detail.="<div><span class='span_title'>T.PRENDA</span><span class='span_item'>".$arr_articulo[0]['tprenda_name']."</span></div>";
+      $detail.="<div><span class='span_title'>T.CATALOG</span><span class='span_item'>".$arr_articulo[0]['tcatalogo_name']."</span></div>"; 
+      $detail.="<div><span class='span_title'>GRUPO.USO</span><span class='span_item'>".$arr_articulo[0]['grupouso_name']."</span></div>";
+      // $detail.="<div><span class='span_title'>CARACT</span><span class='span_item'>".$arr_articulo[0]['caracteristica_name']."</span></div>"; 
+      $detail.="<div><span class='span_title'>COMPOS.</span><span class='span_item'>".$arr_articulo[0]['composicion_name']."</span></div></div>";
+      $data['detail']=$detail;     
+
     }else {      
       $cant_registros_lista=$mysqli->quantityRecords("select codigo from articulo where lista_id=$lista");
       if($cant_registros_lista===false){
@@ -563,7 +586,7 @@ function sendMail($arr_cont){
     $fila_csv.= $arr_cont[$i]['itemname'].";"; 
     $fila_csv.= $arr_cont[$i]['dpto_code'].";tYES;M;";                          ///---con columnaS default                   
     $fila_csv.= $arr_cont[$i]['prenda_name'].";";
-    $fila_csv.= $arr_cont[$i]['cod_articulo'].";"; 
+    $fila_csv.= strtoupper($arr_cont[$i]['cod_articulo']).";"; 
     $fila_csv.= $arr_cont[$i]['color_name'].";";
     $fila_csv.= $arr_cont[$i]['talla_name'].";";
     $fila_csv.= $arr_cont[$i]['talla_familia'].";";

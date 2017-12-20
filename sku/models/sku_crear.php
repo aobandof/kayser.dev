@@ -163,7 +163,7 @@ if($_POST['option']=="fill_selects") {
     $data['select']=$arr_articulo;
     $data['dpto_codigo']=$arr_articulo[0]['dpto_code'];
     $data['dpto_nombre']=strtoupper($arr_articulo[0]['dpto_name']);
-    $data['articulo_codigo']=$arr_articulo[0]['articulo_code'];
+    $data['articulo_codigo']=strtoupper($arr_articulo[0]['articulo_code']);
     $data['marca_nombre']=strtoupper($arr_articulo[0]['marca_name']);
     $data['itemname']=strtoupper($arr_articulo[0]['itemname']);
     

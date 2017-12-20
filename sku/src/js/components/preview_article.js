@@ -31,7 +31,11 @@ function makeArticlePreview(arti,desc,exist){
   let body_modal = modal_preview_save.querySelector('.body_modal'); //referenciamos al body del modal  
   let article = document.createElement('div'); //este es el componente articulo a mostrar
   let article_title = document.createElement('div');
-    article_title.innerHTML = "<span>" + itemname + "</span>"
+  if (exist == 'sap') {
+    article_title.innerHTML = "<span>" + itemname + "</span><span>ARTICULO EXISTENTE EN SAP</span>"
+    article_title.style.backgroundColor = 'red';
+  }else article_title.innerHTML = "<span>" + itemname + "</span><span> ARTICULO NUEVO</span>"
+  
   let article_content = document.createElement('div');
   let dtable_sku = document.createElement('div');
     dtable_sku.className = 'dtable_sku_preview';
