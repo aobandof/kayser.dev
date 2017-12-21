@@ -98,9 +98,11 @@ if($_POST['option']=="save_article"){
     $arr_articulo=$sqlsrv_33->select($query_articulo,"sqlsrv_a_p");
     if($arr_articulo!==false && $arr_articulo!==0){
       $query_insert_article="INSERT INTO articulo ";
-      $query_insert_article.="VALUES ('$code_article',$lista,'".$arr_articulo[0]['itemname']."', ";  
+      $query_insert_article.="VALUES ('$code_article',$lista,'".$arr_articulo[0]['itemname']."', ";
+      (strlen($arr_articulo[0]['prenda_code']) > 5) ? $prenda_code=substr($arr_articulo[0]['prenda_code'],0,5 ) : $prenda_code=$prenda_code=$arr_articulo[0]['prenda_code'];
+      (strlen($arr_articulo[0]['categoria_code']) > 5) ? $categoria_code=substr($arr_articulo[0]['categoria_code'],0,5 ) : $categoria_code=$prenda_code=$arr_articulo[0]['categoria_code'];      
       $query_insert_article.="null,'".$arr_articulo[0]['marca_name']."',".$arr_articulo[0]['dpto_code'].",'".$arr_articulo[0]['dpto_name']."',";
-      $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$arr_articulo[0]['prenda_code']."','".$arr_articulo[0]['prenda_name']."','".$arr_articulo[0]['categoria_code']."','".$arr_articulo[0]['categoria_name']."',";
+      $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$prenda_code."','".$arr_articulo[0]['prenda_name']."','".$categoria_code."','".$arr_articulo[0]['categoria_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['presentacion_name']."',null,'".$arr_articulo[0]['material_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['tprenda_name']."',null,'".$arr_articulo[0]['tcatalogo_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['grupouso_name']."',null,'".$arr_articulo[0]['caracteristica_name']."',null,'".$arr_articulo[0]['composicion_name']."',";
@@ -281,10 +283,10 @@ if($_POST['option']=="save_list") {
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
     $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-    $headers .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
+    $headers .= "From: CREACION DE SKUs <sku@kayser.cl>\r\n";
     if(mail($destinatario, $subject, $message, $headers)){
       $data['submit']=true;
     }
@@ -497,10 +499,9 @@ if($_POST['option']=='finalize_list'){
     for($i=0; $i<$cant_skus; $i++){   
       ///de paso guardamos la tabla para el excel que se enviara el mail
       $len_arti=strlen($arr_skus[$i]['articulo_codigo']);
-      $descripcion=substr($arr_skus[$i]['itemname'],$len_arti,strlen($arr_skus[$i]['itemname']));
-      $excel.=$arr_skus[$i]['codigo'].";$descripcion;".$arr_skus[$i]['color_name'].";".$arr_skus[$i]['barcode']."\r\n";     
+      $excel.=$arr_skus[$i]['codigo'].";".$arr_skus[$i]['itemname'].";".$arr_skus[$i]['color_name'].";".$arr_skus[$i]['barcode']."\r\n";     
       $sku=$arr_skus[$i]['codigo'];
-      $query_backed_sku="INSERT INTO skucreated values('$sku', '$hoy', '$user_creator', '$user_reviser', '$user')";
+      $query_backed_sku="INSERT INTO skucreated values('$sku', '$hoy', '$user_creator', '$user_reviser', '$user', $lista)";
       $data['query_backs'][]=$query_backed_sku;
       $sku_backed=$mysqli->insert_easy($query_backed_sku);
       if($sku_backed!==false && $sku_backed!==0){
@@ -512,11 +513,11 @@ if($_POST['option']=='finalize_list'){
     ///--- ############################### ---
     ///--- AHORA ENVIAMOS EL MAIL:
     $subject="SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
-    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
-    $headers = "From: Creación de SKUs <sku@kayser.cl>\r\n";
+    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+    $headers = "From: FINALIZACION DE CREACION DE SKUs <sku@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: application/octet-stream; name=SKUS CARAGADOS A SAP\r\n"; //envio directo de datos
-    $headers .= "Content-Disposition: attachment; filename=$subject.xls\r\n";
+    $headers .= "Content-Disposition: attachment; filename=$subject.csv\r\n";
     $headers .= "Content-Transfer-Encoding: binary\r\n";
     $headers .= utf8_decode($excel);
     $headers .= "\r\n"; //retorno de carro y salto de linea
@@ -610,10 +611,10 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
   $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+  $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
 
   $header  = "MIME-Version: 1.0\r\n"; 
-  $header .= "From: Creación de SKUs <sku@kayser.cl>\r\n";
+  $header .= "From: REVISION DE SKUs <sku@kayser.cl>\r\n";
   $header .= "Content-type: multipart/mixed; charset=UTF-8; boundary=\"$multipartSep\"";
   
   $message = "--$multipartSep\r\n";

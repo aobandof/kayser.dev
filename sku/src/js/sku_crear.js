@@ -245,10 +245,12 @@ $(document).ready(function() {
   /************************   EVENTO PARA FINALIZAR LA LISTA, ELIMINARLA GUARDANDO EN EL LOG,LOS SKUS CARGADOS A SAP *****************/
   if(!!el_but_fin_list){
     el_but_fin_list.onclick=function(){
-      //variable operation indica si se guardara en la tabla skucreated o skuupdated
-      parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
-      console.log(parameters);
-      ajax_finalize_list(parameters);
+      if(confirm('¿ESTA SEGURO DE FINALIZAR Y LIBERAR ESTA LISTA?')){
+        //variable operation indica si se guardara en la tabla skucreated o skuupdated
+        parameters={'option':'finalize_list', 'list':active_list, 'operation':'creation'};
+        console.log(parameters);
+        ajax_finalize_list(parameters);
+      }
     }
   }
   /*******************  EVENTO PARA VER LA LISTA YA CREADA ************/
@@ -577,9 +579,10 @@ function ajax_finalize_list(param){
       console.log(data);
       el_div_loader_full.classList.add('cont_hidden');
       message='';
-      (!!data.back && data.back === true) ? message += 'SKUS GUARDADOS EN EL LOG\n\n' : message += 'SE GUARDARON SOLO ' + data.cant_sku_backed + ' skus';
+      (!!data.back && data.back === true) ? message += 'SKUS GUARDADOS EN EL LOG\n\n': message += 'SE GUARDARON ' + data.cant_sku_backed + ' SKUS EN EL LOG.\n\n';
       (!!data.submit && data.submit === false) ? message += 'NO SE PUDO ENVIAR EL MAIL, LA LISTA NO FUE BORRADA\n\n' : message += 'MAIL CON SKUs y BARCODES ENVIADOS A DISEÑO CORRECTAMENTE';
       alert(message);
+      location.href = "listas.php";
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden');  }
   });

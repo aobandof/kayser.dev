@@ -11,16 +11,16 @@ if($_POST['option']=='session_start'){
   $arr_session=$mysqli->select($query_login,"mysqli_a_o");
   if($arr_session!==0 && $arr_session!==false){
     ///---INICIAMOS SESION
-    if( $arr_session[0]['user']=='admin' || $arr_session[0]['user']=='reviser'){ //SACAR
+    // if( $arr_session[0]['user']=='admin' || $arr_session[0]['user']=='reviser'){ //SACAR
       session_start();
       $_SESSION['user']=$arr_session[0]['user'];
       $_SESSION['perfil']=$arr_session[0]['perfil'];
       $data['user']=$_SESSION['user'];
       $data['perfil']=$_SESSION['perfil'];
       $data['login']=true;
-    }else{//SACAR
-      $data['login']=false; //SACAR
-    }//SACAR
+    // }else{//SACAR
+      // $data['login']=false; //SACAR
+    // }//SACAR
   }
   else {
      $data['login']=false;
