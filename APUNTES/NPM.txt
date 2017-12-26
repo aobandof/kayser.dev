@@ -21,9 +21,9 @@ PROYECTO JS CON WEBPACK, LOADERS Y BROWSER-SYNC
 
 GENERANDO EL BUNDLE:
 .....................
-	- PRODUCCION :	webpack // solo con ese comando
+	- PRODUCCION :	webpack // solo con ese comando (se supone que se instalo webpack de forma global)
 	- DESARROLLO : 
-		* webpack --watch // para que Webpack actualice el bundle cada vez que haces cambios de código
+		* node_modules/.bin/webpack --watch // para que Webpack actualice el bundle cada vez que haces cambios de código
 			o
 		* node_modules/.bin/webpack-dev-server  // Esto genera un bundle.js en memoria y lo sirve a la app desde el servidor de desarrollo que utiliza para que veas los resultados en el navegador. Además también escucha tus cambios de código y actualiza el bundle en consecuencia.
 	- Despues hay que enlazar el bundle.js en nuestro index.html	
@@ -32,7 +32,7 @@ GENERANDO EL BUNDLE:
 INSTALANDO LOADERS:
 ...................
 	- npm install babel-loader babel-core babel-preset-es2015 -D
-	- npm install sass-loader css-loader style-loader -D
+	- npm install sass-loader css-loader style-loader -D (si solo queremos trabajar con css, css-loader para entender con webpack y style-loader quien toma todos los css y los inyecta en el documento.)
 	- npm install node-sass --save-dev // si usamos sass-loader, es necesario tener este compilador sass, supongo que lo mismo para style-loader
 
 
