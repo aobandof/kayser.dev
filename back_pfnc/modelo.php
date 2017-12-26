@@ -1,9 +1,19 @@
 <?php
-require_once "../config/config.php";
-require_once "../config/DBConnection.php";
-require_once "../config/sku_db_sqlsrv_13.php";
+require_once "../shared/clases/config.php";
+require_once "../shared/clases/MssqlConexion.php";
+require_once "../shared/clases/inflector.php";
 error_reporting(E_ALL ^ E_NOTICE); // inicialmente desactivamos esto ya que si queremos ver los notices, pero evita el funcionamiento de $AJAX YA QUE IMPRIME ANTES DEL HEADER
-set_time_limit(2000); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS u otro medio
+set_time_limit(1000); // solo para este script, TIEMPO MAXIMO QUE DEMORA EN SOLICITAR UNA CONSULTA A LA BASE DE DATOS u otro medio
+
+/****** INSTANCIAMOS LOS PARAMATROS PARA LA CONEXION EN ESTE SCRIPT **************/
+$conexion=new MssqlConexion('192.168.0.13','sa','kayser@dm1n','Stock');
+$conector=$conexion->obtener_conector();
+if(!$conector){
+    if(sqlsrv_errors()!=null) {
+        cargarErrores();
+        exit;
+    }
+}
 
 if(isset($_POST['opcion'])) {
     if($_POST['opcion']=='filtrar') {
@@ -29,20 +39,10 @@ if(isset($_POST['opcion'])) {
         }
         if(isset($_POST['Mes']))
             $like="Mes='".$_POST['Mes']."' AND ".$like;
-
-            
         $like=substr($like,0,count($like)-5); //quitamos el ultimo ' AND '
-        $query1= "SELECT * FROM PFNC WHERE ObjType='13' AND P_Orden!='NULL' AND P_Orden!='' AND $like ORDER BY P_Orden";
-
-        /*
-        DEBEMOS HACER EN EL SELECT PURO, UN ARRAY DE OBJETOS, DONDE CADA OBJETO TENDRA EL KEY=ORDEN DE COMBRA Y ESTE CONTENDRA ARRAYS DE NOTAS DE VENTA FACTURAS, NOTAS DE CREDITO, 
-        CUANDO ESTE CREADO EL ARRAY DE OBJETOS, RECORRERLO Y RELACIONARLO PARA MOSTRAR LAS FILAS DE LA TABLA, ASI NOS AHORRAREMOS EXCEOS DE RECURSOS Y TIEMPOS PERDIDOS.addGrandChild
-        */
-
+        $query= "SELECT * FROM PFNC WHERE ObjType='13' AND P_Orden!='NULL' AND P_Orden!='' AND $like ORDER BY P_Orden";
         // echo $query."<br />";
         //$query= "SELECT * FROM PFNC WHERE P_Orden!='NULL' AND P_Orden!='' AND P_Orden LIKE '%79004201%'  ORDER BY P_Orden";
-
-        $
         $select=sqlsrv_query($conector, $query,array(), array( "Scrollable" => 'static' ));
         $cantidad=(int)sqlsrv_num_rows($select);
         if($select) {

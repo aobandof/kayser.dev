@@ -1,0 +1,10 @@
+intaciar un servidor:
+--------------------
+
+const express = require('express')
+const app = express();
+//settings
+app.set('port', process.env.PORT || 3000) // esto busca si existe un purto definido (process...), si no usa el 3000
+app.listen(app.get('port'), () => {
+	console.log('server on port 3000'); //usamos el puerto establecido y despues mostramos el mensaje por consola cuando el server esté iniciado
+});

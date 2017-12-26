@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="../shared/css/normalize.css">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css"> -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="../shared/css/styles.css">
+  <link rel="stylesheet" href="../shared/css/pfnc.css">
+  <title>PFNC</title>
+</head>
+<body>
+  <div class="cont_general">
+    <!-- <div class="cont_titulo"><span>Ventas, Facturas y Notas de Credito</span></div> -->
+    <div class="cont_botonera">
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-1">
+            <span><input type="checkbox" name="" value="" class="">Año:</span>
+            <select name="Anio" id="sel_anio" class="input_filtro form-control">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-2">
+            <span><input type="checkbox" name="" value="" class="">Mes:</span>
+            <select name="Mes" id="sel_mes" class="input_filtro form-control">
+                <option value=""></option>
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+            </select>
+        </div>
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-2">
+            <span><input type="checkbox" name="" value="" class="">Orden Compra: </span>
+            <input type="text" name="P_Orden" id="txt_orden_compra" class="input_filtro form-control">
+        </div>
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-2">
+            <span><input type="checkbox" name="" value="" class="">Rut Cliente: </span>
+            <input type="text" name="Cod" id="txt_rut_cliente"  class="input_filtro form-control">
+        </div>
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-2">
+            <span><input type="checkbox" name="" value="" class="">Nombre Cliente: </span>
+            <input type="text" name="Razon" id="txt_nombre_cliente"  class="input_filtro form-control">
+        </div>
+        <div class="cont_filtro col-xs-6 col-sm-4 col-md-2">
+            <span><input type="checkbox" name="" value="" class="">Factura: </span>
+            <input type="text" name="P_Num" id="txt_pfnc"  class="input_filtro form-control">
+        </div>
+        <div class="cont_filtro col-xs-12 col-sm-12 col-md-1" id="div_filtro_pfnc">
+            <img src="../shared/img/play_azul.png" alt="Filtrar" class="img-responsive" id="img_filtrar">
+        </div>
+    </div>
+    <div id="div_cargando">
+        <img src="../shared/img/progress.gif" alt="Cargando...">
+    </div>
+    <div class="cont_contenido">
+        <div class="cont_contenido_principal">
+            <div class="cont_tabla table-responsive">
+                <table class="table table-bordered table-condensed" id="table_ordenes_compra"><thead>
+                    <tr class="campos">
+                        <th>AÑO</th><th>MES</th><th>RUT</th><th>CLIENTE</th><th>ORDEN<br>COMPRA</th><th>FACTURA</th><th>CANTIDAD<br>FACTURADA</th><th>MONTO FACTURA</th><th>N.VENTA</th><th>CANTIDAD<br>SOLICITADA</th><th>MONTO VENTAS</th><th>N.Crédito</th><th>CACNTIDAD<br>N.CREDITO</th><th>MONTO<br>N.CREDITO</th></tr></thead>
+                        <tbody id="tbody_ordenes_compra">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="cont_contenido_detalle"></div>
+    </div>
+  </div>
+  <!-- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script> -->
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script><!-- NO FUNCIONA CON JQUERY 3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="../shared/js/pfnc.js"></script>
+</body>
+</html>
