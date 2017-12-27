@@ -37,75 +37,74 @@ $(document).ready(function() {
           if(existe===true){
               alert("TODOS LOS FILTROS ACTIVADOS TIENEN QUE TENER DATOS");
           }else {
-              cargarTabla();
-          }
+						var obj_filtros = new Object();
+						obj_filtros['opcion'] = 'filtrar';
+						$(".cont_filtro :input[type!=checkbox]:enabled").each(function () {
+							obj_filtros[$(this).attr("name")] = $(this).val();
+						});
+						console.log(obj_filtros);
+					  ajaxDrawTable(obj_filtros);			  
+        }
       }
   });
 });
 
+function ajaxDrawTable(param){
+	$.ajax({
+		data: param, url: 'modelo.php', type: 'post', dataType: 'json',
+		beforeSend: function () {
+			$(".cont_contenido").hide();
+			$("#div_cargando").show();
+		},
+		success: function (data) {
+			console.log(data);
+			fa = new Date();
+			name_excel = 'Nt.Ventas_export ( ' + fa.getFullYear() + '-' + (fa.getMonth() + 1) + '-' + fa.getDate() + ' ' + fa.getHours() + '.' + fa.getMinutes() + '.' + fa.getSeconds() + ' )';
+			$("#div_cargando").hide('500');
+			if (data == "SIN RESULTADOS") {
+				alert("SIN RESULTADOS");
+			} else {
+				document.getElementById('tbody_ordenes_compra').innerHTML = data;
+				var table = $('#table_ordenes_compra').DataTable({
+					dom: 'Bfrtip',
+					stateSave: false,
+					buttons: [{
+						extend: 'excelHtml5',
+						text: '<i class="fa fa-file-excel-o"></i>',
+						titleAttr: 'Exportar Excel',
+						className: 'exportExcel',
+						filename: name_excel
+					}],
+					retrieve: true,//para que no hay error al crear datatable cuando ya existe
+					paging: false,//para que no hay error al crear datatable cuando ya existe
+					"ordering": false,
+					"paging": false,
+					"language": {
+						"paginate": {
+							"previous": "Anterior",
+							"next": "Siguiente"
+						},
+						"search": "Buscar:",
+						//"info": "Mostrando Página _PAGE_ de _PAGES_",
+						"info": "",
+						"infoEmpty": "Ningun documento a mostrar",
+						"sLengthMenu": "Mostrar _MENU_ Registros",
+						"emptyTable": "Sin datos para mostrar",
+						"infoFiltered": "(Filtros Obtenidos de _MAX_ entradas)",
+						"zeroRecords": "Filtro no encontrado"
+					}
+				});
+				$(".dataTables_filter").show();//muestra el buscar datatable
+				$(".dt-buttons").show();
+				$("#table_ordenes_compra").fadeIn('700');
+				$(".cont_contenido").fadeIn('3000');
+			}
+			///}
+		},
+		error: function () {
+			alert('TIEMPO DE ESPERA AGOTADO, INTENTE NUEVAMENTE');
+		}
+	});
 
-function cargarTabla(){
-    var obj_filtros=new Object();
-    obj_filtros['opcion']='filtrar';
-     $(".cont_filtro :input[type!=checkbox]:enabled").each(function() {
-         obj_filtros[$(this).attr("name")]=$(this).val();
-    });
-    console.log(obj_filtros);
-    $.ajax({ data : obj_filtros, url  : 'modelo.php', type : 'post', dataType : 'json',
-        beforeSend : function () {
-          $(".cont_contenido").hide();
-          $("#div_cargando").show();
-        },
-        success: function(data){
-          console.log(data);
-          $("#div_cargando").hide('500');
-            if(data[0].respuesta==="ERRORES"){
-                console.log(data);
-            }else {
-                if(data[0].cuerpo=="SIN RESULTADOS"){
-                    alert("SIN RESULTADOS");
-                    // console.log(data[0].consulta);
-                }else {
-                    $(".dataTables_filter").show();//muestra el buscar datatable
-                    $(".dt-buttons").show();
-                    console.log(data[0].cantidad);
-                    var cuerpo = data[0].cuerpo;
-                    $("#tbody_ordenes_compra").append(cuerpo);
-                    $("#table_ordenes_compra").fadeIn('700');
-                    var table = $('#table_ordenes_compra').DataTable({
-                      dom: 'Bfrtip',
-                      buttons: [{
-                        extend: 'excelHtml5',
-                        text:      '<i class="fa fa-file-excel-o"></i>',
-                        titleAttr: 'Exportar Excel',
-                        className: 'exportExcel',
-                        filename: 'Nt.Ventas_export'
-                      }],
-                      retrieve: true,//para que no hay error al crear datatable cuando ya existe
-                      paging: false,//para que no hay error al crear datatable cuando ya existe
-                      "ordering": false,
-                      "paging": false,
-                      "language": {
-                          "paginate": {
-                              "previous": "Anterior",
-                              "next": "Siguiente"
-                          },
-                          "search": "Buscar:",
-                          //"info": "Mostrando Página _PAGE_ de _PAGES_",
-                          "info": "",
-                          "infoEmpty": "Ningun despacho a mostrar",
-                          "sLengthMenu": "Mostrar _MENU_ Registros",
-                          "emptyTable":     "Sin datos para mostrar",
-                          "infoFiltered":   "(Filtros Obtenidos de _MAX_ entradas)",
-                          "zeroRecords":    "Filtro no encontrado"
-                    }
-                  });
-                  $(".cont_contenido").fadeIn('3000');
-                }
-              }
-        },
-        error: function() {
-            alert('TIEMPO DE ESPERA AGOTADO, INTENTE NUEVAMENTE');
-        }
-    });
+
 }

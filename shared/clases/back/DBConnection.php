@@ -1,6 +1,6 @@
 <?php
 class DBConnection {
-  public $_connection;
+  private $_connection;
   private $_driver;
   private $_registros_select;
   public function __construct( $driver, $host, $user, $pass, $database ) { // returna la conexion
@@ -23,10 +23,12 @@ class DBConnection {
         return false;
       return $this->_connection;
   }
+  public function query($query){
 
-  ######################   FUNCION SELECT  ########################
-  //$query:  cadena de insersion
-  //$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
+  }
+######################   FUNCION SELECT  ########################
+//$query:  cadena de insersion
+//$tipo_array: cadena ('mysqli_a_o', 'mysqli_b_o','sqlsrv_a_p','sqlsrv_n_p' que significan: asociativo_orientado a objetos, boot_orientado a objetos, asociativo_procedurar, numeric_procedurarl respectivamente )
   public function select($query,$tipo_array){
     $arr_export=[];
     if($this->_driver=="sqlsrv"){       
@@ -66,6 +68,15 @@ class DBConnection {
       return $arr_export;
   }
 
+
+
+
+
+
+
+
+
+
   public function selectCsv($query,$del){//DEVUELVE UNA CADENA FORMATO CSV, SIN NOMBRES DE COLUMNAS    
     if($this->_driver=="sqlsrv"){       
       $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
@@ -99,17 +110,18 @@ class DBConnection {
     else
       return 0;
   }
-  ######################   FUNCION PARA LAS INSERCIONES   ########################
-  public function insert_easy($query){
-    if(!($this->_connection->query($query))){
-        return false;
-    }else {
-      return $this->_connection->affected_rows;
-    }
-  }   
-  //$table:  nombre de la tabla
-  //$values: array asociativo donde las keys son los nombres de los campos de la tabla
-  public function insert($table,$values){ 
+######################   FUNCION PARA LAS INSERCIONES   ########################
+//$table:  nombre de la tabla
+//$values: array asociativo donde las keys son los nombres de los campos de la tabla
+public function insert_easy($query){
+  if(($this->_connection->query($query))===true){
+    return $this->_connection->affected_rows;
+  }else {
+    return false;
+  }
+
+}   
+public function insert($table,$values){ 
     $types="";
     $questions="";
     $string_keys="";
@@ -130,7 +142,6 @@ class DBConnection {
       $vals = array_merge(array($types), $arr_values);//PARA PODER UNIRLOS, $types SE CONVIERTE EN UN ARRAY con: array($types)
       call_user_func_array(array($stmt, 'bind_param'), $vals); 
       $stmt->execute();
-
       if ($this->_connection->connect_errno) {
         // echo "errores existentes<br>";
         return false; //SI HUBIERON ERRORES, RETORNA FALSO
@@ -140,7 +151,6 @@ class DBConnection {
       }  
     }
   }
-
   ####################   FUNCION PARA ACTUALIZAR   ############################
   public function update($table,$id_nam,$id_val,$values){
     $types="";
@@ -157,14 +167,15 @@ class DBConnection {
     }
     $query=substr($query,0,strlen($query1)-1);//sacamos la ultima coma del final de la cadena
     $query=$query." WHERE $id_nam=?";
-    echo "<br>".$query."<br>";
-    if(is_numeric($id_val)) { $types.='i'; $id_val=intval($id_val);  }
-    else $types.='s';
+    if(is_numeric($id_val))
+      is_int($id_val) ? $types.='i' : $types.='d';
+    else
+      $types.='s';
     $arr_values[]=$id_val;
     if($this->_driver=='mysqli'){//por ahora solo actualizaremos tablas Mysql
       $stmt=$this->_connection->prepare($query);
       $vals = array_merge(array($types),$arr_values);
-      var_dump($vals);
+      // var_dump($vals);
       call_user_func_array(array($stmt,"bind_param"),$vals);
       $stmt->execute();
       if($this->_connection->connect_errno)
@@ -173,17 +184,11 @@ class DBConnection {
         return $this->_connection->affected_rows;
     }
   }
-  public function update_easy($query){
-    if(!($this->_connection->query($query))){
-      return false;      
-    }else {
-      return $this->_connection->affected_rows;
-    }
-  }
   ######################   FUNCION DELETE   ########################
   public function delete($query){
     if ($this->_driver=="mysqli"){//POR AHORA SOLO MYSQLI
-      if(!$this->_connection->query($query))
+      $deleteds=$this->_connection->query($query);
+      if($deleteds===false)
         return false;
       else
         return $this->_connection->affected_rows;
@@ -204,27 +209,13 @@ class DBConnection {
     }elseif ($this->_driver=="mysqli"){
       // if ($this->_connection->connect_error){
       if ($this->_connection->connect_errno){
-        $arr_errors=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
+        $arr_errors[]=array('code'=>$this->_connection->connect_errno, 'message'=>$this->_connection->connect_error);
       }else
-        $arr_errors=array('code'=>$this->_connection->errno, 'message'=> $this->_connection->error);
+        $arr_errors[]=array('code'=>$this->_connection->errno, 'message'=> $this->_connection->error);
     }
     return $arr_errors;
   }
 
-//FUNCION QUE DETERMINA SI HAY REGISTROS SEGUN UNA $QUERY, de existir, devuelve la cantidad
-  public function quantityRecords($query){
-    $arr_registry=[];
-    $cant_registros=0;
-    if($this->_driver=="mysqli"){  
-      if(!($arr_registry=$this->_connection->query($query))){
-        return false;
-      }else        
-        while($arr_registry->fetch_array())
-          $cant_registros++;
-    }
-    // echo "cantidad de registros con esta consulta: ".$cant_registros;
-    return $cant_registros;
-  }
   ######################################   METODO PARA OBTENER LA CABECERA DEL ULTIMO SELECT ###########################
   function getColumnsLastSelect(){
     $arr_columns=[];
@@ -262,7 +253,7 @@ class DBConnection {
       if($registros===false)
         return false;
       else {
-        while($reg=$registros->fetch_array()) 
+        while($reg=$registros->fetch_arrow()) 
           $arr_export[intval($reg[0])]=$reg[1];
       }
     }
@@ -272,53 +263,12 @@ class DBConnection {
       return $arr_export;       
   }
 
-  public function getColumnFromColumn($nom_tabla,$nom_column_search,$nom_column,$type_column,$val_column){
-    //sirve para valores unicos y para una sola coincidencia, SI SON MUCHOS RETORNA UN ARRAY, SI ES SOLO, RETORNA EL VALOR
-    //type_column sera el tipo del campo a comparar con WHERE, por eso el requerimiento para ver si va entre comillas o no
-    //type_column = NUMBER or STRING
-    $arr_export=[];
-    ($type_column=='NUMBER') ? $query="SELECT $nom_column_search from $nom_tabla where $nom_column=$val_column" : $query=$query="SELECT $nom_column_search from $nom_tabla where $nom_column='$val_column'";
-    if($this->_driver=="sqlsrv"){       
-      //
-    }elseif($this->_driver=="mysqli"){
-      $registros=$this->_connection->query($query);
-      if($registros===false) {
-        return false;
-      }else {
-        while($reg=$registros->fetch_array()) {
-          $arr_export[]=$reg[0];
-        }
-      }
-    }
-    if(count($arr_export)==0) // consulta vacia
-      return 0;
-    elseif(count($arr_export)>1)
-      return $arr_export;
-    else
-       return $arr_export[0];
-  }
 
-  public function selectOptions($query){    
-    $opt="";
-    if($this->_driver=="sqlsrv"){       
-      $registros=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));
-      if($registros===false) { return false;
-      }else {
-        while($reg=sqlsrv_fetch_array($registros,SQLSRV_FETCH_NUMERIC)) 
-          $opt.="<option value=".$reg[0].">".$reg[1]."</option>";
-      }
-    }elseif($this->_driver=="mysqli"){
-      $registros=$this->_connection->query($query);
-      if($registros===false) return false;
-      else {
-        while($reg=$registros->fetch_array()) 
-          $opt.="<option value=".$reg[0].">".$reg[1]."</option>";
-      }
-    }
-    return $opt;
-  }
+
+  // public function selectParameterized($name_table,$arr_select,$name_key, $name_field,$val_field){
+  //   echo "hola";
+  // }
+
 }
-
-
 
 ?>

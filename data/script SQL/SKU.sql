@@ -24,7 +24,7 @@ select S.U_APOLLO_SEG1, COUNT(distinct S.ItemCode ) as cantidad_SKU from Kayser_
 select S.U_APOLLO_SEG1, COUNT(*) as cantidad_SKU, S.ItemName from Kayser_OITM as S WHERE (S.U_APOLLO_SEG1 IS NOT NULL)  GROUP BY S.U_APOLLO_SEG1, S.ItemName ORDER BY U_APOLLO_SEG1-- Para ver la cantidad de SKU por articulo
 select COUNT(*) as cantidad_SKU from Kayser_OITM GROUP BY U_APOLLO_SEG1
 
-select S.U_APOLLO_SEG1 from Kayser_OITM as S  -- 23265 rows
+select S.U_APOLLO_SEG1 from Kayser_OITM as S  -- 23265 rows	
 select distinct S.U_APOLLO_SEG1 from Kayser_OITM as S -- 3561 rows incluido el valor NULL
 select distinct S.U_APOLLO_SEG1 from Kayser_OITM as S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) -- 3560 rows
 select S.U_APOLLO_SEG1 , COUNT(S.U_APOLLO_SEG1) as cantidad_sku from Kayser_OITM as S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) GROUP BY S.U_APOLLO_SEG1 ORDER BY S.U_APOLLO_SEG1  -- 3560 ROWS
