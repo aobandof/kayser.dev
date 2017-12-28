@@ -148,6 +148,7 @@ $(document).ready(function() {
   }
   //inicialmente ocultamos la caja que contiene las copas
   document.getElementById('div_copa').style.display = 'none'; 
+  document.getElementById('div_dpto').style.display = 'none';
 
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
   $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
@@ -212,7 +213,6 @@ $(document).ready(function() {
       modal_preview_save.style.visibility = 'hidden';
     }
   }
-
   ///--- EVENTO PARA REGRESAR AL ARCHIVO lista.php DESDE LOS BOTONES EN EL ARICULO_PREVIEW 
   if(!!el_but_show_lists){
     el_but_show_lists.onclick=function(){
@@ -526,7 +526,7 @@ $(document).ready(function() {
     $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
     id_cat_actual=id_cat;
     paintContCategory(id_cat_actual)
-    cargarSelectsSku('OITB', name_dpto);
+    id_cat == 'div_cat_otro' ? cargarSelectsAll() : cargarSelectsSku('OITB', name_dpto);
   }
 });///FIN DOCUMENT READY
 
@@ -851,8 +851,11 @@ function resetInputTextCodeArticle() {
   document.getElementById('txt_sku_correlativo').value = "";
   document.getElementById('txt_sku_sufijo').value = ""
 }
-
-//FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API.
+/////----- FUNCION QUE CARGA LOS SELECTS CON TODAS LAS OPCIONES EN LOS SELECTS
+function cargarSelectsAll(){
+  
+}
+//FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API DEPENDIENTES O INDEPENDIENTES.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
   var recorrido = 0;
   if (nombre_tabla_padre == "")

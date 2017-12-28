@@ -57,6 +57,7 @@ select ItemCode from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode
 -------------------------     PRUEBAS CON CONSULTAS EN EL 17    -------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------
 select IdArticulo, CAST(SUM(Cantidad)-30 AS int) as Cant from Existencia where idAlmacen = '01' AND IdUbicacion LIKE '01%' GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo
+
 SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'Existencia'
 
 --- CONSULTA ABEL ---
@@ -71,6 +72,16 @@ from   Existencia as t0 inner join
              Ubicacion as t1 on t0.IdUbicacion=t1.IdUbicacion
 where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2')
 GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo
+
+
+
+----------------------------------
+----------------------------------
+select t0.IdArticulo, CAST(SUM(t0.Cantidad) AS int) as Cant 
+from   Existencia as t0 inner join
+             Ubicacion as t1 on t0.IdUbicacion=t1.IdUbicacion
+where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2')
+GROUP BY IdArticulo ORDER BY IdArticulo
 
 
 

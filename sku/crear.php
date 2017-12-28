@@ -81,6 +81,9 @@ if(isset($_SESSION['user'])){
       </div>
         <div class="comp_crear_sku container_row">
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
+            <div class="cont_fila_crear_sku container_row " id="div_dpto">
+              <div><span class="">DPTO&nbsp</span><select name="OITB" id="select_sku_dpto" class="form-control"><option value=""></option></select></div>
+            </div>
             <div class="cont_fila_crear_sku container_row  ">
               <div><span class="">MARCA&nbsp</span><select name="marca" id="select_sku_marca" class="form-control sku_control prefijo ind"><option value=""></option></select></div>
               <div><span class="">SUBDPTO&nbsp</span><select name="subdpto" id="select_sku_subdpto" class="form-control sku_control prefijo dep"><option value=""></option></select></div>

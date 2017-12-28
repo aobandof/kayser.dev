@@ -283,7 +283,7 @@ if($_POST['option']=="save_list") {
     $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
     $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
     $headers .= "From: CREACION DE SKUs <sku@kayser.cl>\r\n";
@@ -513,7 +513,7 @@ if($_POST['option']=='finalize_list'){
     ///--- ############################### ---
     ///--- AHORA ENVIAMOS EL MAIL:
     $subject="SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
-    $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
     $headers = "From: FINALIZACION DE CREACION DE SKUs <sku@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: application/octet-stream; name=SKUS CARAGADOS A SAP\r\n"; //envio directo de datos
@@ -611,7 +611,7 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
   $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl";//,sku@kayser.cl";
+  $destinatario ="aobando@kayser.cl,sku@kayser.cl";
 
   $header  = "MIME-Version: 1.0\r\n"; 
   $header .= "From: REVISION DE SKUs <sku@kayser.cl>\r\n";

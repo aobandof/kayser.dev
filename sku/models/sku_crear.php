@@ -151,7 +151,15 @@ if($_POST['option']=="render_select") {
       $data['errors']= $mysqli->getErrors();
   echo json_encode($data);
 }
+/////----- OPTION QUE DEVELE TODOS LOS OPTION SELECT SIN SELECCION:
+if($_POST['option']=="cargar_selects_all") {
+  foreach($tablas_sku as $tabla => $arr_tabla ){
+    if($tabla!='relacionprefijo'){
+      $data['selects'][]=array('select'=> $tabla , 'options' => getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_code']) );
+    }
+  }
 
+}
 ///--- OPTION DE DEVUELVE TODOS LOS OPTIONS CON EL ITEM SELECCIONADO DEL ARTICULO ENCONTRADO
 if($_POST['option']=="fill_selects") {
   ///--- INICIALMENTE OBTENEMOS TODOS LOS SKUs que tengan el codigo de articulo

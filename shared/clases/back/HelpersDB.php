@@ -3,7 +3,8 @@
 $MSSQL = array(
   '13' => array( 'host' => '192.168.0.13', 'user' => 'sa', 'pass' => 'kayser@dm1n' ) ,
   '17' => array( 'host' => '192.168.0.17', 'user' => 'wms', 'pass' => 'pjc3l1' ),
-  '33' => array( 'host' => '192.168.0.33', 'user' => 'sa', 'pass' => 'sa' )
+  '33' => array( 'host' => '192.168.0.33', 'user' => 'sa', 'pass' => 'sa' ),
+  '16' => array( 'host' => '192.168.0.33', 'user' => 'sa', 'pass' => 'sql2005' )
 );
 # ARRAY QUE CONTIENE LOS MOTORES DE BASES DE DATOS DE MYSQL Y SUS CREDENCIALES
 $MYSQL = array(
@@ -60,28 +61,6 @@ function getIdFromName($nom_tabla, $val_campo){// solamente para aquellos que ti
       return $arr_id[0][$tablas_sku["$nom_tabla"]["id"]];
   }
 }
-
-### FUNCION QUE CARGA LAS FILAS CON ID y NAME o NAME solmente DE UNA TABLA EN UN ARRAY ASOCIATIVO
-// function getArrayIdName($nom_tabla){
-//   global $tablas_sku,$mysqli,$sqlsrv;
-//   $array_tabla=[];
-//   if(isset($tablas_sku[$nom_tabla]['id']))
-//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['id'].",".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-//   else
-//     $query_id_name="SELECT ".$tablas_sku[$nom_tabla]['campo']." from $nom_tabla";
-//   echo $query_id_name."<br>";
-//   if($tablas_sku[$nom_tabla]['bd']=="mysql")
-//     $arr_tabla=$mysqli->select($query_id_name,"mysqli_a_o");
-//   else 
-//     $arr_tabla=$sqlsrv->select($query_id_name,"sqlsrv_a_p");
-//   if($arr_tabla===false)
-//     return -1;
-//   else  
-//     $arr_id_name[$arr_t]
-
-//   return $arr_tabla;
-// }
-
 ### FUNCION QUE RETORNA UN ARRAY CON TODOS LAS FILAS ENCONTRADAS SEGUN LA LLAVE FORANEA
 function cargarTallasToFamilia($value) { // SOLO PARA MYSQL
   global $mysqli;

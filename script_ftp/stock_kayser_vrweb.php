@@ -22,7 +22,7 @@ $conector_linea=$conexion_linea->obtener_conector();
 // }
 $contenido="";
 // $query_stock="select IdArticulo, CAST(SUM(Cantidad)-30 AS int) as Cant from Existencia where idAlmacen = '01' AND IdUbicacion LIKE '01%' GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo";
-$query_stock="select t0.IdArticulo, CAST(SUM(t0.Cantidad)-30 AS int) as Cant from   Existencia as t0 inner join Ubicacion as t1 on t0.IdUbicacion=t1.IdUbicacion where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2') GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo"
+$query_stock="select t0.IdArticulo, CAST(SUM(t0.Cantidad)-30 AS int) as Cant from   Existencia as t0 inner join Ubicacion as t1 on t0.IdUbicacion=t1.IdUbicacion where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2') GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo";
 $query_linea="select ItemCode from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode";
 $query_precio_detalle="SELECT  ItemCode, CAST(ROUND((Price*1.19),0) AS int) as DETALLE FROM Kayser_ITM1  where PriceList=15 AND ROUND((Price*1.19),0) IS NOT NULL and ROUND((Price*1.19),0)>1 ORDER BY ROUND((Price*1.19),0) ASC";
 $query_precio_promotoras="SELECT	ItemCode, CAST(ROUND((Price*1.19),0) AS int) AS PROMOTORAS FROM Kayser_ITM1  where PriceList=17 AND ROUND((Price*1.19),0) IS NOT NULL and ROUND((Price*1.19),0)>1 ORDER BY ROUND((Price*1.19),0) ASC";
