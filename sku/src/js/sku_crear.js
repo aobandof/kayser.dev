@@ -294,6 +294,7 @@ $(document).ready(function() {
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
           campos_llenos=0;
+          
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
           $("#select_sku_composicion").selectpicker("deselectAll");
@@ -726,7 +727,6 @@ function render_select(table) {
     error: function () { console.log('error'); }
   });
 }
-
 ///FUNCION PARA LLENAR LOS ARTCIULOS PREVIEWS
 function renderArticleList(art, itn, rows, detail, estado_article, existencia) { // el estado_article = ESTADO EN LISTA MOSTRADA, ES DECIR SI EL ARTICULO YA ESTA EN LISTA, SOLO AGREGAREMOS LOS NUEVOS SKUS
   console.log(art,estado_article,existencia);
@@ -853,7 +853,33 @@ function resetInputTextCodeArticle() {
 }
 /////----- FUNCION QUE CARGA LOS SELECTS CON TODAS LAS OPCIONES EN LOS SELECTS
 function cargarSelectsAll(){
-  
+  parameters = { 'option': 'cargar_selects_all' };
+  $.ajax({ url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function (){ },
+    success: function(data){
+      if (!!data.selects) {
+        cant_selects = data.selects.length;
+        for (let i = 0; i < cant_selects; i++) {
+          if (!!document.getElementById('select_sku_' + data.selects[i].select))
+            document.getElementById('select_sku_' + data.selects[i].select).innerHTML = data.selects[i].options;
+        }
+        if (!!data.tallas) {
+          document.getElementById('span_tallas_chosen').innerHTML = '';
+          document.getElementById("div_sel_grupo_opciones").innerHTML = "";
+          fillSelectMultiplesGruposFromArray(data.tallas, "div_sel_grupo_opciones", false);
+        }
+        // document.querySelector('#div_row_composicion .filter-option').innerHTML = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
+        // document.querySelectorAll('.sku_control').forEach(function (ctrl) {
+        //   ctrl.disabled = true;
+        // });
+        // el_sel_color.disabled = false;
+        // el_sel_copa.disabled = false;
+        // el_sel_fcopa.disabled = false;
+      }
+    },
+    error: function(){ console.log('error'); }
+  });
+
 }
 //FUNCION QUE CARGA LOS SELECT con las OPTIONS de la API DEPENDIENTES O INDEPENDIENTES.
 function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {

@@ -153,12 +153,28 @@ if($_POST['option']=="render_select") {
 }
 /////----- OPTION QUE DEVELE TODOS LOS OPTION SELECT SIN SELECCION:
 if($_POST['option']=="cargar_selects_all") {
-  foreach($tablas_sku as $tabla => $arr_tabla ){
-    if($tabla!='relacionprefijo'){
-      $data['selects'][]=array('select'=> $tabla , 'options' => getOptionsSelected('[@APOLLO_SEASON]',$arr_articulo[0]['prenda_code']) );
-    }
+  $data['selects'][]=array('select'=> 'dpto', 'options' => getOptionsSelected('OITB','') );
+  $data['selects'][]=array('select'=> 'prenda', 'options' => getOptionsSelected('[@APOLLO_SEASON]','') );
+  $data['selects'][]=array('select'=> 'categoria', 'options' => getOptionsSelected('[@APOLLO_SEASON]','') );
+  $data['selects'][]=array('select'=> 'marca', 'options' => getOptionsSelected('marca','') );
+  $data['selects'][]=array('select'=> 'subdpto', 'options' => getOptionsSelected('subdpto','') );
+  $data['selects'][]=array('select'=> 'presentacion', 'options' => getOptionsSelected('presentacion','') );
+  $data['selects'][]=array('select'=> 'material', 'options' => getOptionsSelected('material','') );    
+  $data['selects'][]=array('select'=> 'color', 'options' => getOptionsSelected('color','') );
+  $data['selects'][]=array('select'=> 'copa', 'options' => getOptionsSelected('copa','') );
+  $data['selects'][]=array('select'=> 'formacopa', 'options' => getOptionsSelected('formacopa','') ); 
+  $data['selects'][]=array('select'=> 'tprenda', 'options' => getOptionsSelected('tprenda','') );
+  $data['selects'][]=array('select'=> 'tcatalogo', 'options' => getOptionsSelected('tcatalogo','') );
+  $data['selects'][]=array('select'=> 'grupouso', 'options' => getOptionsSelected('grupouso','') );
+  $data['selects'][]=array('select'=> 'caracteristica', 'options' => getOptionsSelected('caracteristica','') );
+  $data['selects'][]=array('select'=> 'composicion', 'options' => getOptionsSelected('composicion','') );
+  $query_tallas="SELECT * FROM talla";
+  $arr_tallas=$mysqli->select($query_tallas,"mysqli_a_o");
+  $cont_tallas=count($arr_tallas);
+  for($i=0;$i<$cont_tallas;$i++){
+    $data['tallas'][]=array('familia'=>$arr_tallas[$i]['codigo'], 'tallas'=>cargarTallasToFamilia($arr_tallas[$i]['codigo']));
   }
-
+  echo json_encode($data);
 }
 ///--- OPTION DE DEVUELVE TODOS LOS OPTIONS CON EL ITEM SELECCIONADO DEL ARTICULO ENCONTRADO
 if($_POST['option']=="fill_selects") {
