@@ -27,7 +27,7 @@ if($_GET['time']=='morning'){
   $arr_store=$sqlsrv_33->select($query_store,"sqlsrv_a_p");
   ///DEBIDO A QUE COGNOS, SOLO SE MUESTRAN LAS TIENDAS QUE VENDIERON, solo bastaria con preguntar los codigos de tienda, si estas no existen en el array de tiendas, entonces reportar como tienda sin venta
   //$query_morning="SELECT bodega as cod_tienda,Almacen,CAST(SUM(Total) AS INT) AS total FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '$ayer', 20) AND Horas>=CONVERT(datetime, '$hour', 20) group by Almacen, Bodega ORDER BY Almacen";        
-  $query_morning="SELECT Bodega as  cod_tienda, Almacen FROM [GSP].[dbo].[Gsp_SboKayserResumen]  where fecha=CONVERT(datetime, '2017-12-05', 20) AND Horas>=CONVERT(datetime, '16:00:00', 20) group by Bodega, Almacen";
+  $query_morning="SELECT Bodega as  cod_tienda, Almacen FROM [GSP].[dbo].[Gsp_SboKayserResumen]  where fecha=CONVERT(datetime, $ayer, 20) AND Horas>=CONVERT(datetime, '16:00:00', 20) group by Bodega, Almacen";
   $arr_yesterday=$sqlsrv_13->selectArrayUniAssocIdName($query_morning);
   $quan_y=count($arr_yesterday);
   $quan_s=count($arr_store);

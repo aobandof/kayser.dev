@@ -293,8 +293,7 @@ $(document).ready(function() {
       }
       if(campos_llenos==1){
         if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
-          campos_llenos=0;
-          
+          campos_llenos=0;          
           cargarCategoriaCrear(id_cat_after_click);
           $("#select_sku_color").selectpicker("deselectAll");
           $("#select_sku_composicion").selectpicker("deselectAll");

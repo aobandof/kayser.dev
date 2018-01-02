@@ -84,3 +84,10 @@ SELECT bodega as cod_tienda, CAST(SUM(Total) AS INT) AS total  FROM [GSP].[dbo].
 select top 200 * from [GSP].[dbo].[Gsp_SboKayserResumen] WHERE Almacen='RENCA CASA MATRIZ' AND Dia=13-- AND Horas>'16:00:00'
 
 SELECT name, collation_name FROM sys.databases;
+
+
+SELECT Bodega as  cod_tienda, Almacen FROM [GSP].[dbo].[Gsp_SboKayserResumen]  where fecha=CONVERT(datetime, '2017-12-05', 20) AND Horas>=CONVERT(datetime, '16:00:00', 20) group by Bodega, Almacen
+
+SELECT Bodega as cod_tienda, Almacen FROM [GSP].[dbo].[Gsp_SboKayserResumen] where fecha=CONVERT(datetime, '2018-01-01', 20) AND Horas>=CONVERT(datetime, '16:00:00', 20) group by Bodega, Almacen
+
+SELECT  WhsCode as cod_tienda, WhsName as tienda FROM [192.168.0.33].[SBO_KAYSER].[dbo].[OWHS] where U_GSP_SENDTPV = 'Y'

@@ -1,0 +1,60 @@
+DIRECTIVAS: codigo que va dentro o fuera de etiquetas en el template
+----------
+<TAG v-html='myVar'></TAG>					Esto permite interpretar como html el valor de la variable
+
+<TAG v-text='myVar'></TAG>					Para mostrar la variable en el template como texto
+
+<TAG v-if='myVarBool'>html_to_show</TAG>		
+<TAG v-else>html_to_show</TAG>					if and else (else optional)
+
+<TAG>{{ task[3].title }}					muestra el elemento 3 del arreglo</TAG>
+
+<ul> <li v-for='task in task'> {{ task.title }} </li></ul>	impreme una lista con todos los titulos de los elementos del array tasks
+
+
+<input type='text' v-model='variable'>				permite enlazar el input texto a la variable, detal forma que cuando se modifica el texto, tambien se modifica el valor de la variable
+
+<tag v-on:name_event='nameFunction()'				Permite enlazar eventos a methods del componente
+	nameFunctions: clik, keyup. keyup.enter, etc
+
+
+
+
+
+
+data() : Metodo del componente que permie declarar variables, objetos, arrays para ser usados en el template, methos o propiedades computed
+------
+
+methods : funciones del componente
+-------
+
+computed : funciones que usan variables del componente para mostrarlas en el template resumiendo el uso de estas varibles en conjunto.
+--------
+	<template>
+		
+	</template>
+
+	...
+
+	computed : {
+		fullName() {
+			return this.var1 + ' ' this.var2; //var1 y var1 declaradas en el data() 
+		}
+	}
+
+props: son varibles que se transmiten desde otro componente
+-----
+	<NameComponent var1='valor1'> // en el componente externo
+
+	props: {
+		var1: {
+			type: String,
+			default: 'valor_default'
+		}
+	}
+ 
+
+NOTAS:
+-----
+Para quitarle el comportamiento por defecto a un elemento, usamos e.preventDefault() en el evento. pero en vue.js podemos especificarlo directamente en el template, en el evento del tag:
+<form v-on:subimit.prevent="nameFunction">
