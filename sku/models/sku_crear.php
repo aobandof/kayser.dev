@@ -225,8 +225,20 @@ if($_POST['option']=="fill_selects") {
   $data['articulo']=$arr_arti;
   echo json_encode($data);
 }
-// echo "entra aca<br>";
-// echo getOptionsSelected('[@APOLLO_SEASON]','50');
+/////----- OPTION QUE DEVUELVE LOS OPTIONS DE LOS DPTOS MENOS HOMBRE, MUJER, LOLO, LOLA, NIÑO, NIÑA
+if($_POST['option']=="cargar_selects_otros_dptos"){
+  // $arr_dptos_excluded=[ 106,108,127,128,129,130 ];
+  $query_excluded = 
+  $query=" SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpNam NOT LIKE 'INSUMOS%'
+";
+  $arr_query=$sqlsrv_33->selectArrayUniAssocIdName($query);
+  $html="";  
+  foreach ( $arr_query as $key => $value ){
+    $html.="<a class='opcion_other_dpto dropdown-item' id='dpto_".$key."' href='#'>".$value."</a>";
+  }
+  echo json_encode($html);
+}
+
 
 function getOptionsSelected($table,$valor){
   global $tablas_sku; global $mysqli; global $sqlsrv_33;

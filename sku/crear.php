@@ -52,16 +52,23 @@ if(isset($_SESSION['user'])){
             <div class="cont_img_categoria" id="div_cat_lolo"><img src="../shared/img/img_lolo.jpg" alt=""><span>Lolo</span></div>
             <div class="cont_img_categoria" id="div_cat_niña"><img src="../shared/img/img_niña.jpg" alt=""><span>Niña</span></div>
             <div class="cont_img_categoria" id="div_cat_niño"><img src="../shared/img/img_niño.jpg" alt=""><span>Niño</span></div>
-            <div class="cont_img_categoria" id="div_cat_otro"><img src="../shared/img/K.jpg" alt=""><span>Otro</span></div>
+            <div class="cont_img_categoria dropdown" id="div_cat_otro">
+              <img src="../shared/img/K.jpg" alt="" class="dropdown-toggle" id="dropdownMenuButton_other_dpto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Otro</span>
+              <div class="dropdown-menu" id="div_options_dpto" aria-labelledby="dropdownMenuButton">
+                <!-- <a class="opcion_other_dpto dropdown-item" id="dpto_15" href="#">Items</a>
+                <a class="opcion_other_dpto dropdown-item" id="dpto_16" href="#">Relaciones</a>
+                <a class="opcion_other_dpto dropdown-item" id="dpto_17" href="#">Prefijos</a> -->
+              </div>
+            </div>
         </div>
         <div class="cont_config">
           <div class="dropdown">
-          <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="opcion_config dropdown-item" id="a_opcion_config_items" href="#">Items</a>
-            <a class="opcion_config dropdown-item" id="a_opcion_config_relations" href="#">Relaciones</a>
-            <a class="opcion_config dropdown-item" id="a_opcion_config_prefix" href="#">Prefijos</a>
-          </div>
+            <img src="../shared/img/settings.png" alt="" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="opcion_config dropdown-item" id="a_opcion_config_items" href="#">Items</a>
+              <a class="opcion_config dropdown-item" id="a_opcion_config_relations" href="#">Relaciones</a>
+              <a class="opcion_config dropdown-item" id="a_opcion_config_prefix" href="#">Prefijos</a>
+            </div>
         </div>
         </div>
         <div class="cont_menu">
@@ -79,8 +86,9 @@ if(isset($_SESSION['user'])){
           </div>
         </div>
       </div>
-        <div class="comp_crear_sku container_row">
+        <div class="comp_crear_sku container_row">          
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
+            <div id="div_dpto_name"></div>
             <div class="cont_fila_crear_sku container_row " id="div_dpto">
               <div><span class="">DPTO&nbsp</span><select name="OITB" id="select_sku_dpto" class="form-control"><option value=""></option></select></div>
             </div>

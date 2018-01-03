@@ -11,7 +11,12 @@ SELECT TOP 10 * FROM Kayser_DIV	-- CATEGORIA
 --- TABLAS EN EL 33
 SELECT TOP 10 * FROM OITM			-- SKU
 SELECT TOP 1 U_APOLLO_SEG1 FROM OITM -- ARTICULOS
-SELECT * FROM OITB			-- DPTO
+SELECT * FROM OITB						-- DPTO
+SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB	-- DPTO	
+SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130
+
+ SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpNam NOT LIKE 'INSUMOS%'
+
 SELECT * FROM [dbo].[@APOLLO_SEASON]	-- PRENDA
 SELECT * FROM [dbo].[@APOLLO_DIV]		-- CATEGORIA
 

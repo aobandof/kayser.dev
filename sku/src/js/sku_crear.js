@@ -1,4 +1,4 @@
-var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
+var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, id_other_dpto,code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
 // let active_list=0;
 let el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
 let modal_preview_save, body_modal_preview_save; 
@@ -267,6 +267,7 @@ $(document).ready(function() {
   }
   
   ///--- ################  EVENTOS PARA SKU_CREAR.HTML ###########################
+  ajax_load_others_dptos({'option' : 'cargar_selects_otros_dptos' });
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
   $(".cont_img_categoria").click(function() {
@@ -277,39 +278,60 @@ $(document).ready(function() {
     art_existente = 'nuevo';
     el_txt_art_existente.classList.add('control_hidden');
     el_btn_art_cagar.classList.add('control_hidden');
-    /**************************************************************************************************************************** */
-
-    id_cat_after_click=$(this).attr('id');
-    if(id_cat_actual!==id_cat_after_click){
-      $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
-        if($(this).val()!="" /* $(this).val()!=null*/) {
-          campos_llenos=1;
-          console.log('elemento: ',$(this));         
-          return; // igual recorre todo el bucle
+    id_cat_after_click = $(this).attr('id');
+    console.log($(this).attr('id'));
+    if( $(this).attr('id') === "div_cat_otro" ){
+      document.querySelectorAll('.opcion_other_dpto').forEach( function (opt){
+        opt.onclick = function(){
+          if(opt.id!=id_other_dpto){
+            id_other_dpto=opt.id
+            if (get_fill_fields('all') == 1) { //por ahora get_fill_fields compara todos los controles
+              if (confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")) {
+                campos_llenos=0;                
+                cargarCategoriaCrear(id_cat_after_click);
+                document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
+                console.log(dpto_name);
+                $("#select_sku_color").selectpicker("deselectAll");
+                $("#select_sku_composicion").selectpicker("deselectAll");
+                $("#div_sel_grupo_opciones").html("");
+                $("#span_tallas_chosen").text(' ');
+                document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
+              }else { campos_llenos = 0; }
+            } else {
+              $("#div_sel_grupo_opciones").html("");
+              cargarCategoriaCrear(id_cat_after_click);
+              document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
+              document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
+            }
+          }
         }
-      });
-      if ($("#span_tallas_chosen").text().trim()!==''){
-         campos_llenos = 1;
-      }
-      if(campos_llenos==1){
-        if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
-          campos_llenos=0;          
-          cargarCategoriaCrear(id_cat_after_click);
-          $("#select_sku_color").selectpicker("deselectAll");
-          $("#select_sku_composicion").selectpicker("deselectAll");
-          // $("#select_sku_composicion").attr("selected", false); // NO FUNCA
-          // $("#select_sku_composicion").selectpicker("refresh"); // NO FUNCA
-          // $("#select_sku_composicion").selectpicker('render'); // NO FUNCA
+      })
+    } else {       
+      if(id_cat_actual!==id_cat_after_click){
+        if(get_fill_fields('all')==1){
+          if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
+            campos_llenos=0; 
+            id_other_dpto='';
+            cargarCategoriaCrear(id_cat_after_click);
+            document.getElementById('div_dpto_name').innerHTML = "";
+            $("#select_sku_color").selectpicker("deselectAll");
+            $("#select_sku_composicion").selectpicker("deselectAll");
+            // $("#select_sku_composicion").attr("selected", false); // NO FUNCA
+            // $("#select_sku_composicion").selectpicker("refresh"); // NO FUNCA
+            // $("#select_sku_composicion").selectpicker('render'); // NO FUNCA
+            $("#div_sel_grupo_opciones").html("");
+            $("#span_tallas_chosen").text(' ');
+            document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
+          }else { campos_llenos=0; }
+        }else {
+          id_other_dpto='';
           $("#div_sel_grupo_opciones").html("");
-          $("#span_tallas_chosen").text(' ');
+          cargarCategoriaCrear(id_cat_after_click);
+          document.getElementById('div_dpto_name').innerHTML = "";
           document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
-        }else { campos_llenos=0; }
-      }else {
-        $("#div_sel_grupo_opciones").html("");
-        cargarCategoriaCrear(id_cat_after_click);
-        document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
-        // $("#select_sku_color").selectpicker("deselectAll");
-      }      
+          // $("#select_sku_color").selectpicker("deselectAll");
+        }      
+      }
     }
   });
   /********* EVENTO PARA AUTORELLENAR LA DESCRIPCION *****/
@@ -526,11 +548,24 @@ $(document).ready(function() {
     $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
     id_cat_actual=id_cat;
     paintContCategory(id_cat_actual)
-    id_cat == 'div_cat_otro' ? cargarSelectsAll() : cargarSelectsSku('OITB', name_dpto);
+    // id_cat == 'div_cat_otro' ? cargarSelectsAll() : cargarSelectsSku('OITB', name_dpto);
+    cargarSelectsSku('OITB', name_dpto)
   }
 });///FIN DOCUMENT READY
 
-
+/////----- FUNCION QUE DETERMINA SI EXISTE ALGUN CAMPOS DE SKU_CREAR, CON VALORES SELECCIONADOS. VASQUE QUE EXISTA SOLO UN SELECT Y RETUNR 1
+function get_fill_fields(seleccion) {
+  $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
+    if ($(this).val() != "" /* $(this).val()!=null*/ ) {
+      campos_llenos = 1;
+      // console.log('elemento: ', $(this));
+    }
+  });
+  if ($("#span_tallas_chosen").text().trim() !== '') {
+    campos_llenos = 1;
+  }
+  return campos_llenos;
+}
 function ajax_save_list(param){
   $.ajax({
     url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
@@ -552,6 +587,7 @@ function ajax_save_list(param){
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
   });
 }
+
 function ajax_submit_excel(param) {
   $.ajax({
     url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
@@ -566,6 +602,22 @@ function ajax_submit_excel(param) {
           alert('ERROR. NO PUDO ENVIAR EL MAIL, revise esta LISTA PENDIENTE e intentelo otra vez,\n\nSINO CONTACTE A INFORMATICA POR FAVOR');
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
+  });
+}
+function ajax_load_others_dptos(param){
+  $.ajax({
+    url: './models/sku_crear.php',
+    type: 'post',
+    dataType: 'json',
+    data: param,
+    beforeSend: function () {},
+    success: function (data) {
+      // console.log(data);
+      document.getElementById('div_options_dpto').innerHTML = data;
+    },
+    error: function () {
+      console.log('error');
+    }
   });
 }
 function ajax_finalize_list(param){
@@ -587,6 +639,7 @@ function ajax_finalize_list(param){
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden');  }
   });
 }
+/////----- FUNCTION QUE OBTIENE DATOS DE LOS ITEM DEL ARTICULO BUSCADO, CAMBIA LA VISTA AL DPTO OBTENDIO Y LLENA LOS SELECT CON TODOS LOS DATOS SIN DEPENDENCIA
 function ajaxFillSelects(param){
   $.ajax({
     url: './models/sku_crear.php', type: 'post', dataType: 'json', data: param,
@@ -686,6 +739,7 @@ function ajaxAddArticleList(param){
     }
   });
 }
+/////----- FUNCION QUE PINTA EL DPTO A CREAR Y A LA VEZ SETEA EL name_dpto con el departamento actual seleccionado
 function paintContCategory(id_cat){
   color = $("#" + id_cat).css('background-color');
   $(".cont_img_categoria").css('-webkit-transform', 'none'); //quitamos a todos el efecto scale
@@ -700,7 +754,7 @@ function paintContCategory(id_cat){
   $(".cont_img_categoria:hover").css('filer', 'none !important');
   $(".comp_crear_sku").css('background-color', color);
   $('.borrar_contacto').attr('name');
-  name_dpto = id_cat.substr(8, id_cat.length);
+  (id_cat !== 'div_cat_otro') ? name_dpto = id_cat.substr(8, id_cat.length): name_dpto = document.getElementById(id_other_dpto).innerHTML;
 }
 function render_select(table) {
   ///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API

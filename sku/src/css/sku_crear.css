@@ -295,7 +295,7 @@ input[type="number"] {
 #div_crud_relations .body_modal { background-color: rgb(231, 243, 234); }
 #div_crud_prefix .body_modal { background-color: rgb(243, 230, 230); }
 
-/**** ESTILOS PARA EL DROPDOWN EN LA TUERCA CONGIG ****/
+/**** ESTILOS PARA EL DROPDOWN ****/
 .cont_config .dropdown-menu {
   left: -5rem;
   background-color: rgba(6, 16, 105, 0.76) !important;
@@ -311,6 +311,9 @@ input[type="number"] {
 .cont_menu .dropdown-menu>a:hover { color: rgb(4, 70, 75); }
 
 
+/* #div_options_dpto a{
+  z-index: 2001 !important;
+} */
 .cont_hidden {
   display: none !important;
 }
@@ -353,7 +356,22 @@ input[type="number"] {
   margin: 1rem !important;
 } */
 
+#div_options_dpto {
+  top: 0% !important;
+  left: -200 !important;
+  z-index: 100 !important;
+}
 
+#div_dpto_name {
+  width: 100%; 
+  display: flex;
+  justify-content: center;
+}
+#div_dpto_name>span { 
+  color: yellow;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 /*************** MEDIAS QUERYS SKU_CREAR ******/
 @media (max-width: 750px) {
 
