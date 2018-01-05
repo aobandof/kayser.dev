@@ -102,23 +102,25 @@ if($_POST['option']=="cargar_selects_dependientes") {
           else 
             $array_tabla_extraida=$sqlsrv_33->selectArrayUniAssocIdName($query_id_name);         
           // var_dump($array_tabla_extraida);
-          if($tablas_sku[$padre]['type_id']=="INT")
-            $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
-          else
-            $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."'";            
-          if (($arr_rel=$mysqli->select($query_relacion,"mysqli_b_o")) === false) {
-            $data['errors'][]=$mysqli->getErrors();
-            continue;//pasamos al siguiente recorrido de foreach
-          }else{
-            foreach ($arr_rel as $value) {# code...
-              $nom_id_dep_rel=$value[1];
-              $arr_ops[]=Array('id'=>$value[1], 'name'=> $array_tabla_extraida[$nom_id_dep_rel]);
+          if($array_tabla_extraida!==false && $array_tabla_extraida!==0){
+            if($tablas_sku[$padre]['type_id']=="INT")
+              $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."=$codigo_padre";
+            else
+              $query_relacion="SELECT * FROM ".$array_tabla['tabla_rel']." WHERE ".$array_tabla['nom_cod_padre_rel']."='".$codigo_padre."'"; 
+            $arr_rel=$mysqli->select($query_relacion,"mysqli_b_o");           
+            if ($arr_rel === false || $arr_rel ===0 ) {
+              $arr_rel === false ? $data['errors'][]=$mysqli->getErrors() : $data['rel'][]="no existe en tabla: ".$array_tabla['tabla_rel']." tupla relacionada con el valor : ".$codigo_padre." de la tabla padre".$padre."y la tabla hija: ".$tabla;
+              continue;//pasamos al siguiente recorrido de foreach
+            }else{
+              foreach ($arr_rel as $value) {# code...
+                $nom_id_dep_rel=$value[1];
+                $arr_ops[]=Array('id'=>$value[1], 'name'=> $array_tabla_extraida[$nom_id_dep_rel]);
+              }
             }
-          }
-          
+          }else $array_tabla_extraida === false ? $data['errors'][]=$sqlsrv_33->getErrors() : $data['tabla_extraida']=$array_tabla_extraida;
           $querys_export[]=$query_relacion;
         }
-        if($tabla=='talla'){
+        if($tabla=='talla' && $arr_ops!="SIN RESULTADOS"){
           $arr_tallas=[];
           foreach ($arr_ops as $value)
             $arr_tallas[]=array('familia'=>$value['id'], 'tallas'=>cargarTallasToFamilia($value['id']));
@@ -133,6 +135,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
   // $data['querys']=$querys_export;
   $mysqli->closeConnection();
   $sqlsrv_33->closeConnection();
+  header("Content-Type: text/html;charset=utf-8");
   echo json_encode($data);
 }
 
@@ -229,8 +232,7 @@ if($_POST['option']=="fill_selects") {
 if($_POST['option']=="cargar_selects_otros_dptos"){
   // $arr_dptos_excluded=[ 106,108,127,128,129,130 ];
   $query_excluded = 
-  $query=" SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpNam NOT LIKE 'INSUMOS%'
-";
+  $query=" SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpNam NOT LIKE 'INSUMOS%'";
   $arr_query=$sqlsrv_33->selectArrayUniAssocIdName($query);
   $html="";  
   foreach ( $arr_query as $key => $value ){

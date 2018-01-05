@@ -279,7 +279,7 @@ $(document).ready(function() {
     el_txt_art_existente.classList.add('control_hidden');
     el_btn_art_cagar.classList.add('control_hidden');
     id_cat_after_click = $(this).attr('id');
-    console.log($(this).attr('id'));
+    // console.log($(this).attr('id'));
     if( $(this).attr('id') === "div_cat_otro" ){
       document.querySelectorAll('.opcion_other_dpto').forEach( function (opt){
         opt.onclick = function(){
@@ -290,7 +290,6 @@ $(document).ready(function() {
                 campos_llenos=0;                
                 cargarCategoriaCrear(id_cat_after_click);
                 document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
-                console.log(dpto_name);
                 $("#select_sku_color").selectpicker("deselectAll");
                 $("#select_sku_composicion").selectpicker("deselectAll");
                 $("#div_sel_grupo_opciones").html("");
@@ -364,7 +363,7 @@ $(document).ready(function() {
         }else {
           let is_empty = 0;
           var valores = new Object(); //valores necesarios para consultar la BDx y obtener el prefijo
-          valores['padre'] = id_cat_actual.substr(8, id_cat_actual.length)
+          valores['padre'] = name_dpto;//id_cat_actual.substr(8, id_cat_actual.length)
           document.querySelectorAll(".prefijo").forEach(function (ele) {
             if (ele.name == '[@APOLLO_SEASON]' || ele.name == '[@APOLLO_DIV]') {
               ele.name == '[@APOLLO_SEASON]' ? valores['prenda'] = ele.value : valores['categoria'] = ele.value;
@@ -526,7 +525,7 @@ $(document).ready(function() {
     $.ajax({ url : './models/sku_prefijo.php', type : 'post', dataType : 'json', data : values,
       beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
       success : function(data) {
-        // console.log('FROM API: (api: sku_prefijo.php ) ', data);
+        console.log('FROM API: (api: sku_prefijo.php ) ', data);
         // el_div_loader_full.classList.remove('cont_hidden');
         if(!!data['errors']){
           console.log("Error al consultar PREFIJO, en consulta o Conexion a BDx: ");
@@ -709,7 +708,9 @@ function ajaxAddArticleList(param){
         alert(data.nothing);
         console.log(data.nothing);
       } else {
+        console.log('No Existe data.nothing');
         if (!!data.filas && data.filas != '') {
+          console.log('Existe data.filas');
           active_list = data.lista;
           resetAllControls(id_cat_actual); //agregaremos el articulo, veremos el modal pero antes limpiamos los controles
           renderArticleList(data.articulo, data.itemname, data.filas, data.detail, 'NEW',data.existencia);
@@ -941,7 +942,7 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     var parametros = { 'option': 'cargar_selects_independientes' };
   else
     var parametros = { 'option': 'cargar_selects_dependientes', 'nom_tabla_padre': nombre_tabla_padre, 'val_tabla_padre': valor_tabla_padre };
-  // console.log(parametros);
+  console.log(parametros);
   $.ajax({
     url: './models/sku_crear.php', type: 'post', dataType: 'json', data: parametros,
     beforeSend: function () { /*el_div_loader_full.classList.add('cont_hidden');*/ },
@@ -956,7 +957,13 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
           document.getElementById('span_tallas_chosen').innerHTML = '';
           document.getElementById("div_sel_grupo_opciones").innerHTML = "";
           // console.log(item);
-          fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);
+          if (item['options'] != 'SIN RESULTADOS' ) {
+            fillSelectMultiplesGruposFromArray(item['options'], "div_sel_grupo_opciones", false);
+          }else {
+            console.log(data);
+            console.log('SIN RESULTADOS PARA LA TALLA');
+            alert('CONTACTE A INFORMATICA, TODO ARTICULO TIENE QUE TENER UNA TALLA, SI NO FUERA UNA PRENDA, POR LO MENOS UN VALOR DE TALLA UNICA');
+          }
         } else {
           // console.log(item['options']);
           if (item['options'] != "SIN RESULTADOS") {

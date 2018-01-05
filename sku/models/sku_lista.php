@@ -12,6 +12,8 @@ require_once "../config/sku_db_sqlsrv_33.php";
 
 $hoy=date('Y-m-d H.i.s');
 
+$dpto_articulos_unicos=[ 101, 105, 131, 136 ]; // ACCESORIOS, CATALOGO, OTROS Y PACK PROMOCIONAL RESPECTIVAMENTE
+
 if($_POST['option']=="save_article"){
   $lista=$_POST['list'];
   $code_article=strtoupper($_POST['articulo']);
@@ -183,34 +185,47 @@ if($_POST['option']=="save_article"){
   }
 
   ///--- AHORA REGISTRAMOS LOS SKUS 
-  for ($i = 0; $i < $colores_length; $i++){
-    $abrev=$mysqli->getColumnFromColumn('color','abreviatura','nombre','STRING',$colores_name[$i]);
-    for ($j = 0; $j < $tallas_length; $j++){      
-      ($copa!='' && $copa!='S/C') ? $sku=$code_article.'-'.$abrev.$copa.'-'.$tallas_name[$j] : $sku=$code_article.'-'.$abrev.'-'.$tallas_name[$j];
-      if(existSku($sku,'SAP')===true){
-        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
-        $data['exist_in_SAP']=true;
-      }elseif(existSku($sku,'LISTA')===true){
-        $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
-        $data['exist_in_LIST']=true;
-      }else{
-        //$data['stop_before_insert_sku']=true;                
-        $data['exist_not_exist']=true;
-        $barcode=$first_barcode + count($sku_inserteds);
-        $barcode=(string)$barcode;
-        $barcode=$barcode.getControlDigit($barcode);
-        $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa')"; 
-        $data['all_querys'][]=$query_sku;
-        $reg_sku_inserted= $mysqli->insert_easy($query_sku);    
-        if($reg_sku_inserted==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
-          $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
-          $filas.="<div><div>".(($i*$tallas_length)+$j+1)."</div><div>$sku</div><div>$barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$j]</div><div>$img_delete</div></div>"; 
-          $sku_inserteds[]=$sku;     
+  if(array_search($_POST['dpto_code'], $dpto_articulos_unicos)!== false){
+    $sku=$code_article;
+    $barcode=$first_barcode.getControlDigit($first_barcode);
+    $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[0].",'".$colores_name[0]."','".$tallas_name[0]."','".$tallas_orden[0]."','$copa','$fcopa')"; 
+    $data['all_querys'][]=$query_sku;
+    $reg_sku_inserted= $mysqli->insert_easy($query_sku);
+    if($reg_sku_inserted==1){
+      $sku_inserteds[]=$sku;
+      $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
+      $filas.="<div><div>1</div><div>$sku</div><div>$barcode</div><div>$colores_name[0]</div><div>$tallas_name[0]</div><div>$img_delete</div></div>";    
+    }else $reg_sku_inserted===false ? $data['errors'][]=$mysqli->getErrors() : $data['errors'][]="SIMPLEMENTE NO SE REGISTRO $sku"; 
+  } else { // SI EL DPTO INCLUYE ARCITULOS CON COLOR Y TALLA ENTONCES SE CREAN LOS SKUS PARA LAS COMBINACIONES
+    for ($i = 0; $i < $colores_length; $i++){
+      $abrev=$mysqli->getColumnFromColumn('color','abreviatura','nombre','STRING',$colores_name[$i]);
+      for ($j = 0; $j < $tallas_length; $j++){      
+        ($copa!='' && $copa!='S/C') ? $sku=$code_article.'-'.$abrev.$copa.'-'.$tallas_name[$j] : $sku=$code_article.'-'.$abrev.'-'.$tallas_name[$j];
+        if(existSku($sku,'SAP')===true){
+          $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN SAP');
+          $data['exist_in_SAP']=true;
+        }elseif(existSku($sku,'LISTA')===true){
+          $sku_refused[]=array('sku'=>$sku, 'detalle'=>'EXISTE EN LISTA');
+          $data['exist_in_LIST']=true;
         }else{
-          $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR AL GUARDAR SKU"); 
-          $reg_sku_inserted===false ? $data['errors'][]=$mysqli->getErrors() : $data['errors'][]="SIMPLEMENTE NO SE REGISTRO $sku";             
-        }
-      }      
+          //$data['stop_before_insert_sku']=true;                
+          $data['exist_not_exist']=true;
+          $barcode=$first_barcode + count($sku_inserteds);
+          $barcode=(string)$barcode;
+          $barcode=$barcode.getControlDigit($barcode);
+          $query_sku="INSERT INTO sku VALUES('$sku','$code_article','$barcode',".$colores_code[$i].",'".$colores_name[$i]."','".$tallas_name[$j]."','".$tallas_orden[$j]."','$copa','$fcopa')"; 
+          $data['all_querys'][]=$query_sku;
+          $reg_sku_inserted= $mysqli->insert_easy($query_sku);    
+          if($reg_sku_inserted==1){//agregamos a la Base de datos y creamos la fila para dibujar el div_article          
+            $img_delete = '<img src="../shared/img/cancel.png" alt="" class="icon_fila_tabla_modal" id="'.$sku.'">';        
+            $filas.="<div><div>".(($i*$tallas_length)+$j+1)."</div><div>$sku</div><div>$barcode</div><div>$colores_name[$i]</div><div>$tallas_name[$j]</div><div>$img_delete</div></div>"; 
+            $sku_inserteds[]=$sku;     
+          }else{
+            $sku_refused[]=array('sku'=>$sku, 'detalle'=>"ERROR AL GUARDAR SKU"); 
+            $reg_sku_inserted===false ? $data['errors'][]=$mysqli->getErrors() : $data['errors'][]="SIMPLEMENTE NO SE REGISTRO $sku";             
+          }
+        }      
+      }
     }
   }
 

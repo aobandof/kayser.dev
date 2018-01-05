@@ -161,6 +161,7 @@ body, html {
   border: 0px;
   font-weight: bold;
   font-size: .9rem;
+  background-color: #ECEEEF;
 }
 #txt_sku_correlativo {
   flex: 0 1 35%;
@@ -310,6 +311,15 @@ input[type="number"] {
 .cont_menu .dropdown-menu>a { color: rgb(255, 255, 255); }
 .cont_menu .dropdown-menu>a:hover { color: rgb(4, 70, 75); }
 
+#div_options_dpto {
+  top: 0% !important;
+  left: -200 !important;
+  z-index: 100 !important;
+  background-color: rgba(45, 2, 65, 0.808) !important;
+}
+#div_options_dpto>a { color: rgb(244, 248, 244); }
+#div_options_dpto>a:hover { color: rgb(1, 41, 27); }
+
 
 /* #div_options_dpto a{
   z-index: 2001 !important;
@@ -355,12 +365,6 @@ input[type="number"] {
 /* .cont_tipo_ingreso option {
   margin: 1rem !important;
 } */
-
-#div_options_dpto {
-  top: 0% !important;
-  left: -200 !important;
-  z-index: 100 !important;
-}
 
 #div_dpto_name {
   width: 100%; 

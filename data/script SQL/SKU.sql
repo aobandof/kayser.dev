@@ -10,7 +10,7 @@ SELECT TOP 10 * FROM Kayser_DIV	-- CATEGORIA
 
 --- TABLAS EN EL 33
 SELECT TOP 10 * FROM OITM			-- SKU
-SELECT TOP 1 U_APOLLO_SEG1 FROM OITM -- ARTICULOS
+SELECT U_APOLLO_SEG1 FROM OITM -- ARTICULOS
 SELECT * FROM OITB						-- DPTO
 SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB	-- DPTO	
 SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130

@@ -27,27 +27,27 @@ if($existe_error_conexion){
   $first='';
   $data=[];
   $querys_export=[];
+  ///--- NIVEL 4
   $query4="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda' AND Categoria_codigo='$categoria' AND SubDpto_id=$subdpto";
   $querys_export[]=$query4;
-
-  ///--- NIVEL 4
   if(($arr_prefijos4=$mysqli->select($query4,"mysqli_a_o"))!=0){
     $prefijo=$arr_prefijos4[0]['prefijo'];
-  }else{ ///--- NIVEL 3
+  }else{ 
+    ///--- NIVEL 3
     $query3_1="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id='$subdpto'  AND Prenda_codigo='$prenda'";
     $query3_2="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id='$subdpto'  AND Categoria_codigo=$categoria";
     $query3_3="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo=$prenda  AND Categoria_codigo=$categoria"; 
-    // echo $query3_1."<br>";  
-     $querys_export[]=$query3_1;     
-     $querys_export[]=$query3_2;
-     $querys_export[]=$query3_3;
+    $querys_export[]=$query3_1;     
+    $querys_export[]=$query3_2;
+    $querys_export[]=$query3_3;
     if(($arr_prefijos3=$mysqli->select($query3_1,"mysqli_a_o"))!=0){
       $prefijo=$arr_prefijos3[0]['prefijo'];
     }elseif(($arr_prefijos3=$mysqli->select($query3_2,"mysqli_a_o"))!=0){
       $prefijo=$arr_prefijos3[0]['prefijo'];
     }elseif(($arr_prefijos3=$mysqli->select($query3_3,"mysqli_a_o"))!=0){
       $prefijo=$arr_prefijos3[0]['prefijo'];
-    }else{ ///--- NIVEL 2
+    }else{
+      ///--- NIVEL 2
       $query2_1="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND Prenda_codigo='$prenda'";
       $query2_2="SELECT prefijo from relacionprefijo WHERE Dpto_codigo=$dpto AND SubDpto_id=$subdpto";
       $querys_export[]=$query2_1;
