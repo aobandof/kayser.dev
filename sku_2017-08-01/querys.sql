@@ -1,0 +1,1 @@
+"INSERT INTO articulo ( codigo, lista_id, itemname, marca_code, marca_name, dpto_code, dpto_name, subdpto_code, subdpto_name, talla_familia ) VALUES ('96.01',4,'96.01 - BOXER LOLO LARGO JUVENIL',100,'',0,'',0,'',T03')"

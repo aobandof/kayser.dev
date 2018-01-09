@@ -1,0 +1,21 @@
+opcion_ingreso
+  valores:
+    - nuevo // inicio y el_sel_tipo_ingreso.value=nuevo
+    - el_sel_tipo_ingreso.value = existente_sap
+    - edit_detalle // cuando se cliquea btn_edit_detalle
+    - add_color_talla // cuando se clicquea btn_add_color_talla
+  
+  eventos o funciones donde se altera
+    - $.document.ready                    // opcion_ingreso='nuevo'
+    - el_sel_tipo_ingreso.onchange        // opcion_ingreso = this.value;
+    - $(".cont_img_categoria").click      // opcion_ingreso='nuevo'
+    - ajaxFillSelects                     // if(param.origin=='sap'){ opcion_ingreso = 'existente_sap'; } else { opcion_ingreso = 'existente_lista'; }  
+    - resetAllControls                    // opcion_ingreso='nuevo';         
+
+  eventos o funciones donde se usa (en condicionales)
+    - document.getElementById('btn_create_article_list').onclick
+    - 
+
+
+articulo_existente
+  valores

@@ -357,7 +357,7 @@ input[type="number"] {
 }
 .cont_tipo_ingreso>select {  flex: 0 1 45%; }
 .cont_tipo_ingreso>input[type="text"] {
-  flex: 0 1 25%;
+  flex: 1 1 25%;
   text-align: center;
   background-color: rgb(223, 248, 152);
 }

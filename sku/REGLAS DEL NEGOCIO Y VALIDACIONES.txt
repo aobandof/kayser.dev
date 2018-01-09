@@ -49,11 +49,10 @@ IDEAS:
 PENDIENTE YA:
 -------------
 
-me quede en que cuando agrega un articulo existente, y despes limpia y al querer agregar otro muestra el cde_article del anterior que era existente
+me quede en agregar un boton CANCELAR EDICION para cuando se editen detalle o se agreguen tallas/color, al cancelar, setee article_editing='';
+además programar que cuando se clickee boton ADD_ARTICLE_LIST que pregunte si se esta editando el articulo, si es asi considerar el_txt_arr_
 
---- MODIFICAR BD AGREGANDO UN CAMPO A LA TABLA articulo que indidque si es existente o no  ...
 --- terminar la funcion para resetear todos los controles y aplicarlos cuando se cambia de tipo_ingreso
---- ver tema pendiente para que revision pueda ver los detalles de los articulos de la lista
 
 
 --- EVENTOS PARA EDITAR DETALLE DE ARTICULO O AGREGAR COLOR/TALLA/COPA PARA UN ARTICULO

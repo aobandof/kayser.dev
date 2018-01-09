@@ -99,6 +99,30 @@ class DBConnection {
     else
       return 0;
   }
+  /////----- FUNCION QUE RETORNA TRs de una consulta -----/////
+  public function selectTable($query){
+    /////----- por ahora solo de sqlsr
+    $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
+    if($this->_registros_select===false){
+      return false;
+    }else {    
+      if(sqlsrv_num_rows($this->_registros_select)>0){
+        $table='';
+        $quant_fields=sqlsrv_num_fields($this->_registros_select);
+        while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_NUMERIC)){ 
+          $table.='<tr>';
+          for($i=0; $i<$quant_fields; $i++){
+            if($i==3)
+              $table.="<td>".date_format($reg[$i], 'Y-m-d')."</td>";
+            else
+              $table.="<td>".$reg[$i]."</td>";                      
+          }
+          $table.="</tr>";
+        }
+      }
+      return $table;
+    }
+  }
   ######################   FUNCION PARA LAS INSERCIONES   ########################
   public function insert_easy($query){
     if(!($this->_connection->query($query))){

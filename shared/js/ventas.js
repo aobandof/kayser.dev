@@ -16,7 +16,6 @@ $(document).ready(function(){
             horizontal: 'left',
             vertical: 'bottom'
         }
-
     });
 
     el_loading=document.getElementById("div_loading_ventas");

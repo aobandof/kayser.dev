@@ -1,0 +1,6 @@
+*   agregar un campo "existencia" que indique si el articulo es nuevo o existe en sap,
+    modificar script php adiciando a los insert y select de este ariculo este campo
+
+*   modificar la tabla articulo y solo dejar not null al codigo, los demas pueden ser nulos;
+
+*   

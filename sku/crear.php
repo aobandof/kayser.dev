@@ -161,7 +161,7 @@ if(isset($_SESSION['user'])){
             <!-- <div class="cont_fila_crear_sku container_row" ><button class="btn btn-primary" >VER CÓDIGOS SKU A GENERAR:</button></div><br> -->
             <!-- <div id="div_rel_skus">Relación de códigos SKUs aquí..</div> -->
             <div id="div_skus_existentes" class="cont_hidden">
-              <div>SKU EXISTENTES EN SAP</div>
+              <div id='div_title_skus_existentes'>SKU EXISTENTES EN SAP</div>
               <div id="dtable_skus_existentes"></div>
               
             </div>

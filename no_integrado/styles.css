@@ -1,0 +1,320 @@
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+}
+.modal_loading_full {
+  padding-top: 10rem;
+  position: absolute !important;
+  height: 100% !important;
+  width: 100% !important;
+  background-color: rgba(255, 255, 255, 0.397) !important;
+  display: flex !important;
+  justify-content: center;
+  z-index: 11 !important;
+}
+
+.modal_loading_full img {
+  height: 8rem;
+  width: 8rem;
+}
+.cont_hidden {
+  display: none !important;
+}
+
+#no_integrado {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* background-color: lightcyan; */
+}
+#no_integrado .cont_botonera {
+    display: flex;
+    justify-content: space-between;
+    flex: 0 0 8%;
+    align-items: center;
+    background-color: rgba(2, 47, 77, 0.699);
+    margin: 0px;
+}
+#no_integrado .cont_filtros {
+  display: flex;
+  flex: 0 1 80%;
+  flex-direction: 0 0 80% !important;
+  /* justify-content: center; */
+  /* border: 1px solid green; */
+  
+}
+#no_integrado .cont_filtros>button {
+   margin: 1rem;
+   font-size: 1.8rem;
+   font-weight: bold;
+   border: 1px solid white;
+}
+#no_integrado .cont_filtros>span {
+  margin: 1rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+}
+#div_cont_calendar1, #div_cont_calendar2 {
+  flex: 0 1 25% !important;
+  display: flex;
+}
+.input-group {
+  margin: 1rem;
+}
+
+.input-group>span {
+  background-color: #dfeef5;
+  text-align: center !important;
+  padding-left: 2rem;
+  padding-right: 3rem;
+  color: blue;
+  /* font-weight: bold; */
+  font-size: 1.8rem;
+}
+.input-group>input{
+  font-size: 1.5rem;
+  border:  1px solid white;
+}
+#div_table_no_integrado {
+  flex: 1 1 auto;
+  overflow-y: auto !important;
+  margin: .5rem;
+}
+#div_table_no_integrado>table {
+  width: 100%;
+ }
+#div_table_no_integrado table td {
+  font-size: 1rem;
+  border: 1px solid lightseagreen;
+  padding: .1rem .2rem;  
+}
+#div_table_no_integrado table th {
+  font-size: 1.2rem;
+  background-color: rgb(37, 54, 207);
+  color: yellow;
+  padding: .3rem;
+  border: 1px solid white;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+/***** ALTER STYLES FROM BOOTSTRAP ****/
+.input-group .bootstrap-datetimepicker-widget ul.list-unstyled {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0rem !important;
+  padding: 0rem !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget table tr {
+  display: flex;
+  justify-content: center;
+  /* width: 100% !important; */
+}
+
+.input-group .bootstrap-datetimepicker-widget table thead tr:nth-child(1) {
+  margin-bottom: .5rem;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th.prev,
+.input-group .bootstrap-datetimepicker-widget table th.next {
+  width: 2.5rem !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th.prev {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th.next {
+  border-top-right-radius: .5rem;
+  border-bottom-right-radius: .5rem;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th {
+  text-align: center;
+  border-radius: 0px;
+  background-color: rgba(0, 87, 128, 0.747);
+  color: #fff;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th.dow {
+  width: 3.5rem;
+  font-size: 1.2rem !important;
+  text-align: center !important;
+  padding: .3rem !important
+}
+
+.input-group .bootstrap-datetimepicker-widget table td {
+  text-align: center;
+  border-radius: 0px;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: blue;
+  border: 1px solid rgba(192, 192, 192, 0.418);
+}
+
+.input-group .bootstrap-datetimepicker-widget table td.day {
+  color: rgb(12, 80, 182);
+  width: 3.5rem;
+}
+
+.input-group .bootstrap-datetimepicker-widget table td.old,
+.input-group .bootstrap-datetimepicker-widget table td.new {
+  color: rgba(128, 128, 128, 0.767);
+}
+
+.input-group .bootstrap-datetimepicker-widget table td.active {
+  color: white !important;
+  background-color: rgba(0, 87, 128, 0.747) !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget table td.today.active {
+  color: yellow !important;
+  background-color: rgba(0, 87, 128, 0.747) !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget table th.picker-switch {
+  width: 19.5rem !important;
+  font-size: 1.5rem !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch {
+  line-height: 0rem !important;
+  margin: .5rem !important;
+  padding: 0rem !important;
+  border: 0px !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr {
+  /* background-color: green; */
+  width: 24.5rem !important;
+  border: 0px !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td {
+  border: 0px !important;
+  margin: 0px !important;
+  padding: 0px !important;
+  /* height: 100% !important; */
+  line-height: 0rem !important;
+  width: 100%;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td a {
+  padding: 0rem !important;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  margin: 0px !important;
+  border: 0px !important;
+  /* line-height: 0rem !important;    */
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td a span:hover {
+  background-color: rgba(0, 87, 128, 0.747) !important;
+  color: white !important;
+  border-radius: .5rem !important;
+  background-color: rgba(0, 87, 128, 0.747) !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td a span:before {
+  padding: 0rem !important;
+  margin: 0px !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td a span:after {
+  padding: 0rem !important;
+  margin: 0px !important;
+}
+
+.input-group .bootstrap-datetimepicker-widget li.picker-switch tr td a span {
+  padding: 0rem !important;
+  margin: 0px !important;
+  color: white;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  border-radius: .7rem !important;
+  background-color: rgba(0, 87, 128, 0.747) !important;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden !important;
+}
+
+
+/******* PARA EL DIV MESES *****/
+
+.input-group .datepicker-months table tbody tr td {
+  display: flex;
+  width: 24.5rem;
+  height: 18rem;
+  flex-wrap: wrap;
+}
+
+.input-group .datepicker-months table tbody tr td span {
+  width: 5rem !important;
+  height: 5rem !important;
+  /* background-color: rgba(180, 238, 240, 0.719); */
+}
+
+
+/***** PARA LAS HORAS ****/
+
+.input-group .timepicker-picker table tr td {
+  border: 0px !important;
+  margin: .5rem !important;
+  /* line-height: 0rem !important; */
+}
+
+.input-group .timepicker-picker table tr td.separator {
+  width: 2.5rem;
+}
+
+.input-group .timepicker-picker table td span {
+  display: flex !important;
+  flex-direction: center !important;
+  align-items: center !important;
+  justify-content: center;
+}
+
+.input-group .timepicker-picker table td a span {
+  width: 4rem;
+  height: 3rem;
+  background-color: rgba(0, 87, 128, 0.747) !important;
+  color: white;
+}
+
+.input-group .timepicker-picker table td span.glyphicon {
+  margin: 0rem !important;
+  padding: 0rem !important;
+  line-height: 0rem !important;
+}
+
+.input-group .timepicker-picker table td span.timepicker-hour,
+.input-group .timepicker-picker table td span.timepicker-minutes,
+.input-group .timepicker-picker table td span.timepicker-seconds {
+  padding: 0rem !important;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+

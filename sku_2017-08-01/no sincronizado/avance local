@@ -1,0 +1,21 @@
+sku_crud.js:
+------------
+
+function cargarTablaRelations(){
+  parameters= { 'option': 'get_prefix_relations'};
+  $.ajax({ url: 'sku_relations_crud.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function (){ },
+    success: function(data){
+      console.log(data);      
+    },
+    error: function(){ console.log('error'); }
+  });
+}
+
+
+sku_crear.js:
+------------
+  $("#a_opcion_config_prefix").click(function () { 
+    $("#div_crud_prefix").css('visibility', 'visible'); 
+    cargarTablaRelations(); 
+  }); //MOSTRAMOS MODAL PREFIJOS
