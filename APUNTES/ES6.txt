@@ -1,0 +1,17 @@
+for.. of : Recorrer un array, string, etc.
+--------
+let arr_iterable = [10, 20, 30]
+for ( let value of arr_iterable ) {
+	console.log(value);
+}
+
+Map: El objeto Map es un Mapa de elementos clave/valor
+---
+Ejemplo:
+	let iterable = new Map([["a", 1], ["b", 2], ["c", 3]]);
+Todas las instancias de Map heredan de Map.prototype, por ello sus metodos usan la sintaxis; Map.prototype.nombre_metodo o simplemente Map.nombre_metodo
+
+Mas detalles en : https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/Map
+
+
+
