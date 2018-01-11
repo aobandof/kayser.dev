@@ -815,7 +815,7 @@ function paintContCategory(id_cat){
   $(".cont_img_categoria:hover").css('filer', 'none !important');
   $(".comp_crear_sku").css('background-color', color);
   $('.borrar_contacto').attr('name');
-  console.log(id_other_dpto);
+  // console.log(id_other_dpto);
   (id_cat !== 'div_cat_otro') ? name_dpto = id_cat.substr(8, id_cat.length): name_dpto = document.getElementById(id_other_dpto).innerHTML;
 }
 
@@ -903,14 +903,14 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
   document.querySelectorAll('.btn_add_color_talla').forEach(function (but_add) {
     but_add.onclick = function () {
       // alert("entro");
-      el_arti = but_add.parentNode.parentNode.parentNode;
-      id_el_arti = el_arti.id;
-      cod_arti = id_el_arti;
-      if (cod_arti.indexOf('_') != -1) {
-        cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
-        cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-      }
-      console.log(cod_arti);
+      /// el_arti = but_add.parentNode.parentNode.parentNode;
+      /// id_el_arti = el_arti.id;
+      /// cod_arti = id_el_arti;
+      /// if (cod_arti.indexOf('_') != -1) {
+      ///   cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
+      ///   cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
+      /// }
+      /// console.log(cod_arti);
     }
   });
 

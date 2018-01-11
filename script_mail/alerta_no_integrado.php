@@ -40,6 +40,7 @@ if($table==''){
 }
 ///--- ############################### ---
 ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
+
 $destinatario ="aobando@kayser.cl";
 $headers = "MIME-Version: 1.0\r\n"; 
 $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML

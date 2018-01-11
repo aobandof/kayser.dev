@@ -21,19 +21,22 @@ $(document).ready(function () {
   el_txt_from=document.getElementById('text_calendar1');
   el_txt_to = document.getElementById('text_calendar2');
   document.getElementById('button_search_errors').onclick = function(btn){
-    parameters = { 'from': el_txt_from.value, 'to': el_txt_to.value }
-    ajaxGetTable(parameters);
+    renderTable( function(result) {
+      document.getElementById('div_table_no_integrado').innerHTML = result;
+    });
   }
 })
 
-function ajaxGetTable (param) {
-  $.ajax({ url: 'modelo.php', type: 'post', dataType: 'json', data: param,
-    beforeSend: function (){ el_loading.classList.toggle("cont_hidden"); },
-    success: function(data){
+function renderTable(callback){
+  parameters = { 'from': el_txt_from.value, 'to': el_txt_to.value }
+  $.ajax({
+    url: 'modelo.php', type: 'post', dataType: 'json', data: parameters,
+    beforeSend: function () { el_loading.classList.toggle("cont_hidden"); },
+    success: function (data) {
       el_loading.classList.toggle("cont_hidden");
       console.log(data);
-      document.getElementById('div_table_no_integrado').innerHTML=data.table;
+      callback(data.table);
     },
-    error: function(){ console.log('error'); el_loading.classList.toggle("cont_hidden"); }
+    error: function () { console.log('error'); el_loading.classList.toggle("cont_hidden"); }
   });
 }
