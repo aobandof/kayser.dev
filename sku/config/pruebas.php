@@ -1,5 +1,5 @@
 <?php
-echo "hola\n";
+
 require_once "require.php";
 require_once "sku_db_mysqli.php";
 require_once "sku_db_sqlsrv_33.php";
@@ -12,8 +12,9 @@ header("Content-Type: text/html;charset=utf-8");
 // getOptionsSelected('grupouso','Niñós');
 // getOptionsSelected('material','ALGODÓN');
 
+probando();
 
-echo "holota";
+// echo "holota";
 // echo "cantidad de registros";
 // echo $mysqli->quantityRecords('SELECT codigo FROM articulo WHERE lista_id=2');
 // ini_set('max_execution_time', 300);
@@ -35,3 +36,9 @@ echo "holota";
 //   echo 'existe';
 // else
 //   echo 'NO EXISTE';
+
+function probando(){
+  global $env;
+  $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'otros';
+  echo $destinatario;
+}

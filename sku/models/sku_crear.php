@@ -208,7 +208,7 @@ if($_POST['option']=="fill_selects") {
     $data['selects'][]=array('select'=> 'material', 'options' => getOptionsSelected('material',$arr_articulo[0]['material_name']) );    
     $data['selects'][]=array('select'=> 'color', 'options' => getOptionsSelected('color','') );
     $data['selects'][]=array('select'=> 'copa', 'options' => getOptionsSelected('copa','') );
-    $data['selects'][]=array('select'=> 'formacopa', 'options' => getOptionsSelected('formacopa','') ); 
+    $data['selects'][]=array('select'=> 'fcopa', 'options' => getOptionsSelected('formacopa','') ); 
     $data['selects'][]=array('select'=> 'tprenda', 'options' => getOptionsSelected('tprenda',$arr_articulo[0]['tprenda_name']) );
     $data['selects'][]=array('select'=> 'tcatalogo', 'options' => getOptionsSelected('tcatalogo',$arr_articulo[0]['tcatalogo_name']) );
     $data['selects'][]=array('select'=> 'grupouso', 'options' => getOptionsSelected('grupouso',$arr_articulo[0]['grupouso_name']) );

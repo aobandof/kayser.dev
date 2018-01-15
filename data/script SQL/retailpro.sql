@@ -36,6 +36,10 @@ SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codi
                   sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] 
 FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(DATETIME, '2017-07-01 00:00:00', 102) AND  U_GSP_CADATA<CONVERT(DATETIME, '2017-12-15 00:00:00', 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
 
+SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino],
+                  sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] 
+FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(varchar, GETDATE() - 15, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
+
 
 -- 192.168.0.13: MAESTRO DE LOCALES
 -- BD:	Stock
@@ -91,6 +95,15 @@ from   [192.168.0.17].[WMSTEK_KAYSER].[dbo].[Existencia]   as t0 inner join
 where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2')
 GROUP BY t0.IdArticulo, t0.idalmacen, t3.WhsName  --ORDER BY IdArticulo
 
+
+select t0.IdArticulo AS [Codigo Producto], t0.IdArticulo AS [Descripcion Producto], t0.idalmacen AS [Codigo Local], t3.WhsName AS [Descripcion Local], convert(varchar,convert(date, GETDATE(),102)) AS [Fecha Inicio],
+convert(varchar,convert(date, GETDATE(),102)) AS [Fecha termino], CAST(SUM(t0.Cantidad) as int) * 0 AS [Venta total unidades], CAST(SUM(t0.Cantidad) as int) * 0  AS [Venta Total en Valor], CAST(SUM(t0.Cantidad) AS int) AS [Inventario en unidades],
+CAST(SUM(t0.Cantidad)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], CAST(SUM(t0.Cantidad) as int) * 0 AS [Venta Total en Valor Costo]
+from [192.168.0.17].[WMSTEK_KAYSER].[dbo].[Existencia]   as t0 inner join [192.168.0.17].[WMSTEK_KAYSER].[dbo].[ubicacion] as t1 on t0.IdUbicacion=t1.IdUbicacion
+inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.idalmacen COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.idarticulo=t2.ItemCode COLLATE Modern_Spanish_CS_AS             
+where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2') GROUP BY t0.IdArticulo, t0.idalmacen, t3.WhsName  --ORDER BY IdArticulo
+
+
 --INVENTARIO TIENDAS
 -- 192.168.0.13 -- BD Stock
 select            t0.itemcode AS [Codigo Producto],
@@ -113,4 +126,10 @@ from   Stock.dbo.Kayser_OITW                                           as t0 inn
        
 where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 
 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode
+
+select t0.itemcode AS [Codigo Producto], t0.itemcode AS [Descripcion Producto], t0.whscode AS [Codigo Local], t3.WhsName AS [Descripcion Local], convert(date, GETDATE()) AS [Fecha Inicio], convert(date, GETDATE()) AS [Fecha termino],
+CAST(SUM(t0.onhand) as int) * 0 AS [Venta total unidades], CAST(SUM(t0.onhand) as int) * 0  AS [Venta Total en Valor], CAST(SUM(t0.onhand) AS int) AS [Inventario en unidades],
+CAST(SUM(t0.onhand)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], CAST(SUM(t0.onhand) as int) * 0 AS [Venta Total en Valor Costo]                                  
+from Stock.dbo.Kayser_OITW as t0 inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.WhsCode COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS      
+where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode
  

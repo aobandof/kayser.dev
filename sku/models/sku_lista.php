@@ -295,10 +295,10 @@ if($_POST['option']=="save_list") {
     $data['creation']=true;
     ///--- ############################### ---
     ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
-    $subject="NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
+    $subject = ( $env=='dev' ) ? "(PRUEBA - CONSIDERAR) NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)" : "NOTIFICACION DE CREACION DE SKUS (Lista N° $lista)";
     $link="http://192.168.0.19/sku/crear.php?list=$lista&status=CREADA&option=show";
     $message="Se creo la lista N° $lista con SKUS pendientes de Revisar.<br><br>Ingresar al sistema y elegir LISTAS PENDIENTES para revisar esta LISTA<br><br>O puede usar el siguiente enlace:<br><a href='$link'>$link</a> ";
-    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+    $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
     $headers .= "From: CREACION DE SKUs <sku@kayser.cl>\r\n";
@@ -527,8 +527,8 @@ if($_POST['option']=='finalize_list'){
     
     ///--- ############################### ---
     ///--- AHORA ENVIAMOS EL MAIL:
-    $subject="SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
-    $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+    $subject = ( $env=='dev' ) ? "(PRUEBA - CONSIDERAR) SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)" : "SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
+    $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
     $headers = "From: FINALIZACION DE CREACION DE SKUs <sku@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: application/octet-stream; name=SKUS CARAGADOS A SAP\r\n"; //envio directo de datos
@@ -586,6 +586,7 @@ if($_POST['option']=='delete_article'){
 function sendMail($arr_cont){
   global $nomb_lista;
   global $lista;
+  global $env;
   // $boundary=uniqid('np');
   $multipartSep = '-----'.md5(time()).'-----';
   $content_csv="RecordKey;ItemCode;BarCode;ForceSelectionOfSerialNumber;ForeignName;GLMethod;InventoryItem;IsPhantom;IssueMethod;SalesUnit;ItemName;ItemsGroupCode;ManageStockByWarehouse;PlanningSystem;SWW;U_APOLLO_SEG1;U_APOLLO_SEG2;U_APOLLO_SSEG3;U_APOLLO_SEG3;U_APOLLO_SEASON;U_APOLLO_APPGRP;U_APOLLO_SSEG3VO;U_APOLLO_ACT;U_MARCA;U_EVD;U_MATERIAL;U_ESTILO;U_SUBGRUPO1;U_APOLLO_COO;U_GSP_TPVACTIVE;AvgStdPrice;U_APOLLO_DIV;U_IDDiseno;U_IDCopa;U_FILA;U_APOLLO_S_GROUP;U_GSP_SECTION\r\n";
@@ -624,9 +625,9 @@ function sendMail($arr_cont){
   ///--- ############################### ---
   ///--- DATOS PARA ENVIO DE CSV AL MAIL ---
   ///--- ############################### ---
-  $subject="NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
+  $subject = ( $env=='dev' ) ? "(PRUEBA - NO CONSIDERAR) NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)" : "NOTIFICACION DE REVISION PARA CARGA DE SKUS (Lista N° $lista)";
   $link="http://192.168.0.19/sku/crear.php?list=$lista&status=REVISADA&option=show";
-  $destinatario ="aobando@kayser.cl,sku@kayser.cl";
+  $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
 
   $header  = "MIME-Version: 1.0\r\n"; 
   $header .= "From: REVISION DE SKUs <sku@kayser.cl>\r\n";

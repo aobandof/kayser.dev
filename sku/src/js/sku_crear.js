@@ -381,7 +381,7 @@ $(document).ready(function() {
           el.options[el.selectedIndex].text === "SOSTEN" ? document.getElementById('div_copa').style.display = 'flex' : document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
           cargarSelectsSku('[@APOLLO_SEASON]', el.value);            
         }else if (el.id === "select_sku_categoria") {
-          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex] && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text == "CON SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
+          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex] && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text == "CON SOSTEN") || (!!el.options[el.selectedIndex].text && el.options[el.selectedIndex].text == "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO
           el_sel_presentacion.value="";
         }else {
           let is_empty = 0;
@@ -685,7 +685,6 @@ function ajaxFillSelects(param){
         id_other_dpto = 'dpto_' + data.dpto_codigo;
         // console.log(id_other_dpto);
         name_dpto = data.dpto_nombre;
-
         ///obtenemos el departamento y hacemos el cambio al que corresponde
         if (data.dpto_codigo != code_dpto) { //CAMBIAMOS VISUALMENTE AL DEPARTAMENTO QUE CORRESPONDE
           id_cat_actual = 'div_cat_' + data.dpto_nombre.toLowerCase();
@@ -693,10 +692,8 @@ function ajaxFillSelects(param){
         }
         code_dpto = data.dpto_codigo;
         el_txt_descripcion.value = data.itemname;
-        console.log(el_sel_prenda.selectedIndex, el_sel_categoria.selectedIndex);
         if(param.origin=='sap'){
-          opcion_ingreso = 'existente_sap';
-          ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text === "CON COPA")) ? document.getElementById('div_copa').style.display = 'flex': document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO          
+          opcion_ingreso = 'existente_sap';    
         }else {
           opcion_ingreso = 'existente_lista';
         }
@@ -704,8 +701,7 @@ function ajaxFillSelects(param){
         if(!!data.skus){
           document.getElementById('div_skus_existentes').classList.remove('cont_hidden');
           document.getElementById('dtable_skus_existentes').innerHTML=data.skus;
-        }
-        
+        }        
         ///--- llenamos los select          
         if(!!data.selects){
           cant_selects=data.selects.length;
@@ -745,7 +741,12 @@ function ajaxFillSelects(param){
             el_txt_correlativo.disabled = true;
           }
         }
-        ///obtenemos los option con cada nombre de tabla=select
+        ///despues que llenamos los selects, verificamos si mostramos o no el el div_copas
+        if ((!!el_sel_prenda.options[el_sel_prenda.selectedIndex].text && el_sel_prenda.options[el_sel_prenda.selectedIndex].text == "SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON SOSTEN") || (!!el_sel_categoria.options[el_sel_categoria.selectedIndex].text && el_sel_categoria.options[el_sel_categoria.selectedIndex].text == "CON COPA")) {
+          document.getElementById('div_copa').style.display = 'flex';
+        } else {
+          document.getElementById('div_copa').style.display = 'none'; //SETEO ESTATICO    
+        }
       }
     },
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }

@@ -52,6 +52,8 @@ PENDIENTE YA:
 me quede en agregar un boton CANCELAR EDICION para cuando se editen detalle o se agreguen tallas/color, al cancelar, setee article_editing='';
 además programar que cuando se clickee boton ADD_ARTICLE_LIST que pregunte si se esta editando el articulo, si es asi considerar el_txt_arr_
 
+--- cuando un reviser crea y revisa la misma lista, en listas.php no se verifica "revisado por", dado que en Bd, el estado de la lista = "REVISADA" pero en la relacion lista_has_usuario, no se guarda la operacion "REVISION"
+
 --- terminar la funcion para resetear todos los controles y aplicarlos cuando se cambia de tipo_ingreso
 
 
