@@ -107,7 +107,7 @@ if($conn_id)
 			# Cambiamos al directorio especificado
 			if(@ftp_chdir($conn_id,$ruta))
 			{
-        ftp_pasv($conn_id, true);//parece ser que siempre hay errores, se agregó para se sea en modo pasivo
+        ftp_pasv($conn_id, true);//por defecto en Linux, la conexion se establece en modo activo ( servidor ->cliente), por esto la cambiamos modo pasivo ya que nosotros estableceremos la conexion
 				# Subimos el fichero
 				if(@ftp_put($conn_id,$nombre_archivo_destino,"plantilla_stock_kayser.csv",FTP_ASCII/*FTP_BINARY*/))
 					echo "Fichero subido correctamente";

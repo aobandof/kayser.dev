@@ -1,0 +1,13 @@
+variables de configuracion
+
+listen=YES 		//para que el servidor inicie con el sistema
+
+local_enable=YES	//para permitir usuarios locales del sistema como usuarios FTP
+write_enable=YES	//para que lo usuarios puedan escribir y no solo descargar
+local_umask=22		//para que cada vez que se suba un archivo, sus permisos sean 755
+
+#anon_upload_enable=YES
+#anon_write_enable=YES	//para que usuarios anonimos puedan subir y escribir archivos, por defecto deshabilitada y es opcional
+connect_from_port_20=YES
+chroot_local_user_YES	//para que los usuarios locales tengan solo acceso a su home
+

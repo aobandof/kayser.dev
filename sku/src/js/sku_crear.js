@@ -533,7 +533,7 @@ $(document).ready(function() {
   //FUNCION PARA AUTORELLENAR LA DESCRIPCION
   function autoFillDescription(){
     let descripcion;
-    (article_editing != '' && !!article_editing) ? descripcion = (el_txt_art_existente.value + '-').toUpperCase()  : descripcion = (el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value + '-').toUpperCase(); //inivar
+    (article_editing != '' && !!article_editing) ? descripcion = (el_txt_art_existente.value + ' - ').toUpperCase()  : descripcion = (el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value + ' - ').toUpperCase(); //inivar
     // let prenda = document.getElementById('select_sku_prenda');
     // let categoria = document.getElementById('select_sku_categoria');
     // let material = document.getElementById('select_sku_material');
