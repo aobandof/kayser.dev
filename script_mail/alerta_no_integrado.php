@@ -12,8 +12,8 @@ if($existe_error_conexion){
   echo json_encode($data);
   exit;
 }
-// $query_select="select code, U_GSP_CANUME, U_GSP_CADATA, U_GSP_ERROR from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2018";
-$query_select="select top 5 code, U_GSP_CABOTI,U_GSP_CACLIE, U_GSP_CADOCU,U_GSP_CANUME, U_GSP_CADATA, U_GSP_ERROR  from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2017 AND month(u_gsp_cadata)=12";
+
+$query_select="select code, U_GSP_CANUME, convert(varchar,convert(date,U_GSP_CADATA)), U_GSP_ERROR from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2018";
 $arr_query=$sqlsrv_33->select($query_select,"sqlsrv_n_p");
 // var_dump($arr_query);
 if($arr_query!==false && $arr_query!==0) {  
@@ -38,10 +38,10 @@ if($table==''){
   echo "SIN ERRORES...";
   exit();
 }
-///--- ############################### ---
-///--- DATOS PARA ENVIO DE CSV AL MAIL ---
 
-$destinatario ="aobando@kayser.cl";
+
+/////--- DATOS PARA ENVIO DE CSV AL MAIL ---
+$destinatario ="informatica@kayser.cl";
 $headers = "MIME-Version: 1.0\r\n"; 
 $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
 $headers .= "From: INFORMATICA KAYSER <informatica@kayser.cl>\r\n";

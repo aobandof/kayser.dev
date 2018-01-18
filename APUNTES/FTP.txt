@@ -1,4 +1,4 @@
-variables de configuracion
+variables de configuracion en el servidor FTP
 
 listen=YES 		//para que el servidor inicie con el sistema
 
@@ -10,4 +10,32 @@ local_umask=22		//para que cada vez que se suba un archivo, sus permisos sean 75
 #anon_write_enable=YES	//para que usuarios anonimos puedan subir y escribir archivos, por defecto deshabilitada y es opcional
 connect_from_port_20=YES
 chroot_local_user_YES	//para que los usuarios locales tengan solo acceso a su home
+
+
+
+instalar SSH2 para PHP en Windows para usar el Cliente FTP desde PHP:
+
+descargar el archivo dll TS para Xampp (32 bits) y para PHP 7.1 (dependiendo de la version):
+http://pecl.php.net/package/ssh2/1.1.2/windows
+
+copiar esa extension en la C:\xampp\php\ext y despues agregar "extension=php_ssh2.dll" en php.ini.
+Reiniciar APACHE e ir a phpinfo para verificar que este la extesion, no como item, sino como grupo aparte de extensiones (osea que exista un titulo centrado con ssh2 y un cuadro con sus detalles)
+
+Tambien hay que asegurarse que existea la extension libssh2 (verificar en phpinfo), si no existe entonces descargarla de: http://windows.php.net/downloads/php-sdk/deps/vc15/x86/
+y copiarla (o reemplazarla si ya existe) en C:\xampp\php
+
+Para asegurar el funcionamiento, tambien hay que pegar (o reemplazar) el archivo php_ssh2.pdb en la carpeta C:\xampp\php\ext
+
+
+INSTALACION EN LINUX
+--------------------
+si existe un paquete php que tenga conflicto con una version y no deje instalar otro paquete de la version avanzada, instalar con el nombre de paquete que no se puede instalar con a misma version de la otra dependencia
+
+dado que hay incompatibilidad, vamos a descargar y ejecutar las extensiones por separado:
+
+seguir los pasos del siguiente tutorial, descargando los archivos adecuados para la version moderna de php
+https://support.plesk.com/hc/en-us/articles/213930085-How-to-install-ssh2-extension-for-PHP
+
+
+
 

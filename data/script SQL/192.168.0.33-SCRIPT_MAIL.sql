@@ -16,3 +16,5 @@ SELECT * FROM U_MMcorrelativo
 -- SCRIPT PARA DETECTAR  --
 ----------------------------------------------------------------------
 select top 5 code, U_GSP_CABOTI,U_GSP_CACLIE, U_GSP_CADOCU,U_GSP_CANUME, U_GSP_CADATA, U_GSP_ERROR  from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2017 AND month(u_gsp_cadata)=12
+
+select code, U_GSP_CABOTI, U_GSP_CACLIE, U_GSP_CADOCU, U_GSP_CANUME, convert(varchar,convert(date,U_GSP_CADATA)), U_GSP_ERROR from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2018

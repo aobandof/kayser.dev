@@ -4,6 +4,7 @@ require_once "../shared/clases/HelpersDB.php";
 require_once "../shared/clases/DBConnection.php";
 require_once "../shared/clases/MssqlConexion.php";
 
+
 //CONEXIONES
 $conexion_stock=new MssqlConexion('192.168.0.13','sa','kayser@dm1n','Stock');
 
@@ -29,66 +30,81 @@ $query_stock_tiendas.= "CAST(SUM(t0.onhand)  *  max(t2.AvgPrice) as int) AS [Inv
 $query_stock_tiendas.= "from Stock.dbo.Kayser_OITW as t0 inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.WhsCode COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS ";
 $query_stock_tiendas.= "where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode";
 
-// $registros_stock_cm=sqlsrv_query($conec_stock, $query_stock_cm);
-// $registros_stock_tiendas=sqlsrv_query($conec_stock, $query_stock_tiendas);
-// //CANTIDAD DE CAMPOS
-// $quant_fields_stock=sqlsrv_num_fields($registros_stock_cm);
-// //OBTENEMOS LA CABECERA STOCK
-// foreach( sqlsrv_field_metadata($registros_stock_cm) as $fieldMetadata )
-//   $csv_stock.=$fieldMetadata['Name'].";";
-// $csv_stock=substr($csv_stock,0,strlen($csv_stock)-1)."\r\n";
-// //OBTENEMOS TODAS LAS FILAS DEL STOK DE CASA MATRIZ
-// while ($reg = sqlsrv_fetch_array($registros_stock_cm, SQLSRV_FETCH_NUMERIC)) {
-//   $fila='';
-//   for($j=0;$j<$quant_fields_stock;$j++){
-//     $fila.=$reg[$j].";";
-//   }
-//   $fila=substr($fila,0,strlen($fila)-1)."\r\n";
-//   $csv_stock.=$fila;
-// }
-// //OBTENEMOS TODAS LAS FILAS DEL STOCK DE LAS TIENDAS Y LAS CARGAMOS EN LA MISMA VARIABLE CSV
-// while ($reg = sqlsrv_fetch_array($registros_stock_tiendas, SQLSRV_FETCH_NUMERIC)) {
-//   $fila='';
-//   for($j=0;$j<$quant_fields_stock;$j++){
-//     $fila.=$reg[$j].";";
-//   }
-//   $fila=substr($fila,0,strlen($fila)-1)."\r\n";
-//   $csv_stock.=$fila;
-// }
+$registros_stock_cm=sqlsrv_query($conec_stock, $query_stock_cm);
+$registros_stock_tiendas=sqlsrv_query($conec_stock, $query_stock_tiendas);
+//CANTIDAD DE CAMPOS
+$quant_fields_stock=sqlsrv_num_fields($registros_stock_cm);
+//OBTENEMOS LA CABECERA STOCK
+foreach( sqlsrv_field_metadata($registros_stock_cm) as $fieldMetadata )
+  $csv_stock.=$fieldMetadata['Name'].";";
+$csv_stock=substr($csv_stock,0,strlen($csv_stock)-1)."\r\n";
+//OBTENEMOS TODAS LAS FILAS DEL STOK DE CASA MATRIZ
+while ($reg = sqlsrv_fetch_array($registros_stock_cm, SQLSRV_FETCH_NUMERIC)) {
+  $fila='';
+  for($j=0;$j<$quant_fields_stock;$j++){
+    $fila.=$reg[$j].";";
+  }
+  $fila=substr($fila,0,strlen($fila)-1)."\r\n";
+  $csv_stock.=$fila;
+}
+//OBTENEMOS TODAS LAS FILAS DEL STOCK DE LAS TIENDAS Y LAS CARGAMOS EN LA MISMA VARIABLE CSV
+while ($reg = sqlsrv_fetch_array($registros_stock_tiendas, SQLSRV_FETCH_NUMERIC)) {
+  $fila='';
+  for($j=0;$j<$quant_fields_stock;$j++){
+    $fila.=$reg[$j].";";
+  }
+  $fila=substr($fila,0,strlen($fila)-1)."\r\n";
+  $csv_stock.=$fila;
+}
+
 // $file = fopen($filename, 'w');
-// fwrite($file, $csv_stock);
+// fwrite($file, $csv_stock); //con la funcion file_put_contents creamos el archivo en el FTP server y le agregamos el contenido, YA NO ES NECESARIO CREAR EL ARCHIVO LOCAL
 // fclose($file);
 
-/////----- 'CONEXION A SFTP Y ENVIO DE ARCHIVO' -----/////
+/////----- 'CONEXION A SFTP Y ENVIO DE ARCHIVO' -----////
 $host="45.56.75.110";
 $port=22;
 $user="kayser";
 $password="ey%T;WWv=9ko*;R541ay";
-$ruta="/kayser/upload";
-/**** conexion *****/
+$ruta="/kayser/upload/";
+$connection = ssh2_connect($host, $port);
+if (ssh2_auth_password($connection, $user, $password)) {
+  $sftp = ssh2_sftp($connection);
+  echo "Conexion Exitosa, subiendo archivo..."."\n";
+  // $contents = file_get_contents($filename);
+  // file_put_contents("ssh2.sftp://{$sftp}/{$file}", $contents);
+  // echo $sftp;
+	file_put_contents("ssh2.sftp://".intval($sftp).$ruta.$filename, $csv_stock);
+
+  // $resFile = fopen('ssh2.sftp://'.intval($sftp).$ruta.$filename, 'w');
+  // fwrite($resFile, $csv_stock);
+  // fclose($resFile);
+
+  // ssh2_scp_send($connection, $filename, $ruta.$filename, 0644);
+} 
+else {
+    echo "Datos de autenticacion incorrectos";
+}
+/*
 $conn_id=ftp_ssl_connect($host,$port);
-// if($conn_id!==false)
-	// {
-		if(ftp_login($conn_id,$user,$password))
-		{
-			// if(@ftp_chdir($conn_id,$ruta))
-			// {
-   //      ftp_pasv($conn_id, true);//por defecto en Linux, la conexion se establece en modo activo ( servidor ->cliente), por esto la cambiamos modo pasivo ya que nosotros estableceremos la conexion
-   //      // if(@ftp_put($conn_id,$filename,$filename,FTP_ASCII/*FTP_BINARY*/))
-   //      if(@ftp_put($conn_id,'prueba.txt','prueba.txt',FTP_ASCII/*FTP_BINARY*/))
-			// 		echo "Fichero subido correctamente";
-			// 	else
-			// 		echo "No ha sido posible subir el fichero";
-			// }else
-			//   echo "No existe el directorio especificado";
+if($conn_id!==false) {
+		if(ftp_login($conn_id,$user,$password)) {
+			if(@ftp_chdir($conn_id,$ruta)) {
+        ftp_pasv($conn_id, true);//por defecto en Linux, la conexion se establece en modo activo ( servidor ->cliente), por esto la cambiamos modo pasivo ya que nosotros estableceremos la conexion
+        // if(@ftp_put($conn_id,$filename,$filename,FTP_ASCII))//FTP_BINARY
+        if(@ftp_put($conn_id,'prueba.txt','prueba.txt',FTP_ASCII))//FTP_BINARY
+					echo "Fichero subido correctamente";
+				else
+					echo "No ha sido posible subir el fichero";
+			}else
+			  echo "No existe el directorio especificado";
 			echo ftp_pwd($conn_id);
 		}else
 			echo "El usuario o la contraseña son incorrectos";
-		# Cerramos la conexion ftp
 		ftp_close($conn_id);
-	// }else
-		// echo "No ha sido posible conectar con el servidor";
-
+	}else
+		echo "No ha sido posible conectar con el servidor";
+*/
 //despues de enviar el archivo lo eliminamos
-// unlink($filename);
+/// unlink($filename);
 ?>
