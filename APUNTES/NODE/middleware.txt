@@ -1,0 +1,57 @@
+- SON UNA PILA DE FUNCIONES Y QUE SE EJECUTAN SECUENCIALMENTE PARA CONFORMAR LA APLICACION EN EXPRESS.
+
+- UNA FUCION MIDDLEWARE TIENE ACCESO AL OBJETO REQUEST, AL OBJETO RESPONSE QUE SE EJECUTAN DURANTE EL CICLO DE PETICION RESPUESTA
+
+- ejemplo: En una aplicacion podemos tener middleeares que realicen las siguientes acciones:
+	* guarda en el log la peticion
+	* valida si el usuario inicio sesion.
+	* si inicio sesion, obten sus datos y dirigelo al dashboard.
+	* si no mandalo a la pagina de login.
+
+- Durante el proceso de respuesta, hay una pila de funciones middleware, cada una puede llamar a la siguientes o terminar el proceso.
+
+
+TIPOS DE MIDDLEWARE:
+--------------------
+
+* NIVEL DE APLICACION: Se puede declarar de 2 fromas:
+	- Ejemplo1: Funcion para '/', que terminar el ciclo de peticion/respuesta con render y no ejecutara mas middlewares
+		app.get("/",function(req,res,next){
+			res.render("index");
+		});
+	- Ejemplo2:  Funcion para '/admin' que verifica si el usuario es admin, de ser así, lo manda a la siguiente middleware con next
+		app.use("/admin",function(req,res,next){
+			if(user.admin){ next(); }
+			else { res.send("Unauthorized"); }
+		});
+
+* NIVEL DE ROUTING
+	var router = express.Router();
+	router.get("/",function(req,res){
+		res.render("index");
+	});
+	app.use(router);
+
+* DE MANEJO DE ERRORES
+	app.use("/",function(req,res){
+		//ALGO QUE PUEDA CASAR EL ERROR
+		if(error) { next(error); }
+		//SI NO HUVIERON ERROES, SEGUIR CON LA SECUENCIA
+	});
+	app.use(function(err,req,res,next){
+		console.log(err);
+	});
+
+
+* BUILT-IN (Viene con Express).
+	Se encarga de servir archivos estaticos
+
+* DE TERCEROS:
+	Ejemplo body-parser
+	var bodyParser = require('body-parser');
+	app.use(bodyParser.urlencoded({extended : false}));
+	app.use(bodyParser.json());
+
+
+
+
