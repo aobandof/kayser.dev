@@ -40,11 +40,8 @@ ESTADO "creada":
 
 IDEAS:
 ------
-* cuando un REVISER elija la lista, se le debe mostrar el sku_crear.html PERO CON LA VENTANA MODAL preview ACTIVA Y PODER EDITARLA O ENVIAR EXCEL.
-	hay que considerar como pasamos el estado al archivo para que sepa cuando mostrar el modal.
-	hay que considerar tb la sesion, dado que los botones se mostraran segun perifles (un EDITOR no podr� revisar ni cargar a sap).
-* cuando alguien edita (agrega o elimina los skus, antes de enviarlos o subirlos a sap) seria ideal que en el modal preview (al lado del titulo del header) se indiquen la cantidad de Articulos y SKus como ayuda, sobre todo para los que cargaron a sap.. para que el excel  cargar sea lo mismo que el log que se guardara en mysql
-
+de Articulos y SKus como ayuda, sobre todo para los que cargaron a sap.. para que el excel  cargar sea lo mismo que el log que se guardara en mysql
+ 
 
 PENDIENTE YA:
 -------------
@@ -53,7 +50,7 @@ me quede en agregar un boton CANCELAR EDICION para cuando se editen detalle o se
 además programar que cuando se clickee boton ADD_ARTICLE_LIST que pregunte si se esta editando el articulo, si es asi considerar el_txt_arr_
 
 --- cuando un reviser crea y revisa la misma lista, en listas.php no se verifica "revisado por", dado que en Bd, el estado de la lista = "REVISADA" pero en la relacion lista_has_usuario, no se guarda la operacion "REVISION"
-
+--- ver si ahora, o despues, pero seria ideal que el txt_sku_description no muestre el codigo de articulo y solo la descripcion y cuando los reviser envian el excel, alli fusionar ambos campos... esto conseguiria que este control no dependa de alguna modificacion manual del txt_sku_predijo y txt_sku_correlativo, tanto al crear como al editar un sku en lista, e incluso para el sap
 --- terminar la funcion para resetear todos los controles y aplicarlos cuando se cambia de tipo_ingreso
 
 
@@ -65,6 +62,7 @@ además programar que cuando se clickee boton ADD_ARTICLE_LIST que pregunte si s
 --- en el crud, limitar los nombres de los items segun el VARCHAR(LONGITUD_MAX) DE LAS TABLAS, PERO MAS IMPORTANTE, TCATAOGO Y PRESENTACION DEBEN DE TENER UNA LONGITUD MAXIMA DE 15 Y 10 CARACTERES RESPECTIVAMENTE, ESO VALIDARARLO EN EL CRUD AL MOMENTO DE REGISTRAR ESTOS ITEMS
 --- RELACIONES PENDIENTES, CUANDO ELIGEN BABYDOLL DEBERIA LLENARSE LOS SELECT COPA Y FCOPA, PERO NO MOSTRARSE HASTA QUE EN CATEGORIA ELIJAN CON COPA
 --- PARA AQUELLAS MARCAS TIPO CLIENTE, COMO WALMART, HAY QUE VER COMO CREAMOS LA EXCEPCION (podria ser que antes de crear la plantilla, preguntemos a los articulos, si las marcas son de tipo 'CLIENTE' y crea run array con aquellos articulos y despues usar este array comparando en cada fila del archivo excel y aplicar el veradero cliente)
+
 
 --- CRUD DE RELACIONES y PREFIJOS
 

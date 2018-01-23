@@ -301,7 +301,7 @@ if($_POST['option']=="save_list") {
     $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
     $headers = "MIME-Version: 1.0\r\n"; 
     $headers .= "Content-type: text/html; charset=UTF-8\r\n"; //PARA ENVIO EN FORMATO HTML
-    $headers .= "From: CREACION DE SKUs <sku@kayser.cl>\r\n";
+    $headers .= "From: CREACION DE SKUs <aobando@kayser.cl>\r\n";
     if(mail($destinatario, $subject, $message, $headers)){
       $data['submit']=true;
     }
@@ -529,7 +529,7 @@ if($_POST['option']=='finalize_list'){
     ///--- AHORA ENVIAMOS EL MAIL:
     $subject = ( $env=='dev' ) ? "(PRUEBA - CONSIDERAR) SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)" : "SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
     $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
-    $headers = "From: FINALIZACION DE CREACION DE SKUs <sku@kayser.cl>\r\n";
+    $headers = "From: FINALIZACION DE CREACION DE SKUs <aobando@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: application/octet-stream; name=SKUS CARAGADOS A SAP\r\n"; //envio directo de datos
     $headers .= "Content-Disposition: attachment; filename=$subject.csv\r\n";
@@ -630,7 +630,7 @@ function sendMail($arr_cont){
   $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
 
   $header  = "MIME-Version: 1.0\r\n"; 
-  $header .= "From: REVISION DE SKUs <sku@kayser.cl>\r\n";
+  $header .= "From: REVISION DE SKUs <aobando@kayser.cl>\r\n";
   $header .= "Content-type: multipart/mixed; charset=UTF-8; boundary=\"$multipartSep\"";
   
   $message = "--$multipartSep\r\n";

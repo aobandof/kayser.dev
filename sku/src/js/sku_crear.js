@@ -1,9 +1,9 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, id_other_dpto,code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
 // let active_list=0;
-let el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
-let modal_preview_save, body_modal_preview_save; 
-let el_div_loader_full;
-let opcion_ingreso, art_existente, article_editing;
+var el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
+var modal_preview_save, body_modal_preview_save; 
+var el_div_loader_full;
+var opcion_ingreso, art_existente, article_editing;
 
 
 $(document).ready(function() {
@@ -111,10 +111,10 @@ $(document).ready(function() {
       if (opcion_ingreso == 'existente_sap'){
         if (art_existente === el_txt_art_existente.value){
           if (el_sel_color.value == '' || (el_sel_fcopa.parentNode.parentNode.style.display != 'none' && el_sel_fcopa.value == '') || (el_sel_copa.parentNode.parentNode.style.display != 'none' && el_sel_copa.value == '')) {
-            console.log(el_sel_color.value, el_sel_copa.value, el_sel_fcopa.value);
+            // console.log(el_sel_color.value, el_sel_copa.value, el_sel_fcopa.value);
             empty=1
           }
-        }else { empty=1; alert('El articulo consultado se modificó, corregir por favor...')}
+        }else { empty=1; alert('El articulo consultado se modificó, corregir por favor...')} //se seteo empty=1 para que no muestre el preview_Save_Sku
       }
     }else{
       document.querySelectorAll('.sku_control').forEach(function (control) {
@@ -122,7 +122,7 @@ $(document).ready(function() {
           if (control.value == '') { 
             if (control.id != 'txt_sku_sufijo'){ //EXCEPCION ESTATICA, el sufijo puede o no ser necesario
               empty = 1;
-              console.log(control);
+              // console.log(control);
             }
           }
       });
@@ -131,7 +131,7 @@ $(document).ready(function() {
     if (empty === 0) {
       if(confirm("POR FAVOR REVISE BIEN LOS DATOS INGRESADOS\n\nOK si todo esta correcto y continuar...")){
         if(confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")){
-          autoFillDescription();//POR SI ACASO ANTES DEL CLICK EDITARON EL txt_prefijo o el txt_correlativo
+          autoFillDescription();//POR SI ACASO ANTES DEL CLICK 'GUARDAR EN LISTA´ EDITARON EL txt_prefijo o el txt_correlativo
           parameters = new Object();
           if(art_existente!='nuevo'){            
             parameters = getObjectArticle('existente');
@@ -284,12 +284,7 @@ $(document).ready(function() {
         autoFillDescription();
     }
   }
-  /////----- EVENTO PARA LLENAR LA DESCRIPCION CUANDO SE EDITA EL TXT_ARTICULO, CUANDO SE TRATA DE UN ARTICULO EXISTENTE EN LISTA QUE SE ESTA EDITANDO
-  el_txt_art_existente.onblur = function (el_arte){
-    if (article_editing != '' && !!article_editing){
-      autoFillDescription();
-    }
-  }
+
   ajax_load_others_dptos({'option' : 'cargar_selects_otros_dptos' });
   cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
   cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
@@ -918,7 +913,6 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
   ///--- VER EDITAR DETALLE
   document.querySelectorAll('.btn_edit_detalle').forEach(function (but_view_edit) {
     but_view_edit.onclick = function () {
-      // alert("entro");
       el_arti = but_view_edit.parentNode.parentNode.parentNode;
       id_el_arti = el_arti.id;
       cod_arti = id_el_arti;
@@ -926,12 +920,11 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
         cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
         cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
       }
-      console.log(cod_arti);
       article_editing =cod_arti;
       parameters= { 'option' : 'fill_selects', 'articulo': article_editing, 'origin': 'lista' };      
       ajaxFillSelects(parameters);
+      el_txt_art_existente.disabled = true;
       modal_preview_save.style.visibility = 'hidden';
-
     }
   });
 
