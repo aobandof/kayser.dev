@@ -49,7 +49,6 @@ if($_POST['option']=="cargar_selects_independientes"){
 
 if($_POST['option']=="cargar_selects_dependientes") {
   $querys_export=[];
-  // echo "hola";
   array_splice($array_grand_child,0);//vaciamos el array nietos para buscar nuevos nietos
   //array $array_grand_child es global, declarado en un asset y contendrá los descendientes de las tablas qe se veran afectadas a peticion de la vista
   //es decir segun el nombre y valor del padre, se buscarán tablas dependientes y se cargarán valores relacionados al padre

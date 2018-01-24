@@ -1,16 +1,18 @@
 var color, campos_llenos, id_cat_before_click,id_cat_after_click, id_cat_actual, id_other_dpto,code_dpto, name_dpto, item_crud_selected, first_barcode, current_list;
-// let active_list=0;
 var el_sel_marca,el_sel_subdpto,el_sel_prenda, el_sel_categoria, el_sel_presentacion, el_sel_material, el_sel_color, el_sel_tallas, el_sel_tprenda, el_sel_tcatalogo, el_sel_grupouso, el_sel_caracteristica, el_sel_composicion, el_txt_prefijo, el_txt_correlativo, el_txt_sufijo;
-var modal_preview_save, body_modal_preview_save; 
-var el_div_loader_full;
+var modal_preview_save, body_modal_preview_save, el_div_loader_full;
 var opcion_ingreso, art_existente, article_editing;
+var edit_article_operation;
+
 
 
 $(document).ready(function() {
-
   getElementsControls();//INICIALIZAMOS ALGUNOS ELEMENTOS QUE USAREMOS DURANTE TODO EL PROGRAMA
   opcion_ingreso='nuevo'
   art_existente='nuevo';
+  //inicialmente ocultamos la caja que contiene las copas
+  document.getElementById('div_copa').style.display = 'none';
+  document.getElementById('div_dpto').style.display = 'none';
 
   ///--- SI ESTA INTENTANDO VER UNA LISTA PENDIENTE, LA DIBUJAMOS Y MOSTRAMOS TODOS SUS ARTICULOS ----
   if(initial_option == 'show'){
@@ -67,6 +69,7 @@ $(document).ready(function() {
       }
     }
   }// fin initial_option=show
+  ///--- SI SE ELIGIO LA OPCION PARA CREAR UN ARTICULO NUEVO, ENTONCES PREPARAMOS LOS BOTONES PARA CADA PERFIL
   if(initial_option == 'create'){
     el_but_show_lists.classList.add('cont_hidden')
     el_but_save_list.classList.remove('cont_hidden')
@@ -74,9 +77,9 @@ $(document).ready(function() {
       el_but_save_list.classList.remove('cont_hidden')
     else if (perfil == 'reviser')
       el_but_submit_excel.classList.add('cont_hidden')
-    document.getElementById('btn_show_list').disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
+    el_but_show_list.disabled=true; //INICIALMENTE DESHABILITAMOS EL BOTON VER LISTA, DESPUES CUANDO AGREGAMOS OTRO ARTICULO VOLVERLO HA HABILITAR
+    el_div_operation_title.innerHTML = "CREACION DE NUEVO ARTICULO"
   }
-
   ///--- EVENTO PARA EL CHANGE SELECT TIPO DE INGRESO y PARA EL BOTTON CARGAR ARTICULO EXISTENTE ---///
   el_sel_tipo_ingreso.onchange = function(){
     document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes
@@ -86,79 +89,119 @@ $(document).ready(function() {
       el_txt_art_existente.classList.remove('control_hidden');
       el_txt_art_existente.value='';
       el_txt_art_existente.focus();
-      el_btn_art_cagar.classList.remove('control_hidden');
+      el_btn_art_cargar.classList.remove('control_hidden');
     }else {
       el_txt_art_existente.classList.add('control_hidden');
       el_txt_art_existente.value="";
-      el_btn_art_cagar.classList.add('control_hidden');
+      el_btn_art_cargar.classList.add('control_hidden');
     }
   }
-  /////----- EVENTO PARA MOSTRAR EL ARTICULO EXISTENTE DE SAP
-  el_btn_art_cagar.onclick = function(){
+  /////----- EVENTO PARA CARGAR EL ARTICULO EXISTENTE SAP EN LOS SELECTS Y DEMAS CONTROLES SKU
+  el_btn_art_cargar.onclick = function(){
     if(el_txt_art_existente.value!=""){
       ///---CARGAMOS LA INFORMACION DE LA API
       parameters= { 'option' : 'fill_selects', 'articulo': el_txt_art_existente.value, 'origin': 'sap' };
       ajaxFillSelects(parameters);
     }
   }
-
-  /************************  EVENTO PARA MOSTRAR EL PANEL PREVIEW SAVE SKU con la nueva lista con ARTICULO(s) QUE SE CREARAN *************/
-  document.getElementById('btn_create_article_list').onclick = function () {
-
-    let empty = 0;
-    let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
-    if(art_existente!='nuevo' && (opcion_ingreso=='existente_sap' || opcion_ingreso=='existente_lista' )){//existente_lista aun no esta implementado
-      if (opcion_ingreso == 'existente_sap'){
-        if (art_existente === el_txt_art_existente.value){
-          if (el_sel_color.value == '' || (el_sel_fcopa.parentNode.parentNode.style.display != 'none' && el_sel_fcopa.value == '') || (el_sel_copa.parentNode.parentNode.style.display != 'none' && el_sel_copa.value == '')) {
-            // console.log(el_sel_color.value, el_sel_copa.value, el_sel_fcopa.value);
-            empty=1
-          }
-        }else { empty=1; alert('El articulo consultado se modificó, corregir por favor...')} //se seteo empty=1 para que no muestre el preview_Save_Sku
-      }
-    }else{
-      document.querySelectorAll('.sku_control').forEach(function (control) {
-        if (control.parentNode.parentNode.style.display != 'none')// si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
-          if (control.value == '') { 
-            if (control.id != 'txt_sku_sufijo'){ //EXCEPCION ESTATICA, el sufijo puede o no ser necesario
-              empty = 1;
-              // console.log(control);
+  /*******************  EVENTO PARA CERRAR SESION ************/
+  document.getElementById('a_opcion_menu_logout').onclick = function () {
+    if (confirm("ESTA SEGURO DE CERRAR LA SESION (Si existen listas sin enviar, estas seran eliminadas")) {
+      location.href = "./config/session.php?option=session_end";
+    }
+  }
+  //############### INICIALMENTE LLAMAMOS A LA FUNCION QUE CARGA DESDE SAP, EL DROPDOWN CON LOS OTROS DEPARTAMENTOS
+  ajax_load_others_dptos({ 'option': 'cargar_selects_otros_dptos' });
+  // cargarCategoriaCrear("div_cat_dama"); //cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
+  resetAllControls("div_cat_dama");
+  cargarSelectsSku('OITB', name_dpto)
+  cargarSelectsSku('', ''); //inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
+  /////############ EVENTO PARA CAMBIAR DE DEPARTAMENTO ######################################
+  $(".cont_img_categoria").click(function () {
+    /**************************************************************************************************************************** */
+    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes    
+    el_sel_tipo_ingreso.value = "nuevo";
+    opcion_ingreso = 'nuevo';
+    art_existente = 'nuevo';
+    el_txt_art_existente.classList.add('control_hidden');
+    el_btn_art_cargar.classList.add('control_hidden');
+    id_cat_after_click = $(this).attr('id');
+    // console.log($(this).attr('id'));
+    if ($(this).attr('id') === "div_cat_otro") {
+      document.querySelectorAll('.opcion_other_dpto').forEach(function (opt) {
+        opt.onclick = function () {
+          if (opt.id != id_other_dpto) {
+            id_other_dpto = opt.id
+            if (get_fill_fields('all') == 1) { //por ahora get_fill_fields compara todos los controles
+              if (confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")) {
+                campos_llenos = 0;
+                document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
+                // cargarCategoriaCrear(id_cat_after_click);
+                resetAllControls(id_cat_after_click);
+                // $("#select_sku_color").selectpicker("deselectAll");
+                // $("#select_sku_composicion").selectpicker("deselectAll");
+                // $("#div_sel_grupo_opciones").html("");
+                // $("#span_tallas_chosen").text(' ');
+                
+                document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
+              } else {
+                campos_llenos = 0;
+              }
+            } else {
+              // $("#div_sel_grupo_opciones").html("");
+              resetAllControls(id_cat_after_click);
+              // cargarCategoriaCrear(id_cat_after_click);
+              document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
+              document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
             }
           }
-      });
-    }
-    if (tallas == "") { empty = 1; console.log('tallas vacias');}
-    if (empty === 0) {
-      if(confirm("POR FAVOR REVISE BIEN LOS DATOS INGRESADOS\n\nOK si todo esta correcto y continuar...")){
-        if(confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")){
-          autoFillDescription();//POR SI ACASO ANTES DEL CLICK 'GUARDAR EN LISTA´ EDITARON EL txt_prefijo o el txt_correlativo
-          parameters = new Object();
-          if(art_existente!='nuevo'){            
-            parameters = getObjectArticle('existente');
-            parameters['existencia']='sap';
-          }else{
-            parameters = getObjectArticle('nuevo');            
-          } 
-          parameters['option'] = 'save_article';
-          parameters['list'] = active_list;
-          console.log(parameters);
-          ajaxAddArticleList(parameters);
+        }
+      })
+    } else {
+      if (id_cat_actual !== id_cat_after_click) {
+        if (get_fill_fields('all') == 1) {
+          if (confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")) {
+            campos_llenos = 0;
+            id_other_dpto = '';
+            cargarCategoriaCrear(id_cat_after_click);
+            document.getElementById('div_dpto_name').innerHTML = "";
+            $("#select_sku_color").selectpicker("deselectAll");
+            $("#select_sku_composicion").selectpicker("deselectAll");
+            // $("#select_sku_composicion").attr("selected", false); // NO FUNCA
+            // $("#select_sku_composicion").selectpicker("refresh"); // NO FUNCA
+            // $("#select_sku_composicion").selectpicker('render'); // NO FUNCA
+            $("#div_sel_grupo_opciones").html("");
+            $("#span_tallas_chosen").text(' ');
+            document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
+          } else {
+            campos_llenos = 0;
+          }
+        } else {
+          id_other_dpto = '';
+          $("#div_sel_grupo_opciones").html("");
+          cargarCategoriaCrear(id_cat_after_click);
+          document.getElementById('div_dpto_name').innerHTML = "";
+          document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
+          // $("#select_sku_color").selectpicker("deselectAll");
         }
       }
     }
-    else
-      alert("TODOS LOS CAMPOS SON NECESARIOS");
-  }
-  //inicialmente ocultamos la caja que contiene las copas
-  document.getElementById('div_copa').style.display = 'none'; 
-  document.getElementById('div_dpto').style.display = 'none';
+  });
+
+  //####################################################################################################
+  //################################ EVENTOS PARA EL SKU_CRUD_ITEM #####################################
+  //####################################################################################################
 
   ///--- EVENTOS PARA ABRIR LOS MODALES ITEM, RELATIONS Y PREFIJOS
-  $("#a_opcion_config_items").click(function() { $("#div_crud_item").css('visibility','visible' );  }); //MOSTRAMOS MODAL ITEMS
-  $("#a_opcion_config_relations").click(function(){ $("#div_crud_relations").css('visibility','visible'); }); //MOSTRAMOS MODAL RELACIONES
-  $("#a_opcion_config_prefix").click(function () { $("#div_crud_prefix").css('visibility', 'visible');  }); //MOSTRAMOS MODAL PREFIJOS
-
-  /**************** EVENTOS SKU_CRUD_ITEM, cuando cambiamos de opcion de Tabla *****************/
+  $("#a_opcion_config_items").click(function () {
+    $("#div_crud_item").css('visibility', 'visible');
+  }); //MOSTRAMOS MODAL ITEMS
+  $("#a_opcion_config_relations").click(function () {
+    $("#div_crud_relations").css('visibility', 'visible');
+  }); //MOSTRAMOS MODAL RELACIONES
+  $("#a_opcion_config_prefix").click(function () {
+    $("#div_crud_prefix").css('visibility', 'visible');
+  }); //MOSTRAMOS MODAL PREFIJOS
   document.getElementById('select_item_crud').onchange= function() {
     item_crud_selected=this.value;
     $("#div_tabla_item>tbody_div").html('');
@@ -180,8 +223,62 @@ $(document).ready(function() {
       document.getElementById("button_nuevo_seccion").style.pointerEvents = "auto"; // desactivamos el evento click en el boton nuevo
     }
   });
-  /****************** FUNCIONA PARA ELIMINAR LA LISTA ACTUAL, YA SEA UNA ANTIGUA O U NA NUEVA QUE SE ESTE REVISANDO O FINALIZANDO */
 
+  //###########################################################################################################  
+  //###############################  EVENTOS PARA CREAR O EDITAR ARTICULO.HTML ################################
+  //###########################################################################################################
+  
+  /****************** EVENTO PARA GUARDAR EL ARTICULO QUE SE ESTA CREANDO O EDITANDO, MOSTRANTO EL MODAL DE LA LISTA CON TODOS LOS ARTICULOS QUE CONTIENE *************/
+  el_but_save_article.onclick = function () {
+    let empty = 0;
+    let tallas = document.getElementById('span_tallas_chosen').innerHTML.trim();
+    if (art_existente != 'nuevo' && opcion_ingreso != 'nuevo') { //existente_lista aun no esta implementado
+      if (opcion_ingreso == 'existente_sap') {
+        if (art_existente === el_txt_art_existente.value) {
+          if (el_sel_color.value == '' || (el_sel_fcopa.parentNode.parentNode.style.display != 'none' && (el_sel_fcopa.value == '' || el_sel_copa.value == ''))) { empty = 1 }
+        } else {
+          empty = 1; //despues se comporará si empty=1, este seteo se hizo para que no muestre el preview_Save_Sku
+          alert('El articulo consultado se modificó, corregir por favor...')
+        } 
+      }else { //SI ES existente_lista
+
+
+      }
+    } else {
+      document.querySelectorAll('.sku_control').forEach(function (control) {
+        if (control.parentNode.parentNode.style.display != 'none') // si el div que contiene estos controles, no se muestra, entonces no consideramos ese control.
+          if (control.value == '') {
+            if (control.id != 'txt_sku_sufijo') { //EXCEPCION ESTATICA, el sufijo puede o no ser necesario
+              empty = 1;
+              // console.log(control);
+            }
+          }
+      });
+    }
+    if (tallas == "") {
+      empty = 1;
+      console.log('tallas vacias');
+    }
+    if (empty === 0) {
+      if (confirm("POR FAVOR REVISE BIEN LOS DATOS INGRESADOS\n\nOK si todo esta correcto y continuar...")) {
+        if (confirm("¿CONFIRMA AGREGAR EL ARTICULO A LA LISTA?")) {
+          autoFillDescription(); //POR SI ACASO ANTES DEL CLICK 'GUARDAR EN LISTA´ EDITARON EL txt_prefijo o el txt_correlativo
+          parameters = new Object();
+          if (art_existente != 'nuevo') {
+            parameters = getObjectArticle('existente');
+            parameters['existencia'] = 'sap';
+          } else {
+            parameters = getObjectArticle('nuevo');
+          }
+          parameters['option'] = 'save_article';
+          parameters['list'] = active_list;
+          console.log(parameters);
+          ajaxAddArticleList(parameters);
+        }
+      }
+    } else
+      alert("TODOS LOS CAMPOS SON NECESARIOS");
+  }
   /****************** EVENTOS PARA CANCELAR Y delete LIST CUANDO SE ESTA EDITANTO****************/  
   if(!!el_but_delete_list){
     el_but_delete_list.onclick = function(){
@@ -212,18 +309,19 @@ $(document).ready(function() {
   /****************** EVENTOS PARA AGREGAR OTRO ARTICULO CUANDO SE ESTA  EDITANDO ****************/
   if(!!el_but_add_article){
     el_but_add_article.onclick = function () {
-      document.getElementById('btn_show_list').disabled = false;
+      el_but_show_list.disabled = false;
+      resetAllControls(id_cat_actual);//reseteamos los controles
       modal_preview_save.style.visibility = 'hidden';
     }
   }
-  ///--- EVENTO PARA REGRESAR AL ARCHIVO lista.php DESDE LOS BOTONES EN EL ARICULO_PREVIEW 
+ /******************* EVENTO PARA REGRESAR AL ARCHIVO lista.php DESDE LOS BOTONES EN EL ARICULO_PREVIEW ******/
   if(!!el_but_show_lists){
     el_but_show_lists.onclick=function(){
       // alert("deberia verse esto ante el evento click");
       location.href = "listas.php";
     }
   }
-  /************************   EVENTO PARA GUARDAR LOS SKU   *********************/
+  /******************* EVENTO PARA GUARDAR LOS SKU   *********************/
   if (!!el_but_save_list) {
     parameters = new Object();
     el_but_save_list.onclick = function () {
@@ -257,19 +355,11 @@ $(document).ready(function() {
     }
   }
   /*******************  EVENTO PARA VER LA LISTA YA CREADA ************/
-  document.getElementById('btn_show_list').onclick=function(el_show_list){    
+  el_but_show_list.onclick=function(el_show_list){    
     if(active_list!=0)
     ///--- PENDIENTE HAY QUE DESHABILITAR ESTA OPCION CUANDO active_list=0;
       modal_preview_save.style.visibility = 'visible';
   }
-  /*******************  EVENTO PARA CERRAR SESION ************/
-  document.getElementById('a_opcion_menu_logout').onclick=function(){
-    if (confirm("ESTA SEGURO DE CERRAR LA SESION (Si existen listas sin enviar, estas seran eliminadas")) {
-      location.href = "./config/session.php?option=session_end";
-    }
-  }
-  
-  ///--- ################  EVENTOS PARA SKU_CREAR.HTML ###########################
   //////------ EVENTO PARA LLENAR LA DESCRIPCION DESPUES DE EDITAR EL CORRELATIVO
   el_txt_correlativo.onblur=function(el_cor){
     if (el_cor.target.value.trim()!=''){
@@ -284,73 +374,6 @@ $(document).ready(function() {
         autoFillDescription();
     }
   }
-
-  ajax_load_others_dptos({'option' : 'cargar_selects_otros_dptos' });
-  cargarCategoriaCrear("div_cat_dama");//cargamos los datos en el panel (SELECTS E INPUTS) en el panel CREAR SKU
-  cargarSelectsSku('','');//inicialmente cargamos todos los select independientes //raro pero esta llamada se termina antes que la llamada en la funcion anterior
-  $(".cont_img_categoria").click(function() {
-    /**************************************************************************************************************************** */
-    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes    
-    el_sel_tipo_ingreso.value = "nuevo";
-    opcion_ingreso = 'nuevo';
-    art_existente = 'nuevo';
-    el_txt_art_existente.classList.add('control_hidden');
-    el_btn_art_cagar.classList.add('control_hidden');
-    id_cat_after_click = $(this).attr('id');
-    // console.log($(this).attr('id'));
-    if( $(this).attr('id') === "div_cat_otro" ){
-      document.querySelectorAll('.opcion_other_dpto').forEach( function (opt){
-        opt.onclick = function(){
-          if(opt.id!=id_other_dpto){
-            id_other_dpto=opt.id
-            if (get_fill_fields('all') == 1) { //por ahora get_fill_fields compara todos los controles
-              if (confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")) {
-                campos_llenos=0;                
-                cargarCategoriaCrear(id_cat_after_click);
-                document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
-                $("#select_sku_color").selectpicker("deselectAll");
-                $("#select_sku_composicion").selectpicker("deselectAll");
-                $("#div_sel_grupo_opciones").html("");
-                $("#span_tallas_chosen").text(' ');
-                document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
-              }else { campos_llenos = 0; }
-            } else {
-              $("#div_sel_grupo_opciones").html("");
-              cargarCategoriaCrear(id_cat_after_click);
-              document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
-              document.getElementById('div_copa').style.display = 'none'; //ocultamos el div con las tallas
-            }
-          }
-        }
-      })
-    } else {       
-      if(id_cat_actual!==id_cat_after_click){
-        if(get_fill_fields('all')==1){
-          if(confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")){
-            campos_llenos=0; 
-            id_other_dpto='';
-            cargarCategoriaCrear(id_cat_after_click);
-            document.getElementById('div_dpto_name').innerHTML = "";
-            $("#select_sku_color").selectpicker("deselectAll");
-            $("#select_sku_composicion").selectpicker("deselectAll");
-            // $("#select_sku_composicion").attr("selected", false); // NO FUNCA
-            // $("#select_sku_composicion").selectpicker("refresh"); // NO FUNCA
-            // $("#select_sku_composicion").selectpicker('render'); // NO FUNCA
-            $("#div_sel_grupo_opciones").html("");
-            $("#span_tallas_chosen").text(' ');
-            document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
-          }else { campos_llenos=0; }
-        }else {
-          id_other_dpto='';
-          $("#div_sel_grupo_opciones").html("");
-          cargarCategoriaCrear(id_cat_after_click);
-          document.getElementById('div_dpto_name').innerHTML = "";
-          document.getElementById('div_copa').style.display = 'none';//ocultamos el div con las tallas
-          // $("#select_sku_color").selectpicker("deselectAll");
-        }      
-      }
-    }
-  });
   /********* EVENTO PARA AUTORELLENAR LA DESCRIPCION *****/
   document.getElementById('select_sku_material').onchange=function(){
     if(this.value!=""){
@@ -406,13 +429,15 @@ $(document).ready(function() {
 /*******************************************************************************************************/
   ///--- FUNCION QUE INICIALIZA LOS CONTROLES SELECT Y TXT PARA SER USADOS EN TODA LA API  
   function getElementsControls() {
+    el_div_operation_title = document.getElementById('div_titulo_operacion');
     el_span_state_list = document.getElementById('span_state_list');
     el_span_title_list = document.getElementById('span_title_list');
     ///--- INICIALIZAMOS BOTONES DEL ARTICLE_PREVIEW
+    el_but_save_article = document.getElementById('button_save_article');//para guardar el articulo nuevo o que se esta editando, mostrando el modal con la lista y los articulos que contiene
     el_but_delete_list = document.getElementById('button_delete_list');
     el_but_add_article = document.getElementById('button_add_article');
-    // el_but_follow_editing = document.getElementById('button_follow_editing');
-    el_but_show_lists = document.getElementById('button_show_lists');
+    el_but_show_list = document.getElementById('button_show_list');; //PARA VER LA LISTA ACTUAL DESDE EL ARTICULO QUE SE ESTA EDITANDO
+    el_but_show_lists = document.getElementById('button_show_lists');// PARA VER LAS TODAS LAS LISTAS DESDE EL MODAL LISTA
     el_but_save_list = document.getElementById('button_save_list');
     el_but_fin_list = document.getElementById('button_finalize_list');
     el_but_submit_excel = document.getElementById('button_submit_excel');
@@ -422,7 +447,7 @@ $(document).ready(function() {
     ////--- INICIALIZAMOS CONTROLES DE TIPO DE INGRESO
     el_sel_tipo_ingreso = document.getElementById('select_tipo_ingreso');
     el_txt_art_existente=document.getElementById('txt_art_existente');
-    el_btn_art_cagar=document.getElementById('button_art_cargar');
+    el_btn_art_cargar=document.getElementById('button_art_cargar');
 
     ////--- INICIALIZAMOS CONTROLES SKUS
     el_sel_marca =  document.getElementById('select_sku_marca');
@@ -528,6 +553,7 @@ $(document).ready(function() {
   //FUNCION PARA AUTORELLENAR LA DESCRIPCION
   function autoFillDescription(){
     let descripcion;
+    //Inicialmente, agregamos a la variable descripcion  el codigo del articulo que esta en el text control dependiende del caso de ingreso
     (article_editing != '' && !!article_editing) ? descripcion = (el_txt_art_existente.value + ' - ').toUpperCase()  : descripcion = (el_txt_prefijo.value + el_txt_correlativo.value + el_txt_sufijo.value + ' - ').toUpperCase(); //inivar
     // let prenda = document.getElementById('select_sku_prenda');
     // let categoria = document.getElementById('select_sku_categoria');
@@ -570,10 +596,16 @@ $(document).ready(function() {
     $(".cont_fila_crear_sku :input").val("");  // reseteamos los input
     id_cat_actual=id_cat;
     paintContCategory(id_cat_actual)
-    // id_cat == 'div_cat_otro' ? cargarSelectsAll() : cargarSelectsSku('OITB', name_dpto);
     cargarSelectsSku('OITB', name_dpto)
   }
 });///FIN DOCUMENT READY
+
+
+//##########################################################################################################################################
+//##########################################################################################################################################
+//#########################################   FUNCIONES EXTERNAS AL DOCUMENT READY #########################################################
+//##########################################################################################################################################
+//##########################################################################################################################################
 
 /////----- FUNCION QUE DETERMINA SI EXISTE ALGUN CAMPOS DE SKU_CREAR, CON VALORES SELECCIONADOS. VASQUE QUE EXISTA SOLO UN SELECT Y RETUNR 1
 function get_fill_fields(seleccion) {
@@ -609,7 +641,6 @@ function ajax_save_list(param){
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden'); }
   });
 }
-
 function ajax_submit_excel(param) {
   $.ajax({
     url: './models/sku_lista.php', type: 'post', dataType: 'json', data: param,
@@ -661,7 +692,9 @@ function ajax_finalize_list(param){
     error: function () { console.log('error'); el_div_loader_full.classList.add('cont_hidden');  }
   });
 }
-/////----- FUNCTION QUE OBTIENE DATOS DE LOS ITEM DEL ARTICULO BUSCADO, CAMBIA LA VISTA AL DPTO OBTENDIO Y LLENA LOS SELECT CON TODOS LOS DATOS SIN DEPENDENCIA
+/////----- SOLO PARA ARTICULO EXISTENTE EN SAP Y EDICION DE ARTICULO EN LISTA
+/////----- FUNCTION QUE LLENA LOS SELECT PARA EL ARTCIULO ELEGIDO, CAMBIA LA VISTA AL DPTO OBTENIDO Y RESTRINGE MODIFICACION DE SELECTES SEGUN EL ORIGEN: SAP O LISTA
+/////----- setea art_existente con el articulo pasado como parametro y la opcion_ingreso (existente_sap o existete_lista, pasado en el parametro)
 function ajaxFillSelects(param){
   console.log('parametros desde editar_detalle ariticuo',param);
   $.ajax({
@@ -672,7 +705,7 @@ function ajaxFillSelects(param){
       if(data.cant_skus==0){
         alert('ARTICULO NO ENCONTRADO')
       }else{
-        console.log(data);
+        // console.log(data);
         if (!!data.errors) console.log('Error en Peticion API op: fill_selects', data.errors);
      
         ///--- CAMBIAMOS EL ESTADO DE INGRESO:
@@ -711,29 +744,43 @@ function ajaxFillSelects(param){
             fillSelectMultiplesGruposFromArray(data.tallas, "div_sel_grupo_opciones", false);
           }
           document.querySelector('#div_row_composicion .filter-option').innerHTML = el_sel_composicion.options[el_sel_composicion.selectedIndex].text;
+          //SI 
           if(param.origin == 'sap') {
+            el_div_operation_title.innerHTML = "CREACION DE SKUS PARA ARTICULO " + art_existente + "EXISTENTE EN SAP"
             document.querySelectorAll('.sku_control').forEach(function (ctrl) {
               ctrl.disabled = true;
             });
             el_sel_color.disabled = false;
             el_sel_copa.disabled = false;
             el_sel_fcopa.disabled = false;
-          }else{
-            document.querySelectorAll('.prefijo').forEach(function (ctrl) {
-              ctrl.disabled = true;
-            });
-            document.getElementById('div_title_skus_existentes').innerHTML='SKUs en LISTA';
-            el_sel_tipo_ingreso.value='existente';
+          }else{//CUANDO ES existente_lista    
+            el_sel_tipo_ingreso.value = 'existente';
             el_sel_tipo_ingreso.disabled = true;
             el_txt_art_existente.classList.remove('control_hidden');
+            el_txt_art_existente.disabled=true; //SI ESTO VARIA PARA EDITAR O AGREGAR SKUS, COLOCARLOS EN LA CONDICION CORRESPONDIENTE
             el_txt_art_existente.value = art_existente;
-            document.getElementById('div_sel_grupo_opciones').innerHTML = '';
-            document.getElementById('span_tallas_chosen').innerHTML = '';
-            el_sel_color.disabled = true;
-            el_sel_copa.disabled = true;
-            el_sel_fcopa.disabled = true;
-            el_txt_prefijo.disabled = true;
-            el_txt_correlativo.disabled = true;
+            if (param.accion == 'editar_detalles') { // EDITAR DETALLES
+              el_div_operation_title.innerHTML = "EDICION DE ARTICULO " + art_existente + ", EXISTENTE EN LISTA"
+              document.querySelectorAll('.prefijo').forEach(function (ctrl) {
+                ctrl.disabled = true;
+              });
+              document.getElementById('div_title_skus_existentes').innerHTML = 'SKUs en LISTA';
+              document.getElementById('div_sel_grupo_opciones').innerHTML = ''; //VACIAMOS LAS OPCIONES DE LAS TALLAS
+              document.getElementById('span_tallas_chosen').innerHTML = ''; //VACIAMOS EL SAPN QUE CONTIENE LAS TALLAS ELEGIDAS
+              el_sel_color.disabled = true;
+              el_sel_copa.disabled = true;
+              el_sel_fcopa.disabled = true;
+              el_txt_prefijo.disabled = true;
+              el_txt_correlativo.disabled = true;
+            }else{ //AGREGAR SKUS
+              el_div_operation_title.innerHTML = "AGREGAR SKUS A ARTICULO " + art_existente + ", EXISTENTE EN LISTA"
+              document.querySelectorAll('.sku_control').forEach(function (ctrl) {
+                ctrl.disabled = true;
+              });
+              el_sel_color.disabled = false;
+              el_sel_copa.disabled = false;
+              el_sel_fcopa.disabled = false;
+            }
           }
         }
         ///despues que llenamos los selects, verificamos si mostramos o no el el div_copas
@@ -792,8 +839,7 @@ function ajaxAddArticleList(param){
 }
 /////----- FUNCION QUE PINTA EL DPTO A CREAR Y A LA VEZ SETEA EL name_dpto con el departamento actual seleccionado
 function paintContCategory(id_cat){
-  
-  if(!document.getElementById(id_cat)){//si el id de la categoria no es un dpto comun, entonces se pinta la opcion "otro" agregando 
+  if(!document.getElementById(id_cat)){//si el id de la categoria no es un dpto comun, entonces se pinta la opcion "otro" agregando un SPAN con el titulo del departamento distinto 
     id_cat='div_cat_otro';
     console.log(id_cat);
     document.getElementById('div_dpto_name').innerHTML = "<span>DPTO:  " + name_dpto + "</span>"
@@ -814,9 +860,8 @@ function paintContCategory(id_cat){
   // console.log(id_other_dpto);
   (id_cat !== 'div_cat_otro') ? name_dpto = id_cat.substr(8, id_cat.length): name_dpto = document.getElementById(id_other_dpto).innerHTML;
 }
-
-  ///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API
-  ///--- PENDIENTE, RENDER PARA LAS TALLAS, CUANDO ESTÉ EL CRUD PARA LAS TALLAS
+///--- FUNCION QUE VOLVERA A LLENAR LOS VALORES DE UN SELECT CON LOS DATOS DE UNA TABLA CONSULTADA A LA API
+///--- PENDIENTE, RENDER PARA LAS TALLAS, CUANDO ESTÉ EL CRUD PARA LAS TALLAS
 function render_select(table) {
   el_sel_table = document.getElementById('select_sku_' + table);
   parameters = { 'option': 'render_select', 'table': table };
@@ -852,8 +897,7 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
   el_articulo.querySelector('.dbody_sku').insertAdjacentHTML('beforeend', rows); // AGREGAMOS LAS FILAS DENTRO DEL ARTICULO (AL FINAL SI YA EXISTIERAN) 
   el_articulo.querySelector('.dfoot_sku').innerHTML=detail; 
 
-  ///--- CREAREMOS LOS EVENTOS PARA CADA LOS ARTICULOS_PREVIEW ( no se si crearlos aca o en js del componente)
-  ///--- ELIMINAR ARTICULO DE LA VISTA  
+  //////################### EVENTOS PARA ELIMINAR ARTICULO DE LA VISTA
   document.querySelectorAll('.btn_delete_article').forEach(function (but_del) {
     but_del.onclick = function () {
       if (confirm('¿DESEA QUITAR ESTE ARTICULO DE LA LISTA?')) {
@@ -894,25 +938,9 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
       }
     }
   });
-
-  ///--- AGREGAR COLOR TALLA
-  document.querySelectorAll('.btn_add_color_talla').forEach(function (but_add) {
-    but_add.onclick = function () {
-      // alert("entro");
-      /// el_arti = but_add.parentNode.parentNode.parentNode;
-      /// id_el_arti = el_arti.id;
-      /// cod_arti = id_el_arti;
-      /// if (cod_arti.indexOf('_') != -1) {
-      ///   cod_arti = cod_arti.slice(cod_arti.indexOf("_") + 1)
-      ///   cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
-      /// }
-      /// console.log(cod_arti);
-    }
-  });
-
-  ///--- VER EDITAR DETALLE
-  document.querySelectorAll('.btn_edit_detalle').forEach(function (but_view_edit) {
-    but_view_edit.onclick = function () {
+  //////################### EVENTOS PARA EDITAR DETALLE Y AGREGAR SKUS PARA EL ARTICULO EN LISTA
+  document.querySelectorAll('.btn_edit_detalle, .btn_add_color_talla').forEach(function (but_view_edit) {
+    but_view_edit.onclick = function () {      
       el_arti = but_view_edit.parentNode.parentNode.parentNode;
       id_el_arti = el_arti.id;
       cod_arti = id_el_arti;
@@ -921,9 +949,10 @@ function renderArticleList(art, itn, rows, detail, estado_article, existencia) {
         cod_arti = cod_arti.replace('_', '.');    //REEMPLAZAMOS EL PUNTO POR EL "_" DADO QUE NO SE PERMITEN PUNTOS EN EL NOMBRE DEL ARTICULO
       }
       article_editing =cod_arti;
-      parameters= { 'option' : 'fill_selects', 'articulo': article_editing, 'origin': 'lista' };      
-      ajaxFillSelects(parameters);
-      el_txt_art_existente.disabled = true;
+      console.log(but_view_edit.classList.item(2));
+      el_txt_descripcion.disabled=false //puede que se deshbilite en alguna edicion que no se guarda, entonces lo volvemos a habilitar
+      but_view_edit.classList.contains('btn_edit_detalle') ? edit_article_operation = 'editar_detalles': edit_article_operation = 'agregar_skus'      
+      ajaxFillSelects( { 'option' : 'fill_selects', 'articulo': article_editing, 'origin': 'lista', 'accion': edit_article_operation } );
       modal_preview_save.style.visibility = 'hidden';
     }
   });
@@ -949,12 +978,10 @@ function resetAllControls(id_categ) {
   opcion_ingreso='nuevo';
   art_existente='nuevo';
   el_txt_art_existente.classList.add('control_hidden');
-  el_btn_art_cagar.classList.add('control_hidden');
+  el_btn_art_cargar.classList.add('control_hidden');
   $("#select_sku_color").selectpicker("deselectAll");
   // $("#select_sku_color").selectpicker("refresh");
-  // $("#select_sku_composicion").selectpicker("deselect");
-  $("#select_sku_composicion").attr("selected", false);
-  $("#select_sku_composicion").selectpicker("refresh");
+  el_sel_composicion.value='';
   $("#div_sel_grupo_opciones").html("");
   $("#span_tallas_chosen").text(' ');
   cargarSelectsSku('OITB', name_dpto);
@@ -1064,3 +1091,5 @@ function cargarSelectsSku(nombre_tabla_padre, valor_tabla_padre) {
     }
   });
 }
+
+function disableControls(){} //NO IMPLEMENTADA, ver como llamar a los controles editables para no deshabilitarlos, ademas de cambiar el color a qquellos que sean disabled

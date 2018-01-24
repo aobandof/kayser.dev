@@ -376,6 +376,13 @@ input[type="number"] {
   font-size: 1.2rem;
   font-weight: bold;
 }
+#div_titulo_operacion {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: rgb(37, 3, 92);
+}
+
+
 /*************** MEDIAS QUERYS SKU_CREAR ******/
 @media (max-width: 750px) {
 

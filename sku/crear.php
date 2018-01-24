@@ -88,6 +88,7 @@ if(isset($_SESSION['user'])){
       </div>
         <div class="comp_crear_sku container_row">          
           <div class="container_column col-md-8 col-lg-8 col-xl-8">
+            <div id="div_titulo_operacion"></div>
             <div id="div_dpto_name"></div>
             <div class="cont_fila_crear_sku container_row " id="div_dpto">
               <div><span class="">DPTO&nbsp</span><select name="OITB" id="select_sku_dpto" class="form-control"><option value=""></option></select></div>
@@ -168,8 +169,8 @@ if(isset($_SESSION['user'])){
           </div>
         </div>
         <div class="cont_botonera_inf container_row">
-          <button type="button" name="button" id="btn_create_article_list" class="btn btn-primary">GUARDAR EN LISTA</button>
-          <button type="button" name="button" id="btn_show_list" class="btn btn-warning">VER LISTA</button>
+          <button type="button" name="button" id="button_save_article" class="btn btn-primary">GUARDAR EN LISTA</button>
+          <button type="button" name="button" id="button_show_list" class="btn btn-warning">VER LISTA</button>
         </div>
     </div>
 
