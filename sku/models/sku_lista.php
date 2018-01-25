@@ -139,7 +139,7 @@ if($_POST['option']=="save_article"){
       $data['nothing']='NO SE PUDIERON AGREGAR SKUS NUEVOS DE ARTICULO EXISTENTE EN SAP';
       echo json_encode($data); exit();
     }
-  }else{  
+  }else{  //SI EXISTENCIA = NUEVO
     $query_insert_article="INSERT INTO articulo VALUES ('$code_article',$lista,'".$_POST['itemname']."', "; 
     $query_insert_article.=$_POST['marca_code'].",'".$_POST['marca_name']."',".$_POST['dpto_code'].",'".$_POST['dpto_name']."',";
     $query_insert_article.=$_POST['subdpto_code'].",'".$_POST['subdpto_name']."','".$_POST['prenda_code']."','".$_POST['prenda_name']."','".$_POST['categoria_code']."','".$_POST['categoria_name']."',";

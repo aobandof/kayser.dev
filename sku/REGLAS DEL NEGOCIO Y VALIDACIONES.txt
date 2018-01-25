@@ -46,8 +46,9 @@ de Articulos y SKus como ayuda, sobre todo para los que cargaron a sap.. para qu
 PENDIENTE YA:
 -------------
 
-me quede en agregar un boton CANCELAR EDICION para cuando se editen detalle o se agreguen tallas/color, al cancelar, setee article_editing='';
-además programar que cuando se clickee boton ADD_ARTICLE_LIST que pregunte si se esta editando el articulo, si es asi considerar el_txt_arr_
+--- cuando se cambia de dpto, asi los controles estan vacios, sigue mostrando el aviso de confirmacion para cambiar de dpto (verificar la falla por favor)
+--- cuando se edita detalle o agrega sku a un articulo desde la lista, deshabilitar los iconos de departamento para que solamente trabaje en el dpto seleccionado- si desea agregar otro articulo, debe volver a lista y agregar nuevo articulo
+
 
 --- cuando un reviser crea y revisa la misma lista, en listas.php no se verifica "revisado por", dado que en Bd, el estado de la lista = "REVISADA" pero en la relacion lista_has_usuario, no se guarda la operacion "REVISION"
 --- ver si ahora, o despues, pero seria ideal que el txt_sku_description no muestre el codigo de articulo y solo la descripcion y cuando los reviser envian el excel, alli fusionar ambos campos... esto conseguiria que este control no dependa de alguna modificacion manual del txt_sku_predijo y txt_sku_correlativo, tanto al crear como al editar un sku en lista, e incluso para el sap

@@ -15,6 +15,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   $options=[];
   $nombre_name="";
   $nombre_id="";
+  $query_all=[];
   foreach ($tablas_sku as $tabla => $array_tabla) { // recorremos todo el array con las tablas, campos y relaciones
     $arr_ops=[];
     if(!isset($array_tabla['dep']) && $tabla!="relacionprefijo"){
@@ -25,6 +26,7 @@ if($_POST['option']=="cargar_selects_independientes"){
         $nombre_id=$array_tabla['id'];
         $query="select ".$array_tabla['id']." as id,".$array_tabla['campo']." as name from $tabla ORDER BY ".$array_tabla['campo'];
       }
+      $query_all[]=$query;
       if($array_tabla['bd']=="mysql"){// SI LA TABLA ES MYSQL
         if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
           $data['errors'][]=$mysqli->getErrors();
@@ -43,6 +45,7 @@ if($_POST['option']=="cargar_selects_independientes"){
   }// fin foreach
   $mysqli->closeConnection();
   $sqlsrv_33->closeConnection();
+  $data['querys']=$query_all;
   $data['values']=$options;
   echo json_encode($data);
 }
@@ -86,6 +89,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
           }
           if(($arr_ops=$mysqli->select($query,"mysqli_a_o"))===false){
             $data['errors'][]=$mysqli->getErrors();
+            $data['consulta_error'][]=$query;
             continue;//pasamos al siguiente recorrido de foreach
           }else {
             if($arr_ops==0)
@@ -131,7 +135,7 @@ if($_POST['option']=="cargar_selects_dependientes") {
   }//fin foreach
   // array_unshift($options, $array_grand_child);//agregmos los descendientes al inicio de la data a enviar por json
   // $data['grand_childs']=$array_grand_child;
-  // $data['querys']=$querys_export;
+  $data['querys']=$querys_export;
   $mysqli->closeConnection();
   $sqlsrv_33->closeConnection();
   header("Content-Type: text/html;charset=utf-8");
