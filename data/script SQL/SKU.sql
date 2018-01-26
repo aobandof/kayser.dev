@@ -277,3 +277,6 @@ SELECT S.ItemCode as SKU, S.ItemName as DESCRIPCION, S.CodeBars as 'CODIGO DE BA
 
 SELECT S.ItemCode as SKU, S.ItemName as DESCRIPCION, S.CodeBars as 'CODIGO DE BARRAS', S.U_APOLLO_SEG2 as COLOR  FROM OITM AS S WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.CodeBars='780000216318'
 
+
+
+SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, D.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, P.Name as prenda_name , S.U_APOLLO_DIV as categoria_code,C.Name as categoria_name, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name,S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name, S.U_APOLLO_SEG3 as talla_familia FROM OITM AS S JOIN OITB AS D ON S.ItmsGrpCod=D.ItmsGrpCod LEFT JOIN [@APOLLO_SEASON] AS P ON S.U_APOLLO_SEASON=P.Code LEFT JOIN [@APOLLO_DIV] AS C ON S.U_APOLLO_DIV=C.Code WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '50.514-%'

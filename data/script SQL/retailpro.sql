@@ -126,7 +126,7 @@ from   Stock.dbo.Kayser_OITW                                           as t0 inn
        Stock.dbo.Kayser_OITM                                           as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS
       
        
-where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 
+where t3.U_GSP_SENDTPV='Y'  and t2.ItemCode='10.07-bco-s'
 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode
 
 select t0.itemcode AS [Codigo Producto], t0.itemcode AS [Descripcion Producto], t0.whscode AS [Codigo Local], t3.WhsName AS [Descripcion Local], convert(date, GETDATE()) AS [Fecha Inicio], convert(date, GETDATE()) AS [Fecha termino],

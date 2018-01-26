@@ -46,8 +46,14 @@ de Articulos y SKus como ayuda, sobre todo para los que cargaron a sap.. para qu
 PENDIENTE YA:
 -------------
 
---- cuando se cambia de dpto, asi los controles estan vacios, sigue mostrando el aviso de confirmacion para cambiar de dpto (verificar la falla por favor)
 --- cuando se edita detalle o agrega sku a un articulo desde la lista, deshabilitar los iconos de departamento para que solamente trabaje en el dpto seleccionado- si desea agregar otro articulo, debe volver a lista y agregar nuevo articulo
+--- CUANDO SE CARGA UN ARTICUL EXISTENTE EN SAP, EN LA API CONDICIONAMOS SI LA CATEGORIA_CODE tiene long mayor qe 5, le cortamos a 5.
+		DEBERIAMOS EN LUGAR DE PREGUNTAR LA LONGITUD, PREGUNTAR SI LA CADENA TIENE TEXTO, DE SER ASI, LLAMAR A UNA FUNCION QUE RECUPERE EL CODIGO DE LA CATEGORIA UDANDO EL NOMBRE DE LA CATEGORIA.
+		LO MISMO PARA LA PRENDA.
+--- pendiente el habilitar campos de edicion cuando se van a crear skus para articulo exisitente en SAP
+--- pendiente el editar detalle y agregar skus a articulo en listas.php
+--- cuando es una articulo existen en lista, en el modal lista, en la descripcion, no se muestra el codigo de articulo, solo la descripcion.
+--- cuando se modifica el txt_articulo_existe, despues de haber consultado el articulo en sap y haber llenado los selects, muestra un alerte que se modifico y pide corregir, pero despues muestra un alerto "TODOS LOS CAMPOS SON NECESARIOS", revisar por favor
 
 
 --- cuando un reviser crea y revisa la misma lista, en listas.php no se verifica "revisado por", dado que en Bd, el estado de la lista = "REVISADA" pero en la relacion lista_has_usuario, no se guarda la operacion "REVISION"

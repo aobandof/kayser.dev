@@ -90,7 +90,7 @@ if($_POST['option']=="save_article"){
 
     $query_articulo="SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, D.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, P.Name as prenda_name , S.U_APOLLO_DIV as categoria_code,";
     $query_articulo.="C.Name as categoria_name, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name,";
-    $query_articulo.="S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S ";
+    $query_articulo.="S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name, S.U_APOLLO_SEG3 as talla_familia FROM OITM AS S ";
     $query_articulo.="JOIN OITB AS D ON S.ItmsGrpCod=D.ItmsGrpCod ";
     $query_articulo.="LEFT JOIN [@APOLLO_SEASON] AS P ON S.U_APOLLO_SEASON=P.Code ";
     $query_articulo.="LEFT JOIN [@APOLLO_DIV] AS C ON S.U_APOLLO_DIV=C.Code ";
@@ -101,8 +101,10 @@ if($_POST['option']=="save_article"){
     if($arr_articulo!==false && $arr_articulo!==0){
       $query_insert_article="INSERT INTO articulo ";
       $query_insert_article.="VALUES ('$code_article',$lista,'".$arr_articulo[0]['itemname']."', ";
+      $data['prenda_code_original']=$arr_articulo[0]['prenda_code'];      
       (strlen($arr_articulo[0]['prenda_code']) > 5) ? $prenda_code=substr($arr_articulo[0]['prenda_code'],0,5 ) : $prenda_code=$prenda_code=$arr_articulo[0]['prenda_code'];
-      (strlen($arr_articulo[0]['categoria_code']) > 5) ? $categoria_code=substr($arr_articulo[0]['categoria_code'],0,5 ) : $categoria_code=$prenda_code=$arr_articulo[0]['categoria_code'];      
+      $data['prenda_code_procedada']=$prenda_code;
+      (strlen($arr_articulo[0]['categoria_code']) > 5) ? $categoria_code=substr($arr_articulo[0]['categoria_code'],0,5 ) : $categoria_code=$arr_articulo[0]['categoria_code'];      
       $query_insert_article.="null,'".$arr_articulo[0]['marca_name']."',".$arr_articulo[0]['dpto_code'].",'".$arr_articulo[0]['dpto_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['subdpto_name']."','".$prenda_code."','".$arr_articulo[0]['prenda_name']."','".$categoria_code."','".$arr_articulo[0]['categoria_name']."',";
       $query_insert_article.="null,'".$arr_articulo[0]['presentacion_name']."',null,'".$arr_articulo[0]['material_name']."',";

@@ -28,7 +28,7 @@ $query_stock_tiendas = "select t0.itemcode AS [Codigo Producto], t0.itemcode AS 
 $query_stock_tiendas.= "CAST(SUM(t0.onhand) as int) * 0 AS [Venta total unidades], CAST(SUM(t0.onhand) as int) * 0  AS [Venta Total en Valor], CAST(SUM(t0.onhand) AS int) AS [Inventario en unidades], ";
 $query_stock_tiendas.= "CAST(SUM(t0.onhand)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], CAST(SUM(t0.onhand) as int) * 0 AS [Venta Total en Valor Costo] ";
 $query_stock_tiendas.= "from Stock.dbo.Kayser_OITW as t0 inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.WhsCode COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS ";
-$query_stock_tiendas.= "where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode";
+$query_stock_tiendas.= "where t3.U_GSP_SENDTPV='Y' GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode";
 
 $registros_stock_cm=sqlsrv_query($conec_stock, $query_stock_cm);
 $registros_stock_tiendas=sqlsrv_query($conec_stock, $query_stock_tiendas);

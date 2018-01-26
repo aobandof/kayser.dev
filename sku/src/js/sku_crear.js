@@ -97,8 +97,9 @@ $(document).ready(function() {
   paintContCategory("div_cat_dama");
   /////############ EVENTO PARA CAMBIAR DE DEPARTAMENTO ######################################
   $(".cont_img_categoria").click(function () {
-    /**************************************************************************************************************************** */
-    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes    
+    /**************************************************************************************************************************** */    
+    document.getElementById('div_skus_existentes').classList.add('cont_hidden'); //ocultamos el div de skus existentes  
+
     el_sel_tipo_ingreso.value = "nuevo";
     opcion_ingreso = 'nuevo';
     art_existente = 'nuevo';
@@ -134,18 +135,21 @@ $(document).ready(function() {
       })
     } else {
       if (id_cat_actual !== id_cat_after_click) {
+        name_dpto = id_cat_after_click.substr(8, id_cat_after_click.length);
         if (get_fill_fields('all') == 1) {
           if (confirm("Existen campos con contenido que se perderán si cambia opción.\nDesea cambiar de Departamento")) {
             el_div_operation_title.innerHTML="CREACION DE NUEVO ARTICULO";
             campos_llenos = 0;
-            id_other_dpto = '';
-            name_dpto = id_cat_after_click.substr(8, id_cat_after_click.length);
+            id_other_dpto = '';            
+            console.log(name_dpto);
             cargarSelectsSku('OITB', name_dpto);
             resetAllControls(id_cat_after_click);
             paintContCategory(id_cat_after_click)
             document.getElementById('div_dpto_name').innerHTML = "";
           } else { campos_llenos = 0; }
         } else {
+          // console.log('entro_aca');
+          console.log(name_dpto);
           el_div_operation_title.innerHTML = "CREACION DE NUEVO ARTICULO";
           id_other_dpto = '';
           $("#div_sel_grupo_opciones").html("");
@@ -309,7 +313,7 @@ $(document).ready(function() {
   if(!!el_but_add_article){
     el_but_add_article.onclick = function () {
       el_but_show_list.disabled = false;
-      // cargarSelectsSku('OITB', name_dpto);
+      cargarSelectsSku('OITB', name_dpto);
       resetAllControls(id_cat_actual);//reseteamos los controles
       paintContCategory(id_cat_actual)
       modal_preview_save.style.visibility = 'hidden';
@@ -610,10 +614,10 @@ $(document).ready(function() {
 
 /////----- FUNCION QUE DETERMINA SI EXISTE ALGUN CAMPOS DE SKU_CREAR, CON VALORES SELECCIONADOS. VASQUE QUE EXISTA SOLO UN SELECT Y RETUNR 1
 function get_fill_fields(seleccion) {
-  $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
-    if ($(this).val() != "" /* $(this).val()!=null*/ ) {
+  // $(".cont_fila_crear_sku :input[type=text], .cont_fila_crear_sku select, .full_fila select").each(function () {
+  $(".sku_control").each(function () {
+    if ($(this).val() != "" && $(this).val()!=null ) {
       campos_llenos = 1;
-      // console.log('elemento: ', $(this));
     }
   });
   if ($("#span_tallas_chosen").text().trim() !== '') {
@@ -708,7 +712,6 @@ function ajaxFillSelects(param){
       }else{
         console.log('Articulo recibido desde la APi con los skus existentens en SAP',data);
         if (!!data.errors) console.log('Error en Peticion API op: fill_selects', data.errors);
-     
         ///--- CAMBIAMOS EL ESTADO DE INGRESO:
         art_existente = param.articulo;        
         id_other_dpto = 'dpto_' + data.dpto_codigo;
