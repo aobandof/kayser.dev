@@ -1,0 +1,5 @@
+- Configurar AWS para poder subir proyectos node	 
+- Crear Repositorio Centralizado o Bare en AWS.
+ 	
+	
+

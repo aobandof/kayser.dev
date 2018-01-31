@@ -1,0 +1,16 @@
+CUBERNETES = CONTENEDOR ?
+PROXI REVERSO ?
+
+terraform, te permite tener la infraestructura como codigo, donde se puede generar ficheros de congiguracion de toda la infraestructura, ejecutar un comando que se conecta con el cloud y te ejecuta toda la configuracion de tus maquinas virtuales, redes, ip, etc
+
+sysadmin = Tareas de Administracion  y configuracion de servidores
+
+init, upstare y PM2 herramientas de gestion de procesos del servidor (linux por lo general).
+- Por ejemplo configurar que aplicaciones inician con el sistema.
+- configurar la libreria forever para que cuando caiga node, lo vuelva a iniciar.
+
+PM2 es una buena opcion para manejar procesos para garantizar que node este funcionando.
+
+
+
+

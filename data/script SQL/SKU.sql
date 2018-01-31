@@ -1,4 +1,4 @@
---- PARA SKU
+	--- PARA SKU
 SELECT TOP 10 * FROM Kayser_OITM	-- SKUs
 SELECT TOP 10 * FROM Kayser_OITB	-- GRUPOS de ARTICULOS
 SELECT U_SubGrupo1 FROM Kayser_OITM WHERE U_SubGrupo1!='null' GROUP BY U_SubGrupo1
@@ -265,7 +265,7 @@ S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as c
 JOIN OITB AS D ON S.ItmsGrpCod=D.ItmsGrpCod
 LEFT JOIN [@APOLLO_SEASON] AS P ON S.U_APOLLO_SEASON=P.Code
 LEFT JOIN [@APOLLO_DIV] AS C ON S.U_APOLLO_DIV=C.Code
-WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '67.1041-%'
+WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '93.36-%'
 
 SELECT S.ItemCode as sku_code, S.U_APOLLO_SEG1 as articulo_code,S.ItemName as itemname, S.ItmsGrpCod as dpto_code, D.ItmsGrpNam as dpto_name,  S.U_SubGrupo1  as subdpto_name, S.U_APOLLO_SEASON as prenda_code, P.Name , S.U_APOLLO_DIV as categoria_code,C.Name, S.U_Marca AS marca_name, S.U_FILA as presentacion_name, S.U_Material as material_name, S.CodeBars as barcode, S.U_IDCopa as copa_name, S.U_GSP_SECTION as forma_copa, S.U_EVD as tprenda_name, S.U_APOLLO_SEG2 as color, S.U_APOLLO_S_GROUP as tcatalogo_name,S.U_ESTILO as grupouso_name, S.U_APOLLO_COO as composicion_name, S.FrgnName as caracteristica_name FROM OITM AS S JOIN OITB AS D ON S.ItmsGrpCod=D.ItmsGrpCod LEFT JOIN [@APOLLO_SEASON] AS P ON S.U_APOLLO_SEASON=P.Code LEFT JOIN [@APOLLO_DIV] AS C ON S.U_APOLLO_DIV=C.Code WHERE (S.U_APOLLO_SEG1 IS NOT NULL) AND s.ItemCode like '65.1170-%'
 
