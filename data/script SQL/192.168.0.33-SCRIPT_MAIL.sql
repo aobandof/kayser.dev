@@ -18,3 +18,12 @@ SELECT * FROM U_MMcorrelativo
 select top 5 code, U_GSP_CABOTI,U_GSP_CACLIE, U_GSP_CADOCU,U_GSP_CANUME, U_GSP_CADATA, U_GSP_ERROR  from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2017 AND month(u_gsp_cadata)=12
 
 select code, U_GSP_CABOTI, U_GSP_CACLIE, U_GSP_CADOCU, U_GSP_CANUME, convert(varchar,convert(date,U_GSP_CADATA)), U_GSP_ERROR from [@GSP_TPVCAP] where U_GSP_ERROR like '%no se ha integrado%' and year(u_gsp_cadata)>=2018
+
+
+--------------------------------------------------------------------------------
+
+select top 100000 Anio, Mes, CodCte, Razon, GroupName, Sku, Articulo,Grupo, Origen, Destino, Costo, Precio, Entrada, Salida, Saldo, Neto, Guia from PDFENE
+
+
+
+SELECT  A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC

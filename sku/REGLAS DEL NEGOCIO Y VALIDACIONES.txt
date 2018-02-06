@@ -53,7 +53,8 @@ PENDIENTE YA:
 --- pendiente el habilitar campos de edicion cuando se van a crear skus para articulo exisitente en SAP
 --- pendiente el editar detalle y agregar skus a articulo en listas.php
 --- cuando es una articulo existen en lista, en el modal lista, en la descripcion, no se muestra el codigo de articulo, solo la descripcion.
---- cuando se modifica el txt_articulo_existe, despues de haber consultado el articulo en sap y haber llenado los selects, muestra un alerte que se modifico y pide corregir, pero despues muestra un alerto "TODOS LOS CAMPOS SON NECESARIOS", revisar por favor
+--- cuando se modifica el txt_articulo_existe, despues de haber consultado el articulo en sap y haber llenado los selects, muestra un alerte que se modifico y pide corregir, pero despues muestra un alerto "TODOS LOS CAMPOS SON NECESARIOS", revisar por favor.
+--- MODIFICAR PARA QUE UN EDITOR PUEDA VER LA LISTA QUE CREO Y ENVIO A REVISION
 
 
 --- cuando un reviser crea y revisa la misma lista, en listas.php no se verifica "revisado por", dado que en Bd, el estado de la lista = "REVISADA" pero en la relacion lista_has_usuario, no se guarda la operacion "REVISION"

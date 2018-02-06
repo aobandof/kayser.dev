@@ -1,4 +1,4 @@
-
++
 /*******************************************************************************************************************/
 -- 192.168.0.33 / database: SBO_KAYSER 
  select * from MM_VRWEB -- DESCONTINUADO -- VISTA para obtener el STOCK de casa Matriz, Retorna SI o NO tiene stock
@@ -85,3 +85,4 @@ GROUP BY IdArticulo ORDER BY IdArticulo
 
 
 
+----------------------------------------------------------

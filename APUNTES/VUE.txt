@@ -9,13 +9,13 @@ DIRECTIVAS: codigo que va dentro o fuera de etiquetas en el template
 
 <TAG>{{ task[3].title }}					muestra el elemento 3 del arreglo</TAG>
 
-<ul> <li v-for='task in task'> {{ task.title }} </li></ul>	impreme una lista con todos los titulos de los elementos del array tasks
+<ul> <li v-for='task in tasks'> {{ task.title }} </li></ul>	impreme una lista con todos los titulos de los elementos del array tasks
 
 
 <input type='text' v-model='variable'>				permite enlazar el input texto a la variable, detal forma que cuando se modifica el texto, tambien se modifica el valor de la variable
 
-<tag v-on:name_event='nameFunction()'				Permite enlazar eventos a methods del componente
-	nameFunctions: clik, keyup. keyup.enter, etc
+<tag v-on:name_event='nameFunction()'				Permite enlazar funciones a methods del componente
+	nameEventos: clik, keyup. keyup.enter, etc
 
 
 
