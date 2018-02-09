@@ -529,7 +529,7 @@ if($_POST['option']=='finalize_list'){
     
     ///--- ############################### ---
     ///--- AHORA ENVIAMOS EL MAIL:
-    $subject = ( $env=='dev' ) ? "(PRUEBA - CONSIDERAR) SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)" : "SKUS CARGADOS A SAP EXITOSAMENTE ($hoy)";
+    $subject = ( $env=='dev' ) ? "(PRUEBA - CONSIDERAR) SKUS CARGADOS A SAP EXITOSAMENTE ($hoy) - (Lista N° $lista)" : "SKUS CARGADOS A SAP EXITOSAMENTE ($hoy) - (Lista N° $lista)";
     $destinatario = ( $env=='dev' ) ? 'aobando@outlook.cl' : 'aobando@kayser.cl,sku@kayser.cl';
     $headers = "From: FINALIZACION DE CREACION DE SKUs <aobando@kayser.cl>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
