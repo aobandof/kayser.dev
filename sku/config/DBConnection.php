@@ -66,6 +66,7 @@ class DBConnection {
       return $arr_export;
   }
 
+  ######################   FUNCION SELECT CSV ########################  
   public function selectCsv($query,$del){//DEVUELVE UNA CADENA FORMATO CSV, SIN NOMBRES DE COLUMNAS    
     if($this->_driver=="sqlsrv"){       
       $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
@@ -99,6 +100,57 @@ class DBConnection {
     else
       return 0;
   }
+  ######################   FUNCION SELECT TABLE ########################  
+  /////----- 'SOLO RETORNA LOS TRs del TBODY' -----/////
+  ///### $pos_id contendra el entero que indica la posicion de campo que sera el id de la fila
+  ///### $array_buttons, sera un arreglo con cadenas que indiquen que botones agregaremos a las filas (ejemplo ['update', 'delete','select'])
+  ///### $tag sera "div" o "td"
+  public function selectDtable($query, $pos_id, $array_buttons, $tag){//DEVUELVE UNA CADENA FORMATO CSV, SIN NOMBRES DE COLUMNAS    
+    $filas='';
+    $buttons=[];
+    $buttons =  array(  'show' => "<a href='#'><img class='icon_table' src='./src/img/lupa.png'></a>",
+                        'update' => "<a href='#'><img class='icon_table' src='./src/img/edit.png'></a>",
+                        'delete' => "<a href='#'><img class='icon_table' src='./src/img/delete.png'></a>",
+                        'select' => '<input type="checkbox" id="">' );    
+    if($this->_driver=="sqlsrv"){       
+      $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
+      if($this->_registros_select===false){
+        return false;
+      }else {        
+        if(sqlsrv_num_rows($this->_registros_select)>0){                      
+          while($reg=sqlsrv_fetch_array($this->_registros_select,SQLSRV_FETCH_NUMERIC)) {
+            $tag==='div' ? $filas.="<div class='dtable_row' id='".$reg[$pos_id]."'>" : $filas.="<tr class='table_row' id='".$reg[$pos_id]."'>";
+            foreach ($reg as $value)
+              $filas.="<$tag>$value</$tag>";
+            foreach ($array_buttons as $button)
+              $filas.="<$tag>".$buttons[$button]."</$tag>";
+            $tag==='div' ? $filas.="</div>" : $filas.="</tr>"; 
+         
+          }
+        }else
+          return 0;
+      }     
+    }else if ($this->_driver=="mysqli") {
+      $this->_registros_select=$this->_connection->query($query);
+      if($this->_registros_select===false)
+        return false;
+      else{
+        while($reg=$this->_registros_select->fetch_assoc()){
+          $filas.="<div dtable_row id='".$reg[$pos_id]."'>";
+          foreach ($reg as $value) $filas.="<div>$value</div>";
+          foreach ($array_buttons as $value) $filas.="<div>".$buttons[$value]."</div>";
+          $filas.="</div>";
+        }
+      }       
+    }
+
+    // echo "el contenido para CSV es: <br>".$content;
+    if($filas!="") // consulta vacia
+      return $filas;
+    else
+      return 0;
+  }
+
   ######################   FUNCION PARA LAS INSERCIONES   ########################
   public function insert_easy($query){
     if(!($this->_connection->query($query))){

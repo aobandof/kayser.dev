@@ -1,0 +1,133 @@
+html, body {
+  height: 100%;
+  width:  100%;
+  margin: 0px;
+}
+#div_dun {
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.24);
+  height: 100%;
+  padding: 1rem;
+}
+#div_dun_list {
+  display: flex;
+  flex-direction: column;
+  flex: 65%;
+}
+
+#div_dun_list_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex : 0 1 8%;
+  background-color: white;
+  margin-bottom: 1rem;
+  padding: .5rem 1.5rem;
+  /* margin: 2rem; */
+}
+.header_filter {
+  flex: 0 0 35%;
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.247);
+  padding: .5rem;
+}
+.header_filter>input {
+  flex: 0 0 70%;
+}
+
+#div_dun_list_dtable {
+  
+  display: flex;
+  flex-direction: column;
+  /* width: 95%; */
+  border: 2px solid white;
+  flex: 1 1 auto;
+  /* margin: 2rem; */
+  background-color: rgba(252, 252, 252, 0.623);
+  
+}
+
+#div_dun_list_dtable>.dhead {
+  display: flex;
+  /* justify-content: space-between; */
+}
+#div_dun_list_dtable>.dhead>div {
+  text-align: center;
+  color: white;
+  background-color: #5F88FF;
+  /* flex: 1 1 auto; */
+  border: 1px solid white;
+}
+#div_dun_list_dtable .dbody {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    
+}
+#div_dun_list_dtable .dtable_row {
+  display: flex;
+}
+#div_dun_list_dtable .dtable_row>div {
+    text-align: center;
+    border: 1px solid rgba(130, 128, 238, 0.466);
+}
+.icon_table {
+  height: 1rem;
+}
+
+#div_dun_list_dtable>.dhead>div:nth-child(-n+3), #div_dun_list_dtable .dtable_row>div:nth-child(-n+3) {
+  flex: 0 0 15%;
+}
+#div_dun_list_dtable>.dhead>div:nth-child(n+4), #div_dun_list_dtable .dtable_row>div:nth-child(n+4) {
+  flex: 0 0 7%;
+}
+#div_dun_list_dtable>.dhead>div:nth-child(8), #div_dun_list_dtable .dtable_row>div:nth-child(8) {
+  flex: 0 0 10%;
+}
+#div_dun_list_dtable>.dhead>div:nth-last-child(9) {
+  flex: 0 0 6%;
+}
+#div_dun_list_dtable .dtable_row>div:nth-last-child(9) {
+  flex: 0 0 4%;
+}
+
+#div_dun_list_dtable .dtable_row>div:nth-child(1) {
+  flex: 0 0 20%;
+  text-align: left;
+  padding-left: .5rem;
+}
+#div_dun_list_dtable>.dhead>div:nth-child(1) {
+  flex: 0 0 20%;
+}
+
+#div_dun_list_footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 81, 255, 0.507);
+  flex: 0 1 10%;
+}
+#div_dun_list_footer>* {
+  margin: 0rem 1rem;
+  border:2px solid white;
+}
+
+/*************  ESTILOS PARA EL DUN GESTION ********/
+
+#div_dun_gestion {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 35%;
+  background-color: rgba(3, 3, 85, 0.753);
+
+}
+#div_dun_gestion>.header_title {
+  background-color: azure;
+  border: 2px solid white;
+  border-radius: .3rem;
+  font-size: 1.5rem;
+  text-align: center;
+  color: blue;
+  
+}

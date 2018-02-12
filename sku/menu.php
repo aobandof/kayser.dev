@@ -26,6 +26,7 @@ if(!isset($_SESSION['user'])){
           <a href="#"><button type="button" name="btn_modificar" class="btn btn-lg btn-info" id="button_modificar_sku">MODIFICAR SKU</button></a>
           <a href="./listas.php"><button type="button" name="btn_ver_listas" class="btn btn-lg btn-warning" id="button_show_list">VER LISTAS</button></a>
           <a href="./sku_consultar.html"><button type="button" name="btn_consultar" class="btn btn-lg btn-success" id="button_consultar_sku">CONSULTAR SKU</button></a>
+          <a href="./dun.php"><button type="button" name="btn_dun" class="btn btn-lg btn-primary" id="button_dun">GESTIÓN DUN</button></a>
           <a href="./sku_proveedor.html"><button type="button" name="btn_modificar" class="btn btn-lg btn-info" id="button_proveedor_sku">ENVIO A PROVEEDOR</button></a>
           <a href="#"><button type="button" name="btn_ver_listas" class="btn btn-lg btn-danger" id="button_logout">CERRAR SESION</button></a>
       </div>
