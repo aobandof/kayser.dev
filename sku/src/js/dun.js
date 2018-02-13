@@ -7,6 +7,13 @@ $(document).ready(function () {
   const el_div_dun_gestion_header_title = document.querySelector('#div_dun_gestion>.header_title')
   el_txt_article_filter.focus();
 
+  /////##### EVENYOS ######/////
+  document.getElementById('chb_all_dun').onchange = function(chb) {
+    document.querySelectorAll("#div_dun_list_dtable input[type=checkbox]").forEach(function(chbt){
+      chbt.checked = chb.target.checked;
+    })
+  }
+
   el_btn_article_filter.onclick = function(btn){
     // alert(btn.target.id);
     article_filter = el_txt_article_filter.value;
