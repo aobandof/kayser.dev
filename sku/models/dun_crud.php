@@ -3,7 +3,7 @@ require_once "../config/require.php";
 require_once "../config/sku_db_mysqli.php";
 require_once "../config/sku_db_sqlsrv_33.php";
 
-#########################################  SELECT DUN #############################################################
+#########################################  READ DUN #############################################################
 if($_POST['option']=="read"){
   $filas=[];
   $filter = $_POST['filter'];
@@ -19,6 +19,14 @@ if($_POST['option']=="read"){
 }
 
 
-#########################################  INSERT ITEM #############################################################
+#########################################  CREATE DUN #############################################################
+if($_POST['option']=="create"){
+  $data['barcodes'] = $_POST['barcodes'];
+
+  //LA API ME DEVOLVERA AQUELOS BARCODES QUE NO SE PUDIERON GUARDAR
+  $data['inserted']= $_POST['barcodes'];
+  echo json_encode($data);
+}
+#########################################  UPDATE DUN #############################################################
 
 ?>

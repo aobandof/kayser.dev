@@ -1,4 +1,4 @@
-cadena.slice(cadena.indexOf("_")+1) //para extraer cadena desde una posicion despues de la primera aparicion del caracter '-' hasta el final
+	cadena.slice(cadena.indexOf("_")+1) //para extraer cadena desde una posicion despues de la primera aparicion del caracter '-' hasta el final
 
 cadena.toLowerCase() //convertir a minusculas
 cadena.toUpperCase() // convertir a mayusculas

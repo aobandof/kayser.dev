@@ -111,7 +111,7 @@ class DBConnection {
     $buttons =  array(  'show' => "<a href='#'><img class='icon_table' src='./src/img/lupa.png'></a>",
                         'update' => "<a href='#'><img class='icon_table' src='./src/img/edit.png'></a>",
                         'delete' => "<a href='#'><img class='icon_table' src='./src/img/delete.png'></a>",
-                        'select' => '<input type="checkbox" id="">' );    
+                        'select' => '<input class="chb_table" type="checkbox" id="">' );    
     if($this->_driver=="sqlsrv"){       
       $this->_registros_select=sqlsrv_query($this->_connection, $query, array(), array("Scrollable"=>SQLSRV_CURSOR_KEYSET));      
       if($this->_registros_select===false){
