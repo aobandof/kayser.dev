@@ -12,7 +12,7 @@ PROGRAMACION DECLARATIVA
     filtros.forEach( function(item,index){           O          filtros.forEach( (item,index) => obj_filtros[index]=item );
 	obj_filtros[index]=item;
     });
-
+	
 
 ARRAYS
 ------

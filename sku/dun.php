@@ -16,10 +16,14 @@ if(!isset($_SESSION['user'])){
   <title>Gestión de DUN</title>
 </head>
 <body>
+  <!-- COMPONENTE MODAL UPLOAD -->
+  <div class="modal_loading_full cont_hidden" id="div_loader_full">
+    <img src="../shared/img/loader_azul.gif" alt="">
+  </div>
   <div id="div_dun">
     <div id="div_dun_list">
       <div id="div_dun_list_header" class="header">
-        <div class="header_title"><h3>DUN Existentes</h3></div>
+        <div class="header_title"><h3>Listado de Artículos y DUNs</h3></div>
         <div class="header_filter">
           <input type="text" id="txt_article_filter" class="form-control" placeholder="Artículo" >
           <button id="button_article_filter" class="form-control btn btn-success" >FILTRAR</button>
@@ -43,11 +47,11 @@ if(!isset($_SESSION['user'])){
     <div id="div_dun_gestion">
       <div class="header_title">REGISTRO/EDICION DUN</div>
       <div class="gestion_controls">
-        <div class="row_gestion_controls"><span>ALTURA</span><input id="txt_dun_altura" type="number" class="form-control input_gestion_dun"></div>
-        <div class="row_gestion_controls"><span>ANCHURA</span><input id="txt_dun_anchura" type="number" class="form-control input_gestion_dun"></div>
-        <div class="row_gestion_controls"><span>LARGO</span><input id="txt_dun_largo" type="number" class="form-control input_gestion_dun"></div>
-        <div class="row_gestion_controls"><span>CANTIDAD</span><input id="txt_dun_cantidad" type="number" class="form-control input_gestion_dun"></div>
-        <div class="row_gestion_controls"><span>MEDIDA</span><input id="txt_dun_medida" type="text" class="form-control input_gestion_dun" value="CAJA"></div>
+        <div class="row_gestion_controls"><span>ALTURA</span><input id="txt_dun_altura" type="number" class="form-control input_dun_gestion"></div>
+        <div class="row_gestion_controls"><span>ANCHURA</span><input id="txt_dun_anchura" type="number" class="form-control input_dun_gestion"></div>
+        <div class="row_gestion_controls"><span>LARGO</span><input id="txt_dun_largo" type="number" class="form-control input_dun_gestion"></div>
+        <div class="row_gestion_controls"><span>CANTIDAD</span><input id="txt_dun_cantidad" type="number" class="form-control input_dun_gestion"></div>
+        <div class="row_gestion_controls"><span>MEDIDA</span><input id="txt_dun_medida" type="text" class="form-control input_dun_gestion" value="CAJA"></div>
       </div>
       <div class="gestion_buttons">
         <button id="button_dun_guardar" class="btn btn-primary">GUARDAR</button>

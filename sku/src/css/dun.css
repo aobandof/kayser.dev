@@ -132,7 +132,7 @@ html, body {
   background-color: rgba(240, 255, 255, 0.863);
   border: 2px solid white;
   border-radius: .3rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
   text-align: center;
   color: rgb(0, 0, 141);
@@ -173,3 +173,24 @@ html, body {
   flex: 0 1 50%;
   text-align: center;
 }
+
+/**** modal loading ****/
+.modal_loading_full {
+  padding-top: 10rem;
+  position: absolute !important;
+  height: 100% !important;
+  width: 100% !important;
+  background-color: rgba(255, 255, 255, 0.397) !important;
+  display: flex !important;
+  justify-content: center;
+  z-index: 11 !important;
+}
+
+.modal_loading_full img {
+  margin-top: 3rem;
+  height: 8rem;
+  width: 8rem;
+}
+.cont_hidden {
+  display: none !important;
+}/*************  FIN ESTULO MODAL LOADING    ****************/

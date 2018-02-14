@@ -18,15 +18,31 @@ if($_POST['option']=="read"){
   echo json_encode($data);
 }
 
-
 #########################################  CREATE DUN #############################################################
 if($_POST['option']=="create"){
-  $data['barcodes'] = $_POST['barcodes'];
 
-  //LA API ME DEVOLVERA AQUELOS BARCODES QUE NO SE PUDIERON GUARDAR
+
+  // $data['refused']=['];
   $data['inserted']= $_POST['barcodes'];
   echo json_encode($data);
 }
 #########################################  UPDATE DUN #############################################################
+if($_POST['option']=="update"){
 
+
+  // $data['refused']=['];
+  $data['updated']= $_POST['barcodes'];
+  echo json_encode($data);
+}
+
+#########################################  UPDATE DUN #############################################################
+if($_POST['option']=="delete"){
+
+
+  // $data['refused']=['];
+  $data['deleted']= $_POST['barcodes'];
+  echo json_encode($data);
+}
 ?>
+
+
