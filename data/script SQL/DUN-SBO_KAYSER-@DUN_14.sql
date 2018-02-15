@@ -1,4 +1,7 @@
+EXEC sp_columns [@DUN_14];
+
 select * from [@DUN_14]
+
 
 
 SELECT U_DUN14_ITEMCODE AS sku, Name as barcode, Code as dun, U_DUN14_ALT1 as height, U_DUN14_ANC1 as width, U_DUN14_LAR1 as long, U_DUN14_CANT1, U_DUN14_MEDIDA as container from [@DUN_14]

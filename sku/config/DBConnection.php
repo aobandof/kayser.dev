@@ -100,6 +100,7 @@ class DBConnection {
     else
       return 0;
   }
+
   ######################   FUNCION SELECT TABLE ########################  
   /////----- 'SOLO RETORNA LOS TRs del TBODY' -----/////
   ///### $pos_id contendra el entero que indica la posicion de campo que sera el id de la fila
@@ -182,7 +183,6 @@ class DBConnection {
       $vals = array_merge(array($types), $arr_values);//PARA PODER UNIRLOS, $types SE CONVIERTE EN UN ARRAY con: array($types)
       call_user_func_array(array($stmt, 'bind_param'), $vals); 
       $stmt->execute();
-
       if ($this->_connection->connect_errno) {
         // echo "errores existentes<br>";
         return false; //SI HUBIERON ERRORES, RETORNA FALSO
@@ -191,6 +191,14 @@ class DBConnection {
         return $this->_connection->affected_rows; //SI return -1 NO SE PUDO REALIZAR LA INSERSION, 1 QUE SE REALIZÓ CORRECTAMENTE
       }  
     }
+  }
+  ##################### FUNCION PARA INSERTAR SQLSRV EVITANDO INYECCION **********************/
+  public function insertUpdateDeleteSqlsrv($query,$arr_params/*='delete'*/){
+    /*if($arr_params==='delete')
+      $stmt = sqlsrv_query($this->_connection);
+    else*/
+      $stmt = sqlsrv_query($this->_connection, $query, $arr_params);
+    return sqlsrv_rows_affected($stmt);
   }
 
   ####################   FUNCION PARA ACTUALIZAR   ############################

@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!isset($_SESSION['user'])){
+if(!isset($_SESSION['user']) || !($_SESSION['perfil']=='admin' || $_SESSION['perfil']=='dun14')){
   header("Location: ./index.php");
 }
 ?>
@@ -29,7 +29,7 @@ if(!isset($_SESSION['user'])){
           <button id="button_article_filter" class="form-control btn btn-success" >FILTRAR</button>
         </div>
         <div class="header_menubar">
-          <a href="menu.php"><button class="btn btn-danger">SALIR</button></a>
+          <a href="#"><button id="button_dun_session_close" class="btn btn-danger">SALIR</button></a>
         </div>
       </div>
       <div id="div_dun_list_dtable" class="dtable">

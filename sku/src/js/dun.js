@@ -13,6 +13,7 @@ const el_btn_dun_guardar = document.getElementById('button_dun_guardar');
 const el_btn_dun_cancelar = document.getElementById('button_dun_cancelar');
 const el_div_loader_full = document.getElementById('div_loader_full');
 var operation=''; //create or update
+var article_search;
 
 $(document).ready(function () {
   el_txt_article_filter.focus();
@@ -28,11 +29,12 @@ $(document).ready(function () {
   /////----- EVENTO PARA MOSTRAR EL o LOS ARTICULOS FILTRADOS EN LA TABLA -----/////
   el_btn_article_filter.onclick = function(btn){
     article_filter = el_txt_article_filter.value;
-    if(article_filter.length>=5){
+    if(article_filter.length>=2){
+      article_search = el_txt_article_filter.value;
       parameters = { 'option': 'read', 'filter': el_txt_article_filter.value };
       ajaxCargarTabla(parameters);      
     }else{
-      alert("EL FILTRO TIENE QUE CONTENER ALMENOS 5 CARACTERES")
+      alert("EL FILTRO TIENE QUE CONTENER ALMENOS 2 CARACTERES")
     }     
   }
   /////----- EVENTO PARA GESTIONAR NUEVOS REGISTRO -----/////
@@ -157,6 +159,12 @@ $(document).ready(function () {
     resetControlsText();
     disableAllDiv("div_dun_gestion");
     enableAllDiv("div_dun_list");
+  }
+  /*******************  EVENTO PARA CERRAR SESION ************/
+  document.getElementById('button_dun_session_close').onclick = function () {
+    if (confirm("¿CONFIRMA CERRAR LA SESION?")) {
+      location.href = "./config/session.php?option=session_end";
+    }
   }
 });
 
@@ -294,7 +302,8 @@ function ajaxDeleteDuns(params){
         let row_dad = document.getElementById(data.deleted[index]);
         row_dad.innerHTML='';
         row_dad.style.display = 'none';
-      }            
+      }
+      ajaxCargarTabla({ 'option': 'read', 'filter': article_search })        
     },
     error: function(){ 
       console.log('error'); 
