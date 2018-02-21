@@ -1,0 +1,60 @@
+EN WINDOWS:
+- descargar el instalador e instalar
+- crear una carpeta C:/data/db/ siendo "C" la unidad de disco
+- ir a C:\program files\MongoDB\Server\3.6\bin Y EJECUTAR: 1ro el servidor (mongod.exe) y despues el cliente (mongo.exe)
+
+USAR MONGODB
+
+en la consola cliente usar:
+
+use database_name  //para usar o instalar(si no exisye) y usar una base de datos
+
+show dbs //para ver las bases de datos existentes (si no se muestra alguna existente, es porque esta sin colecciones)
+
+[database_name].[collecion_name].insert({ key1 : 'value1', key2 : value2, key3 :  "value3" })  // para crear una coleccion implicitamente e insertar el documento en ella
+
+db.createCollection("usuarios") //para crear una colccion explicitamente; es decir: puedo crear la coleccion insertando documento o crear explicitamente la coleccion primero y despues insertar
+
+show collection // para ver las colecciones creadas
+
+db.[name_collection].drop() //para eliminar coleciones
+
+db.dropDatabase() //para eliminar la base de datos que se tiene elegida
+
+-- para poder ver los documentos en una coleccion de forma tabulada:
+db.[nombre_collection].find().pretty()
+
+-- para ver solo un documento
+db.[nombre_collection].findOne().pretty()
+
+-- para ver los documentos que cumplan cierta condicion
+db.[nombre_collection].find({ [key_name] : "[value]") // si es igual a [value]
+db.[nombre_collection].find({ [key_name] : {$lt : [value] } }) // si es menor que [value]
+-- operadores:
+menor que		:	$lt
+menor o igual que	:	$lte
+mayor que		:	$gt
+mayor o igual que	:	$gte
+no es igual		:	$ne
+AND			:	{ {key1 : value1, key2 : value2 } }
+OR			:	{ $or : [ { key1 : value1} , { key2 : value2 } ]}
+AND + OR		: 	{ key1 : value1 , $or : [ {key2 : {$lt:value2}}, {key3:value3} }] }
+
+-- limitar el numero de resultados:
+db.[nombre_collection].find().limit(1)
+
+-- ordenenar de menor a mayor y viceversa
+db.[nombre_collection].find().sort({valor: 1})  //de menor a mayor
+db.[nombre_collection].find().sort({valor: -1})  //de mayor a menor
+
+-- para actualizar un solo documento (las "" en los valores dependerán del tipo de valor de la llave :
+db.[nombre_collection].update({ [key_id]:"[value_id]" }, { $set: { [key_to_updated]: "[value_to_updated]" } } )
+-- para actualizar multiples documentos, es lo mismo pero agregando un 3er parametro
+db.[nombre_collection].update({ [key_id]:"[value_id]" }, { $set: { [key_to_updated]: "[value_to_updated]" } }, { multi: true } )
+
+-- para eliminar un documento:
+db.[name_collection].deleteOne({ id : [value] })
+--
+
+
+
