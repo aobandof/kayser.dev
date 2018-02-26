@@ -35,7 +35,9 @@ ORDER BY IdArticulo
 
 /****************************************************************************************************************************************/
 /***** consulta a 192.168.0.13 BD: Stock ****/
+SELECT TOP 100 * FROM Kayser_OITM
 select ItemCode, U_tipoarticulo from Kayser_OITM ORDER BY U_tipoarticulo desc
+select ItemCode from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode
 select ItemCode, U_tipoarticulo from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode -- PARA OBTENER LOS ARTICULOS A REPORTAR A WEB
 
 /*select ItemCode,
@@ -52,6 +54,7 @@ SELECT	ItemCode, CAST(ROUND((Price*1.19),0) AS int) AS PROMOTORAS FROM Kayser_IT
 select IdArticulo, CAST(SUM(Cantidad)-30 AS int) as Cant from Existencia where idAlmacen = '01' AND IdUbicacion LIKE '01%' GROUP BY IdArticulo HAVING SUM(Cantidad)>30 ORDER BY IdArticulo
 
 select ItemCode from Kayser_OITM where U_tipoarticulo='L' ORDER BY ItemCode
+
 
 -----------------------------------------------------------------------------------------------------------------
 -------------------------     PRUEBAS CON CONSULTAS EN EL 17    -------------------------------------------------

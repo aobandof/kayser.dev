@@ -1,0 +1,133 @@
+* ES UN FRAMEWORK AGIL PARA LA REALIZACION DE PROYECTOS COMPLEJOS.
+* ES GIL YA QUE DENTRO DE ESTE MARCO DE TRABAJO SE PUEDEN EMPLEAR DIVERSAS TECNICAS Y PROCESOS.
+
+PILARES
+-------
+- TRANSPARENCIA:
+	Cada aspecto o detalle del proceso, debe definirse con un estandar compun (transparente) a todos los integrantes del proceso
+
+- INSPECCION:
+	La inspeccion de los ARTEFACTOS de scrum debe ser constante para detectar variaciones
+
+- ADAPTACION:
+	la inspeccion constante garantiza la capacidad de respuesta y la subsiguiente adaptabilidad del framework
+	Quiere decir que si cierto aspectos del proceso no realiza lo deseado, se pueden hacer modificaciones a tiempo
+
+ROLES
+-----
+- STAKEHOLDERS:
+	Son los clientes que se beneficiarn con el desarrollo del proyecto
+- PRODUCT OWNER
+	Es el responsable de maximizar el valor del producto y del trabajo del equipo.
+	Es el unico Autorizado para manipular el BACLOG
+- SCRUM MASTER
+	Es el facilitador y puente entre el PRODUCT OWNER Y el DEV.TEAM.
+	No controla el equipo en cambio trabaja para remover cualquier obstaculo que impida lograr los objetivos del SPRINT
+- DEV. TEAM
+	Profesionales que desempeñan el trabajo de entregar un incremento  del producto terminado, que potencialmente se pueda poner en produccion al final del SPRING
+
+ARTEFACTOS: 
+-----------
+* Son los que aportan la mayor transparencia en la informacion clave del proceso.
+* Son necesarios para que todos los integrantes del equipo tengan el mismo entendimiento.
+* Su aplicación brinda oportunidades de inspeccion y adaptación.
+* Los artefactos deben ser totalmente transparente, en ellos basan las decisiones a tomar, si estas son correctas, se garantizan la optimizacion del valor y el control de riesgos; pero si por el contrario, la transparencia no es correcta, obtendremos resultados adversos
+
+- PRODUCT BACKLOG:
+	Es una lista con todos los requerimientos iniciales del producto.
+	Es una lista dinamica que evoluciona a medida que lo hace el producto y el entorno con la finalidad de identificar las necesidades del producto para lograr su maxima utilidad y rendimiento.
+	Esta lista contiene la DESCRIPCION, ORDENACION, ESTIMACION y el VALOR DEL PRODUCTO.
+- SPRINT BACKLOG:
+	Es la lista de ele+mentos seleccionados previamente del PRODUCT BACKLOG, para ser desarrollados en el SPRINT
+	Para crear esta lista, se requiere del trabajo del equipo, para identificar las funcionalidades  y priorizar las que se entregaran en el SPRINT
+
+
+PRIORIZACION
+------------
+* Para determinar como vamos a realizar el trabajo, usamos la PRIORIZACION.
+* Existe distintos metodos para establecer funcionalidades o requisitos de mayor priordiad a desarrollar, todos estos deben cumplior con las necesidades estratégicas de negocio.
+* las UNIDADES ESTRATÉGICAS DEL NEGOCIO (UEN) suelen estar conformadas por todos aquelos objetivos qe se planteen cubrir a corto, mediano y largo plazo.
+* para plantear las UEN usamos una herramienta denominada ROADMAP.
+
+ROADMAP.
+--------
+* Es una herramienta de planificacion que esta conformada por objetivos generales y específicos que serán cumplidos a corto, mediano y largo plazo.
+* Pueden estar organizados en HITOS o MILESTONES (fechas para los cumplimientos).
+* Su principal utilidad es establecer nuestro estado actual y lo que haremos para llegar a un estado futuro.
+* Define la evolucion del negocio a traves de los momentos importantes de su historia.
+* Un ROADMAP efectivo debe especificar de donde viene el negocio y hacia donde esta dirigido, de manera tal que todo el equipo y aveces los clientes entiendan lo que se quiere lograr. 
+* un ROADMAP debe hacer y responder 3 importantes pregunta:
+	1. ¿ A DONDE VAMOS ?		2. ¿ COMO VAMOS A LLEGAR ALLI ?		3. ¿ POR QUE VAMOS ALLI ?
+* Una vez completado el ROADMAP, tendremos los objetivos generales ( ¿ A DONDE VAMOS ? ) y sus objetivos especificos, a corto, mediano y largo plazo.
+* Cada objetivo especifico contiene un conjunto de tares o requisitos a cumplir, cada uno tendrá una prioridad segun las necesidades del negocio y se tomará como valor clave el retorno sobre la inversion o el ROY.
+* Los requisitos planteados en el ROATMAP son los que conformarán el PRODUCT BACKLOG.
+
+SPRINT:
+-------
+* Es el corazon del SCRUM
+* es un bloque de tiempo de 4 semanas en el cual se crean INCREMENTOS DEL PRODUCTO terminado utilizable y desplegable.
+* Cada SPRINT comienza al finalizar un SPRINT previo
+* Los SPRINT contienen a los eventos del SCRUM.
+
+
+EVENTOS DE SCRUM
+----------------------------
+- SPRINT PLANNING:
+	Es la reunion donde se planifica todo el trabajo a realizar durante el SPRINT. Esta planificacion, se crea mediante el trabajo colaborativo del equipo completo.
+	El conjunto de caracteristicas o requisitos a desarrollar durante cada SPRINT viene del PRODUCT BACkLOG y es ingresado al SPRINT BACKLOG durante el SPRINT PLANING.
+	Aquí el PRODUCT OWNER junto al EQUIPO, asignan prioridad y realizan la estimacion de esfuerzo a cada requisito a desarrollar durante el SPRINT.
+	Su duración suele ser de un maximo de 8 horas para SPRINTS de 1 mes y al finalizar cada integrande del equipo debe tener definico su proposito.
+	Al finalizar, este evento se debe responder las siguientes preguntas:
+	* ¿ Que puede entregarse en el incremento resultante del SPRINT que comienza ?
+	* ¿ Como se conseguirá hacer el trabajo necesario para entregar el incremento ?
+
+- DAILY SCRUM:
+	Es una reunion diaria de sincronizacion de actividades del equipo y para crear un plan de las 24 horas siguientes.
+	Cada reuncion tiene un estimado de 15 minutos de duracion esta se lleva a cabo inspeccionando los avances desde el ultimo DAILY SCRUM y haciendo una proyeccion del acerca del trabajo que podría completarse hasta el siguiente.
+ 	Al finalizar las siguientes deben tener respuesta:
+	* ¿ Que hice ayer que ayudó al equipo a lograr el objetivo del SPRINT ?			
+	* ¿ Que haré hoy para ayudar al equipo a lograr el objetivo del SPRINT ?
+	* ¿ Hay algun impedimento que evite que el equipo logre el objetivo del SPRINT ?
+
+- SPRINT REVIEW:
+	Es la revision que se realiza al finalizar cada SPRINT, se busca revisar los incrementos alcanzados y realizar adaptaciones a la lista de productos de ser necesarias.
+	La revision de los incrementos, es una herramienta para fomentar la retroalimentacion y la colaboracion del equipo; así se pueden determinar los siguientes pasos a tomar para optimizar el valor.
+	Es una reunion informal con duracion maxima de 4 horas para SPRINTS de 1 mes
+	Su resultado es una lista de productos revisada y/o ajustada para seguir el surgimiento de las oportunidades.
+
+- SPRINT RETROSPECTIVE:
+	Es un evento qu se da después de la revision del SPRINT y antes del siguiente SPRINT PLANING, aquí el equipo evalua su desempeño y se generan las mejoras que serán aplicadas durante el siguiente SPRINT
+	Esta reunión busca lograr:
+	* Inspeccionar como fue el ultimo SPRINT en cuando a personas, relaciones, procesos y herramientas.
+	* Identificar y ordenar los elementos mas importantes que salieron bien y las posibles mejoras.
+	* Crear un plan para implementar las mejoras a la forma en la que el equipo SCRUM desempeña su trabajo.
+	Este evento, destaca las mejoras a utilizar en el siguiente SPRINT; aunque en esl SCRUM, su mejoramiento es constante, ESTE EVENTO ESTA DEDICADO A ESO.
+	Su duracion es aproximandamente 3 HORAS para SPRINT de 1 mes.
+
+Por su naturaleza, los EVENTOS DEL SCRUM, pueden ser utilizados por equipos de cualquier organizacion sin realizar ningun cambio siempre que se tengan presente los siguientes PRINCIPIOS:
+* Cada evento de SCRUM esta creado para minimizar la necesidad de reuniones que se realizan fuera de él.
+* Cada evento debe tener una duracion específica.
+* La duracion de un SPRINT no puede cambiarse despues de iniciado.
+* Cada evento representa una oportunidad de adaptacion, deben ser transparentes y permitir seguimiento.
+* Deben incluirse todos los EVENTOS en el proceso, de lo contrario se pierde la transparencia y la oportunidad de mejorar.
+
+
+
+ 
+
+
+
+		
+	
+
+
+
+
+ 
+
+
+
+
+
+  
+

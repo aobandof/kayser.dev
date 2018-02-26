@@ -1,0 +1,1 @@
+cuando se agrega un pedido en WMS hay que buscar el rut del cliente para no

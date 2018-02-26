@@ -1,0 +1,85 @@
+
+ROLES:
+------
+
+- PRODUCT OWNER
+	* Se asegura que las caracteristicas correctas sean puestas dentro del product backlog
+	* representa a los usuarios y clientes del producto
+	* ayuda a marcar la direccion del producto
+- SCRUM MASTER
+	* Su trabajo es asegurarse que el proyecto esta progresando suavemente y que cada miembro del equipo tiene las herramientas necesarias para hacer su trabajo.
+	* Organiza reuniones, gestiona el trabajo realizado  y facilita la planeaacion del lanzamiento.
+	* es muy parecido a un Aministrador de Proyecto.
+- EQUIPO DE DESARROLLO
+	* Developer : construyen el producto
+	* Tester: realizan pruebas para asegurarse que el producto funciona correctamente.
+- CUSTOMERS:
+	* son quienes usen el producto y pagaran por eso.
+- EJECUTIVOS
+	* Solo de paso, pero no se pueden construir muchos producos sin ellos.
+
+EVENTOS:
+-------
+
+- RELEASE PLANING:
+	* El equipo aquí empieza a planear un lanzamiento.
+	* Inician el PRODUCT BACKLOG e identifican los USER STORIES que quieren poner en este lanzamiento.
+	* Estos User stories vienen a formar parte del RELEASE BACKLOG
+	* Despues el equipo prioriza los User Stories y estima la cantidad de trabajo necesaria para cada ITEM
+	* Aveces los User Stories  largos son divididos en ramas de trabajo mas pequeñas.
+	* el conjunto de todas las estimaciones provee una idea aproximada de la cantidad todal del trabajo requerida para completar todo el RELEASE.
+- ESTIMACIONES:
+	* Existen muchas tecnicas para crear buenas estimaciones.
+	* Algunos prefieren estimar en STORY POINTs
+	* Las estimaciones son relativas a construir un pequeño componente con un grado minimo de dificultad
+	* Desafortunadamente los STORY POINTS  no responden a la pregunta  "¿CUANDO ACABARÁ MI PROYECTO?"
+	* Se descubrió que la mejor tecnica es estimar el trabajo en horas, pero usando algunos estandares y de cómo el trabajo es realizando.
+	* por ejemplo, las cosas que pueden ser terminadas en un día podrian estimarse como 1, 2,4 u 8 horas.
+	* cada item caeria dentro de estos rangos.
+	* No habrán estimaciones de 3 horas, por ejemplo. Esta estimacion entraría en el rango de 4 horas.
+	* Items mas grandes, serian estimados como: 2, 3, 5 o 10 días; y de la misma forma una estimacion distinta a este rango, caería dentro del rango de mas proximo valor ( el de 9 días dentro del rango de 10)
+	* Items extremadamente muy largos son estimados de forma similar en meses (1 , 2 3 o 6 meses), pero la realidad es que estos intems debe ser dividos sustancialmente, antes que comienze el trabajo.
+
+- con el RELEASE BACkLOG, con los USER STORIES priorizados y la cantidad estimada de trabajo en mano, ESTAMOS LISTOS PARA PLANEAR VARIOS SPRINTS PARA REALIZAR EL TRABAJO.
+
+SPRINT:
+------
+* Son hitos de corta duracion que le permiten al equipo abordar una porcion manejable del proyecto, que los lleva hasta un estado de nave lista.
+* Duran desde un par de dias hasta un maximo de 30 días, dependientdo del ciclo del RELEASE DEL PRODUCTO.
+* Mientras mas pequeño es un ciclo Release, mas pequeño deberia ser un SPRINT.
+* se podría tener desde al menos 2 SPRINTs hasta una docena de SPRINTs en un RELEASE determinado.
+* Así que, hasta este punto, podemos tomar nuestro RELEASE BACKLOG Y dividirlos en varios SPRINTs (SPRINT BACKLOGs)
+* Una de las cosas mas importantes a recordar de los SPRINTs, es que su objetivo es llevar una porcion del RELEASE BACKLOG  a un estado de nave lista.
+* Asi que al final de cada SPRINT, deberias tener u producto testeado con todas las caracteristicas del SPRINT 100% completas.
+* Es cierto que los SPRINT son pequeños, pero a la vez, son representaciones realistas de una parte del producto.
+* Un retraso en la finizacion del SPRINT, es un gran indicador del que proyecto va retrasado es necesario hacer algo.
+* Por otro lado, es extremadamente importante gestionar el progreso de cada SRINT, para ello usamos las siguiente herramientas:
+	- GRAFICO BURNDOWN:
+		* Es la razon numero 1 por la cual SCRUM es tan popular.
+		* Es una de las mejores herramientas de visibilidad para asegurarte que el proyecto esta progresando suavemente.
+		* Provee la medicion día a día de la cantidad de trabajo restante en un determinado sprint o Release.
+		* En este grafico se puede ver que la cantidad de trabajo restante salta arriba y abajo dia a dia pero en general va tendiendo a cero.
+		* Gracias a que la informacion historica es proporcionada en el grafico Burndown, es facil ver si el equipo va por buen camino (el equipo puede calcular esto usando este grafico)
+  		* La pendiente del grafico, la cual es llamda VELOCIDAD DEL BURNDOWN, es la TASA DE PRODUCTIVIDAD PROMEDIO de cada DÍA.
+		* por ejemplo, la tasa de productividad de un equipo, puede enfrentarse a que en un dia típico, se termine aproximadamente 50 horas de trabajo; sabiendo eso, es posible calcular el dia estimado para la finalizacion de un sprint o incluso de todo el RELEASE, basados en la cantidad del trabajo restante.
+		* Lo genial de este grafico, es que podemos comprar nuestra velocidad actual y proyectar el dia a dia de finalizacion a lo que necesita el equipo para terminar a tiempo.
+		* esto quiza es la pieza de conocimiento mas util  que cualquier miembro del equipo, PRODUCT OWNER o Ejecutivo; pueda tener del proyecto.
+		* por que saber pronto si el proyecto marcha bien o no en la agenda, puede ayudar al equipo a realizar los ajustes necesarios para re encaminar el proyecto.
+		* Este grafico provee pruevas empíricas de que el proyecto va a tiempo o retrasado.
+		* INFORMACION Y PROVENIENCIA E ESTA,  QUE USA EL GRAFICO BURNDOWN:
+
+	
+
+		 			
+
+
+
+
+
+
+
+
+
+
+	
+	
