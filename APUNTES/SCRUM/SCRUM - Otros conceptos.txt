@@ -66,11 +66,23 @@ SPRINT:
 		* esto quiza es la pieza de conocimiento mas util  que cualquier miembro del equipo, PRODUCT OWNER o Ejecutivo; pueda tener del proyecto.
 		* por que saber pronto si el proyecto marcha bien o no en la agenda, puede ayudar al equipo a realizar los ajustes necesarios para re encaminar el proyecto.
 		* Este grafico provee pruevas empíricas de que el proyecto va a tiempo o retrasado.
-		* INFORMACION Y PROVENIENCIA E ESTA,  QUE USA EL GRAFICO BURNDOWN:
 
-	
-
-		 			
+	- INFORMACION Y PROVENIENCIA DE ESTA,  QUE USA EL GRAFICO BURNDOWN:
+		* Recordemos: Parte del proceso de planificacion del RELEASE fue crear ESTIMACIONES para cada USER STORY en el RELEASE BACKLOG.
+		* El conjunto de ESTIMACIONES para un determinado SPRINT, representa la cantidad  todal del trabajo que debe realizar para completar ese sprint
+		* a medida qe cada miembro del equipo encara y progresa uno o mas USER STORIES, Simplemente actualiza la cantidad de trabjo restante para cada uno de sus items.
+		* la cantidad total de trabajo restante en el grupo de USER STORIES ocasionan que un SPRINT cambie dia tras dia, esperando reducir el trabajo hasta llegar a cero.
+		* Cuando el SPRINT sea completado, el grafico BURNDOWN agrega informacion del trabajo restante y lo muestra de forma visual 
+		* Esto es GENIAL!!!!! por que comunica una enorme cantidad de informacion en pocos segundos y eso nos conduce a:
+		
+		- DAILY SCRUM (Scrum Diario):
+			* Es una herramienta escencial para tener un flujo de comunucacion libre entre los miembros del equipo.
+			* la idea es tener reunciones rapidas de pie donde los miembros reportan el trabajo que han completado desde la ultima reunion y cualquier obstaculo en su camino.
+			* Las reuniones diarias permiten que el equipo esté sincronizado y que cualquier problema sea resuelto tab pronto aparezca.
+		- SPRINT RETROSPECTIVE:
+			* Finalmente cuando un SPRINT se termina, es importante tener una reunion de RETROSPECTIVA DE SPRINT donde se reflexiona sobre lo que salio bien y las áreas a mejorar.
+			* Despues de todo SCRUM es una METODOLOGIA AGIL que necesita mejoras y ajustes personalizados para cada equipo
+				 
 
 
 
