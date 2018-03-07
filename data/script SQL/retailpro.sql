@@ -36,12 +36,23 @@ SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codi
                   sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] 
 FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(DATETIME, '2017-07-01 00:00:00', 102) AND  U_GSP_CADATA<CONVERT(DATETIME, '2017-12-15 00:00:00', 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
 
+-- ventas los ultimos 7 dias
+-----------------------------
 SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino],
                   sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] 
-FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(date, GETDATE() - 15, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
+FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(date, GETDATE() - 7, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
+
+-- ventas mensuales
+--------------------
+SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino],
+                  sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] 
+FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)) AND U_GSP_CADATA<DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA
 
 
-
+SELECT DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0))
+SELECT DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)
+SELECT TOP 10 U_GSP_CADATA FROM GSP.dbo.Gsp_SboKayserDetalle
+SELECT DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) 'Primer día del mes actual'
 
 -- 192.168.0.13: MAESTRO DE LOCALES
 -- BD:	Stock

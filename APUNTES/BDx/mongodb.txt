@@ -13,6 +13,8 @@ show dbs //para ver las bases de datos existentes (si no se muestra alguna exist
 
 [database_name].[collecion_name].insert({ key1 : 'value1', key2 : value2, key3 :  "value3" })  // para crear una coleccion implicitamente e insertar el documento en ella
 
+[database_name].[collecion_name].save({ key1 : 'value1', key2 : value2, key3 :  "value3" }) // hace lo mismo pero tb permite guardar ingresando el _id, y actualizar con un _id guardado anteriormente.
+
 db.createCollection("usuarios") //para crear una colccion explicitamente; es decir: puedo crear la coleccion insertando documento o crear explicitamente la coleccion primero y despues insertar
 
 show collection // para ver las colecciones creadas
