@@ -4,11 +4,14 @@ require_once "../shared/clases/HelpersDB.php";
 require_once "../shared/clases/DBConnection.php";
 require_once "../shared/clases/MssqlConexion.php";
 
-$ayer = date('Y-m-d', strtotime('-1 day'));
-$fourteen_days_ago = date('Y-m-d', strtotime('-7 day'));
-$ayer_string=str_replace('-','',$ayer);
-$fourteen_days_ago_string=str_replace('-','',$fourteen_days_ago);
-$filename="766977901_".$fourteen_days_ago_string."_".$ayer_string."_KAYSER_B2B_DIA.csv";
+$month = date('m');
+$year = date('Y');
+$first_day_last_month = date('Y-m-d', mktime(0,0,0, $month-1, 1, $year));
+$first_day_last_month = str_replace('-','',$first_day_last_month);
+$last_day_last_month = date("Y-m-d", mktime(0,0,0, $month, 0, $year));
+$last_day_last_month = str_replace('-','',$last_day_last_month);
+
+$filename="766977901_".$first_day_last_month."_".$last_day_last_month."_KAYSER_B2B_MES.csv";
 $csv_ventas='';
 
 //CONEXIONES
@@ -20,7 +23,7 @@ $conec_ventas=$conexion_ventas->obtener_conector();
 //QUERYS
 $query_ventas = "SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino], ";
 $query_ventas.= "sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] ";
-$query_ventas.= "FROM GSP.dbo.Gsp_SboKayserDetalle where U_GSP_CADATA>=CONVERT(date, GETDATE() - 7, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA";
+$query_ventas.= "FROM GSP.dbo.Gsp_SboKayserDetalle where  U_GSP_CADATA>=DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)) AND U_GSP_CADATA<DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA";
 
 $registros_ventas=sqlsrv_query($conec_ventas, $query_ventas);
 

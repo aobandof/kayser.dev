@@ -1,0 +1,15 @@
+Obtener el Primer y ultimo dia del mes anterior:
+------------------------------------------------
+
+$month = date('m');
+$year = date('Y');
+$first_day_last_month = date('Y-m-d', mktime(0,0,0, $month-1, 1, $year));
+$last_day_last_month = date("Y-m-d", mktime(0,0,0, $month, 0, $year));
+
+obtener el mes de cualquier fecha:
+----------------------------------
+
+date("Y", strtotime($fecha)); 
+ó
+$fecha_det= explode($fecha);
+echo $fecha_det[1]; // imprimiría el mes 

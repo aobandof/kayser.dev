@@ -85,7 +85,7 @@ else {
 }
 fclose($file);
 $ruta="stock"; // cuando la conexion sea con un usuario a quien se le asigno un directorio global, $ruta sería la carpeta a donde se accederia para subir el archivo
-$hoy=date('d-m-Y H-m-s');
+// $hoy=date('d-m-Y H-m-s');
 $nombre_archivo_destino="stock_kayser.csv";//_".date('Y-m-d H-i-s').".csv";//date_format($hoy, 'Y-m-d H-m-s');
 /**** datos para conexion ftp ******/
 $host="kayserps.vrserver7.cl";
@@ -107,7 +107,7 @@ if($conn_id)
 			# Cambiamos al directorio especificado
 			if(@ftp_chdir($conn_id,$ruta))
 			{
-        ftp_pasv($conn_id, true);//por defecto en Linux, la conexion se establece en modo activo ( servidor ->cliente), por esto la cambiamos modo pasivo ya que nosotros estableceremos la conexion
+        ftp_pasv($conn_id, true);//parece ser que siempre hay errores, se agregó para se sea en modo pasivo
 				# Subimos el fichero
 				if(@ftp_put($conn_id,$nombre_archivo_destino,"plantilla_stock_kayser.csv",FTP_ASCII/*FTP_BINARY*/))
 					echo "Fichero subido correctamente";

@@ -146,3 +146,16 @@ CAST(SUM(t0.onhand)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], CAST(
 from Stock.dbo.Kayser_OITW as t0 inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.WhsCode COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS      
 where t3.U_GSP_SENDTPV='Y' and t0.onhand>0 GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode
  
+
+ -------------------  consultas modificafas
+ ----- ventas ultimos 7 dias ------ BD GSP -  SERVER 192.168.0.13
+SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino], 
+sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] , t1.AVGPRICE AS Costo 
+FROM GSP.dbo.Gsp_SboKayserDetalle t0 INNER JOIN gsp.dbo.OITM t1 on t1.ITEMCODE=t0.SKU 
+where U_GSP_CADATA>=CONVERT(date, GETDATE() - 7, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA, t1.AVGPRICE
+
+------ ventas mensuales ----------- BD GSP -  SERVER 192.168.0.13
+SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha Inicio], CONVERT(VARCHAR(10),U_GSP_CADATA,120) AS [Fecha termino], 
+sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] , t1.AVGPRICE AS Costo 
+FROM GSP.dbo.Gsp_SboKayserDetalle t0 INNER JOIN gsp.dbo.OITM t1 on t1.ITEMCODE=t0.SKU 
+where U_GSP_CADATA>=DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)) AND U_GSP_CADATA<DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA, t1.AVGPRICE

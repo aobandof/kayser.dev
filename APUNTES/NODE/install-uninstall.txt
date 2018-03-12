@@ -1,0 +1,26 @@
+cuando se installa node y nom via repositorio: yum install node npm
+para desisinalar podemos usar: yum remove -y nodejs npm
+
+si queremos desinstalar solo npm, del todo:  sudo npm uninstall npm -g
+
+
+INSTALACION CON NVM
+--------------------
+ EN CENTOS: (esta ayuda se hizo el 12/03/2018, si pasó mucho tiempo, verificar una version de nvm mas reciente)
+	- Hacemos lo siguiente en la consola:
+		curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+		source ~/.bashrc
+		nvm --version
+		0.33.6
+	- revisamos todas las versions para descargar (por ahora, nos interesa descargar e instalar la ultima estable)
+		nvm list-remote
+		nvm install v8.10.0
+	- podemos crear un alias a la version de node instalada, pero no le encuentro la necesidad
+		nvm alias default
+	- ahora elegimos la version con la que vamos a trabajar
+		nvm use v8.10.0
+	- si queremos ver las versiones de node que tenemos instaladas usamos:
+		nvm list
+
+
+
