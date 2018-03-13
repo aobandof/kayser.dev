@@ -1,0 +1,29 @@
+WEBHOOKS
+---------
+Webhooks Permite construir o configurar las aplicaciones GIT que se suscriben a ciertos eventos de GITHUB (push por ejemplo). cuando uno de estos eventos se desencadena, se envía una carha HTTP POST a la URL configurada en WEBHOOK dek repositorio GITHUB.
+
+dentro de las mucha aplicaciones de WEBHOOK, nos interesa aquella que nos permite el DESPLIEGUE EN NUESTRO SERVIDOR DE PRODUCCION.
+
+Evetos:
+-------
+Por defecto, los webhooks solo están suscritos al evento push. Se pueden configurar los eventos para los que se desea recibir los payloads (cargas).
+
+Cada evento corresponde a un cierto conjunto de acciones que pueden suceder en su repositorio, por ejemplo, si se suscribe al evento issues, recibirá payloads detallados cada vez que issues es abierto, cerrado, etiquetado, etc.
+
+
+Payloads:
+--------
+Cada tipo de evento tiene un formato de payload especifico con informacion relevante del evento.
+
+Además de los campos documentados para cada evento, el payload de webhook incluye al usuario que realizó el evento (remitente) asi como a la organizacion y/o repositorio donde ocurrio el evento. y para un webhook de una app Github, puede incluir la instalacion con el evento con lo que se relaciona un evento.
+
+----------------------------------------------------------------------------------------
+Nota: las cargas útiles tienen un límite de 5 MB. Si su evento genera una carga útil más grande, no se disparará un webhook. Esto puede suceder, por ejemplo, en un evento de creación si se empujan muchas ramas o etiquetas a la vez. Sugerimos monitorear su tamaño de carga para asegurar la entrega.
+-----------------------------------------------------------------------------------------
+
+Cabecera de Entrega:
+-------------------
+los payloads HTTP POST que se envían a la url del end-point que se seteo en el webhook de github, contendran varios encabezados especiales.
+
+
+
