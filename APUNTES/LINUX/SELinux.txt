@@ -1,0 +1,24 @@
+Es un componente de linux que se encarga de la seguridad.
+
+* verificar si SELinux esta habilita
+	sestatus
+
+* Ver TODOS los puertos (lista que mostrara los campos: OBJETO, PROTOCOLO DE RED y PUERTOS:
+	semanage port -l
+
+* Ver puertos por protocolo
+	semanage port -l | grep http
+	semanage port -l | grep ssh
+
+* Agregar un puerto a la lista de puertos habilitados	
+	semanage port -a -t http_port_t -p tcp 81	//donde -a = add, -t = objeto de protocolo: http_port_t
+
+* Eliminar un puerto de la lista de puertos habiulitados
+	semanage port --delete -t http_port_t -p tcp 81
+	
+* modificar un puerto de la lista de puertos
+	semanage port --modify -t http_port_t -p tcp 81
+
+
+**** CUANDO INTENTÉ HACER ESTOS CAMBIOS, ALGO SOBRE POLICY (un archivo o algo de seguridad) impedía que realice los cambios requeridos. Posiblemente sea por que tenia SElinux desactivado, pero eso tenemos que averiguarlo cuando podamos
+

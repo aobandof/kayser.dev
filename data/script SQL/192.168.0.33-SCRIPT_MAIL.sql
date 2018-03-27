@@ -27,3 +27,8 @@ select top 100000 Anio, Mes, CodCte, Razon, GroupName, Sku, Articulo,Grupo, Orig
 
 
 SELECT  A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FROM OWHS AS A1 LEFT JOIN MM_KAYSER_VentaMinuto AS A2 ON A1.WhsName=A2.Tienda where A1.U_GSP_SENDTPV = 'Y' ORDER BY A2.VtaMinAct DESC,A1.WhsCode ASC
+
+
+-- SCRIPT PARA REPORTAR GUIS MAL RECEPCIONADAS -- BD SBO_KAYSER -- SERVER 192.168.0.33
+-----------------------------------------------------------------------------------------
+select Code Codigo, U_GSP_CABOTI CodTienda, U_GSP_CACLIE Tienda, convert(varchar,convert(date,U_GSP_CADATA)) Fecha, U_GSP_CAHORA Hora,  U_GSP_CANLIN LineasSKU from [@GSP_TPVCAP] where U_GSP_ERROR like '%no es necesario crear%' and convert(date,U_GSP_CADATA)= convert(date, GETDATE()-3)

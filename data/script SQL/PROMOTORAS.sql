@@ -6,3 +6,8 @@ select ISNULL(t.WhsName,''),p.LicTradNum, p.CardName,ISNULL(p.Cellular,''),ISNUL
 
 --- CONSULTA SOLO NOMBRE Y EMAIL DE TODA SLAS PROMOTORAS
 select UPPER(cardName) as NOMBRE, REPLACE(LOWER(E_Mail),' ','') as EMAIL from Kayser_OCRD where E_Mail != '' AND E_Mail != 'NO TIENE' AND E_Mail != 'SIN CORREO'
+
+--- consulta rut, email y telefono
+SELECT p.LicTradNum, p.CardName,ISNULL(p.Cellular,''),ISNULL(p.Phone1,''),ISNULL(LOWER(p.E_Mail),'')
+from Kayser_OCRD as p 
+where p.GroupCode=6  and p.U_GSP_SENDTPV='Y'

@@ -1,0 +1,16 @@
+function nameFunction(...) {
+	retunr new Promise(resolve,reject) => {
+		...
+		resolve(...)
+	}
+}
+
+// AHORA LLAMAMOS A LA FUNCION QUE DEVUELVE LA PROMESA:
+
+nameFunction(...)
+	.then( ... )
+	.catch( ... )
+
+// NOTAS:
+* .then devuelve el contenido de la promesa que contiene el metodo resolve y que se ejecutará 
+* .catch devuelve lo que se hará cuando una promesa es rechazada

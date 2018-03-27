@@ -1,0 +1,39 @@
+* Ver zonas habilitadas o activas:
+
+	firewall-cmd --get-active-zones
+
+* Abrir puerto de Forma permanente: 
+	
+	firewall-cmd --zone=public --add-port=3000/tcp --permanent
+
+* Reiniciar el Firewall
+
+	firewall-cmd --reload
+
+* Ver puertos Abiertos con nmpa (yum install nmap, si no estuviera instalado)
+	
+	nmap localhost		// SE VERAN TODOS LOS PUERTOS HABILITADOS EN LA INTRANET
+
+	nmap 200.14.252.14 	// SE VERAN TODOS LOS PUERTOS HABILTADOS EN INTERNET
+
+	Ejemplo:
+
+	[root@centos-webserver ~]# nmap 200.14.252.14
+	Starting Nmap 6.40 ( http://nmap.org ) at 2018-03-19 13:14 CLST
+	Nmap scan report for 200.14.252.14
+	Host is up (0.0029s latency).
+	Not shown: 994 filtered ports
+	PORT     STATE  SERVICE
+	80/tcp   open   http
+	113/tcp  closed ident
+	443/tcp  open   https
+	3000/tcp open   ppp
+	3001/tcp closed nessus
+	9999/tcp open   abyss
+
+	
+
+PARA VER TODOS LOS PUERTOS QUE ESTAN ABIERTOS, USAMOS:
+	
+	firewall-cmd --list-all
+

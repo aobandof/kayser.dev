@@ -1,0 +1,26 @@
+si queremos que nuestro linux tenga una copia o un clone de nuestro repositorio en github, tenemos que crear una clave publica para guardarla en hithub y poder comunicar de forma eficiente y segura.
+
+* Nos ubicamos en la carpeta .ssh (si no esta crearla) del usuario al que se crearan las llaves.
+	ejemplo: /root/.ssh/
+* escribimos lo siguiente para poder crear las llaves:
+	ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+* ingresamos el nombre de las llaves y despues la paraphrase ( enter, enter si no queremos crear la contraseña que se solicitará cada vez que se realice pull o push)
+
+* verificamos que el agente ssh esta corriendo:
+	eval $(ssh-agent -s) 	//Deberiamos recibir algo como "Agent pid [cualquier_numero]"
+* Agregamos la llave privada al agente ssh:
+	ssh-add [nombre_llave_privada_creada]
+
+EN GITHUB
+---------
+	
+Vamos al icono de perfil de la cuenta en github y eegimos la opcion settings, y despues a SSH and GPG keys (https://github.com/settings/keys)
+
+en nuestro linux tipeamos:
+	cat [nombre_llave.pub]
+copiamos el contenido (asegurarnos de seleccionar toda el contenido, desde ssh rsa .... ) y lo pegamos en la nueva llave ssh que estemos agregando en github.
+
+LISTO, AHORA PODEMOS HACER PULL Y PUSH DESDE NUESTRO REPOSITORIO LOCAL EN NUESTRO LINUX
+
+
+

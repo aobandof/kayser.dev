@@ -159,3 +159,57 @@ SELECT SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codi
 sum(VentaU) AS [Venta total unidades], sum(NetoU) AS [Venta Total en Valor], sum(StockCM * 0) AS [Inventario en unidades], sum(StockCM * 0) AS [Inventario en Valor], sum(StockCM * 0) AS [Venta Total en Valor Costo] , t1.AVGPRICE AS Costo 
 FROM GSP.dbo.Gsp_SboKayserDetalle t0 INNER JOIN gsp.dbo.OITM t1 on t1.ITEMCODE=t0.SKU 
 where U_GSP_CADATA>=DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)) AND U_GSP_CADATA<DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA, t1.AVGPRICE
+
+
+
+------ CONSULTAS A 13 PARA OMNI ------
+
+
+select P.ItemCode, P.PriceList, P.Price as precio
+from [Stock].[dbo].[Kayser_ITM1] as P 
+where P.Price IS not NULL AND  P.Price!=0 --and P.PriceList=12
+order by PriceList
+
+
+
+SELECT top 100 S.ItemCode as sku, ItemName as descripcion, S.CodeBars as barcode, S.U_APOLLO_SEG2 as color, S.U_APOLLO_SSEG3 
+from [192.168.0.13].[Stock].[dbo].[Kayser_OITM] as S
+
+
+select ItemCode, precio_detalle, precio_promotora
+
+
+------------################################################################################################################################### -------------------------------
+------------##############################################       C O N S U L T A S   F I N A L E S      ####################################### -------------------------------
+------------################################################################################################################################### -------------------------------
+
+--- Ventas últimos 7 días:
+SELECT top 10 SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,105) AS [Fecha Inicio], 
+CONVERT(VARCHAR(10),U_GSP_CADATA,105) AS [Fecha termino], CAST(sum(VentaU) AS INT) AS [Venta total unidades], CAST(sum(NetoU) AS INT) AS [Venta Total en Valor], 
+CAST(sum(StockCM * 0) AS INT) AS [Inventario en unidades], CAST(sum(StockCM * 0) AS INT) AS [Inventario en Valor], CAST(sum(VentaU * t1.AVGPRICE) AS INT) AS [Venta Total en Valor Costo] , 
+CAST(ROUND(t1.AVGPRICE,0) AS INT) AS Costo 
+FROM GSP.dbo.Gsp_SboKayserDetalle t0 INNER JOIN gsp.dbo.OITM t1 on t1.ITEMCODE=t0.SKU 
+where U_GSP_CADATA>=CONVERT(date, GETDATE() - 7, 102) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA, t1.AVGPRICE
+
+--- Ventas Mensuales:
+SELECT top 10 SKU AS [Codigo Producto], Art AS [Descripcion Producto], Almacen AS [Codigo Local], WhsName AS [Descripcion Local], CONVERT(VARCHAR(10),U_GSP_CADATA,105) AS [Fecha Inicio], 
+CONVERT(VARCHAR(10),U_GSP_CADATA,105) AS [Fecha termino], CAST(sum(VentaU) AS INT) AS [Venta total unidades], CAST(sum(NetoU) AS INT) AS [Venta Total en Valor], CAST(sum(StockCM * 0) AS INT) AS [Inventario en unidades], 
+CAST(sum(StockCM * 0) AS INT) AS [Inventario en Valor], CAST(sum(VentaU * t1.AVGPRICE) AS INT) AS [Venta Total en Valor Costo] , CAST(ROUND(t1.AVGPRICE,0) AS INT) AS Costo 
+FROM GSP.dbo.Gsp_SboKayserDetalle t0 INNER JOIN gsp.dbo.OITM t1 on t1.ITEMCODE=t0.SKU 
+where U_GSP_CADATA>=DATEADD(mm,-1,DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0)) AND U_GSP_CADATA<DATEADD(mm,DATEDIFF(mm,0,GETDATE()),0) group by SKU,Art,Almacen,WhsName,U_GSP_CADATA, t1.AVGPRICE
+
+--- STOCK Casa Matriz:
+select t0.IdArticulo AS [Codigo Producto], t0.IdArticulo AS [Descripcion Producto], t0.idalmacen AS [Codigo Local], t3.WhsName AS [Descripcion Local], convert(varchar,GETDATE()-1,105) AS [Fecha Inicio], 
+convert(varchar,GETDATE()-1,105) AS [Fecha termino], CAST(SUM(t0.Cantidad) as int) * 0 AS [Venta total unidades], 
+CAST(SUM(t0.Cantidad) as int) * 0  AS [Venta Total en Valor], CAST(SUM(t0.Cantidad) AS int) AS [Inventario en unidades], CAST(SUM(t0.Cantidad)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], 
+CAST(SUM(t0.Cantidad) as int) * 0 AS [Venta Total en Valor Costo] 
+from [192.168.0.17].[WMSTEK_KAYSER].[dbo].[Existencia]   as t0 inner join [192.168.0.17].[WMSTEK_KAYSER].[dbo].[ubicacion] as t1 on t0.IdUbicacion=t1.IdUbicacion 
+inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.idalmacen COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.idarticulo=t2.ItemCode COLLATE Modern_Spanish_CS_AS 
+where t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE '01%' and t1.Nivel in ('1','2') GROUP BY t0.IdArticulo, t0.idalmacen, t3.WhsName
+
+--- STOCK TIENDAS:
+select t0.itemcode AS [Codigo Producto], t0.itemcode AS [Descripcion Producto], t0.whscode AS [Codigo Local], t3.WhsName AS [Descripcion Local], convert(varchar,GETDATE()-1,105) AS [Fecha Inicio], 
+convert(varchar,GETDATE()-1,105) AS [Fecha termino], CAST(SUM(t0.onhand) as int) * 0 AS [Venta total unidades], CAST(SUM(t0.onhand) as int) * 0  AS [Venta Total en Valor], 
+CAST(SUM(t0.onhand) AS int) AS [Inventario en unidades], CAST(SUM(t0.onhand)  *  max(t2.AvgPrice) as int) AS [Inventario en Valor], CAST(SUM(t0.onhand) as int) * 0 AS [Venta Total en Valor Costo] 
+from Stock.dbo.Kayser_OITW as t0 inner join Stock.dbo.Kayser_OWHS as t3 on t3.WhsCode=t0.WhsCode COLLATE Modern_Spanish_CS_AS inner join Stock.dbo.Kayser_OITM as t2 on t0.ItemCode=t2.ItemCode  COLLATE Modern_Spanish_CS_AS 
+where t3.U_GSP_SENDTPV='Y' GROUP BY t0.ItemCode, t0.WhsCode, t3.WhsName  ORDER BY t0.ItemCode
