@@ -6,8 +6,11 @@ si queremos que nuestro linux tenga una copia o un clone de nuestro repositorio 
 	ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 * ingresamos el nombre de las llaves y despues la paraphrase ( enter, enter si no queremos crear la contraseña que se solicitará cada vez que se realice pull o push)
 
+* iniicamos el agente en centos:
+	exec ssh-agent bash
 * verificamos que el agente ssh esta corriendo:
 	eval $(ssh-agent -s) 	//Deberiamos recibir algo como "Agent pid [cualquier_numero]"
+
 * Agregamos la llave privada al agente ssh:
 	ssh-add [nombre_llave_privada_creada]
 

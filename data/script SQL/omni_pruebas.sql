@@ -1,0 +1,50 @@
+USE master
+GO
+CREATE DATABASE prueba_iptv
+GO
+USE prueba_iptv
+GO
+CREATE TABLE sale(
+	boleta INT PRIMARY KEY,
+	date DATETIME	
+)
+GO
+CREATE TABLE sku(
+	code VARCHAR(30) PRIMARY KEY,
+	article VARCHAR(20),
+	itemname VARCHAR(50),
+	colour VARCHAR(20),
+	talla VARCHAR(10),
+	price FLOAT
+)
+GO
+CREATE TABLE sale_sku (
+	sale_boleta INT FOREIGN KEY REFERENCES sale (boleta),
+	sku_code VARCHAR(30) FOREIGN KEY REFERENCES sku (code),
+	cant INT,
+	price FLOAT
+)
+
+/*INSERT INTO sku VALUES ('10.034-BLA-L','10.034','MAXI DAMA ALGODÓN','BLANCO','L',3990)
+INSERT INTO sku VALUES ('50.512-NEG-34','50.512','SOSTEN DAMA ALGODÓN ENCAJE','NEGRO','34',5990)
+INSERT INTO sku VALUES ('50.014W-ROS-38','50.014','SOSTEN DAMA MICROFIBRA ESTAMPADO','ROSA','38',4990)*/
+SELECT * from sku
+
+/*INSERT INTO sale VALUES (1,'2018-03-27')
+INSERT INTO sale VALUES (2,'2018-03-26')
+INSERT INTO sale VALUES (3,'2018-03-25')*/
+SELECT * FROM sale
+
+/*INSERT INTO sale_sku VALUES (1,'10.034-BLA-L',3,11970)
+INSERT INTO sale_sku VALUES (1,'50.512-NEG-34',5,29950)*/
+SELECT * FROM sale_sku
+
+
+
+SELECT SK.code, SK.itemname, SK.colour, SS.cant, SS.price 
+FROM sku AS SK 
+INNER JOIN sale_sku AS SS ON SK.code = SS.sku_code
+INNER JOIN sale AS SA ON SS.sale_boleta = SA.boleta
+WHERE SS.sale_boleta = 1
+
+SELECT * FROM sys.Tables
