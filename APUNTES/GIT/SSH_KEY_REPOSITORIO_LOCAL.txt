@@ -10,10 +10,13 @@ si queremos que nuestro linux tenga una copia o un clone de nuestro repositorio 
 	exec ssh-agent bash
 * verificamos que el agente ssh esta corriendo:
 	eval $(ssh-agent -s) 	//Deberiamos recibir algo como "Agent pid [cualquier_numero]"
-
+* esto funciono:
+	eval ssh-agent
+	echo $SSH_AUTH_SOCK
+	
 * Agregamos la llave privada al agente ssh:
 	ssh-add [nombre_llave_privada_creada]
-
+	
 EN GITHUB
 ---------
 	
