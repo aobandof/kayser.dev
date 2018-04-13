@@ -1,4 +1,6 @@
-select ISNULL(t.WhsName,''),p.LicTradNum, p.CardName,ISNULL(p.Cellular,''),ISNULL(p.Phone1,''),ISNULL(LOWER(p.E_Mail),''),p.Address,p.County,p.City ,ISNULL(CONVERT(VARCHAR(10),p.U_GSP_BIRTHDATE,103),''), ISNULL(CONVERT(VARCHAR(10),UltimaCompra,103),''), ISNULL(Bruto,0)
+select ISNULL(t.WhsName,'') as Region,p.LicTradNum as Rut, p.CardName as Nombre,ISNULL(p.Cellular,'') as Celular,ISNULL(p.Phone1,'') as Telefono,ISNULL(LOWER(p.E_Mail),'') as Email, 
+p.Address as Direccion,p.County as Comuna,p.City as Ciudad ,ISNULL(CONVERT(VARCHAR(10),p.U_GSP_BIRTHDATE,103),'') as Cumpleaños, ISNULL(CONVERT(VARCHAR(10),UltimaCompra,103),'') as [Ultima Compra], 
+ISNULL(CAST(ROUND(Bruto,0) AS INT),0) as [Valor Ultima Compra]
 			from Kayser_OCRD as p
             LEFT JOIN Kayser_OWHS as t ON  p.U_GSP_TPVWHSCODE=t.WhsCode
             LEFT JOIN Cte_Fec ON P.LicTradNum=Rut

@@ -152,4 +152,5 @@ Lo mismo escrito más compacto mediante una función flecha:
 var arr = [ 40, 1, 5, 200 ];
 arr.sort((a,b)=>a-b);  // [ 1, 5, 40, 200 ]
 
-
+PARA CONVERTIR UN NUMERO  A CADANA CON FORMATO PESOS (separado por . )
+- var_numerica.toLocaleString()
