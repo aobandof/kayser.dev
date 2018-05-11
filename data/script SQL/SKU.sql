@@ -20,13 +20,20 @@ SELECT * FROM OITB						-- DPTO
 SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB	-- DPTO	
 SELECT ItmsGrpCod as code_dpto, ItmsGrpNam as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130
 
- SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpNam NOT LIKE 'INSUMOS%'
+SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB WHERE ItmsGrpCod != 106 AND ItmsGrpCod != 108 AND ItmsGrpCod != 127 AND ItmsGrpCod != 128 AND ItmsGrpCod != 129 AND ItmsGrpCod != 130 AND ItmsGrpCod != 140 AND ItmsGrpCod != 121 AND ItmsGrpCod != 135 AND ItmsGrpNam NOT LIKE '01-INS%' -- AND ItmsGrpNam NOT LIKE 'INSUMOS%'
+SELECT ItmsGrpCod as code_dpto, UPPER(ItmsGrpNam) as name_dpto FROM OITB 
+WHERE  ItmsGrpNam NOT LIKE 'INSUMOS%' AND ItmsGrpNam NOT LIKE '01-INS%' AND ItmsGrpCod NOT IN (106,108,127,128,129,130,140,121,135) OR ItmsGrpCod IN (113,115,116,117) 
 
-SELECT * FROM [dbo].[@APOLLO_SEASON]	-- PRENDA
-SELECT * FROM [dbo].[@APOLLO_DIV]		-- CATEGORIA
+SELECT * FROM [dbo].[@APOLLO_SEASON] ORDER BY Code desc	-- PRENDA
+SELECT * FROM [@APOLLO_SEASON] ORDER BY Code desc	-- PRENDA
+SELECT * FROM [dbo].[@APOLLO_DIV] -- ORDER BY Code DESC		-- CATEGORIA
+-- INSERT INTO [dbo].[@APOLLO_DIV] VALUES ('82','INSUMO')
+-- INSERT INTO [dbo].[@APOLLO_SEASON] VALUES ('58','LEGGINS')
+-- INSERT INTO [dbo].[@APOLLO_DIV] VALUES ('83','CORTA')
+-- INSERT INTO [dbo].[@APOLLO_DIV] VALUES ('84','DEPORTIVA')
 
 SELECT Code,Name from [@APOLLO_SEASON] ORDER BY Name
-SELECT Code,Name from [@APOLLO_SEASON] ORDER BY Name
+
 
 -- PARA ARTICULOS
 select U_APOLLO_SEG1, ItemCode,ItemName,FrgnName, CodeBars, U_APOLLO_SEG2,U_APOLLO_SSEG3, U_APOLLO_SEASON, U_Material, U_SubGrupo1 from Kayser_OITM order by U_APOLLO_SEG1

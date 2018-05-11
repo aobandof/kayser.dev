@@ -1,0 +1,39 @@
+SUSTANTIVOS / ADJETIVOS
+------------------------
+
+ill		enfermo
+tall		alto
+tired		cansado
+angry		enfadado
+handsome	guapo
+means		significa que
+brand		marca (igual que logo)	
+
+
+
+VERBOS
+------
+rain		llover
+lose		perder
+handle		manejar
+give		dar
+become		convertirse en
+
+
+
+AUXILIARES
+----------
+DO		I, You, They, We
+DOES		he, she, it
+DID		En pasado
+
+DO, DOES, DID se pueden utilizaro como:
+	. VERBO PRINCIPAL -> Do = hacer, generalmente de forma abstracta por ejemplo: hacer  algo con las manos (para crear o fabricar algo usamos make)
+	. COMO VERBO AUXILIAR 	-> Do/Does = 	para preguntar y negar en el tiempo presente, para todas las personas, PARA TODOS LOS VERBOS, excepto: to be y algunos otros verbos auxiliares (can, could, must, will, would, etc.)
+						Para este caso, el verbo principal siempre va en infinitivo (sin 's').
+							ejemplo: DO YOU KNOW HER? (la conoces?)
+							ejemplo2: DOES HE WORK HERE? (trabaja él aqui?)
+							ejemplo3: THEY DON'T DO IT (ellos no lo hacen) --> vemos que usamos dos veces DO (1)como verbo auxiliar por que estoy negando (2) como verbo principal
+				-> Did 	   =	para preguntar y negar en el tiempo pasado, para todas las personas
+	. COMO RESPUESTA A UNA PREGUNTA  -> do/does/did = Para contestar de forma corta, nunca en la respuesta se especifica el verbo principal de la pregunta, para ello simpre respondemos con la persona y el verbo do/does/did
+	

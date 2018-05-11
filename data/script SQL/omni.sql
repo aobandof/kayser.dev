@@ -23,8 +23,13 @@ where  t0.IdArticulo LIKE '10.034%' t0.IdAlmacen = '01' AND t0.IdUbicacion LIKE 
 GROUP BY IdArticulo,Cantidad HAVING SUM(Cantidad)>30 ORDER BY IdArticulo
 
 
+----------------------------------------------------------------
+----- TABLAS EN WMS CON EL PEDIDO EXPRESS DE LA VENTA OMNI -----
+----------------------------------------------------------------
 
--- TABLAS EN WMS CON EL PEDIDO EXPRESS DE LA VENTA OMNI
+SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[ConfirmacionPacking] WHERE TIPO = 'TRF' ORDER BY IDDOCSALIDA
+SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[ConfirmacionPackingDetalle] where IdDocSalida='0000000011'
+
 SELECT  * FROM [WMSTEK_KAYSER].[dbo].[ConfirmacionPacking] WHERE TIPO = 'TRF' ORDER BY IDDOCSALIDA -- where IdDocSalida='0000000011' 
 SELECT * FROM [WMSTEK_KAYSER].[dbo].[ConfirmacionPackingDetalle] where IdDocSalida='0000000011'
  
@@ -128,3 +133,8 @@ ORDER BY C.Cantidad DESC
 EXEC SP_OMNI_select_skus '7800000179859'
 
 
+--------------------------------
+-- CONSULTA AL KOGNOS POR LOS NOMBRES DE LAS BASE DE DATOS EN CADA TIENDA
+
+SELECT * FROM	[192.168.0.13].[Stock].[dbo].[kayser_key] where nom_sql LIKE '%\SQLEXPRESS' order by n_local
+ 

@@ -12,8 +12,11 @@ DIRECTIVAS: codigo que va dentro o fuera de etiquetas en el template
 <ul> <li v-for='task in tasks'> {{ task.title }} </li></ul>	impreme una lista con todos los titulos de los elementos del array tasks
 
 <input type='text' v-on:keyup='typing'				vinculamos el metodo typing(e) con el evento a trabajar (podemos mostrar en consola lo que se esta tipeando, comparar si es una tecla especifica (enter por jemplo : e.target.keycode===13 ) y trabajar con eso)
-<input type='text' v-on:keyup.enter='typingEnter'		vinculamos a un metodo, especificamente cuando tecleamos la techa enter.				
+
+<input type='text' v-on:keyup.enter='typingEnter'		vinculamos a un metodo, especificamente cuando tecleamos la tecla enter.
+				
 <input type='text' v-model='variable'>				permite enlazar el input texto a la variable, detal forma que cuando se modifica el texto, tambien se modifica el valor de la variable
+
 <tag v-on:name_event='nameFunction()'				Permite enlazar funciones a methods del componente
 	nameEventos: clik, keyup. keyup.enter, etc
 
