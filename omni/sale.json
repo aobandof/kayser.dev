@@ -1,0 +1,39 @@
+{
+	"cliente" : {
+		"codigo" : "",
+		"rut" : "",
+		"nombre" : "",
+		"direccion" : "",
+		"comuna" : "",
+		"ciudad" : "",
+		"email" : "",
+		"telefono" : "",	
+		"celular" : "",
+		"fecha_nacimiento" : "",
+		"fecha_registro" : "",
+		"tipo" : ""
+	},
+
+	"documento" : {
+		"fecha" : "",
+		"hora" : "",
+		"numero" : "",
+		"tipo" : "",
+		"precio_total" : "",
+		"venta_omni" : ""
+	},
+
+	"skus" : {
+		"cantidad" : "",
+		"codigo" : "",
+		"itemname" : "",
+		"precio" : "",
+	},
+
+	"tienda" : {
+		"codigo" : "",
+		"direccion" : "",
+		"nombre" : "",
+		"region" : ""
+	}
+}
