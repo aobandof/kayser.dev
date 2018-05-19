@@ -31,4 +31,8 @@ SELECT  A1.WhsCode as cod_tienda, A1.WhsName AS tienda, A2.VtaMinAct as total FR
 
 -- SCRIPT PARA REPORTAR GUIS MAL RECEPCIONADAS -- BD SBO_KAYSER -- SERVER 192.168.0.33
 -----------------------------------------------------------------------------------------
-select Code Codigo, U_GSP_CABOTI CodTienda, U_GSP_CACLIE Tienda, convert(varchar,convert(date,U_GSP_CADATA)) Fecha, U_GSP_CAHORA Hora,  U_GSP_CANLIN LineasSKU from [@GSP_TPVCAP] where U_GSP_ERROR like '%no es necesario crear%' and convert(date,U_GSP_CADATA)= convert(date, GETDATE()-3)
+select Code Codigo, U_GSP_CABOTI CodTienda, U_GSP_CACLIE Tienda, convert(varchar,convert(date,U_GSP_CADATA)) Fecha, U_GSP_CAHORA Hora,  U_GSP_CANLIN LineasSKU from [@GSP_TPVCAP] where U_GSP_ERROR like '%no es necesario crear%' and convert(date,U_GSP_CADATA)> convert(date, GETDATE()-20)
+
+select Code Codigo, U_GSP_CABOTI CodTienda, U_GSP_CACLIE Tienda, convert(varchar,convert(date,U_GSP_CADATA)) Fecha, U_GSP_CAHORA Hora,  U_GSP_CANLIN LineasSKU from [@GSP_TPVCAP] where /*U_GSP_ERROR like '%no es necesario crear%' and*/ convert(date,U_GSP_CADATA)> convert(date, GETDATE()-20)
+
+select Code Codigo, U_GSP_CABOTI CodTienda, U_GSP_CACLIE Tienda, convert(varchar,convert(date,U_GSP_CADATA)) Fecha, U_GSP_CAHORA Hora,  U_GSP_CANLIN LineasSKU, U_GSP_ERROR from [@GSP_TPVCAP]

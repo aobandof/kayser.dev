@@ -1,7 +1,10 @@
 /*CREATE DATABASE OMNI_KAYSER
 GO
 USE OMNI_KAYSER
-GO
+GO*/
+
+--DROP TABLE Cliente
+
 CREATE TABLE Cliente (
 	codigo VARCHAR(20) PRIMARY KEY,
 	rut VARCHAR(15) NOT NULL UNIQUE,
@@ -16,8 +19,14 @@ CREATE TABLE Cliente (
 	fecha_registro DATETIME,
 	tipo VARCHAR(20),
 	detalle VARCHAR(100)	
-)*/
+)
 
+/*
+CREATE TABLE Venta (
+		
+
+)
+*/
 
 
 -- VALIDACIONES ---

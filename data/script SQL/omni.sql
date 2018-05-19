@@ -92,3 +92,40 @@ EXEC SP_OMNI_select_skus '7800000179859'
 
 SELECT * FROM	[192.168.0.13].[Stock].[dbo].[kayser_key] where nom_sql LIKE '%\SQLEXPRESS' order by n_local
  
+
+----------------------------------------------------------------
+----- TABLAS EN WMS CON EL PEDIDO EXPRESS DE LA VENTA OMNI -----
+----------------------------------------------------------------
+
+SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[ConfirmacionPacking] WHERE TIPO = 'TRF' ORDER BY IDDOCSALIDA
+SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[ConfirmacionPackingDetalle] where IdDocSalida='0000000011'
+
+SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida where YEAR(FechaEmision)=2018 AND MONTH(FechaEmision)=5
+SP_COLUMNS DocumentoSalida
+SP_HELP DocumentoSalida
+SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida
+------------------------------------------------------------------------
+------------ STORE PROCEDURE PARA INSERTAR MULTIPLES TABLAS ------------
+------------------------------------------------------------------------
+CREATE PROCEDURE SP_OMNI_guardar_pedido (
+	@codigo VARCHAR(20), --será el correlativo del codigo pedido_omni, con la sintaxis: 'OMNI000000000000001'
+	@cli_rut VARCHAR(50),
+	@doc_fecha DATETIME,
+	@fecha_limite DATETIME,	--@doc_fecha + x dias (dependiendo del plazo maximo de entrega establecido por la empresa)
+	@tie_codigo VARCHAR(20),
+	@tie_nombre VARCHAR(50),
+	@localidad VARCHAR(15), --caracter con 'S' o 'R' si tie_region es 'SANTIAGO' u otro valor, respectivamente
+	@tie_direccion VARCHAR(100) )
+AS
+BEGIN
+	INSERT INTO [WMSTEK_KAYSER_INTERFAZ].[dbo].[ConfirmacionPacking] VALUES ( '01','KAYS',@codigo,'PEDIDO_OMNI',@cli_rut,'TRF',@doc_fecha,'',@fecha_limite,@tie_codigo,@tie_codigo,@tie_nombre,@localidad,@tie_direccion,'','','C','',''	)
+END
+
+CREATE PROCEDURE SP_OMNI_guardar_skus (
+	
+)
+
+CREATE PROCEDURE SP_OMNI_guardar_cliente (
+	
+	
+)
