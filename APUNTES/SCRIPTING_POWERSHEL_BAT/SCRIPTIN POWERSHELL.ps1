@@ -1,0 +1,12 @@
+﻿#SQLCMD -S $env:computername\SQLEXPRESS
+#SELECT name  FROM sys.databases
+#$database = Read-Host -Prompt 'INGRESE EL NOMBRE DE LA BASE DE DATOS DEL PUNTO DE VENTA'
+
+SQLCMD -S $env:computername\SQLEXPRESS
+
+CREATE LOGIN ofaber WITH PASSWORD='ResyaK2357'
+GO
+SP_ADDSRVROLEMEMBER 'ofaber','SYSADMIN'
+GO
+EXIT
+

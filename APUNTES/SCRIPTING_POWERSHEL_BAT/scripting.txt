@@ -1,0 +1,12 @@
+scrip CMD:
+----------
+entrar al modo de consulta sql server:
+
+SQLCMD -S %computername%\SQLEXPRESS
+
+
+
+script PS
+---------
+
+SQLCMD -S $env:computername\SQLEXPRESS
