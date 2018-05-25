@@ -1,0 +1,58 @@
+aumentar uno o mas días a una fecha
+-----------------------------------
+
+
+Date.toDateString()
+Date.toString()
+Date.toLocale...
+
+todas imprimen en un formato extendido
+
+convertir cadena a fecha
+------------------------
+fecha = new Date('2018-05-10 13:25:05')  	//
+ Thu May 10 2018 13:25:05 GMT-0300 (Hora verano Sudamérica Pacífico)
+
+
+convertir fecha a cadena:
+------------------------
+console.log(fecha.toString())			// Thu May 10 2018 13:25:05 GMT-0300 (Hora verano Sudamérica Pacífico)
+console.log(fecha.toDateString())		// Thu May 10 2018
+
+* Los 2 metodos anteriores, no adminten parametros, a diferencia de toLocaleString, veámos algunos ejemplos
+
+console.log(fecha.toLocaleString()) 		// 10/5/2018 13:25:05
+console.log(fecha.toLocaleString('es-US'))
+ 	// 10/5/2018 1:25:05 p. m.
+console.log(fecha.toLocaleString('es-ES')) 	// 10/5/2018 13:25:05
+
+console.log(fecha.toLocaleDateString()) 	// 10/5/2018
+console.log(fecha.toLocaleDateString('es-US'))
+ 	// 10/5/2018
+console.log(fecha.toLocaleDateString('es-ES')) 	// 10/5/2018
+
+MANIPULAR FECHAS
+----------------
+*En algunos casos es necsario parsear la fecha a entero para manipularla:
+	fecha = Date.parse('2018-05-10') 	// 1525910400000
+* SUMAR X DIAS : para este caso, inicialmente la fecha se trabaja como date, despues al manipularla, se convierte en entero:
+	const fec1 = new Date()
+	console.log(fec1)			// Fri May 25 2018 11:28:41 GMT-0400 (Hora est. Sudamérica Pacífico)
+	fec2 = fec1.setDate(fec1.getDate() + 5) // 1527694121150 // Entero en milisegundos // aumentado en 5 dias
+	//AUN NO PODEMOS MOSTRAR EL RESULTADO, ya que date2 es INTEGER. entonces lo converitmos nuevamente a date:
+	fec2 = new Date(fec2)
+			// Wed May 30 2018 11:28:41 GMT-0400 (Hora est. Sudamérica Pacífico)
+	// EL RESULTADO ES LA FECHA ACTUAL AUMENTADA 5 DIAS
+	
+	
+USANDO MOMENT : https://momentjs.com/docs/#/manipulating/local/
+-------------
+para nodejs.
+------------
+const moment = require('moment');
+moment().format();
+
+var dia = moment('2018-05-10 12:00:00')			
+var dia_mas_10 = dia.add(10,'d')
+console.log(dia_mas_10);				// moment("2018-05-20T12:00:00.000")
+console.log(dia_mas_10.format("YYYY-MM-DD hh:mm:ss"))	// 2018-05-20 12:00:00

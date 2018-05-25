@@ -66,6 +66,27 @@ CREATE TABLE DetalleSalida (
 	primary key (IdAlmacen, IdOwner, IdDocSalida, IdArticulo),
 	foreign key (IdAlmacen, IdOwner, IdDocSalida) references DocumentoSalida (IdAlmacen, IdOwner, IdDocSalida)	
 )*/
+/*
+CREATE TABLE Venta (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	codigo_cliente VARCHAR(20) NOT NULL,
+	numero_documento VARCHAR(20) NOT NULL,
+	codigo_pedido VARCHAR(20) NOT NULL UNIQUE,
+	fecha_documento DATETIME,
+	codigo_tienda VARCHAR(10) NOT NULL,
+	FOREIGN KEY (codigo_cliente) REFERENCES Cliente(codigo) ON DELETE CASCADE ON UPDATE CASCADE
+)
+
+
+CREATE TABLE VentaDetalle (
+	id_venta INT NOT NULL,
+	sku_codigo VARCHAR(20) NOT NULL,
+	sku_cantidad INT NOT NULL,
+	sku_precio_total FLOAT NOT NULL,
+	PRIMARY KEY (id_venta,sku_codigo),
+	FOREIGN KEY (id_venta) REFERENCES Venta(id) ON DELETE CASCADE ON UPDATE CASCADE	
+)
+*/
 
 
 

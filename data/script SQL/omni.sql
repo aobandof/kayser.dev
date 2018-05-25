@@ -100,9 +100,9 @@ SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida where YEAR(FechaEmis
 SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida WHERE idDocSalida='32805'
 SP_COLUMNS DocumentoSalida
 SP_HELP DocumentoSalida
-------------------------------------------------------------------------
------------- STORE PROCEDURE PARA INSERTAR MULTIPLES TABLAS ------------
-------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+------------ STORE PROCEDURE PARA INSERTAR TABLAS RELACIONADAS CON EL PEDIDO OMNI ------------
+----------------------------------------------------------------------------------------------
 CREATE PROCEDURE SP_OMNI_guardar_pedido (
 	@codigo_almacen VARCHAR(10), --será 001, pero es recomendable pasarlo como parámetro por si algun momento cambia
 	@codigo_pedido VARCHAR(20), --será el correlativo del codigo pedido_omni, con la sintaxis: 'OMNI000000000000001'
@@ -121,6 +121,14 @@ BEGIN
 		@tie_codigo,@tie_nombre,@tie_region,@tie_direccion,'','','C','',''
 	)
 END
+
+INSERT INTO [OMNI_KAYSER].[dbo].[DocumentoSalida] VALUES (
+      '01','KAYS','OMNI0000000000000001','PEDIDO_OMNI','26082384-1','TRF','2018-05-10 17:22:19','','2018-05-12 05:22:19','177-RENCA',
+      '177-RENCA','santiago','miraflores 8770','','',0,0,'','2018-05-10 17:22:19','7223',
+      '','','','','','C','','',''
+select * from [OMNI_KAYSER].[dbo].[DocumentoSalida]
+EXEC SP_HELP DocumentoSalida
+SELECT TOP 5 * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[DocumentoSalida]
 
 CREATE PROCEDURE SP_OMNI_guardar_skus (
 	@codigo_almacen VARCHAR(10),
@@ -160,3 +168,21 @@ BEGIN
 		@cli_telefono,@cli_celular,@cli_fecha_nacimiento,@cli_fecha_registro,@cli_tipo,@cli_detalle
 	)
 END	
+
+----------------------------------------------------------------
+------ STORE PROCEDURE PARA OBTENER EL ULTIMO COD_PEDIDO -------
+----------------------------------------------------------------
+-- recordar que el formato es : 'OMNI000000000000001' ----------
+----------------------------------------------------------------
+ALTER PROCEDURE SP_OMNI_obtener_correlativo_pedido 
+--CREATE PROCEDURE SP_OMNI_obtener_correlativo_pedido 
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%') = 0  
+		SELECT 'OMNI0000000000000001' as codigo_pedido 
+	ELSE 
+		SELECT CONCAT('OMNI',RIGHT(CONCAT('000000000000000' , CONVERT(INT,SUBSTRING(MAX(idDocSalida),6,5)) + 1), 16)) as codigo_pedido 
+		FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%'
+END
+
+EXEC SP_OMNI_obtener_correlativo_pedido 
