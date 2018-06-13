@@ -96,7 +96,7 @@ SELECT * FROM	[192.168.0.13].[Stock].[dbo].[kayser_key] where nom_sql LIKE '%\SQ
 ----------------------------------------------------------------
 ----- TABLAS EN WMS CON EL PEDIDO EXPRESS DE LA VENTA OMNI -----
 ----------------------------------------------------------------
-SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida where YEAR(FechaEmision)=2018 AND MONTH(FechaEmision)=5
+SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida where YEAR(FechaEmision)=2018 AND MONTH(FechaEmision)=6
 SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida WHERE idDocSalida='32805'
 SP_COLUMNS DocumentoSalida
 SP_HELP DocumentoSalida
@@ -122,52 +122,25 @@ BEGIN
 	)
 END
 
-INSERT INTO [OMNI_KAYSER].[dbo].[DocumentoSalida] VALUES (
+INSERT INTO [OMNI_KAYSER].[dbo].[DocumentoSalida]  (
+	IdAlmacen,IdOwner,IdDocSalida,NroReferencia,NroOrdenCliente,Tipo,FechaEmision,FechaCompromiso,FechaExpiracion,AlmacenDestino,IdCliente,IdSucursal,EnviarPor,IdKit,Cantidad,Prioridad,
+	Observaciones,FechaCreacion,Factura,FechaAnulacion,AnuladoPor,XD,BO,EstadoInterfaz,FechaCreacionERP,FechaModificacionERP,FechaLecturaWMS )
+VALUES (
       '01','KAYS','OMNI0000000000000001','PEDIDO_OMNI','26082384-1','TRF','2018-05-10 17:22:19','','2018-05-12 05:22:19','177-RENCA',
-      '177-RENCA','santiago','miraflores 8770','','',0,0,'','2018-05-10 17:22:19','7223',
-      '','','','','','C','','',''
+      '177-RENCA','santiago','','',0,0,'','2018-05-10 17:22:19','7223',
+      '','','','','C','','','')
+
+INSERT INTO [OMNI_KAYSER].dbo.DocumentoSalida VALUES (
+      '01','KAYS','OMNI000001','PEDIDO_OMNI','24215707-9','TRF','','','','177',
+      '177-RENCA','santiago','miraflores 8770','','',0,0,'','','7222',
+      '','','','','','C','','','')
+
 select * from [OMNI_KAYSER].[dbo].[DocumentoSalida]
+select * from [OMNI_KAYSER].[dbo].[DetalleSalida]
+EXEC SP_HELP DocumentoSalida
 EXEC SP_HELP DocumentoSalida
 SELECT TOP 5 * FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[DocumentoSalida]
 
-CREATE PROCEDURE SP_OMNI_guardar_skus (
-	@codigo_almacen VARCHAR(10),
-	@codigo_pedido VARCHAR(20),
-	@sku_codigo VARCHAR(20),
-	@numero_linea VARCHAR(5), --sera la posicion del item sku de la boleta empezando desde 0
-	@sku_cantidad NUMERIC(9) )
-AS
-BEGIN
-	--INSERT INTO [WMSTEK_KAYSER_INTERFAZ].[dbo].[DetalleSalida] VALUES ( 
-	INSERT INTO [OMNI_KAYSER].[dbo].[DetalleSalida] VALUES ( 
-		@codigo_almacen,@codigo_pedido,@sku_codigo,@numero_linea,@sku_cantidad
-	)
-END	
-	
-)
-
-CREATE PROCEDURE SP_OMNI_guardar_cliente (
-	@cli_codigo VARCHAR(20),
-	@cli_rut VARCHAR(15),
-	@cli_nombre VARCHAR(80),
-	@cli_direccion VARCHAR(100),
-	@cli_comuna VARCHAR(50),
-	@cli_ciudad VARCHAR(50),
-	@cli_email VARCHAR(50),
-	@cli_telefono VARCHAR(15),
-	@cli_celular VARCHAR(15),
-	@cli_fecha_nacimiento DATETIME,
-	@cli_fecha_registro DATETIME,
-	@cli_tipo VARCHAR(20),
-	@cli_detalle VARCHAR(100)	
-)
-AS
-BEGIN
-	INSERT INTO [OMNI_KAYSER].[dbo].[Cliente] VALUES ( 
-		@cli_codigo,@cli_rut,@cli_nombre,@cli_direccion,@cli_comuna,@cli_ciudad,@cli_email,
-		@cli_telefono,@cli_celular,@cli_fecha_nacimiento,@cli_fecha_registro,@cli_tipo,@cli_detalle
-	)
-END	
 
 ----------------------------------------------------------------
 ------ STORE PROCEDURE PARA OBTENER EL ULTIMO COD_PEDIDO -------
@@ -178,11 +151,13 @@ ALTER PROCEDURE SP_OMNI_obtener_correlativo_pedido
 --CREATE PROCEDURE SP_OMNI_obtener_correlativo_pedido 
 AS
 BEGIN
-	IF (SELECT COUNT(*) FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%') = 0  
+	IF (SELECT COUNT(*) FROM [OMNI_KAYSER].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%') = 0  
 		SELECT 'OMNI0000000000000001' as codigo_pedido 
 	ELSE 
-		SELECT CONCAT('OMNI',RIGHT(CONCAT('000000000000000' , CONVERT(INT,SUBSTRING(MAX(idDocSalida),6,5)) + 1), 16)) as codigo_pedido 
-		FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%'
+		SELECT CONCAT('OMNI',RIGHT(CONCAT('000000000000000' , CONVERT(INT,SUBSTRING(MAX(idDocSalida),5,16)) + 1), 16)) as codigo_pedido 
+		FROM [OMNI_KAYSER].dbo.DocumentoSalida WHERE idDocSalida LIKE 'OMNI%'
 END
 
 EXEC SP_OMNI_obtener_correlativo_pedido 
+
+-- OMNI0000000000000001

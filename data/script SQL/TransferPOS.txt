@@ -1,0 +1,271 @@
+Declare @IdAlmacen varchar(3)
+Declare @IdOwer    varchar(3)
+Declare @idDocSalida varchar(20)
+Declare @Tipo	varchar(3)
+Declare @FechaEmision Date
+Declare @FechaCompromiso Date
+Declare @FechaExpiracion Date
+Declare @IdDestino varchar (30)
+Declare @IdCliente varchar (60)
+Declare @IdSucursal varchar (2)
+Declare @IdKit varchar (15)
+Declare @CantidadKit varchar (6)
+Declare @AnuladoPor varchar(60)
+Declare @FechaAnulacion Date
+Declare @Obsevaciones varchar (100)
+Declare @XD varchar(1)
+Declare @BO varchar(1)
+Declare @EstadoInterfaz varchar(2)
+Declare @FechaCreaciónERP Datetime
+Declare @FechaModificacionERP Datetime
+Declare @FechaLecturaWMS Datetime
+Declare @prioridad numeric
+ --Variables para programar el cursor
+Declare @IdDocCambio varchar (30) set @IdDocCambio = ''
+Declare @IdDocDetalle varchar(20) set @IdDocDetalle= ''
+Declare @ItemCode	Varchar (30)
+Declare @NroLinea varchar(5)
+Declare @Cantidad numeric(18,4)	
+declare @DocEntry numeric(15)
+--Se toma igual que en la bodega 001 para la 01
+declare @DatoBodega001 varchar(15) set @DatoBodega001=  isnull( (select bodegas.Block From [SAPWMS].[SBO_KAYSER].[dbo].[OWHS] bodegas where Bodegas.WhsCode='01' ) ,0)
+Declare @PACK numeric(18,4)               -- VERIFICA CANTIDAD POR PACK EN OITM
+Declare @CANTENTRANSITO numeric(18,4)	  -- VERIFICA CANTIDAD EN TRÁNSITO PENDIENTE
+Declare @contadorGeneral numeric(18,0)
+declare @stockMin numeric(18,0)
+declare @stock numeric(18,0)
+declare @stockMax numeric(18,0)
+
+Create table #TempStock (codigo varchar(30),cantidad numeric)
+
+--STOCK EN WMS
+insert into #TempStock SELECT idArticulo,Cantidad FROM [WMSTEK_KAYSER_INTERFAZ].[dbo].[fnc_INTEGRACION_STOCK_DISPONIBLE] (NULL,NULL,NULL,NULL) stockWMS where stockWMS.Cantidad >= @DatoBodega001
+--select * from #TempStock
+--drop table #TempStock
+
+--Se busca en documento reposición de bodegas a reponer
+declare cursor_REPO cursor for
+Select Distinct
+			  RepoCab.DocEntry
+			  ,'01' As IdAlmacen 
+              ,'KAYS' As IdOwer
+			  ,T0.WhsCode+'TRF'+cast(RepoCab.DocEntry as Varchar) idDocSalida
+			  ,'TRF' Tipo
+			 ,RepoCab.U_Fech FechaEmision
+			 ,RepoCab.U_Fech FechaCompromiso
+			 ,null FechaExpiracion
+		     ,T0.WhsCode idDestino
+		     ,Clie.CardCode idCliente
+		     ,case when    Direc.[City] like '%SANTIAGO%'  then 'S' 
+            when            Direc.[City] like '%STGO%'     then 'S'
+            when            Direc.[City] like '%STGO.%'    then 'S'
+			when            Direc.[City] like '%IAGO%'     then 'S'
+			when            Direc.[City] = ''    then 'S'
+			when            Direc.[City] is null    then 'S'
+            ELSE 'R' END As IdSucursal
+            ,null idKit
+            ,null Cantidad
+            ,null AnuladoPor
+            ,null FechaAnulacion
+            ,''Observaciones
+            ,null XD
+            ,null BO
+            ,'P' EstadoInterfaz
+            ,RepoCab.CreateDate FechaCreacionERP
+            ,null FechaModificacionERP
+            ,null FechaLecturaWMS
+			,Alm.U_Kprio
+		from       [SAPWMS].[SBO_KAYSER].[dbo].[OITW]     T0 
+		inner join [SAPWMS].[SBO_KAYSER].[dbo].[OWHS]     Alm     on T0.WhsCode=Alm.WhsCode       --  COLLATE DATABASE_DEFAULT
+		inner join [SAPWMS].[SBO_KAYSER].[dbo].[@KREPO02] RepoLin on T0.WhsCode = RepoLin.U_bod --COLLATE DATABASE_DEFAULT
+		inner join [SAPWMS].[SBO_KAYSER].[dbo].[@KREPO01] RepoCab on RepoLin.DocEntry = RepoCab.DocEntry --COLLATE DATABASE_DEFAULT
+		inner join [SAPWMS].[SBO_KAYSER].[dbo].[OCRD]     Clie    on Alm.WhsName = Clie.CardName  --COLLATE DATABASE_DEFAULT
+		inner join [SAPWMS].[SBO_KAYSER].[dbo].[CRD1]	   Direc   on Clie.CardCode=Direc.CardCode and Direc.[City] is not null
+		
+		where
+        Alm.WhsCode in (select RepoLin.U_bod)
+		and RepoCab.Canceled <> 'Y'
+		and RepoCab.[Status] <> 'C'
+		and RepoCab.U_reali  <> 'Y'
+		--and getDate() > DATEADD( HH, ((RepoCab.U_hor / 100) % 100)  ,dateadd(minute, (RepoCab.U_hor /1) % 100, dateadd(second, 0,RepoCab.U_Fech)))
+		and RepoLin.U_Trasp <>'N'
+ --COLLATE DATABASE_DEFAULT
+ order by Alm.U_Kprio asc
+ open cursor_REPO
+ 
+ fetch next from cursor_REPO into
+ @DocEntry,@IdAlmacen ,@IdOwer,@idDocSalida ,@Tipo,@FechaEmision ,@FechaCompromiso ,@FechaExpiracion 
+ ,@IdDestino ,@IdCliente ,@IdSucursal ,@IdKit ,@CantidadKit ,@AnuladoPor ,@FechaAnulacion 
+ ,@Obsevaciones,@XD,@BO,@EstadoInterfaz,@FechaCreaciónERP ,@FechaModificacionERP ,@FechaLecturaWMS,@prioridad
+ WHILE @@FETCH_STATUS=0
+ begin
+				insert into 
+				[WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida
+				
+				 VALUES 
+				(@IdAlmacen ,'KAYS',@idDocSalida,'','' ,@Tipo,@FechaEmision ,@FechaCompromiso ,@FechaExpiracion 
+				,@IdDestino ,@IdCliente ,@IdSucursal,'' ,@IdKit ,@CantidadKit,'' ,@Obsevaciones,GETDATE(),'',@FechaAnulacion  ,@AnuladoPor 
+				,@XD,@BO,@EstadoInterfaz,@FechaCreaciónERP ,@FechaModificacionERP ,@FechaLecturaWMS)
+						
+						
+				SET @contadorGeneral = 0;
+				
+			--RECORRER EL DETALLE DEl DOCUMENTO
+			          declare Detalle  cursor  for
+					  Select cast(T0.WhsCode as varchar)+'TRF'+cast(RepoCab.DocEntry as Varchar) as ItemDocSalida 
+							 , T0.ItemCode idArticulo 
+							 ,ROW_NUMBER() OVER(ORDER BY T0.Itemcode DESC )  NroLinea 
+							 ,cast(
+							  --En casos que sea en base al minimo al maximo desde la bodega
+							   (case when ((Alm.U_KMinMax='Min') and ((T0.MinStock-T0.OnHand)>0) )  then 
+									     ((T0.MinStock-T0.OnHand))
+									 when ((Alm.U_KMinMax='Min') and (T0.MinStock=0 ) ) then 
+									     ((T0.MaxStock-T0.OnHand)) 
+								     when ( (Alm.U_KMinMax='Max') and ((T0.MaxStock-T0.OnHand)>0 )) then 
+									     ((T0.MaxStock-T0.OnHand))
+									 when ((Alm.U_KMinMax='Max') and (T0.MaxStock=0 ) ) then 
+								         	     ((T0.MinStock-T0.OnHand)) 
+								     else
+								        0
+								     end 
+								   )as numeric),
+								   (SELECT ISNULL(S.U_PACK,3) --Se convierte a 3 en caso de no tener valor
+									FROM [SAPWMS].[SBO_KAYSER].[dbo].OITM S
+									WHERE S.ItemCode = T0.ItemCode),
+									ISNULL((SELECT SUM(ISNULL(CAST(S1.Quantity AS NUMERIC),0))
+										FROM [SAPWMS].[SBO_KAYSER].[dbo].OWTR S0 INNER JOIN 
+											 [SAPWMS].[SBO_KAYSER].[dbo].WTR1 S1 ON S0.DocEntry = S1.DocEntry
+										WHERE 	S0.U_GSP_STATUSTPV = 'PT' AND 
+												SUBSTRING(S0.CardCode,1,3)=T0.WhsCode AND 
+												S1.WhsCode = '999' AND 
+												S1.ItemCode = T0.ItemCode AND 
+												S0.DocDate > '20180101'
+										GROUP BY S1.ItemCode),0)
+										,T0.MinStock
+										,T0.OnHand
+										,T0.MaxStock
+						from       [SAPWMS].[SBO_KAYSER].[dbo].[OITW]     T0										      
+						inner join [SAPWMS].[SBO_KAYSER].[dbo].[OWHS]     Alm     on T0.WhsCode=Alm.WhsCode              --COLLATE DATABASE_DEFAULT
+						inner join [SAPWMS].[SBO_KAYSER].[dbo].[@KREPO02] RepoLin on T0.WhsCode = RepoLin.U_bod          --COLLATE DATABASE_DEFAULT
+						inner join [SAPWMS].[SBO_KAYSER].[dbo].[@KREPO01] RepoCab on RepoLin.DocEntry = RepoCab.DocEntry --COLLATE DATABASE_DEFAULT
+						where
+						 --Alm.WhsCode in (select RepoLin.U_bod)
+						-- andd
+						 T0.WhsCode+'TRF'+cast(RepoCab.DocEntry as Varchar) =  @idDocSalida 
+						and 
+						cast(
+							  -- para traer cantidades mayoes a 0 si diera negativo
+								(case when ((Alm.U_KMinMax='Min') and ((T0.MinStock-T0.OnHand)>0) )  then 
+									     ((T0.MinStock-T0.OnHand))
+									 when ((Alm.U_KMinMax='Min') and (T0.MinStock=0 ) ) then 
+									     ((T0.MaxStock-T0.OnHand)) 
+								     when ( (Alm.U_KMinMax='Max') and ((T0.MaxStock-T0.OnHand)>0 )) then 
+									     ((T0.MaxStock-T0.OnHand))
+									 when ((Alm.U_KMinMax='Max') and (T0.MaxStock=0 ) ) then 
+								         	    ((T0.MinStock-T0.OnHand)) 
+								     else
+								        0
+								     end 
+								   )as numeric)>0 
+						and RepoLin.U_Trasp ='Y'
+						--Para solo encontrar articulos que esten en WMS mayor a lo indicado en Bodega 001
+						and T0.ItemCode in (Select #TempStock.codigo COLLATE DATABASE_DEFAULT  from #TempStock where #TempStock.codigo = T0.ItemCode  COLLATE DATABASE_DEFAULT)
+						order by Alm.U_Kprio asc
+
+					
+				 open Detalle 
+						fetch next from Detalle into @IdDocDetalle,@ItemCode,@NroLinea,@cantidad,@PACK,@CANTENTRANSITO,@stockMin, @stock, @stockMax
+						while @@FETCH_STATUS=0
+						begin
+						declare @datoCantidad numeric set @datoCantidad = (select cantidad from #TempStock where #TempStock.codigo = @ItemCode )
+					    declare @CantidadMasTransito numeric 
+						declare @cantidadReal numeric
+						 
+
+					    set @CantidadMasTransito =  @stock + @CANTENTRANSITO 
+						 
+						if @CantidadMasTransito < @stockMin 
+						begin
+						--Se toma el entero superior debido a la restricción de packs y se sobreescribe lo que se despachará
+						--set @cantidadReal = CEILING(@CantidadMenosTransito/@PACK)*@PACK
+						
+						--WHILE desde cero cuantos packs quepan en la wa
+						DECLARE @contador INT;
+						SET @contador = 0;
+						
+						WHILE (@contador + @PACK) <= @datoCantidad
+						BEGIN
+							IF (@contador + @CantidadMasTransito) < @stockMax 
+							BEGIN
+								SET @contador = @contador + @PACK;
+							END
+							else
+							begin
+								BREAK;
+							end
+
+							
+						END;
+						
+						set @cantidadReal = @contador						
+						 
+						--if @datoCantidad >= @cantidadReal
+						IF @cantidadReal > 0
+													begin
+													
+													SET @contadorGeneral = @contadorGeneral + 1;
+													
+						 							insert into 
+													[WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida 
+													VALUES 
+													(@IdAlmacen,'KAYS' , @IdDocDetalle, @ItemCode, @NroLinea, @cantidadReal)
+													
+													update #TempStock set cantidad = (@datoCantidad-@cantidadReal) where codigo= @ItemCode
+													
+
+						END
+													
+						 -- if @datoCantidad <  @cantidadReal and @datoCantidad > 0
+													-- begin
+															 							
+						 							-- insert into 
+													-- [WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida 
+													-- VALUES 
+													-- ('001','KAYS' , @IdDocDetalle, @ItemCode, @NroLinea, @datoCantidad)
+													 -- update #TempStock set cantidad = 0 where codigo= @ItemCode
+													-- end
+						 if @datoCantidad =  0
+						 							begin				 							
+						 						    set @datoCantidad=0
+						                            end
+						end
+						fetch next from Detalle into @IdDocDetalle,@ItemCode,@NroLinea,@cantidad,@PACK,@CANTENTRANSITO,@stockMin, @stock, @stockMax
+						end
+						close Detalle      --Cierra el cursor.
+						deallocate Detalle --Lo libera de la memoria y lo destruye.
+ 				 
+				if @contadorGeneral > 0
+				BEGIN
+					UPDATE [SAPWMS].[SBO_KAYSER].[dbo].[@KREPO01]
+					SET    [U_reali] = 'Y'
+					WHERE  [DocEntry] = @DocEntry
+				END
+				ELSE
+				BEGIN
+					DELETE FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida
+					WHERE [IdDocSalida] = @idDocSalida
+				END
+ 				 
+ fetch next from cursor_REPO into
+ @DocEntry,@IdAlmacen ,@IdOwer,@idDocSalida ,@Tipo,@FechaEmision ,@FechaCompromiso ,@FechaExpiracion 
+ ,@IdDestino ,@IdCliente ,@IdSucursal ,@IdKit ,@CantidadKit ,@AnuladoPor ,@FechaAnulacion 
+ ,@Obsevaciones,@XD,@BO,@EstadoInterfaz,@FechaCreaciónERP ,@FechaModificacionERP ,@FechaLecturaWMS,@prioridad
+ end
+ close      cursor_REPO      --Cierra el cursor.
+ deallocate cursor_REPO      --Lo libera de la memoria y lo destruye.
+ UPDATE [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida  
+ SET estadointerfaz = 'C', fechamodificacionERP = getdate()
+ WHERE estadointerfaz = 'P'
+DROP TABLE #TempStock
+
+

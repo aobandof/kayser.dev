@@ -66,6 +66,8 @@ CREATE TABLE DetalleSalida (
 	primary key (IdAlmacen, IdOwner, IdDocSalida, IdArticulo),
 	foreign key (IdAlmacen, IdOwner, IdDocSalida) references DocumentoSalida (IdAlmacen, IdOwner, IdDocSalida)	
 )*/
+
+select * from DocumentoSalida
 /*
 CREATE TABLE Venta (
 	id INT IDENTITY(1,1) PRIMARY KEY,
@@ -74,10 +76,11 @@ CREATE TABLE Venta (
 	codigo_pedido VARCHAR(20) NOT NULL UNIQUE,
 	fecha_documento DATETIME,
 	codigo_tienda VARCHAR(10) NOT NULL,
+	instance_database VARCHAR(20) NOT NULL
 	FOREIGN KEY (codigo_cliente) REFERENCES Cliente(codigo) ON DELETE CASCADE ON UPDATE CASCADE
-)
+)*/
 
-
+/*
 CREATE TABLE VentaDetalle (
 	id_venta INT NOT NULL,
 	sku_codigo VARCHAR(20) NOT NULL,
@@ -88,15 +91,46 @@ CREATE TABLE VentaDetalle (
 )
 */
 
+SELECT * FROM VentaDetalle
 
 
+CREATE TABLE Prueba (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(20) NOT NULL,
+	detalle VARCHAR(50)
+)
+
+INSERT INTO Prueba VALUES ('abelin', 'dato ingresado a modo de prueba')
+
+INSERT INTO Prueba VALUES ('joelin', 'dato ingresado a modo de prueba'),('joancito', 'dato ingresado a modo de prueba'),('abelin', 'dato ingresado a modo de prueba')
+
+SELECT * FROM Prueba
+
+SELECT @@IDENTITY AS 'primer_valor'; 
 
 -- VALIDACIONES ---
 -- es factible que no tenga email o no tenga celular, pero hay que validar que 
 
 
+SELECT * FROM Cliente
+DELETE FROM Cliente where codigo != ''
+exec sp_help cliente
+truncate table cliente
 
+INSERT INTO [OMNI_KAYSER].dbo.Cliente VALUES ('26082384-1C','26082384-1','MONTERREY FLORES, JOAN
+MANUEL','avenida presidente balmaceda 2720','santiago',
+'santiago','quinta normal','joanmonterrey@gmail.com','','931289778','1993-03-16',
+'2018-05-10','16','')
 
+SELECT * FROM Venta
+TRUNCATE TABLE Venta
+exec sp_help Venta
 
+INSERT INTO [OMNI_KAYSER].dbo.Venta VALUES ('26082384-1C','26082384-1','MONTERREY FLORES, JOAN MANUEL','avenida presidente balmaceda 2720','santiago',
+'santiago','quinta normal','joanmonterrey@gmail.com','','931289778','1993-03-16',
+'2018-05-10','16','')
+
+TRUNCATE TABLE VentaDetalle
+SELECT * FROM VentaDetalle
 
 
