@@ -16,8 +16,10 @@ CREATE TABLE Cliente (
 	fecha_nacimiento DATETIME,
 	fecha_registro DATETIME,
 	tipo VARCHAR(20),
-	detalle VARCHAR(100)	
+	detalle VARCHAR(100),
+	direccion_despacho VARCHAR(100)	-- subir despues de direccion si es que se vuelve a crear la tabla
 )*/
+-- ALTER TABLE Cliente add direccion_despacho VARCHAR(100)
 /*
 CREATE TABLE Venta (
 		
@@ -117,10 +119,7 @@ DELETE FROM Cliente where codigo != ''
 exec sp_help cliente
 truncate table cliente
 
-INSERT INTO [OMNI_KAYSER].dbo.Cliente VALUES ('26082384-1C','26082384-1','MONTERREY FLORES, JOAN
-MANUEL','avenida presidente balmaceda 2720','santiago',
-'santiago','quinta normal','joanmonterrey@gmail.com','','931289778','1993-03-16',
-'2018-05-10','16','')
+
 
 SELECT * FROM Venta
 TRUNCATE TABLE Venta

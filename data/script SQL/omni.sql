@@ -100,40 +100,9 @@ SELECT  * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DocumentoSalida where YEAR(FechaEmis
 SELECT * FROM [WMSTEK_KAYSER_INTERFAZ].dbo.DetalleSalida WHERE idDocSalida='32805'
 SP_COLUMNS DocumentoSalida
 SP_HELP DocumentoSalida
-----------------------------------------------------------------------------------------------
------------- STORE PROCEDURE PARA INSERTAR TABLAS RELACIONADAS CON EL PEDIDO OMNI ------------
-----------------------------------------------------------------------------------------------
-CREATE PROCEDURE SP_OMNI_guardar_pedido (
-	@codigo_almacen VARCHAR(10), --será 001, pero es recomendable pasarlo como parámetro por si algun momento cambia
-	@codigo_pedido VARCHAR(20), --será el correlativo del codigo pedido_omni, con la sintaxis: 'OMNI000000000000001'
-	@cli_rut VARCHAR(50),
-	@doc_fecha DATETIME,
-	@fecha_limite DATETIME,	--@doc_fecha + x dias (dependiendo del plazo maximo de entrega establecido por la empresa)
-	@tie_codigo VARCHAR(20),
-	@tie_nombre VARCHAR(50),
-	@tie_region VARCHAR(15),
-	@tie_direccion VARCHAR(100) )
-AS
-BEGIN
-	--INSERT INTO [WMSTEK_KAYSER_INTERFAZ].[dbo].[DocumentoSalida] VALUES ( 
-	INSERT INTO [OMNI_KAYSER].[dbo].[DocumentoSalida] VALUES ( 
-		@codigo_almacen,'KAYS',@codigo_pedido,'PEDIDO_OMNI',@cli_rut,'TRF',@doc_fecha,'',@fecha_limite,@tie_codigo,
-		@tie_codigo,@tie_nombre,@tie_region,@tie_direccion,'','','C','',''
-	)
-END
+----------------------------------------------------------------
+----------------------------------------------------------------
 
-INSERT INTO [OMNI_KAYSER].[dbo].[DocumentoSalida]  (
-	IdAlmacen,IdOwner,IdDocSalida,NroReferencia,NroOrdenCliente,Tipo,FechaEmision,FechaCompromiso,FechaExpiracion,AlmacenDestino,IdCliente,IdSucursal,EnviarPor,IdKit,Cantidad,Prioridad,
-	Observaciones,FechaCreacion,Factura,FechaAnulacion,AnuladoPor,XD,BO,EstadoInterfaz,FechaCreacionERP,FechaModificacionERP,FechaLecturaWMS )
-VALUES (
-      '01','KAYS','OMNI0000000000000001','PEDIDO_OMNI','26082384-1','TRF','2018-05-10 17:22:19','','2018-05-12 05:22:19','177-RENCA',
-      '177-RENCA','santiago','','',0,0,'','2018-05-10 17:22:19','7223',
-      '','','','','C','','','')
-
-INSERT INTO [OMNI_KAYSER].dbo.DocumentoSalida VALUES (
-      '01','KAYS','OMNI000001','PEDIDO_OMNI','24215707-9','TRF','','','','177',
-      '177-RENCA','santiago','miraflores 8770','','',0,0,'','','7222',
-      '','','','','','C','','','')
 
 select * from [OMNI_KAYSER].[dbo].[DocumentoSalida]
 select * from [OMNI_KAYSER].[dbo].[DetalleSalida]
@@ -161,3 +130,43 @@ END
 EXEC SP_OMNI_obtener_correlativo_pedido 
 
 -- OMNI0000000000000001
+
+-----------------------------------------------------------------------------------
+-------- PROCEDIMIENTO ALMACENADO PARA COMPROBAR EXISTENCIA DE CLIENTE O RUI ------
+-----------------------------------------------------------------------------------
+CREATE PROCEDURE SP_OMNI_comprobar_cliente
+	@codigo VARCHAR(20),
+	@rut VARCHAR(15)
+AS
+BEGIN
+	DECLARE @cant INT
+	DECLARE @cant_rut INT
+	SELECT @cant= COUNT(codigo) FROM Cliente WHERE codigo=@codigo
+	--cant = SELECT COUNT(codigo) FROM Cliente WHERE codigo=@codigo
+	IF @cant = 1
+		BEGIN
+			SELECT @cant_rut = COUNT(rut) FROM Cliente WHERE rut=@rut AND codigo!=@codigo
+			IF @cant_rut = 1
+				SELECT 'EXISTE USUARIO ADEMAS RUT ESTA ASIGNADO A OTRO CLIENTE' as resp
+			ELSE
+				SELECT 1 as resp
+		END
+	ELSE
+		BEGIN
+			SELECT @cant_rut = COUNT(rut) FROM Cliente WHERE rut=@rut
+			IF @cant_rut = 1
+				SELECT 'NO EXISTE USUARIO PERO RUT ESTA ASIGNADO A OTRO CLIENTE' as resp
+			ELSE
+				SELECT 2 as resp
+		END
+END
+
+exec SP_OMNI_compropar_cliente '24215707-9C','24215707-9'
+   
+--DELETE from CLIENTE WHERE rut='26082384-1'
+
+SELECT * FROM Venta
+SELECT * FROM VentaDetalle
+		
+		
+		
